@@ -1,7 +1,7 @@
 // État global : session, profil, entreprise, langue, thème, notifications, fenêtres.
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { api, onAuth, getSession, uid } from './api.js';
-import { setLang as setI18nLang, getLang, t } from './i18n.js';
+import { setLang as setI18nLang, getLang, t, loadLang } from './i18n.js';
 
 const Ctx = createContext(null);
 export const useApp = () => useContext(Ctx);
@@ -30,7 +30,7 @@ export function AppProvider({ children }) {
       try { p.is_admin = !!(await api.rpc('is_admin')); } catch { p.is_admin = false; }
       setProfile(p);
       let localLang = null; try { localLang = localStorage.getItem('ay-lang'); } catch {}
-      if (!localLang && p.lang && p.lang !== getLang()) { setI18nLang(p.lang); setLangState(p.lang); }
+      if (!localLang && p.lang && p.lang !== getLang()) { await loadLang(p.lang); setI18nLang(p.lang); setLangState(p.lang); }
       if (p.theme && p.theme !== theme) applyTheme(p.theme);
       if (p.company_id) {
         const [c, ts, ms] = await Promise.all([api.one('companies', { id: p.company_id }), api.select('teams', { company_id: p.company_id }, { order: 'created_at.asc' }), api.select('profiles', { company_id: p.company_id })]);
@@ -63,7 +63,7 @@ export function AppProvider({ children }) {
     if (th === 'dark') document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme;
   }
   async function setTheme(th) { applyTheme(th); if (profile) { await api.update('profiles', { id: profile.id }, { theme: th }); setProfile({ ...profile, theme: th }); } }
-  async function setLang(l) { setI18nLang(l); setLangState(l); if (profile) { await api.update('profiles', { id: profile.id }, { lang: l }); setProfile({ ...profile, lang: l }); } }
+  async function setLang(l) { await loadLang(l); setI18nLang(l); setLangState(l); if (profile) { await api.update('profiles', { id: profile.id }, { lang: l }); setProfile({ ...profile, lang: l }); } }
 
   const toast = useCallback((msg, err = false) => {
     clearTimeout(toastTimer.current); setToast({ msg, err });

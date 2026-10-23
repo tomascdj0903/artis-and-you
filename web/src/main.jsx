@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { useLocation, matchRoute, navigate, Link } from './lib/router.jsx';
-import { t } from './lib/i18n.js';
+import { t, loadLang, getLang } from './lib/i18n.js';
 import { Loader, Avatar } from './ui/index.jsx';
 import { OFFLINE } from './lib/api.js';
 import { fullName } from './lib/format.js';
@@ -134,4 +134,4 @@ function App() {
   return <Shell tabs={pro ? PRO_TABS : CLI_TABS} path={path}><C params={params} key={path} /></Shell>;
 }
 
-createRoot(document.getElementById('root')).render(<AppProvider><App /></AppProvider>);
+loadLang(getLang()).catch(() => {}).finally(() => createRoot(document.getElementById('root')).render(<AppProvider><App /></AppProvider>));
