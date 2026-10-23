@@ -7,6 +7,5 @@ Push-Location desktop; npm pkg set version=$V; Pop-Location
 Push-Location web; npm pkg set version=$V; Pop-Location
 git add -A
 git commit -m "Version $V"
-git tag "v$V"
-git push origin main --tags
+git push origin main
 Write-Host "Version $V envoyée : GitHub construit le .exe et le .dmg (environ 10 min), puis les logiciels installés se mettent à jour tout seuls."

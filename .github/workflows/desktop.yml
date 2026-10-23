@@ -1,10 +1,12 @@
-# Construit et publie le logiciel Windows (.exe) et Mac (.dmg) à chaque nouvelle version (tag vX.Y.Z).
-# Les logiciels déjà installés se mettent à jour tout seuls à partir de cette publication.
+# Construit et publie le logiciel Windows (.exe) et Mac (.dmg) quand le dossier desktop change sur main
+# (en pratique : quand release.sh / release.ps1 change le numéro de version).
+# Si cette version est déjà publiée, rien n'est fait. Les logiciels installés se mettent à jour tout seuls.
 name: Logiciel PC / Mac
 
 on:
   push:
-    tags: ['v*']
+    branches: [main]
+    paths: ['desktop/**', '.github/workflows/desktop.yml']
   workflow_dispatch:
 
 permissions:
@@ -25,12 +27,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Version du logiciel = version du tag
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Version déjà publiée ?
+        id: check
         shell: bash
-        run: npm pkg set version="${GITHUB_REF_NAME#v}"
-      - run: npm install
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          V=$(node -p "require('./package.json').version")
+          echo "version=$V" >> $GITHUB_OUTPUT
+          if gh release view "v$V" --repo "$GITHUB_REPOSITORY" --json isDraft -q '.isDraft' 2>/dev/null | grep -q false; then echo "skip=true" >> $GITHUB_OUTPUT; else echo "skip=false" >> $GITHUB_OUTPUT; fi
+      - if: steps.check.outputs.skip != 'true'
+        run: npm install
       - name: Construire et publier
+        if: steps.check.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'

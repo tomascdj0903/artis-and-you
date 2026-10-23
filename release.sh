@@ -9,6 +9,5 @@ cd "$(dirname "$0")"
 (cd web && npm pkg set version="$V")
 git add -A
 git commit -m "Version $V" || true
-git tag "v$V"
-git push origin main --tags
+git push origin main
 echo "Version $V envoyée : GitHub construit le .exe et le .dmg (environ 10 min), puis les logiciels installés se mettent à jour tout seuls."
