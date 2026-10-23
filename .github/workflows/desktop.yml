@@ -1,0 +1,37 @@
+# Construit et publie le logiciel Windows (.exe) et Mac (.dmg) à chaque nouvelle version (tag vX.Y.Z).
+# Les logiciels déjà installés se mettent à jour tout seuls à partir de cette publication.
+name: Logiciel PC / Mac
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Version du logiciel = version du tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: npm pkg set version="${GITHUB_REF_NAME#v}"
+      - run: npm install
+      - name: Construire et publier
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --publish always

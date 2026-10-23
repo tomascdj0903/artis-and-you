@@ -1,0 +1,21 @@
+{
+  "name": "artis-and-you-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --serve"
+  },
+  "dependencies": {
+    "html-to-image": "1.11.13",
+    "jszip": "3.10.1",
+    "pdf-lib": "1.17.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-icons": "5.7.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

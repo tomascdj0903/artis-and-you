@@ -1,0 +1,54 @@
+{
+  "name": "artis-and-you-desktop",
+  "productName": "Artis & You",
+  "version": "1.0.0",
+  "description": "Artis & You — logiciel PC et Mac",
+  "author": "Artis & You",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --publish never",
+    "release": "electron-builder --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "fr.artisandyou.app",
+    "productName": "Artis & You",
+    "copyright": "© Artis & You",
+    "directories": { "output": "release", "buildResources": "build" },
+    "files": ["main.js", "preload.js", "config.json", "offline.html", "build/icon.png"],
+    "publish": [{ "provider": "github", "owner": "tomascdj0903", "repo": "artis-and-you", "releaseType": "release" }],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "build/icon.ico",
+      "artifactName": "Artis-and-You-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Artis & You",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "language": "1036"
+    },
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }],
+      "icon": "build/icon.png",
+      "category": "public.app-category.business",
+      "artifactName": "Artis-and-You.${ext}",
+      "identity": null
+    },
+    "dmg": { "title": "Artis & You" }
+  }
+}

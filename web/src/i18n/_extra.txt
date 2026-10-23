@@ -1,0 +1,64 @@
+En mode local, toutes les données sont dans ce navigateur. Faites des sauvegardes régulières.|In local mode, all data is stored in this browser. Make regular backups.|No modo local, todos os dados ficam neste navegador. Faça cópias de segurança regulares.|In modalità locale, tutti i dati restano in questo browser. Fai backup regolari.
+Les données actuelles de ce navigateur seront remplacées.|The current data in this browser will be replaced.|Os dados atuais deste navegador serão substituídos.|I dati attuali di questo browser saranno sostituiti.
+Restaurer|Restore|Restaurar|Ripristina
+Restaurer cette sauvegarde ?|Restore this backup?|Restaurar esta cópia de segurança?|Ripristinare questo backup?
+Sauvegarde de la base locale|Local database backup|Cópia de segurança da base local|Backup del database locale
+Sauvegarde téléchargée|Backup downloaded|Cópia de segurança transferida|Backup scaricato
+Sauvegarder|Back up|Guardar cópia|Esegui backup
+Plomberie et chauffage|Plumbing and heating|Canalização e aquecimento|Idraulica e riscaldamento
+Électricité|Electrical|Eletricidade|Impianti elettrici
+Peinture|Painting|Pintura|Tinteggiatura
+Carrelage|Tiling|Azulejos e pavimentos|Piastrellatura
+Menuiserie|Carpentry and joinery|Carpintaria|Falegnameria
+Charpente|Roof framing|Estruturas de madeira|Carpenteria
+Couverture (toiture)|Roofing|Coberturas e telhados|Coperture e tetti
+Maçonnerie|Masonry|Alvenaria|Muratura
+Plâtrerie|Plastering|Estuque e pladur|Cartongesso e intonaci
+Serrurerie|Locksmith|Serralharia|Fabbro
+Climatisation|Air conditioning|Climatização|Climatizzazione
+Vitrerie|Glazing|Vidraria|Vetreria
+Isolation|Insulation|Isolamento|Isolamento
+Cuisiniste|Kitchen fitter|Cozinhas|Cucine
+Paysage|Landscaping|Jardinagem e paisagismo|Giardinaggio e paesaggistica
+Piscine|Swimming pools|Piscinas|Piscine
+Terrassement|Earthworks|Terraplanagem|Movimento terra
+Élagage|Tree pruning|Poda de árvores|Potatura
+Clôture et portail|Fences and gates|Vedações e portões|Recinzioni e cancelli
+Mécanique et carrosserie|Mechanics and bodywork|Mecânica e chapa|Meccanica e carrozzeria
+Dépannage auto|Car breakdown|Assistência automóvel|Soccorso stradale
+Nettoyage|Cleaning|Limpeza|Pulizie
+Déménagement|Removals|Mudanças|Traslochi
+Informatique|IT support|Informática|Assistenza informatica
+Électroménager|Appliance repair|Eletrodomésticos|Elettrodomestici
+Ramonage|Chimney sweeping|Limpeza de chaminés|Spazzacamino
+Multiservice|Handyman|Multisserviços|Tuttofare
+Clients, devis et factures illimités|Unlimited clients, quotes and invoices|Clientes, orçamentos e faturas ilimitados|Clienti, preventivi e fatture illimitati
+Planning et prise de RDV en ligne|Calendar and online booking|Agenda e marcação online|Agenda e prenotazione online
+Messagerie clients|Client messaging|Mensagens com clientes|Messaggi con i clienti
+Coffre-fort et documents|Vault and documents|Cofre e documentos|Cassaforte e documenti
+Export comptable Excel et FEC|Excel and FEC accounting export|Exportação contabilística Excel e FEC|Export contabile Excel e FEC
+Tout Solo|Everything in Solo|Tudo do Solo|Tutto di Solo
+Équipes et couleurs au planning|Teams and colours in the calendar|Equipas e cores na agenda|Squadre e colori in agenda
+Rôles et droits (chef d’équipe, ouvrier)|Roles and rights (team leader, worker)|Funções e permissões (chefe de equipa, operário)|Ruoli e permessi (caposquadra, operaio)
+Messagerie d’équipe|Team messaging|Mensagens de equipa|Messaggi di squadra
+Statut projet et KPI|Project status and KPIs|Estado dos projetos e KPI|Stato progetti e KPI
+Tout Équipe|Everything in Team|Tudo do Equipa|Tutto di Squadra
+Chantiers partagés avec le réseau|Jobs shared with your network|Obras partilhadas com a rede|Cantieri condivisi con la rete
+Bibliothèque d’ouvrages avancée|Advanced assembly library|Biblioteca de trabalhos avançada|Libreria lavorazioni avanzata
+Support prioritaire|Priority support|Suporte prioritário|Assistenza prioritaria
+Nouvelle demande de RDV|New appointment request|Novo pedido de marcação|Nuova richiesta di appuntamento
+RDV annulé par le client|Appointment cancelled by the client|Marcação cancelada pelo cliente|Appuntamento annullato dal cliente
+Le client propose un autre créneau|The client proposes another time slot|O cliente propõe outro horário|Il cliente propone un altro orario
+Nouvel avis client|New client review|Nova avaliação de cliente|Nuova recensione cliente
+RDV refusé|Appointment declined|Marcação recusada|Appuntamento rifiutato
+RDV annulé|Appointment cancelled|Marcação cancelada|Appuntamento annullato
+Intervention terminée|Job finished|Intervenção concluída|Intervento terminato
+RDV mis à jour|Appointment updated|Marcação atualizada|Appuntamento aggiornato
+RDV déplacé|Appointment moved|Marcação alterada|Appuntamento spostato
+Votre artisan est en route|Your tradesperson is on the way|O seu profissional está a caminho|Il tuo artigiano è in arrivo
+Nouveau devis à signer|New quote to sign|Novo orçamento para assinar|Nuovo preventivo da firmare
+Nouvel avoir|New credit note|Nova nota de crédito|Nuova nota di credito
+Nouvelle facture|New invoice|Nova fatura|Nuova fattura
+Devis en cours|Quote in progress|Orçamento em curso|Preventivo in corso
+Équipe|Team|Equipa|Squadra
+Entreprise|Company|Empresa|Azienda

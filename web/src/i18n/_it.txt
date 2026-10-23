@@ -1,0 +1,1178 @@
+0|(copia)
+1|12 mesi
+2|14 cifre — verificato dal nostro team
+3|15 giorni
+4|30 giorni
+5|30 giorni fine mese
+6|40 € (forfettario)
+7|45 giorni fine mese
+8|Minimo 6 caratteri
+9|6 mesi
+10|60 giorni
+11|Abbonamento e inviti
+12|Accettato
+13|Home
+14|Accesso (codice, piano…)
+15|Accesso, rettifica, cancellazione, portabilità (export zip dall'app), opposizione. Contatto: support@artisandyou.fr. Puoi rivolgerti alla CNIL.
+16|Acquisto aggiunto
+17|Acconto
+18|Acconto (%)
+19|Acconto del {p} % sul preventivo {n}
+20|Acconto dedotto {n}
+21|Acconto {n}
+22|Attivo
+23|Attività
+24|Attuale
+25|Amministrazione
+26|Amministrazione Artis & You
+27|Indirizzo
+28|Indirizzo dell'intervento
+29|Indirizzo di fatturazione
+30|Indirizzo di consegna
+31|Indirizzo di consegna (luogo della prestazione)
+32|Indirizzo di consegna (cantiere)
+33|Indirizzo di consegna e data della prestazione
+34|Indirizzo del cantiere
+35|Indirizzi
+36|Visualizzazione
+37|Mostra
+38|Mostra il fine settimana
+39|Mostra i progetti terminati
+40|Mostra {n}
+41|Mostra {n} artigiani
+42|Mostra {n} clienti
+43|Mostra {n} documenti
+44|Mostra {n} professionisti
+45|Agenda
+46|Agenda esterna
+47|Agenda, commercialista, pagamento
+48|Aiuto
+49|Aiuto e assistenza
+50|Aggiungi
+51|Aggiungi foto
+52|Aggiungi un acquisto
+53|Aggiungi un articolo
+54|Aggiungi un documento
+55|Aggiungi un professionista
+56|Aggiungi un prodotto
+57|Aggiungi alla mia agenda
+58|Aggiungi alla mia rete
+59|Aggiungi almeno una riga con un prezzo.
+60|Aggiungi prima dei professionisti in La mia rete.
+61|Aggiungi gli artigiani con cui lavori per scambiare messaggi e condividere cantieri.
+62|Aggiungi l'e-mail del tuo commercialista in Impostazioni → Integrazioni.
+63|Aggiungi i tuoi prodotti (forniture) con prezzo di acquisto e di vendita.
+64|Aggiunto da te
+65|Annulla
+66|Annullare questo appuntamento?
+67|Annulla l'appuntamento
+68|Annulla l'appuntamento
+69|Annullato
+70|Annullata
+71|Anno
+72|Anno di costruzione
+73|Anteprima
+74|Anteprima PDF
+75|Appartamento
+76|Chiama
+77|Applicazione
+78|Applicazione web
+79|Dopo 7 giorni senza risposta
+80|Archiviata
+81|Arrivo previsto verso le {h}
+82|Arrivo previsto verso le {h} per: {o}.
+83|Articolo
+84|Articoli · {n}
+85|Artis & You mette in contatto artigiani e privati, e offre agli artigiani strumenti di gestione (clienti, agenda, preventivi, fatture, messaggi).
+86|Artis & You sul tuo computer
+87|Artigiano
+88|Artigiano o impresa
+89|Artigiani
+90|Soggetto a IVA
+91|Assicurazione RC professionale
+92|Assicurazione decennale
+93|Assicuratore
+94|Attestato URSSAF o MSA
+95|Attestato IVA agevolata
+96|Certificazione (RGE, Qualibat…)
+97|Certificato di regolarità fiscale
+98|Attestato di regolarità URSSAF
+99|Attestato di assicurazione decennale
+100|Attestati
+101|Attestati e garanzie
+102|Attestati, visura, contratti, progetti… Aggiungili con +.
+103|Al primo avvio su Windows, se compare SmartScreen, clicca su « Ulteriori informazioni » poi « Esegui comunque » (il software non è ancora firmato). Su Mac: clic destro sull'app poi « Apri ».
+104|Nessuno
+105|Nessun artigiano trovato. Prova un altro mestiere o un'altra città.
+106|Nessuna recensione in attesa
+107|Nessun cantiere in corso.
+108|Ancora nessun cantiere.
+109|Nessun cantiere.
+110|Nessun cliente
+111|Nessun cliente:
+112|Nessun cliente. Aggiungi il primo con il pulsante +.
+113|Nessun orario libero nelle prossime 3 settimane: scrivigli direttamente.
+114|Ancora nessun preventivo
+115|Nessun documento
+116|Nessun documento di questo tipo.
+117|Nessun membro
+118|Nessun messaggio
+119|Nessuno per ora
+120|Nessun progetto. I progetti nascono dalle richieste di appuntamento, dai preventivi o dal pulsante +.
+121|Nessun appuntamento passato.
+122|Nessun appuntamento in programma.
+123|Nessun risultato per « {q} »
+124|Nessun elemento
+125|Nessuna
+126|Nessuna conversazione.
+127|Nessuna conversazione. Scrivi a un cliente, a una squadra o a un professionista con il pulsante in basso.
+128|Ancora nessuna fattura
+129|Nessuna fattura nel periodo
+130|Nessuna nota. Tocca + per aggiungerne una.
+131|Nessuna notifica
+132|Nessuna notifica.
+133|Nessuna foto per questo cliente.
+134|Oggi
+135|Inversione contabile
+136|Inversione contabile (subappalto edile)
+137|Inversione contabile: IVA dovuta dal committente, art. 283-2 nonies del CGI francese.
+138|Automatico
+139|Auto
+140|Altro
+141|Altri documenti
+142|Altri documenti
+143|Avanzamento del cantiere
+144|Con l'orario di arrivo.
+145|Recensioni
+146|Recensione pubblicata
+147|Recensione pubblicata
+148|Recensione rifiutata
+149|Recensione verificata: solo dopo un vero appuntamento. Sarà controllata prima della pubblicazione.
+150|Recensioni verificate
+151|Recensioni da controllare ({n})
+152|Nota di credito
+153|Nota di credito sulla fattura {n}
+154|BIC
+155|BOZZA
+156|Imponibile
+157|Esigenza
+158|Libreria
+159|Beni e servizi
+160|Disponibile a breve
+161|Per accettazione
+162|Ciao {n}
+163|Buongiorno {n},\n\nIn allegato l'export contabile di {p} (vendite, incassi, acquisti, IVA).\n\nCordiali saluti,\n{c}
+164|Buongiorno,\n\nPer scriverci, ricevere preventivi e fatture e seguire il tuo cantiere, crea il tuo account gratuito su Artis & You con questo indirizzo e-mail:\n{url}\n\nA presto,\n{c}
+165|Buongiorno,\n\nIn allegato il nostro preventivo {n} per: {o}.\n\nPuoi anche consultarlo e firmarlo nel tuo spazio Artis & You: {u}\n\nCordiali saluti,\n{c}
+166|Buongiorno,\n\nIn allegato la nostra fattura {n} per: {o}.\n\nPuoi pagarla con bonifico (IBAN in fattura) o online dal tuo spazio Artis & You: {u}\n\nCordiali saluti,\n{c}
+167|Buongiorno, le ricordo il preventivo {n} ({m}). Non esiti a contattarmi per qualsiasi domanda.
+168|Buongiorno, desidero eliminare il mio account Artis & You ({e}).
+169|Ciao, ti invito su Artis & You per collaborare sui nostri cantieri. Con il mio codice {c} hai 1 mese gratis: {u}
+170|Buongiorno, salvo errore, la fattura {n} ({m}) risulta ancora da saldare. Grazie in anticipo.
+171|Bozza
+172|Bozza salvata
+173|Bozza eliminata
+174|Edilizia
+175|Fatturato imponibile
+176|Fatturato mensile
+177|Condizioni
+178|CRM
+179|Canali
+180|Capitale sociale
+181|Carta di credito
+182|Carta e addebito SEPA
+183|Carta o addebito tramite Artis & You
+184|Carta o addebito tramite il link Artis & You
+185|Tessere edili
+186|Questo cliente ha documenti emessi: impostalo su « Inattivo » invece di eliminarlo.
+187|Questo cliente non ha ancora un account Artis & You: non vedrà questi messaggi.
+188|Cosa ricevo
+189|Cosa vedono gli artigiani
+190|Certificazione
+191|Certificazioni
+192|Certificazioni (RGE, Qualibat)
+193|Queste informazioni compaiono su preventivi e fatture.
+194|Queste informazioni aiutano l'artigiano a preparare l'intervento (IVA agevolata se l'abitazione ha più di 2 anni).
+195|Questa azione è definitiva.
+196|Questa fattura è stata emessa: non può più essere modificata. Crea una nota di credito.
+197|Questa funzionalità arriva prestissimo su Artis & You.
+198|Questa pagina non esiste.
+199|Cambia foto
+200|Cantiere
+201|Cantiere in corso
+202|Cantiere non trovato
+203|Cantiere condiviso
+204|Cantiere pianificato
+205|Cantiere terminato
+206|Cantieri
+207|Ogni anno (manutenzione)
+208|Ogni mese
+209|Ogni settimana
+210|Ogni utente può eliminare il proprio account in qualsiasi momento da Dati e privacy.
+211|Chat con l'assistenza
+212|Chat
+213|Caposquadra
+214|Fatturato
+215|Scegli il file
+216|Scegli le foto
+217|Scegli un cliente
+218|Scegli {p}
+219|Scegli almeno un mestiere.
+220|Scegli un cliente.
+221|Scegli un orario.
+222|Scegli un file.
+223|Assegno
+224|Titolo
+225|Cliente
+226|Cliente salvato
+227|Cliente non trovato
+228|Cliente eliminato
+229|Cliente, n. di preventivo o fattura, prodotto, appuntamento…
+230|Clienti
+231|Clienti, agenda, preventivi, fatture, messaggi e rete di professionisti per l'artigiano. Ricerca di artigiani, appuntamenti, avanzamento lavori e documenti per il privato.
+232|Spuntato a mano
+233|Codice invito
+234|Codice d'invito
+235|CAP
+236|Coefficiente
+237|Cassaforte documenti
+238|Incassata / detraibile
+239|Inizia la prova di 30 giorni
+240|Come essere avvisato
+241|Complemento
+242|Composizione
+243|Ho capito
+244|Commercialista salvato
+245|Account
+246|Account Artis & You
+247|Account
+248|Condizioni
+249|Condizioni di pagamento
+250|Condizioni di pagamento
+251|Condizioni generali d'uso
+252|Privacy
+253|Conferma
+254|Conferma il rifiuto
+255|Confermato
+256|Confermato il
+257|Contatto
+258|Contatto dal {d}
+259|Referente sul posto
+260|Contenuto del file
+261|Continua
+262|Contratti
+263|Conversazione non trovata
+264|Conversazioni
+265|Recapiti
+266|Copia
+267|Colore
+268|Colore per
+269|Colori
+270|Colori delle squadre
+271|Copertura
+272|Costo forniture imponibile
+273|Crea
+274|Crea la fattura d'acconto
+275|Crea il mio account
+276|Crea il mio account gratuito
+277|Crea la mia impresa
+278|Crea una nota di credito
+279|Crea un account
+280|Crea un preventivo
+281|Crea una squadra
+282|Orario libero
+283|Orario desiderato
+284|Orari liberi · 30 min
+285|Nei tuoi messaggi e nel dettaglio dell'appuntamento.
+286|Data
+287|Data di emissione
+288|Data di costituzione
+289|Data della prestazione
+290|Data, firma e dicitura « Per accettazione »
+291|Richiesta
+292|Richiesta del cliente
+293|Richiesta inviata
+294|Richiesta ricevuta
+295|Richiedi la cancellazione
+296|Richiedi un appuntamento
+297|Richiesto il
+298|Dall'inizio
+299|Ultimo intervento: {d}
+300|Sposta giù
+301|Preventivi
+302|Preventivo di riferimento
+303|Preventivo in corso
+304|Preventivo inviato
+305|Preventivi e fatture
+306|Preventivi e fatture a norma
+307|Preventivo collegato
+308|Preventivo segnato come firmato
+309|Preventivo rifiutato
+310|Preventivo rifiutato, l'artigiano è stato avvisato
+311|Preventivo firmato
+312|Preventivo firmato o rifiutato
+313|Diagnosi
+314|Diagnosi a distanza
+315|Dom
+316|Direttore della pubblicazione
+317|Libero
+318|Documento
+319|Documento aggiunto
+320|Documento non trovato
+321|Documento condiviso con il cliente
+322|Documento eliminato
+323|Documento emesso
+324|Documento emesso. Il cliente lo vedrà appena creerà l'account con questa e-mail.
+325|Documenti
+326|Lascia una recensione
+327|Dati
+328|Dati raccolti
+329|Dati e privacy
+330|Autenticazione a due fattori
+331|Diritti di accesso
+332|Duplica
+333|Durata
+334|Durata: {d}
+335|Durata stimata
+336|Durata predefinita
+337|Inizio
+338|Inizio previsto
+339|Inizio previsto: {d}
+340|Descrivi il problema: da quando, dove, cosa hai già provato…
+341|Già tra i tuoi professionisti
+342|Già pagato
+343|Rilasciato il
+344|Rilasciata il {d}
+345|Inizia la conversazione
+346|Riparazione
+347|Sposta
+348|Sposta l'appuntamento
+349|Descrizione
+350|Dettaglio della fattura
+351|Dettaglio del preventivo
+352|Forniture
+353|Manodopera e servizi
+354|Dettagli
+355|E-mail
+356|Cancella
+357|In attesa
+358|In attesa di conferma
+359|In attesa di firma
+360|In corso
+361|In arrivo
+362|Online
+363|In ritardo
+364|In viaggio da
+365|In videochiamata
+366|Fido max.
+367|Fido massimo (€)
+368|Salva
+369|Salva la bozza
+370|Registra un pagamento
+371|Salvato. Conferma il nuovo indirizzo con il link ricevuto via e-mail.
+372|Insegna
+373|Insegna commerciale
+374|Impresa
+375|Impresa salvata
+376|Impresa verificata
+377|Imprese ({n})
+378|Manutenzione
+379|Invii automatici ai clienti
+380|Invia
+381|Invia al cliente
+382|Invia nello spazio cliente
+383|Invia la richiesta
+384|Invia la fattura
+385|Invia il preventivo
+386|Invia il link
+387|Invia per e-mail
+388|Invia per firma elettronica
+389|Invia un messaggio
+390|Invia tramite Artis & You
+391|Invia al mio commercialista
+392|Inviato nello spazio Artis & You del cliente
+393|Inviate dal cliente
+394|Sconto pagamento anticipato
+395|Contanti
+396|Prova gratuita: ancora {n} giorni. Scegli il piano
+397|Prova gratuita fino al {d} ({n} giorni rimasti)
+398|E poi?
+399|Esempio: {a} · {b}. Numerazione continua, senza salti, per anno (obbligo di legge).
+400|Esempio di fattura
+401|In scadenza
+402|Scaduto
+403|Scaduta il {d}
+404|Export contabile
+405|Export contabile {p} — {c}
+406|Export scaricato
+407|Esporta / importa (.ics)
+408|Esporta la mia agenda (.ics)
+409|Esporta tutti i miei dati (zip)
+410|Esterni
+411|FEC scaricato
+412|Fattura
+413|Fattura d'acconto
+414|Fattura d'origine
+415|Fattura inviata
+416|Fattura creata
+417|Fattura elettronica
+418|Fattura elettronica + link di pagamento
+419|Fatture
+420|Famiglia
+421|Chiudi
+422|Scheda cliente
+423|Scheda membro
+424|Scheda lavorazione
+425|Scheda prodotto
+426|File (PDF, progetto…)
+427|File Excel scaricato
+428|File troppo pesante (max 20 MB).
+429|Filtra
+430|Filtra per mestiere
+431|Filtra per stato
+432|Filtra per tipo
+433|Filtra per squadra
+434|Filtri
+435|Fine
+436|Finalità
+437|Ruolo del referente
+438|Forma giuridica
+439|Piano attuale
+440|Piano {p}
+441|Piani
+442|Fornire il servizio, permettere gli scambi tra artigiani e clienti, rispettare gli obblighi contabili (fatture conservate 10 anni).
+443|Fornitore
+444|Fornitura
+445|Franchigia IVA (art. 293 B del CGI francese, microimpresa)
+446|Garanzie
+447|Genera il codice
+448|Generato automaticamente · dal {a} al {b}
+449|Titolare
+450|Gestire clienti, agenda, preventivi e fatture. 30 giorni di prova.
+451|IVA escl.
+452|IVA escl. / mese
+453|IVA escl. / {u}
+454|Ora
+455|Ore visualizzate
+456|Ieri
+457|Storico
+458|Hosting
+459|IBAN
+460|Identità
+461|Identità, recapiti, indirizzo dell'abitazione, messaggi, foto e documenti scambiati, appuntamenti, preventivi e fatture.
+462|Non è ancora su Artis & You?
+463|Ti avvisa quando è in viaggio
+464|Stampa
+465|Inattivo
+466|Indennità di recupero
+467|Indennità forfettaria per spese di recupero: 40 €.
+468|Indica il tuo indirizzo per un intervento a domicilio.
+469|Indica la tua e-mail, ti inviamo un link per scegliere una nuova password.
+470|Informazioni
+471|Informazioni legali
+472|Iscritto il {d}
+473|Iscriviti su {u} con il mio codice {c}: 1 mese gratis.
+474|Intervento
+475|Interventi
+476|Titolo
+477|Integrazioni
+478|Invito Artis & You
+479|Inviti in attesa
+480|Invita su un cantiere
+481|Invita un membro
+482|Invitalo via SMS o e-mail: 1 mese gratis per lui.
+483|Itinerario
+484|Sono in viaggio
+485|Gio
+486|Allega
+487|Giorno
+488|Fino a 5 utenti
+489|Accetto le
+490|Ho già un account
+491|KPI
+492|KPI ed export contabile
+493|Visura camerale (Kbis)
+494|L'impresa
+495|L'ora di fine deve essere dopo l'ora di inizio.
+496|Il colore è usato in agenda
+497|L'autenticazione a due fattori
+498|La fattura elettronica tramite Artis & You
+499|La linea telefonica
+500|Il marchio, il logo e l'interfaccia Artis & You sono protetti. È vietata ogni riproduzione senza autorizzazione.
+501|La firma elettronica
+502|La sincronizzazione Google Calendar / Outlook
+503|Avvia l'itinerario
+504|Avvia la videochiamata WhatsApp
+505|Lingua
+506|Lingua e aspetto
+507|Il SIRET deve contenere 14 cifre valide.
+508|La chat con l'assistenza
+509|Il cliente sarà avvisato.
+510|L'account privato è gratuito. L'account artigiano è a pagamento dopo 30 giorni di prova. L'artigiano dichiara un SIRET valido, verificato da Artis & You.
+511|Il preventivo riceve il numero definitivo all'invio.
+512|L'abitazione
+513|Il software si apre nella sua finestra, con la sua icona, e si aggiorna da solo. Serve una connessione internet.
+514|Il pagamento dell'abbonamento
+515|Il pagamento online
+516|Il professionista vedrà nome e indirizzo del cantiere e potrà scriverti. Non vede né i tuoi prezzi né lo storico del cliente.
+517|Gli artigiani
+518|Gli artigiani con cui lavori compariranno qui.
+519|Gli attestati e le garanzie condivisi dai tuoi artigiani compariranno qui.
+520|Le recensioni sono verificate (solo dopo un vero appuntamento) e controllate da Artis & You prima della pubblicazione.
+521|Gli invii automatici via e-mail e SMS arriveranno a breve.
+522|Le fatture dell'abbonamento
+523|I pagamenti delle fatture vanno direttamente all'artigiano. Artis & You non trattiene commissioni.
+524|I video tutorial
+525|Descrizione
+526|Link WhatsApp inviato al cliente
+527|Luogo dei lavori
+528|Riga
+529|Righe
+530|Cessione di beni
+531|Locale commerciale
+532|Inquilino
+533|Abitazione salvata
+534|Software PC / Mac
+535|Logo
+536|Logo dell'impresa
+537|Logo salvato
+538|Lun
+539|L'artigiano resta l'unico responsabile di preventivi, fatture, prestazioni e del rispetto degli obblighi legali e fiscali. Artis & You non è parte dei contratti tra artigiani e privati.
+540|L'artigiano sarà avvisato.
+541|Invitalo via e-mail
+542|La mia libreria
+543|Manodopera
+544|Manodopera (ore, {r} €/h)
+545|Casa
+546|Manuale
+547|Mar
+548|Margine
+549|Margine stimato
+550|Margine per pezzo
+551|Segnare questo preventivo come rifiutato?
+552|Segna come rifiutato
+553|Segna come firmato
+554|Segna come terminato
+555|Segnato da {n} alle {h}
+556|Avvisami prima della scadenza
+557|Membro salvato
+558|Membro non trovato
+559|Membro rimosso
+560|Membri
+561|Note legali
+562|Note particolari, garanzie…
+563|Mer
+564|Grazie! La tua recensione sarà pubblicata dopo il controllo.
+565|Accetta le condizioni d'uso.
+566|I miei appuntamenti
+567|I miei avvisi
+568|I miei artigiani
+569|Le mie recensioni
+570|I miei cantieri
+571|I miei clienti
+572|I miei contatti
+573|I miei preventivi
+574|I miei documenti
+575|Le mie fatture
+576|Le mie fatture Artis & You
+577|I miei invitati
+578|I miei messaggi
+579|Le mie notifiche
+580|I miei professionisti
+581|Messaggio
+582|Messaggi con clienti e squadra
+583|Messaggi
+584|Misurazione anonima del traffico
+585|Aggiorna lo stato del progetto
+586|Aggiornamenti automatici: ogni nuova versione viene scaricata in background e installata al prossimo avvio.
+587|Modalità di pagamento
+588|Modalità di visualizzazione
+589|Modalità locale: i dati restano in questo browser.
+590|Modalità scura
+591|Modifica
+592|Modifica la nota
+593|Modifica il cliente
+594|Modifica l'appuntamento
+595|Modificata il {d}
+596|Modello del PDF
+597|Modello salvato
+598|Mese
+599|La mia agenda
+600|La mia cassaforte
+601|Il mio commercialista
+602|Il mio account
+603|La mia impresa
+604|La mia abitazione
+605|Il mio profilo
+606|La mia rete
+607|La mia squadra
+608|Importo
+609|Importo (€)
+610|Importo imponibile (€)
+611|Importo della nota di credito
+612|Importo da pagare
+613|Sposta su
+614|Password
+615|Password dimenticata
+616|Metodo
+617|Metodo di pagamento
+618|Mediatore
+619|Mediatore dei consumatori
+620|Mediatore dei consumatori (obbligatorio per i privati)
+621|Mestiere
+622|Mestiere, nome, esigenza…
+623|Mestieri
+624|Natura delle operazioni
+625|Navigazione
+626|Non disturbare (21 – 8)
+627|Netto da pagare
+628|Cognome
+629|Nome commerciale
+630|Nome del cantiere
+631|Nome del membro
+632|Nome del prodotto
+633|Nome e sito del mediatore
+634|Nome, impresa o mestiere
+635|No
+636|Non applicabile, art. 293 B del CGI francese
+637|Non collegato
+638|Nota
+639|Valutazione clienti
+640|Nota salvata
+641|Nota interna
+642|Nota libera
+643|Note sul documento
+644|Notifiche
+645|Notifiche nell'app
+646|Contattaci
+647|Nuovo
+648|Nuovo appuntamento
+649|Nuovo cantiere
+650|Nuovo cliente
+651|Nuovo orario
+652|Nuovo orario proposto
+653|Nuovo orario proposto all'artigiano
+654|Nuovo preventivo
+655|Nuovo messaggio
+656|Nuova password
+657|Nuovo progetto
+658|Nuovo appuntamento
+659|Nuova conversazione
+660|Nuova richiesta
+661|Nuova fattura
+662|Numerazione
+663|Numerazione, IVA, pagamento
+664|N. RM
+665|N. RM (registro dei mestieri)
+666|N. IVA
+667|N. IVA intracomunitaria
+668|N. cliente
+669|N. di polizza
+670|N. preventivo
+671|N. fattura
+672|Oggetto
+673|Foglio « Acquisti »
+674|Foglio « Incassi »
+675|Foglio « IVA »
+676|Foglio « Vendite »
+677|Origine
+678|Oppure con bonifico classico: IBAN {i}, causale {r}.
+679|Sì
+680|Sì, su WhatsApp
+681|Lavorazione
+682|Lavorazioni · {n}
+683|Operaio
+684|A che punto è il cantiere?
+685|PDF + link di pagamento
+686|PDF scaricato
+687|PDF scaricato: allegalo all'e-mail
+688|Prezzo unit.
+689|Prezzo unit. (€)
+690|Pagina 1 / 1
+691|Pagina 1/1
+692|Pagina non trovata
+693|Pagamento
+694|Pagamento aggiunto manualmente
+695|Pagamento online
+696|Pagamento online (carta, addebito)
+697|Pagamento registrato
+698|Pagamento e fatturazione
+699|Pagamento e fatture
+700|Pagamento con bonifico
+701|Pagamento ricevuto
+702|Pagamenti
+703|Scontrino medio
+704|Via SMS
+705|Via e-mail
+706|Per tipo di intervento
+707|Da te
+708|Da {n}
+709|Impostazioni e account
+710|Inviti
+711|Condivisione
+712|Condividi
+713|Condividi con il cliente
+714|Condividi con i miei clienti (visibile nel loro spazio)
+715|Condividi con i miei clienti professionali
+716|Condividi il tuo codice: tu e il tuo invitato guadagnate 1 mese gratis ciascuno.
+717|Condiviso
+718|Condiviso con il cliente
+719|Privato
+720|Parziale
+721|Ancora nessuna fattura nel periodo
+722|Ancora nessun invitato.
+723|Ancora nessun messaggio.
+724|Ancora nessuna foto.
+725|Ancora nessuna recensione.
+726|Passati
+727|Paga online
+728|Paga {m}
+729|Pagata
+730|Pagate
+731|Personalizzazione
+732|Personale
+733|Foto salvata
+734|Foto eliminata
+735|Foto
+736|Foto del cantiere
+737|Foto o video
+738|Piè di pagina
+739|Fasce disponibili
+740|Pianifica il cantiere
+741|Agenda
+742|Progetti
+743|Piattaforma accreditata
+744|Informativa sulla privacy
+745|Puntualità, qualità del lavoro, pulizia, spiegazioni…
+746|Fai una domanda
+747|Per l'artigiano da solo
+748|Per non dimenticare l'appuntamento.
+749|Per trovare un artigiano, prendere appuntamento e seguire i tuoi cantieri.
+750|Per un preventivo firmato su carta o in altro modo.
+751|Per il tuo commercialista
+752|Percentuale del preventivo
+753|Prenota
+754|Prestazione eseguita il {d}
+755|Prestazioni di servizi
+756|Prenotazione online
+757|Prezzo
+758|Prezzo IVA escl. / mese · senza vincoli
+759|Prezzo d'acquisto IVA escl.
+760|Prezzo di vendita IVA escl.
+761|Prezzi e libreria
+762|Prezzo unitario IVA escl.
+763|Pro
+764|Professionista aggiunto alla tua rete
+765|Prossimo appuntamento: {d} alle {h}
+766|Prossima fase: {s}
+767|Prodotto duplicato
+768|Prodotto salvato
+769|Prodotto eliminato
+770|Professionista
+771|Profilo
+772|Profilo salvato
+773|Profilo e impostazioni
+774|Profilo non trovato
+775|Profilo pubblico
+776|Profilo pubblico e visibilità
+777|Profilo verificato
+778|Progetto / cantiere
+779|Progetto creato
+780|Proponi un altro orario
+781|Proprietario
+782|Proprietà intellettuale
+783|Potenziale cliente
+784|Precedente
+785|Prefisso note di credito
+786|Prefisso preventivi
+787|Prefisso fatture
+788|Addebito diretto
+789|Addebito sul tuo conto
+790|Nome
+791|Presentazione
+792|Pubblica
+793|Pubblica la mia risposta
+794|Pubblica la mia recensione
+795|Penali di ritardo
+796|Periodo
+797|Q.tà
+798|Quantità
+799|Cosa stai cercando?
+800|Quale cantiere è terminato?
+801|Domande frequenti
+802|RCS
+803|Appuntamento confermato
+804|Appuntamenti e cantiere
+805|Appuntamenti personali in agenda
+806|Appuntamento personale (senza cliente)
+807|Appuntamento pianificato
+808|Appuntamento convalidato
+809|Appuntamento da convalidare
+810|Motivo (facoltativo)
+811|Ragione sociale
+812|Promemoria
+813|Promemoria al cliente
+814|Promemoria prima di un appuntamento
+815|Promemoria appuntamento
+816|Promemoria
+817|Ricevi le novità
+818|Ricerca
+819|Cerca
+820|Cerca nell'aiuto
+821|Cerca un artigiano
+822|Cerca un professionista
+823|Cerca un prodotto o una lavorazione
+824|Cerca un professionista
+825|Cerca un cliente
+826|Cerca un contatto
+827|Cerca un preventivo
+828|Cerca un documento
+829|Cerca un professionista
+830|Cerca un prodotto
+831|Cerca un progetto o un cliente
+832|Cerca un appuntamento
+833|Cerca una fattura
+834|Rifiuta
+835|Rifiutare questo appuntamento?
+836|Rifiuta il preventivo
+837|Rifiutato
+838|Rifiutato il {d}
+839|Rifiutati
+840|Unisciti a {c} su Artis & You: crea il tuo account su {u} poi scegli « Unisciti a una squadra » con il codice {k}.
+841|Raggiungimi su Artis & You
+842|Partecipa alla videochiamata WhatsApp
+843|Unisciti alla squadra
+844|Unisciti a una squadra
+845|Sollecito preventivo
+846|Sollecito inviato nei messaggi del cliente
+847|Sollecita il cliente
+848|Appuntamento
+849|Appuntamento annullato
+850|Appuntamento spostato, il cliente è stato avvisato
+851|Appuntamento salvato
+852|Appuntamento non trovato
+853|Appuntamento aggiornato
+854|Appuntamento desiderato
+855|Appuntamento convalidato
+856|Rinnovo mensile
+857|Responsabilità
+858|Da pagare
+859|Da pagare: {m}
+860|Rimuovi
+861|Rimuovi dall'impresa
+862|Indietro
+863|Torna alla home
+864|Niente per ora
+865|Lavori realizzati
+866|Riepilogo
+867|Ricorrenza
+868|Rif. {r}
+869|Codice fornitore
+870|Causale da indicare
+871|Regime IVA
+872|Impostazione salvata
+873|Impostazioni
+874|Impostazioni salvate
+875|Reimposta
+876|Rispondi
+877|Risposta dell'artigiano
+878|Risposta pubblicata
+879|Recesso
+880|Ruolo
+881|SIREN
+882|SIRET
+883|SMS
+884|Sab
+885|Senza cantiere
+886|Senza scadenza
+887|Senza squadra
+888|Accedi
+889|Esci
+890|Ricordami
+891|Sezione
+892|Settimana
+893|Settimana {n}
+894|Servizi
+895|Solo gli artigiani a cui invii una richiesta.
+896|Solo i clienti con documenti
+897|Solo i clienti con foto
+898|Solo i clienti che hanno avuto un appuntamento possono pubblicare una recensione. Le recensioni sono controllate e possono essere rifiutate se offensive o fuori tema.
+899|Se esiste un account per {e}, è stato inviato un link per scegliere una nuova password.
+900|Segnala un problema
+901|Firma (immagine)
+902|Firma del cliente: in attesa
+903|Firma il preventivo elettronicamente
+904|Firmato
+905|Firmato da
+906|Firmato da {n}
+907|Firmato da {n} il {d}
+908|Firmati
+909|Sito web
+910|Saldo
+911|Subtotale IVA escl.
+912|Parcheggio
+913|Stato
+914|Stato cliente
+915|Stato progetti
+916|Stato del progetto aggiornato
+917|Successivo
+918|Segui il tuo cantiere su Artis & You
+919|Avanzamento del cantiere
+920|Assistenza
+921|Cancellazione del mio account
+922|Elimina
+923|Eliminare questa bozza?
+924|Eliminare questo cliente?
+925|Eliminare questo prodotto?
+926|Elimina la riga
+927|Elimina il cliente
+928|Elimina il mio account
+929|Eliminare il mio account?
+930|Sul telefono / computer
+931|A domicilio
+932|In loco
+933|Superficie (m²)
+934|Sincronizzazione
+935|Amministratore / condominio
+936|Sicurezza
+937|IVA incl.
+938|IVA
+939|IVA (€)
+940|IVA incassata {r} %
+941|IVA detraibile (acquisti)
+942|IVA non applicabile
+943|IVA non applicabile, art. 293 B del CGI francese (impostazione della tua impresa).
+944|IVA non applicabile, art. 293 B del CGI francese.
+945|IVA predefinita
+946|IVA per cassa
+947|IVA {r} %
+948|IVA da versare
+949|Aliquota
+950|Tariffa oraria manodopera (€ IVA escl.)
+951|Tempo di viaggio (minuti)
+952|Terminato
+953|Terminati
+954|Testo
+955|Testo libero
+956|Testo provvisorio, da far validare da un professionista legale prima del lancio.
+957|Titolo della sezione
+958|Totale IVA escl.
+959|Totale IVA escl. (€)
+960|Totale IVA incl.
+961|Totali
+962|Tocca una casella per spuntarla o toglierla.
+963|Tutti
+964|Tutti i clienti
+965|Tutto
+966|Segna tutto come letto
+967|Tutte
+968|Tutte le foto
+969|Tutte le versioni
+970|Trasforma in fattura
+971|Trimestre
+972|Trova un artigiano
+973|Trovare un artigiano, prendere appuntamento, seguire preventivi, fatture e cantieri. Gratis.
+974|Trova un altro artigiano
+975|Tipo
+976|Tipo di intervento
+977|Tipo di cliente
+978|Tipo di documento
+979|Tipo di appuntamento
+980|Tel. fisso
+981|Cellulare
+982|Scarica
+983|Scarica la fattura
+984|Scarica il FEC
+985|Scarica il PDF
+986|Scarica il file Excel
+987|Scarica per Mac
+988|Scarica per Windows
+989|Telefono
+990|Cellulare
+991|Un cliente
+992|È stato inviato un link di conferma a {e}. Cliccalo e poi accedi.
+993|Una lavorazione raggruppa articoli e manodopera (es. « Posa di uno scaldabagno »).
+994|Un professionista
+995|Un promemoria prima
+996|Si è verificato un errore
+997|Una squadra
+998|Unione europea (Parigi)
+999|Unità
+1000|Utenti illimitati
+1001|Usato in {n} lavorazioni
+1002|Valori predefiniti
+1003|Convalida manuale
+1004|Valido fino al
+1005|Valido fino al {d}
+1006|Convalida l'appuntamento
+1007|Validità
+1008|Validità (giorni)
+1009|Validità dei preventivi (giorni)
+1010|Convalidato
+1011|Convalidato il
+1012|Ven
+1013|Versione
+1014|Versione web
+1015|Tramite Artis & You
+1016|Tramite l'app, con codice SMS
+1017|Città
+1018|Città e raggio
+1019|Città o zona
+1020|Bonifico
+1021|Bonifico SEPA
+1022|Visibilità
+1023|Visibile nel loro spazio Artis & You
+1024|Visibile nel mio profilo pubblico (lavori)
+1025|Visibile appena crea il suo account
+1026|Visibile ai privati
+1027|Visibile ai professionisti
+1028|Visibile subito nella sua app
+1029|Video
+1030|Video WhatsApp
+1031|Videochiamata confermata
+1032|Videochiamata possibile
+1033|Visita guidata e video tutorial
+1034|Vedi la fattura in PDF
+1035|Vedi il preventivo in PDF
+1036|Vedi il preventivo in PDF e firma
+1037|Vedi i miei appuntamenti
+1038|Le tue scelte
+1039|I tuoi dati
+1040|I tuoi dati sono condivisi solo con gli artigiani che contatti e con i nostri fornitori tecnici (hosting). Non vengono mai venduti.
+1041|I tuoi diritti
+1042|I tuoi mestieri
+1043|Il tuo SIRET è in fase di verifica da parte del team Artis & You.
+1044|Il tuo artigiano
+1045|La tua esigenza
+1046|La tua libreria è vuota. Aggiungi prodotti in CRM → La mia libreria.
+1047|Il tuo commento
+1048|Il tuo account artigiano
+1049|La tua richiesta
+1050|La tua richiesta è stata inviata
+1051|La tua richiesta sarà gestita entro 30 giorni. Le fatture emesse restano conservate 10 anni (obbligo di legge).
+1052|La tua impresa
+1053|Il tuo titolare ti ha dato un codice d'invito (Impostazioni → La mia squadra).
+1054|La tua risposta
+1055|Non hai ancora artigiani.
+1056|Puoi spostarlo dai tuoi appuntamenti se serve.
+1057|Ricevi il link della videochiamata
+1058|Ricevi una notifica.
+1059|Sei…
+1060|Vista predefinita
+1061|Verifica nel registro delle imprese
+1062|Controlla la tua e-mail
+1063|Verificato
+1064|Verificata
+1065|Zona di intervento
+1068|arrivo {h}
+1069|entro il {d}
+1070|inversione contabile
+1071|recensioni
+1073|capitale {c}
+1074|a casa tua
+1076|contratto
+1077|polizza {n}
+1078|copertura
+1079|crea un cliente
+1080|dalle
+1081|doc
+1082|documenti
+1083|impronta
+1084|in video
+1085|e l'
+1086|e tu
+1087|es. 1 giorno
+1088|es. Antibes + 30 km
+1089|es. Sostituzione di uno scaldabagno
+1090|es. Assegno consegnato sul posto
+1091|es. Fattura fornitore F-1234
+1092|es. Membro di un'associazione riconosciuta
+1093|es. Nizza, Antibes…
+1094|es. Idraulica e sanitari
+1095|es. Ristrutturazione del bagno
+1096|es. Villa Les Lauriers
+1097|es. Squadra Karim
+1098|scade il {d}
+1099|scaduto
+1100|facoltativo — 1 mese gratis
+1101|forma giuridica, capitale, sede, RCS, SIRET da completare
+1102|lascia vuoto per non cambiare
+1103|lascia vuoto per calcolarlo dalla tua posizione
+1104|i loro clienti, finalmente nello stesso posto.
+1105|modificabile in La mia squadra
+1106|mese
+1107|no
+1108|non applicabile
+1109|sì
+1111|foto
+1112|informativa sulla privacy
+1114|prossimo appuntamento {d} alle {h}
+1121|tu
+1122|{m} ricevuto
+1123|{n} ha ricevuto la tua richiesta e le tue foto. Di solito risponde entro 2 ore.
+1124|{n} recensioni
+1125|{n} cantieri in comune
+1126|{n} clienti
+1127|{n} clienti · {m} {k}
+1128|{n} conferma l'orario
+1129|{n} preventivi · {a} accettati
+1130|{n} doc
+1131|{n} documenti
+1132|{n} documenti da rinnovare
+1133|{n} è in viaggio
+1134|{n} è stato avvisato del tuo arrivo
+1135|{n} fatture
+1136|{n} fatture · {a} da pagare
+1137|{n} h prima
+1138|{n} giorni
+1139|{n} giorni prima
+1140|{n} giustificativi
+1141|{n} membri
+1142|{n} mesi guadagnati
+1143|{n} non letta
+1144|{n} non lette
+1145|{n} pagamenti
+1146|{n} foto
+1147|{n} foto aggiunte
+1148|{n} progetti in corso
+1149|{n} professionisti
+1150|{n} professionisti trovati su Artis & You
+1151|{n} sarà avvisato del tuo arrivo.
+1152|{n} selezionati
+1153|{n} in programma
+1154|{x} arriva prestissimo su Artis & You.
+1155|« {n} » aggiunto
+1156|Da aggiungere
+1157|In regola
+1158|All'indirizzo della scheda cliente
+1159|All'invio la fattura riceve il numero definitivo e non potrà più essere modificata (solo corretta con una nota di credito).
+1160|Da pagare
+1161|Da pagare · scadenza {d}
+1162|A chi vuoi scrivere?
+1163|A vista
+1164|Da firmare
+1165|Da firmare entro il {d}
+1166|Da convalidare
+1167|In programma
+1168|A casa tua
+1169|Scadenza
+1170|Scrivi al cliente
+1171|Scrivi all'assistenza
+1172|Scrivi un messaggio…
+1173|Scrivi all'artigiano
+1174|Scrivi a {n}
+1175|Editore
+1176|Emittente
+1177|Emessa
+1178|Squadra
+1179|Squadra creata
+1180|Squadra aggiornata
+1181|Squadre
+1182|Fase: {s}
+1183|Passo {n} di 2
+1184|Fasi
+1185|Stati Uniti
+1186|alle
+1187|da completare
+1188|da versare
+1189|€ IVA escl.

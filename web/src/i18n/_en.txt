@@ -1,0 +1,1178 @@
+0|(copy)
+1|12 months
+2|14 digits — checked by our team
+3|15 days
+4|30 days
+5|30 days end of month
+6|€40 (flat rate)
+7|45 days end of month
+8|6 characters minimum
+9|6 months
+10|60 days
+11|Subscription and referrals
+12|Accepted
+13|Home
+14|Access (door code, floor…)
+15|Access, correction, deletion, portability (zip export from the app), objection. Contact: support@artisandyou.fr. You may lodge a complaint with the CNIL.
+16|Purchase added
+17|Deposit
+18|Deposit (%)
+19|{p}% deposit on quote {n}
+20|Deposit deducted {n}
+21|Deposit {n}
+22|Active
+23|Business
+24|Current
+25|Administration
+26|Artis & You administration
+27|Address
+28|Job address
+29|Billing address
+30|Delivery address
+31|Delivery address (place of service)
+32|Delivery address (job site)
+33|Delivery address and date of service
+34|Job site address
+35|Addresses
+36|Display
+37|Show
+38|Show weekends
+39|Show finished projects
+40|Show {n}
+41|Show {n} tradespeople
+42|Show {n} clients
+43|Show {n} documents
+44|Show {n} pros
+45|Calendar
+46|External calendar
+47|Calendar, accountant, payment
+48|Help
+49|Help and support
+50|Add
+51|Add photos
+52|Add a purchase
+53|Add an item
+54|Add a document
+55|Add a pro
+56|Add a product
+57|Add to my calendar
+58|Add to my network
+59|Add at least one line with a price.
+60|First add pros in My network.
+61|Add the tradespeople you work with to chat and share jobs.
+62|Add your accountant's email in Settings → Integrations.
+63|Add your products (supplies) with their purchase and sale price.
+64|Added by you
+65|Cancel
+66|Cancel this appointment?
+67|Cancel appointment
+68|Cancel the appointment
+69|Cancelled
+70|Cancelled
+71|Year
+72|Year built
+73|Preview
+74|PDF preview
+75|Flat
+76|Call
+77|App
+78|Web app
+79|After 7 days without reply
+80|Archived
+81|Expected around {h}
+82|Expected around {h} for: {o}.
+83|Item
+84|Items · {n}
+85|Artis & You connects tradespeople and homeowners, and gives tradespeople management tools (clients, calendar, quotes, invoices, messaging).
+86|Artis & You on your computer
+87|Tradesperson
+88|Tradesperson or company
+89|Tradespeople
+90|VAT registered
+91|Professional liability insurance
+92|Ten-year liability insurance
+93|Insurer
+94|URSSAF or MSA certificate
+95|Reduced VAT rate certificate
+96|Certification (RGE, Qualibat…)
+97|Tax compliance certificate
+98|URSSAF compliance certificate
+99|Ten-year insurance certificate
+100|Certificates
+101|Certificates and warranties
+102|Certificates, company registration, contracts, plans… Add them with +.
+103|On first launch on Windows, if SmartScreen appears, click "More info" then "Run anyway" (the software is not signed yet). On Mac: right-click the app then "Open".
+104|None
+105|No tradesperson found. Try another trade or city.
+106|No review pending
+107|No job in progress.
+108|No job yet.
+109|No job.
+110|No client
+111|No client:
+112|No client yet. Add your first client with the + button.
+113|No free slot in the next 3 weeks: message them directly.
+114|No quote yet
+115|No document
+116|No document of this type.
+117|No member
+118|No message
+119|None for now
+120|No project. Projects are created from appointment requests, quotes or the + button.
+121|No past appointment.
+122|No upcoming appointment.
+123|No result for "{q}"
+124|Nothing here
+125|None
+126|No conversation.
+127|No conversation. Write to a client, a team or a pro with the button below.
+128|No invoice yet
+129|No invoice in this period
+130|No note. Tap + to add one.
+131|No notification
+132|No notification.
+133|No photo for this client.
+134|Today
+135|Reverse charge
+136|Reverse charge (construction subcontracting)
+137|Reverse charge: VAT payable by the customer, art. 283-2 nonies of the French tax code.
+138|Automatic
+139|Automotive
+140|Other
+141|Other docs
+142|Other documents
+143|Job progress
+144|With their arrival time.
+145|Reviews
+146|Review posted
+147|Review published
+148|Review rejected
+149|Verified review: only after a real appointment. It will be checked before publication.
+150|Verified reviews
+151|Reviews to check ({n})
+152|Credit note
+153|Credit note for invoice {n}
+154|BIC
+155|DRAFT
+156|Tax base
+157|Need
+158|Library
+159|Goods and services
+160|Coming soon
+161|Approved for agreement
+162|Hello {n}
+163|Hello {n},\n\nPlease find attached the accounting export for {p} (sales, receipts, purchases, VAT).\n\nKind regards,\n{c}
+164|Hello,\n\nTo chat with us, receive your quotes and invoices and follow your job, create your free Artis & You account with this email address:\n{url}\n\nSee you soon,\n{c}
+165|Hello,\n\nPlease find attached our quote {n} for: {o}.\n\nYou can also view and sign it in your Artis & You space: {u}\n\nKind regards,\n{c}
+166|Hello,\n\nPlease find attached our invoice {n} for: {o}.\n\nYou can pay it by bank transfer (IBAN on the invoice) or online from your Artis & You space: {u}\n\nKind regards,\n{c}
+167|Hello, I am following up on quote {n} ({m}). Feel free to ask if you have any questions.
+168|Hello, I would like to delete my Artis & You account ({e}).
+169|Hello, I invite you to join me on Artis & You to work together on our jobs. With my code {c}, you get 1 month free: {u}
+170|Hello, unless I am mistaken, invoice {n} ({m}) is still unpaid. Thank you in advance.
+171|Draft
+172|Draft saved
+173|Draft deleted
+174|Construction
+175|Revenue excl. VAT
+176|Revenue per month
+177|Terms
+178|CRM
+179|Channels
+180|Share capital
+181|Bank card
+182|Card and SEPA direct debit
+183|Card or direct debit via Artis & You
+184|Card or direct debit via the Artis & You link
+185|Construction ID cards
+186|This client has issued documents: set them to "Inactive" instead of deleting.
+187|This client has no Artis & You account yet: they won't see these messages.
+188|What I receive
+189|What tradespeople can see
+190|Certification
+191|Certifications
+192|Certifications (RGE, Qualibat)
+193|This information appears on quotes and invoices.
+194|This helps the tradesperson prepare (reduced VAT if the home is over 2 years old).
+195|This cannot be undone.
+196|This invoice has been issued: it can no longer be edited. Create a credit note.
+197|This feature is coming very soon to Artis & You.
+198|This page does not exist.
+199|Change photo
+200|Job
+201|Job in progress
+202|Job not found
+203|Shared job
+204|Job scheduled
+205|Job finished
+206|Jobs
+207|Every year (servicing)
+208|Every month
+209|Every week
+210|Each user can delete their account at any time from Data and privacy.
+211|Chat with support
+212|Chat
+213|Team leader
+214|Revenue
+215|Choose file
+216|Choose photos
+217|Choose a client
+218|Choose {p}
+219|Choose at least one trade.
+220|Choose a client.
+221|Choose a time slot.
+222|Choose a file.
+223|Cheque
+224|Title
+225|Client
+226|Client saved
+227|Client not found
+228|Client deleted
+229|Client, quote or invoice number, product, appointment…
+230|Clients
+231|Clients, calendar, quotes, invoices, messages and a network of pros for tradespeople. Find tradespeople, book appointments, follow jobs and documents for homeowners.
+232|Ticked manually
+233|Referral code
+234|Invitation code
+235|Postcode
+236|Markup
+237|Document vault
+238|Collected / deductible
+239|Start my 30-day trial
+240|How to be notified
+241|Additional info
+242|Composition
+243|Got it
+244|Accountant saved
+245|Account
+246|Artis & You account
+247|Accounts
+248|Terms
+249|Payment terms
+250|Payment terms
+251|Terms of use
+252|Privacy
+253|Confirm
+254|Confirm refusal
+255|Confirmed
+256|Confirmed on
+257|Contact
+258|Contact since {d}
+259|On-site contact
+260|File content
+261|Continue
+262|Contracts
+263|Conversation not found
+264|Conversations
+265|Contact details
+266|Copy
+267|Colour
+268|Colour by
+269|Colours
+270|Team colours
+271|Coverage
+272|Supplies cost excl. VAT
+273|Create
+274|Create the deposit invoice
+275|Create my account
+276|Create my free account
+277|Create my company
+278|Create a credit note
+279|Create an account
+280|Create a quote
+281|Create a team
+282|Free slot
+283|Preferred time slot
+284|Free slots · 30 min
+285|In your messages and in the appointment details.
+286|Date
+287|Issue date
+288|Creation date
+289|Date of service
+290|Date, signature and "Approved for agreement"
+291|Request
+292|Client request
+293|Request sent
+294|Request received
+295|Request deletion
+296|Request an appointment
+297|Requested on
+298|Since the start
+299|Last job: {d}
+300|Move down
+301|Quotes
+302|Reference quote
+303|Quote in progress
+304|Quote sent
+305|Quotes and invoices
+306|Compliant quotes and invoices
+307|Linked quote
+308|Quote marked as signed
+309|Quote refused
+310|Quote refused, the tradesperson has been notified
+311|Quote signed
+312|Quote signed or refused
+313|Diagnosis
+314|Remote diagnosis
+315|Sun
+316|Publication director
+317|Free
+318|Document
+319|Document added
+320|Document not found
+321|Document shared with the client
+322|Document deleted
+323|Document issued
+324|Document issued. The client will see it once they create their account with this email.
+325|Documents
+326|Leave a review
+327|Data
+328|Data collected
+329|Data and privacy
+330|Two-factor authentication
+331|Access rights
+332|Duplicate
+333|Duration
+334|Duration: {d}
+335|Estimated duration
+336|Default duration
+337|Start
+338|Planned start
+339|Planned start: {d}
+340|Describe the problem: since when, where, what you have already tried…
+341|Already in your pros
+342|Already paid
+343|Issued on
+344|Issued on {d}
+345|Start the conversation
+346|Repair
+347|Reschedule
+348|Reschedule the appointment
+349|Description
+350|Invoice details
+351|Quote details
+352|Supplies
+353|Labour and services
+354|Details
+355|Email
+356|Clear
+357|Pending
+358|Awaiting confirmation
+359|Awaiting signature
+360|In progress
+361|Coming soon
+362|Online
+363|Overdue
+364|On the way since
+365|By video call
+366|Max. outstanding
+367|Max. outstanding (€)
+368|Save
+369|Save draft
+370|Record a payment
+371|Saved. Confirm the new address with the link sent by email.
+372|Trading name
+373|Trading name
+374|Company
+375|Company saved
+376|Verified company
+377|Companies ({n})
+378|Servicing
+379|Automatic messages to clients
+380|Send
+381|Send to client
+382|Send to the client space
+383|Send request
+384|Send the invoice
+385|Send the quote
+386|Send link
+387|Send by email
+388|Send for e-signature
+389|Send a message
+390|Send via Artis & You
+391|Send to my accountant
+392|Sent to the client's Artis & You space
+393|Sent by the client
+394|Early payment discount
+395|Cash
+396|Free trial: {n} days left. Choose my plan
+397|Free trial until {d} ({n} days left)
+398|What happens next?
+399|Example: {a} · {b}. Continuous numbering with no gaps, per year (legal requirement).
+400|Sample invoice
+401|Expiring soon
+402|Expired
+403|Expired on {d}
+404|Accounting export
+405|Accounting export {p} — {c}
+406|Export downloaded
+407|Export / import (.ics)
+408|Export my calendar (.ics)
+409|Export all my data (zip)
+410|Outdoor
+411|FEC downloaded
+412|Invoice
+413|Deposit invoice
+414|Original invoice
+415|Invoice sent
+416|Invoice created
+417|E-invoicing
+418|E-invoice + payment link
+419|Invoices
+420|Category
+421|Close
+422|Client file
+423|Member file
+424|Assembly sheet
+425|Product sheet
+426|File (PDF, plan…)
+427|Excel file downloaded
+428|File too large (20 MB max).
+429|Filter
+430|Filter by trade
+431|Filter by status
+432|Filter by type
+433|Filter by team
+434|Filters
+435|End
+436|Purposes
+437|Contact's role
+438|Legal form
+439|Current plan
+440|{p} plan
+441|Plans
+442|Provide the service, enable exchanges between tradespeople and clients, meet accounting obligations (invoices kept for 10 years).
+443|Supplier
+444|Supply
+445|VAT exemption (art. 293 B of the French tax code, micro-business)
+446|Warranties
+447|Generate code
+448|Generated automatically · from {a} to {b}
+449|Manager
+450|Manage my clients, calendar, quotes and invoices. 30-day trial.
+451|excl. VAT
+452|excl. VAT / month
+453|excl. VAT / {u}
+454|Time
+455|Hours shown
+456|Yesterday
+457|History
+458|Hosting
+459|IBAN
+460|Identity
+461|Identity, contact details, home address, messages, photos and documents exchanged, appointments, quotes and invoices.
+462|Not on Artis & You yet?
+463|They let you know when they are on the way
+464|Print
+465|Inactive
+466|Recovery fee
+467|Flat-rate recovery fee: €40.
+468|Enter your address for an on-site visit.
+469|Enter your email and we will send you a link to choose a new password.
+470|Information
+471|Legal information
+472|Joined on {d}
+473|Sign up at {u} with my code {c}: 1 month free.
+474|Work
+475|Jobs done
+476|Title
+477|Integrations
+478|Artis & You invitation
+479|Pending invitations
+480|Invite to a job
+481|Invite a member
+482|Invite them by SMS or email: 1 month free for them.
+483|Directions
+484|I'm on my way
+485|Thu
+486|Attach
+487|Day
+488|Up to 5 users
+489|I accept the
+490|I already have an account
+491|KPI
+492|KPI and accounting export
+493|Company registration (Kbis)
+494|The company
+495|End time must be after start time.
+496|The colour is used in the calendar
+497|Two-factor authentication
+498|E-invoicing via Artis & You
+499|The phone line
+500|The Artis & You brand, logo and interface are protected. Any reproduction without permission is prohibited.
+501|E-signature
+502|Google Calendar / Outlook sync
+503|Start directions
+504|Start the WhatsApp video call
+505|Language
+506|Language and appearance
+507|The SIRET must contain 14 valid digits.
+508|Chat with support
+509|The client will be notified.
+510|The homeowner account is free. The tradesperson account is paid after a 30-day trial. Tradespeople declare a valid SIRET, checked by Artis & You.
+511|The quote gets its final number when sent.
+512|The home
+513|The software opens in its own window, with its icon, and updates itself. An internet connection is required.
+514|Subscription payment
+515|Online payment
+516|The pro will see the job name and address, and can chat with you. They see neither your prices nor the client's history.
+517|Tradespeople
+518|The tradespeople you work with will appear here.
+519|Certificates and warranties shared by your tradespeople will appear here.
+520|Reviews are verified (only after a real appointment) and checked by Artis & You before publication.
+521|Automatic emails and SMS are coming soon.
+522|Subscription invoices
+523|Invoice payments go directly to the tradesperson. Artis & You takes no commission on them.
+524|Video tutorials
+525|Label
+526|WhatsApp link sent to the client
+527|Job location
+528|Line
+529|Lines
+530|Delivery of goods
+531|Business premises
+532|Tenant
+533|Home saved
+534|PC / Mac software
+535|Logo
+536|Company logo
+537|Logo saved
+538|Mon
+539|The tradesperson remains solely responsible for their quotes, invoices, services and legal and tax obligations. Artis & You is not a party to contracts between tradespeople and homeowners.
+540|The tradesperson will be notified.
+541|Invite them by email
+542|My library
+543|Labour
+544|Labour (hours, €{r}/h)
+545|House
+546|Manual
+547|Tue
+548|Margin
+549|Estimated margin
+550|Margin per unit
+551|Mark this quote as refused?
+552|Mark as refused
+553|Mark as signed
+554|Mark as finished
+555|Marked by {n} at {h}
+556|Notify me before expiry
+557|Member saved
+558|Member not found
+559|Member removed
+560|Members
+561|Legal notice
+562|Special mentions, warranties…
+563|Wed
+564|Thank you! Your review will be published after checking.
+565|Please accept the terms.
+566|My appointments
+567|My alerts
+568|My tradespeople
+569|My client reviews
+570|My jobs
+571|My clients
+572|My contacts
+573|My quotes
+574|My documents
+575|My invoices
+576|My Artis & You invoices
+577|My referrals
+578|My messages
+579|My notifications
+580|My pros
+581|Message
+582|Client and team messaging
+583|Messages
+584|Anonymous analytics
+585|Updates the project status
+586|Automatic updates: each new version is downloaded in the background and installed at next launch.
+587|Payment method
+588|Display mode
+589|Local mode: data stays in this browser.
+590|Dark mode
+591|Edit
+592|Edit note
+593|Edit client
+594|Edit appointment
+595|Edited on {d}
+596|PDF template
+597|Template saved
+598|Month
+599|My calendar
+600|My vault
+601|My accountant
+602|My account
+603|My company
+604|My home
+605|My profile
+606|My network
+607|My team
+608|Amount
+609|Amount (€)
+610|Amount excl. VAT (€)
+611|Credit note amount
+612|Amount to pay
+613|Move up
+614|Password
+615|Forgot password
+616|Method
+617|Payment method
+618|Mediator
+619|Consumer mediator
+620|Consumer mediator (required for homeowners)
+621|Trade
+622|Trade, name, need…
+623|Trades
+624|Nature of operations
+625|Navigation
+626|Do not disturb (9 pm – 8 am)
+627|Amount due
+628|Last name
+629|Trading name
+630|Job site name
+631|Member name
+632|Product name
+633|Mediator name and website
+634|Name, company or trade
+635|No
+636|Not applicable, art. 293 B of the French tax code
+637|Not connected
+638|Note
+639|Client rating
+640|Note saved
+641|Internal note
+642|Free note
+643|Notes on the document
+644|Notifications
+645|In-app notifications
+646|Contact us
+647|New
+648|New appointment
+649|New job
+650|New client
+651|New time slot
+652|New time slot proposed
+653|New time slot proposed to the tradesperson
+654|New quote
+655|New message
+656|New password
+657|New project
+658|New appointment
+659|New conversation
+660|New request
+661|New invoice
+662|Numbering
+663|Numbering, VAT, payment
+664|Trade register no.
+665|Trade register no. (RM)
+666|VAT no.
+667|EU VAT no.
+668|Client no.
+669|Policy no.
+670|Quote no.
+671|Invoice no.
+672|Subject
+673|"Purchases" tab
+674|"Receipts" tab
+675|"VAT" tab
+676|"Sales" tab
+677|Source
+678|Or by regular bank transfer: IBAN {i}, reference {r}.
+679|Yes
+680|Yes, on WhatsApp
+681|Assembly
+682|Assemblies · {n}
+683|Worker
+684|Where is the job at?
+685|PDF + payment link
+686|PDF downloaded
+687|PDF downloaded: attach it to the email
+688|Unit price
+689|Unit price (€)
+690|Page 1 / 1
+691|Page 1/1
+692|Page not found
+693|Payment
+694|Payment added manually
+695|Online payment
+696|Online payment (card, direct debit)
+697|Payment recorded
+698|Payment and invoicing
+699|Payment and invoices
+700|Bank transfer payment
+701|Payment received
+702|Payments
+703|Average basket
+704|By SMS
+705|By email
+706|By job type
+707|By you
+708|By {n}
+709|Settings and account
+710|Referrals
+711|Sharing
+712|Share
+713|Share with the client
+714|Share with my clients (visible in their space)
+715|Share with my business clients
+716|Share your code: you and the person you refer each get 1 month free.
+717|Shared
+718|Shared with the client
+719|Homeowner
+720|Partial
+721|No invoice in this period yet
+722|No referral yet.
+723|No message yet.
+724|No photo yet.
+725|No review yet.
+726|Past
+727|Pay online
+728|Pay {m}
+729|Paid
+730|Paid
+731|Customisation
+732|Personal
+733|Photo saved
+734|Photo deleted
+735|Photos
+736|Job photos
+737|Photos or video
+738|Footer
+739|Available hours
+740|Schedule the job
+741|Calendar
+742|Plans
+743|Approved platform
+744|Privacy policy
+745|Punctuality, quality of work, tidiness, explanations…
+746|Ask a question
+747|For the sole trader
+748|So you don't forget the appointment.
+749|To find a tradesperson, book appointments and follow your jobs.
+750|For a quote signed on paper or by other means.
+751|For your accountant
+752|Percentage of the quote
+753|Book
+754|Service carried out on {d}
+755|Services
+756|Online booking
+757|Price
+758|Price excl. VAT / month · no commitment
+759|Purchase price excl. VAT
+760|Sale price excl. VAT
+761|Prices and library
+762|Unit price excl. VAT
+763|Pro
+764|Pro added to your network
+765|Next appointment: {d} at {h}
+766|Next step: {s}
+767|Product duplicated
+768|Product saved
+769|Product deleted
+770|Business
+771|Profile
+772|Profile saved
+773|Profile and settings
+774|Profile not found
+775|Public profile
+776|Public profile and visibility
+777|Verified profile
+778|Project / job
+779|Project created
+780|Propose another time slot
+781|Owner
+782|Intellectual property
+783|Prospect
+784|Previous
+785|Credit note prefix
+786|Quote prefix
+787|Invoice prefix
+788|Direct debit
+789|Debit from your account
+790|First name
+791|About
+792|Publish
+793|Publish my reply
+794|Publish my review
+795|Late payment penalties
+796|Period
+797|Qty
+798|Quantity
+799|What are you looking for?
+800|Which job is finished?
+801|Frequently asked questions
+802|Company register (RCS)
+803|Appointment confirmed
+804|Appointments and jobs
+805|Personal appointments in the calendar
+806|Personal appointment (no client)
+807|Appointment scheduled
+808|Appointment approved
+809|Appointment to approve
+810|Reason (optional)
+811|Company name
+812|Reminder
+813|Client reminder
+814|Reminder before an appointment
+815|Appointment reminder
+816|Reminders
+817|Receive product news
+818|Search
+819|Search
+820|Search help
+821|Find a tradesperson
+822|Find a pro
+823|Search a product or an assembly
+824|Find a professional
+825|Search for a client
+826|Search for a contact
+827|Search for a quote
+828|Search for a document
+829|Search for a pro
+830|Search for a product
+831|Search for a project or a client
+832|Search for an appointment
+833|Search for an invoice
+834|Decline
+835|Decline this appointment?
+836|Refuse the quote
+837|Refused
+838|Refused on {d}
+839|Refused
+840|Join {c} on Artis & You: create your account at {u} then choose "Join a team" with code {k}.
+841|Join me on Artis & You
+842|Join the WhatsApp video call
+843|Join the team
+844|Join a team
+845|Quote follow-up
+846|Reminder sent to the client's messages
+847|Follow up with the client
+848|Appointment
+849|Appointment cancelled
+850|Appointment moved, the client has been notified
+851|Appointment saved
+852|Appointment not found
+853|Appointment updated
+854|Requested appointment
+855|Appointment approved
+856|Monthly renewal
+857|Liability
+858|Left to pay
+859|Left to pay: {m}
+860|Remove
+861|Remove from the company
+862|Back
+863|Back to home
+864|Nothing yet
+865|Past work
+866|Summary
+867|Recurrence
+868|Ref. {r}
+869|Supplier reference
+870|Reference to quote
+871|VAT scheme
+872|Setting saved
+873|Settings
+874|Settings saved
+875|Reset
+876|Reply
+877|Tradesperson's reply
+878|Reply published
+879|Termination
+880|Role
+881|SIREN
+882|SIRET
+883|SMS
+884|Sat
+885|No job
+886|No end date
+887|No team
+888|Log in
+889|Log out
+890|Remember me
+891|Section
+892|Week
+893|Week {n}
+894|Services
+895|Only the tradespeople you send a request to.
+896|Only clients with documents
+897|Only clients with photos
+898|Only clients who had an appointment can post a review. Reviews are checked before publication and may be rejected if offensive or off-topic.
+899|If an account exists for {e}, a link to choose a new password has just been sent.
+900|Report a problem
+901|Signature (image)
+902|Client signature: pending
+903|Sign the quote electronically
+904|Signed
+905|Signed by
+906|Signed by {n}
+907|Signed by {n} on {d}
+908|Signed
+909|Website
+910|Balance
+911|Subtotal excl. VAT
+912|Parking
+913|Status
+914|Client status
+915|Project status
+916|Project status updated
+917|Next
+918|Follow your job on Artis & You
+919|Job tracking
+920|Support
+921|Delete my account
+922|Delete
+923|Delete this draft?
+924|Delete this client?
+925|Delete this product?
+926|Delete line
+927|Delete client
+928|Delete my account
+929|Delete my account?
+930|On my phone / computer
+931|On site
+932|On site
+933|Floor area (m²)
+934|Sync
+935|Property manager / co-ownership
+936|Security
+937|incl. VAT
+938|VAT
+939|VAT (€)
+940|VAT collected {r}%
+941|Deductible VAT (purchases)
+942|VAT not applicable
+943|VAT not applicable, art. 293 B of the French tax code (your company setting).
+944|VAT not applicable, art. 293 B of the French tax code.
+945|Default VAT
+946|VAT on debits
+947|VAT {r}%
+948|VAT to pay
+949|Rate
+950|Hourly labour rate (€ excl. VAT)
+951|Travel time (minutes)
+952|Finished
+953|Finished
+954|Text
+955|Free text
+956|Provisional text, to be validated by a legal professional before launch.
+957|Section title
+958|Total excl. VAT
+959|Total excl. VAT (€)
+960|Total incl. VAT
+961|Totals
+962|Tap a box to tick or untick it.
+963|All
+964|All clients
+965|All
+966|Mark all read
+967|All
+968|All photos
+969|All versions
+970|Convert to invoice
+971|Quarter
+972|Find a tradesperson
+973|Find a tradesperson, book appointments, follow my quotes, invoices and jobs. Free.
+974|Find another tradesperson
+975|Type
+976|Job type
+977|Client type
+978|Document type
+979|Appointment type
+980|Landline
+981|Mobile
+982|Download
+983|Download the invoice
+984|Download the FEC
+985|Download PDF
+986|Download Excel file
+987|Download for Mac
+988|Download for Windows
+989|Phone
+990|Mobile phone
+991|A client
+992|A confirmation link has been sent to {e}. Click it then log in.
+993|An assembly groups items and labour (e.g. "Installing a water heater").
+994|A pro
+995|A reminder beforehand
+996|Something went wrong
+997|A team
+998|European Union (Paris)
+999|Unit
+1000|Unlimited users
+1001|Used in {n} assemblies
+1002|Default values
+1003|Manual approval
+1004|Valid until
+1005|Valid until {d}
+1006|Approve the appointment
+1007|Validity
+1008|Validity (days)
+1009|Quote validity (days)
+1010|Approved
+1011|Approved on
+1012|Fri
+1013|Version
+1014|Web version
+1015|Via Artis & You
+1016|Via the app, with SMS code
+1017|City
+1018|City and radius
+1019|City or area
+1020|Bank transfer
+1021|SEPA transfer
+1022|Visibility
+1023|Visible in their Artis & You space
+1024|Visible on my public profile (past work)
+1025|Visible once they create their account
+1026|Visible to homeowners
+1027|Visible to pros
+1028|Visible right away in their app
+1029|Video
+1030|WhatsApp video
+1031|Video call confirmed
+1032|Video call possible
+1033|Guided tour and video tutorials
+1034|View the invoice as PDF
+1035|View the quote as PDF
+1036|View the quote as PDF and sign
+1037|See my appointments
+1038|Your choices
+1039|Your data
+1040|Your data is only shared with the tradespeople you contact and with our technical subcontractors (hosting). It is never sold.
+1041|Your rights
+1042|Your trades
+1043|Your SIRET is being checked by the Artis & You team.
+1044|Your tradesperson
+1045|Your need
+1046|Your library is empty. Add products in CRM → My library.
+1047|Your comment
+1048|Your tradesperson account
+1049|Your request
+1050|Your request has been sent
+1051|Your request will be processed within 30 days. Issued invoices are kept for 10 years (legal requirement).
+1052|Your company
+1053|Your manager gave you an invitation code (Settings → My team).
+1054|Your reply
+1055|You don't have a tradesperson yet.
+1056|You can reschedule it from your appointments if needed.
+1057|You receive the video call link
+1058|You get a notification.
+1059|You are…
+1060|Default view
+1061|Check in the company directory
+1062|Check your emails
+1063|Verified
+1064|Verified
+1065|Service area
+1068|arrival {h}
+1069|no later than {d}
+1070|reverse charge
+1071|reviews
+1073|share capital {c}
+1074|at your home
+1076|contract
+1077|policy {n}
+1078|coverage
+1079|create a client
+1080|from
+1081|docs
+1082|documents
+1083|fingerprint
+1084|by video
+1085|and the
+1086|and you
+1087|e.g. 1 day
+1088|e.g. Antibes + 30 km
+1089|e.g. Replacing a water heater
+1090|e.g. Cheque handed over on site
+1091|e.g. Supplier invoice F-1234
+1092|e.g. Member of an approved association
+1093|e.g. Nice, Antibes…
+1094|e.g. Plumbing and sanitary
+1095|e.g. Bathroom renovation
+1096|e.g. Villa Les Lauriers
+1097|e.g. Karim's team
+1098|expires on {d}
+1099|expired
+1100|optional — 1 month free
+1101|legal form, capital, head office address, RCS, SIRET to complete
+1102|leave empty to keep it
+1103|leave empty to calculate it from your location
+1104|their clients, finally in one place.
+1105|editable in My team
+1106|month
+1107|no
+1108|not applicable
+1109|yes
+1111|photos
+1112|privacy policy
+1114|next appointment {d} at {h}
+1121|you
+1122|{m} received
+1123|{n} has received your request and photos. They usually reply within 2 hours.
+1124|{n} reviews
+1125|{n} shared jobs
+1126|{n} clients
+1127|{n} clients · {m} {k}
+1128|{n} confirms the time slot
+1129|{n} quotes · {a} accepted
+1130|{n} doc
+1131|{n} documents
+1132|{n} documents to renew
+1133|{n} is on the way
+1134|{n} has been notified of your arrival
+1135|{n} invoices
+1136|{n} invoices · {a} to pay
+1137|{n} h before
+1138|{n} days
+1139|{n} days before
+1140|{n} receipts
+1141|{n} members
+1142|{n} months earned
+1143|{n} unread
+1144|{n} unread
+1145|{n} payments
+1146|{n} photos
+1147|{n} photos added
+1148|{n} projects in progress
+1149|{n} pros
+1150|{n} pros found on Artis & You
+1151|{n} will be notified of your arrival.
+1152|{n} selected
+1153|{n} upcoming
+1154|{x} is coming very soon to Artis & You.
+1155|"{n}" added
+1156|To add
+1157|Up to date
+1158|To the address in the client file
+1159|When sent, the invoice gets its final number and can no longer be edited (only corrected with a credit note).
+1160|To pay
+1161|To pay · due {d}
+1162|Who do you want to write to?
+1163|On receipt
+1164|To sign
+1165|To sign before {d}
+1166|To approve
+1167|Upcoming
+1168|At your home
+1169|Due date
+1170|Write to the client
+1171|Write to support
+1172|Write a message…
+1173|Write to the tradesperson
+1174|Write to {n}
+1175|Publisher
+1176|Issuer
+1177|Issued
+1178|Team
+1179|Team created
+1180|Team updated
+1181|Teams
+1182|Step: {s}
+1183|Step {n} of 2
+1184|Steps
+1185|United States
+1186|at
+1187|to complete
+1188|to pay
+1189|€ excl. VAT
