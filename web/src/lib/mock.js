@@ -1,33 +1,39 @@
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'reviews', 'notifications', '_users', '_blobs'];
+const TABLES = ['profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'reviews', 'notifications', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
 
 export function mockBackend({ saveSession, getSession }) {
-  // Stockage dans IndexedDB (grande capacité), avec reprise d'un ancien stockage localStorage
+  // Stockage dans IndexedDB : les tables dans « kv », les fichiers (photos, PDF) dans « blobs ».
+  // Chaque modification attend que l'écriture soit terminée : rien n'est perdu si on ferme la fenêtre.
   let db = {};
-  const idb = () => new Promise((res, rej) => { const r = indexedDB.open('artis-and-you', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  let conn = null;
+  const idb = () => conn || (conn = new Promise((res, rej) => {
+    const r = indexedDB.open('artis-and-you', 2);
+    r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains('kv')) d.createObjectStore('kv'); if (!d.objectStoreNames.contains('blobs')) d.createObjectStore('blobs'); };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+  const req = (q) => new Promise((res, rej) => { q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); });
+  const done = (tx) => new Promise((res, rej) => { tx.oncomplete = () => res(); tx.onerror = tx.onabort = () => rej(tx.error); });
   const ready = (async () => {
     try {
       const d = await idb();
-      db = await new Promise((res) => { const q = d.transaction('kv').objectStore('kv').get(KEY); q.onsuccess = () => res(q.result || null); q.onerror = () => res(null); }) || JSON.parse(localStorage.getItem(KEY) || '{}');
+      db = (await req(d.transaction('kv').objectStore('kv').get(KEY))) || JSON.parse(localStorage.getItem(KEY) || '{}');
+      if (db._blobs?.length) { const tx = d.transaction('blobs', 'readwrite'); db._blobs.forEach((b) => tx.objectStore('blobs').put(b.data, b.path)); await done(tx); }
     } catch { try { db = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { db = {}; } }
+    delete db._blobs;
     TABLES.forEach((t) => { db[t] = db[t] || []; });
   })();
-  let saving = null;
-  const flush = async () => { try { const d = await idb(); d.transaction('kv', 'readwrite').objectStore('kv').put(db, KEY); } catch {} };
-  addEventListener('pagehide', () => { if (saving) { clearTimeout(saving); saving = null; flush(); } });
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && saving) { clearTimeout(saving); saving = null; flush(); } });
-  const persist = () => {
-    clearTimeout(saving);
-    saving = setTimeout(async () => { saving = null;
-      try { const d = await idb(); d.transaction('kv', 'readwrite').objectStore('kv').put(db, KEY); localStorage.removeItem(KEY); }
-      catch (e) { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { console.warn('stockage local plein', e); } }
-    }, 150);
+  const persist = async () => {
+    try { const d = await idb(); const tx = d.transaction('kv', 'readwrite'); tx.objectStore('kv').put(db, KEY); await done(tx); try { localStorage.removeItem(KEY); } catch {} }
+    catch (e) { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch { console.warn('stockage local plein', e); } }
   };
+  const blobPut = async (path, data) => { const d = await idb(); const tx = d.transaction('blobs', 'readwrite'); tx.objectStore('blobs').put(data, path); await done(tx); };
+  const blobGet = async (path) => { try { const d = await idb(); return await req(d.transaction('blobs').objectStore('blobs').get(path)); } catch { return null; } };
+  const blobDel = async (path) => { try { const d = await idb(); const tx = d.transaction('blobs', 'readwrite'); tx.objectStore('blobs').delete(path); await done(tx); } catch {} };
   const me = () => getSession()?.user?.id;
   const profile = () => db.profiles.find((p) => p.id === me());
   const myCompany = () => profile()?.company_id || null;
@@ -249,8 +255,8 @@ export function mockBackend({ saveSession, getSession }) {
 
   return {
     ready,
-    async dump() { await ready; return JSON.stringify(db); },
-    async restore(json) { await ready; const d = JSON.parse(json); TABLES.forEach((t) => { db[t] = d[t] || []; }); persist(); await new Promise((r) => setTimeout(r, 400)); },
+    async dump() { await ready; const d = await idb(); const st = d.transaction('blobs').objectStore('blobs'); const keys = await req(st.getAllKeys()); const vals = await req(d.transaction('blobs').objectStore('blobs').getAll()); return JSON.stringify({ ...db, _blobs: keys.map((k, i) => ({ path: k, data: vals[i] })) }); },
+    async restore(json) { await ready; const d = JSON.parse(json); TABLES.forEach((t) => { db[t] = d[t] || []; }); for (const b of d._blobs || []) await blobPut(b.path, b.data); await persist(); },
     async select(table, filters, opts = {}) { await ready; let rows = db[table].filter((r) => visible(table, r) && match(r, filters)); rows = sort(rows, opts.order); if (opts.limit) rows = rows.slice(0, opts.limit); return wait(rows); },
     async one(table, filters) { await ready; return wait(db[table].find((r) => visible(table, r) && match(r, filters)) || null); },
     async insert(table, row) { await ready;
@@ -262,13 +268,13 @@ export function mockBackend({ saveSession, getSession }) {
         if (table === 'documents' && !x.created_by) x.created_by = me();
         db[table].push(x); afterInsert(table, x); return x;
       });
-      persist(); return wait(many ? out : out[0]);
+      await persist(); return wait(many ? out : out[0]);
     },
     async upsert(table, row) { await ready;
       const keys = table === 'conversation_reads' ? ['conversation_id', 'user_id'] : table === 'network' ? ['company_id', 'pro_id'] : table === 'project_shares' ? ['project_id', 'company_id'] : ['id'];
       const ex = db[table].find((r) => keys.every((k) => r[k] === row[k]));
       if (ex) Object.assign(ex, row); else db[table].push({ created_at: now(), ...row });
-      persist(); return wait(ex || row);
+      await persist(); return wait(ex || row);
     },
     async update(table, filters, patch) { await ready;
       let last = null;
@@ -276,32 +282,32 @@ export function mockBackend({ saveSession, getSession }) {
         if (table === 'documents' && r.locked && ('lines' in patch || 'totals' in patch || 'client_id' in patch)) return fail('Cette facture est émise : elle ne peut plus être modifiée. Créez un avoir.');
         const old = { ...r }; Object.assign(r, patch); afterUpdate(table, old, r); last = r;
       }
-      persist(); return wait(last);
+      await persist(); return wait(last);
     },
     async remove(table, filters) { await ready;
       const rows = db[table].filter((x) => match(x, filters));
       if (table === 'documents' && rows.some((d) => d.number && d.kind !== 'devis')) return fail('Une facture numérotée ne peut pas être supprimée : créez un avoir.');
       db[table] = db[table].filter((x) => !rows.includes(x));
       if (table === 'payments') rows.forEach((p) => syncPaid(p.document_id));
-      persist(); return wait(null);
+      await persist(); return wait(null);
     },
     async rpc(name, args = {}) { await ready;
-      try { if (!rpcs[name]) throw new Error('RPC inconnue ' + name); const r = rpcs[name](args); persist(); return wait(r); }
+      try { if (!rpcs[name]) throw new Error('RPC inconnue ' + name); const r = rpcs[name](args); await persist(); return wait(r); }
       catch (e) { return fail(e.message); }
     },
     async upload(path, file) { await ready;
       const data = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.readAsDataURL(file); });
-      db._blobs = db._blobs.filter((b) => b.path !== path); db._blobs.push({ path, data }); persist(); return path;
+      await blobPut(path, data); return path;
     },
-    async signedUrls(paths) { await ready; const o = {}; paths.forEach((p) => { o[p] = db._blobs.find((b) => b.path === p)?.data || null; }); return o; },
-    async removeFile(path) { await ready; db._blobs = db._blobs.filter((b) => b.path !== path); persist(); },
+    async signedUrls(paths) { await ready; const o = {}; for (const p of paths) o[p] = (await blobGet(p)) || null; return o; },
+    async removeFile(path) { await ready; await blobDel(path); },
     async signUp(email, password, data) { await ready;
       if (db._users.some((u) => u.email === email)) return fail('Un compte existe déjà avec cet e-mail.');
       if ((password || '').length < 6) return fail('Le mot de passe doit contenir au moins 6 caractères.');
       const u = { id: id(), email, password, user_metadata: data };
       db._users.push(u);
       db.profiles.push({ ...defaults.profiles, id: u.id, kind: data.kind || 'particulier', first_name: data.first_name || '', last_name: data.last_name || '', email, phone: data.phone || '', lang: data.lang || 'fr', created_at: now() });
-      persist(); saveSession({ access_token: 'local', user: { id: u.id, email } });
+      await persist(); saveSession({ access_token: 'local', user: { id: u.id, email } });
       return { needsConfirm: false };
     },
     async signIn(email, password, remember) { await ready;
@@ -311,7 +317,7 @@ export function mockBackend({ saveSession, getSession }) {
     },
     async signOut() { await ready; saveSession(null); },
     async recover() { await ready; return wait(null); },
-    async updatePassword(pw) { await ready; const u = db._users.find((x) => x.id === me()); if (u) u.password = pw; persist(); },
-    async updateEmail(email) { await ready; const u = db._users.find((x) => x.id === me()); if (u) u.email = email; persist(); },
+    async updatePassword(pw) { await ready; const u = db._users.find((x) => x.id === me()); if (u) u.password = pw; await persist(); },
+    async updateEmail(email) { await ready; const u = db._users.find((x) => x.id === me()); if (u) u.email = email; await persist(); },
   };
 }
