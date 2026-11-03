@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LuHammer, LuHouse, LuArrowLeft, LuMail } from 'react-icons/lu';
 import { api, getSession, OFFLINE } from '../../lib/api.js';
+import { markUnlocked } from '../../lib/security.js';
 import { AddressFields } from '../../ui/address.jsx';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
@@ -33,18 +34,41 @@ function AuthLayout({ children, art = true }) {
   );
 }
 
+// Connexion par mot de passe : pas besoin de redemander Face ID juste après
+const unlockedNow = () => { const id = getSession()?.user?.id; if (id) markUnlocked(id); };
 export function Login() {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [remember, setRemember] = useState(true);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const [mfa, setMfa] = useState(false);
+  const [code, setCode] = useState('');
   const submit = async (e) => {
     e.preventDefault(); setErr(''); setBusy(true);
-    try { await api.signIn(email.trim(), pw, remember); navigate('/', { replace: true }); }
+    try { const r = await api.signIn(email.trim(), pw, remember); if (r?.mfa) { setMfa(true); setBusy(false); return; } unlockedNow(); navigate('/', { replace: true }); }
     catch (x) { if (x.code === 'email_not_confirmed') { navigate('/verification?email=' + encodeURIComponent(email.trim().toLowerCase())); return; } setErr(x.message); }
     setBusy(false);
   };
+  const submitCode = async (e) => {
+    e.preventDefault(); setErr(''); setBusy(true);
+    try { await api.mfaLogin(code); unlockedNow(); navigate('/', { replace: true }); } catch (x) { setErr(x.message); setCode(''); }
+    setBusy(false);
+  };
+  if (mfa) return (
+    <AuthLayout>
+      <form onSubmit={submitCode} style={{ display: 'grid', gap: 14 }}>
+        <img className="auth-logo" src="/logo.svg" alt="Artis & You" />
+        <h1 className="center" style={{ fontSize: 24, margin: 0 }}>{t('Double authentification')}</h1>
+        <p className="center muted" style={{ margin: 0 }}>{t('Saisissez le code à 6 chiffres affiché dans votre application d’authentification.')}</p>
+        <input className="pillinput center" style={{ fontSize: 26, letterSpacing: 8, fontWeight: 800 }} inputMode="numeric" autoComplete="one-time-code" maxLength={7} autoFocus value={code} onChange={(e) => setCode(e.target.value.replace(/[^\d ]/g, ''))} aria-label={t('Code')} placeholder="000000" />
+        {err && <div className="error">{err}</div>}
+        <button className="btn" style={{ height: 58, fontSize: 19 }} disabled={busy || code.replace(/\D/g, '').length !== 6}>{busy ? '…' : t('Valider')}</button>
+        <button type="button" className="link center bold" onClick={() => { setMfa(false); setCode(''); setErr(''); }}>{t('Retour')}</button>
+        <p className="small faint center">{t('Plus accès à votre application ? Écrivez à support@artisandyou.fr depuis votre adresse e-mail.')}</p>
+      </form>
+    </AuthLayout>
+  );
   return (
     <AuthLayout>
       <form onSubmit={submit} style={{ display: 'grid', gap: 14 }}>

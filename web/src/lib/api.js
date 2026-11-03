@@ -42,10 +42,11 @@ const frMsg = (m = '') => {
   return s;
 };
 
-async function http(path, { method = 'GET', body, headers = {}, auth = true, raw = false } = {}) {
+async function http(path, { method = 'GET', body, headers = {}, auth = true, raw = false, token } = {}) {
   const h = { apikey: KEY, ...headers };
   if (body !== undefined && !(body instanceof Blob) && !(body instanceof FormData)) h['Content-Type'] = 'application/json';
-  if (auth && session?.access_token) h.Authorization = 'Bearer ' + session.access_token;
+  if (token) h.Authorization = 'Bearer ' + token;
+  else if (auth && session?.access_token) h.Authorization = 'Bearer ' + session.access_token;
   else h.Authorization = 'Bearer ' + KEY;
   let res;
   try {
@@ -63,6 +64,7 @@ async function http(path, { method = 'GET', body, headers = {}, auth = true, raw
 }
 
 let refreshing = null;
+let pendingMfa = null;
 async function refresh() {
   if (refreshing) return refreshing;
   refreshing = (async () => {
@@ -146,9 +148,38 @@ const remote = {
   async signIn(email, password, remember = true) {
     try {
       const d = await http('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password }, auth: false });
+      // Double authentification activée : on attend le code avant d'ouvrir la session
+      const f = (d.user?.factors || []).find((x) => x.factor_type === 'totp' && x.status === 'verified');
+      if (f) { pendingMfa = { d, remember, factorId: f.id }; return { mfa: true }; }
       saveSession({ ...d, expires_at: Date.now() / 1000 + d.expires_in }, remember);
+      return {};
     } catch (e) { if (/Confirmez votre adresse/.test(e.message)) e.code = 'email_not_confirmed'; throw e; }
   },
+  async mfaLogin(code) {
+    if (!pendingMfa) throw new ApiError('Reconnectez-vous.');
+    const { d, remember, factorId } = pendingMfa;
+    const ch = await http(`/auth/v1/factors/${factorId}/challenge`, { method: 'POST', body: {}, token: d.access_token });
+    const v = await http(`/auth/v1/factors/${factorId}/verify`, { method: 'POST', body: { challenge_id: ch.id, code: String(code).replace(/\D/g, '') }, token: d.access_token });
+    pendingMfa = null;
+    saveSession({ ...v, expires_at: Date.now() / 1000 + v.expires_in }, remember);
+  },
+  async mfaStatus() {
+    const u = await http('/auth/v1/user');
+    const f = (u.factors || []).find((x) => x.factor_type === 'totp' && x.status === 'verified');
+    return { enabled: !!f, factorId: f?.id };
+  },
+  async mfaEnroll() {
+    const u = await http('/auth/v1/user');
+    for (const f of (u.factors || []).filter((x) => x.status !== 'verified')) await http('/auth/v1/factors/' + f.id, { method: 'DELETE' }).catch(() => {});
+    const r = await http('/auth/v1/factors', { method: 'POST', body: { factor_type: 'totp', friendly_name: 'Artis & You ' + new Date().toISOString().slice(0, 16) } });
+    return { factorId: r.id, secret: r.totp.secret, uri: r.totp.uri, qr: r.totp.qr_code };
+  },
+  async mfaConfirm(factorId, code) {
+    const ch = await http(`/auth/v1/factors/${factorId}/challenge`, { method: 'POST', body: {} });
+    const v = await http(`/auth/v1/factors/${factorId}/verify`, { method: 'POST', body: { challenge_id: ch.id, code: String(code).replace(/\D/g, '') } });
+    if (v?.access_token) saveSession({ ...v, expires_at: Date.now() / 1000 + v.expires_in }, !!localStorage.getItem(SKEY));
+  },
+  async mfaDisable(factorId) { await http('/auth/v1/factors/' + factorId, { method: 'DELETE' }); },
   async signOut() { try { await http('/auth/v1/logout', { method: 'POST' }); } catch {} saveSession(null); },
   async recover(email) { await http('/auth/v1/recover?redirect_to=' + encodeURIComponent(location.origin + '/nouveau-mot-de-passe'), { method: 'POST', body: { email }, auth: false }); },
   async updatePassword(password) { await http('/auth/v1/user', { method: 'PUT', body: { password } }); },

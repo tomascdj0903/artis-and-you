@@ -7,10 +7,12 @@ const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
 
 import { ADMIN_EMAILS } from './api.js';
+import { newSecret, checkTotp, otpauthUri } from './security.js';
 export function mockBackend({ saveSession, getSession }) {
   // Stockage dans IndexedDB : les tables dans « kv », les fichiers (photos, PDF) dans « blobs ».
   // Chaque modification attend que l'écriture soit terminée : rien n'est perdu si on ferme la fenêtre.
   let db = {};
+  let pendingMfa = null;
   let conn = null;
   const idb = () => conn || (conn = new Promise((res, rej) => {
     const r = indexedDB.open('artis-and-you', 2);
@@ -341,8 +343,22 @@ export function mockBackend({ saveSession, getSession }) {
       const u = db._users.find((x) => x.email === String(email).toLowerCase() && x.password === password);
       if (!u) return fail('E-mail ou mot de passe incorrect.');
       if (u.verified === false) { const e = new Error('Confirmez votre adresse e-mail avant de vous connecter.'); e.code = 'email_not_confirmed'; throw e; }
+      if (u.mfa_secret) { pendingMfa = { u, remember }; return { mfa: true }; }
+      saveSession({ access_token: 'local', user: { id: u.id, email: u.email } }, remember);
+      return {};
+    },
+    async mfaLogin(code) { await ready;
+      if (!pendingMfa) return fail('Reconnectez-vous.');
+      if (!(await checkTotp(pendingMfa.u.mfa_secret, code))) return fail('Code incorrect. Vérifiez l’heure de votre téléphone et réessayez.');
+      const { u, remember } = pendingMfa; pendingMfa = null;
       saveSession({ access_token: 'local', user: { id: u.id, email: u.email } }, remember);
     },
+    async mfaStatus() { await ready; const u = db._users.find((x) => x.id === me()); return { enabled: !!u?.mfa_secret, factorId: 'local' }; },
+    async mfaEnroll() { await ready; const u = db._users.find((x) => x.id === me()); u.mfa_pending = newSecret(); await persist(); return { factorId: 'local', secret: u.mfa_pending, uri: otpauthUri(u.mfa_pending, u.email) }; },
+    async mfaConfirm(_id, code) { await ready; const u = db._users.find((x) => x.id === me());
+      if (!u?.mfa_pending || !(await checkTotp(u.mfa_pending, code))) return fail('Code incorrect. Vérifiez l’heure de votre téléphone et réessayez.');
+      u.mfa_secret = u.mfa_pending; delete u.mfa_pending; await persist(); },
+    async mfaDisable() { await ready; const u = db._users.find((x) => x.id === me()); delete u.mfa_secret; await persist(); },
     async signOut() { await ready; saveSession(null); },
     async recover() { await ready; return wait(null); },
     async updatePassword(pw) { await ready; const u = db._users.find((x) => x.id === me()); if (u) u.password = pw; await persist(); },

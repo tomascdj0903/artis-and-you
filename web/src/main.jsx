@@ -1,12 +1,13 @@
 import './styles.css';
 import { createRoot } from 'react-dom/client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { useLocation, matchRoute, navigate, Link } from './lib/router.jsx';
 import { t, loadLang, getLang } from './lib/i18n.js';
 import { Loader, Avatar } from './ui/index.jsx';
-import { OFFLINE } from './lib/api.js';
+import { OFFLINE, api } from './lib/api.js';
+import { isLocked, bioEnabled, bioUnlock, lockAfterHidden } from './lib/security.js';
 import { fullName } from './lib/format.js';
 
 import * as Auth from './pages/auth/index.jsx';
@@ -108,10 +109,37 @@ function Shell({ tabs, children, path }) {
   );
 }
 
+function LockScreen({ onUnlock }) {
+  const { profile } = useApp();
+  const [err, setErr] = useState('');
+  const go = async () => { setErr(''); try { await bioUnlock(profile.id); onUnlock(); } catch (e) { setErr(e.name === 'NotAllowedError' ? t('Déverrouillage annulé.') : e.message); } };
+  useEffect(() => { go(); }, []);
+  return (
+    <div className="auth" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24 }}>
+      <div style={{ display: 'grid', gap: 14, maxWidth: 360, width: '100%', textAlign: 'center' }}>
+        <img src="/logo.svg" alt="Artis & You" style={{ width: 90, height: 90, margin: '0 auto' }} />
+        <h1 style={{ fontSize: 22, margin: 0 }}>{t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
+        <p className="muted" style={{ margin: 0 }}>{t('Application verrouillée. Utilisez Face ID, Touch ID, votre empreinte ou Windows Hello.')}</p>
+        {err && <div className="error">{err}</div>}
+        <button className="btn" onClick={go}>{t('Déverrouiller')}</button>
+        <button className="link bold" onClick={async () => { await api.signOut(); location.href = '/connexion'; }}>{t('Utiliser mon mot de passe')}</button>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const { path } = useLocation();
   const { ready, session, profile, isPro } = useApp();
   const logged = !!session && !!profile;
+  // Verrouillage Face ID / empreinte (si activé sur cet appareil)
+  const [locked, setLocked] = useState(false);
+  useEffect(() => { if (logged) setLocked(isLocked(profile.id)); }, [logged, profile?.id]);
+  useEffect(() => {
+    if (!logged || !bioEnabled(profile.id)) return;
+    const off = lockAfterHidden(profile.id); const f = () => setLocked(true);
+    window.addEventListener('ay-lock', f); return () => { off(); window.removeEventListener('ay-lock', f); };
+  }, [logged, profile?.id]);
 
   useEffect(() => {
     if (!ready) return;
@@ -128,6 +156,7 @@ function App() {
   const pub = find(PUBLIC, path);
   if (pub) { const [C, params] = pub; return <C params={params} />; }
   if (!logged) return <Loader />;
+  if (locked) return <LockScreen onUnlock={() => setLocked(false)} />;
   const pro = path.startsWith('/pro'), routes = pro ? PRO : CLIENT;
   const hit = find(routes, path);
   const [C, params] = hit || [Common.NotFound, {}];

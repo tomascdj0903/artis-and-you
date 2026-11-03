@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { bioAvailable, bioEnabled, bioEnable, bioDisable, groupSecret } from '../../lib/security.js';
 import { LuBell, LuCalendar, LuFileText, LuEuro, LuMessageSquare, LuInfo, LuSearch, LuMail, LuPhone, LuCirclePlay, LuBug, LuDownload, LuTrash2, LuMoon, LuSun, LuShieldCheck, LuCheck, LuX } from 'react-icons/lu';
 import JSZip from 'jszip';
 import { api, uid, APP_VERSION, OFFLINE } from '../../lib/api.js';
@@ -7,7 +8,7 @@ import { navigate, Link } from '../../lib/router.jsx';
 import { t, LANGS } from '../../lib/i18n.js';
 import { rel, dateMed, fullName, date } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
-import { TopBar, SearchBar, Sec, Chips, Field, Toggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet } from '../../ui/index.jsx';
 import { uploadTo } from './chat.jsx';
 
 const NICON = { rdv: LuCalendar, documents: LuFileText, paiement: LuEuro, message: LuMessageSquare, systeme: LuInfo };
@@ -67,12 +68,57 @@ export function MyProfile() {
       {profile.kind === 'artisan' && <KV rows={[[t('Rôle'), t({ gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' }[profile.member_role]) + ' · ' + t('modifiable dans Mon équipe')]]} />}
       <Sec title={t('Sécurité')} />
       <Field label={t('Nouveau mot de passe')} hint={t('laisser vide pour ne pas changer')}><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} minLength={6} autoComplete="new-password" /></Field>
-      <div className="kv">
-        <div className="r"><span className="k">Face ID / {t('empreinte')}</span><Toggle checked={false} onChange={() => wip('Face ID')} /></div>
-        <div className="r"><span className="k">{t('Double authentification')}</span><Toggle checked={false} onChange={() => wip(t('La double authentification'))} /></div>
-      </div>
       <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
+      <Security />
     </div>
+  );
+}
+
+// Face ID / empreinte (sur cet appareil) et double authentification (application TOTP)
+function Security() {
+  const { profile, run, toast, confirm } = useApp();
+  const [bioOk, setBioOk] = useState(null);
+  const [bio, setBio] = useState(() => bioEnabled(profile.id));
+  const [mfa, setMfa] = useState(null);
+  const [enroll, setEnroll] = useState(null);
+  const [code, setCode] = useState('');
+  useEffect(() => { bioAvailable().then(setBioOk); api.mfaStatus().then(setMfa).catch(() => setMfa({ enabled: false })); }, []);
+  const toggleBio = async (v) => {
+    if (!v) { bioDisable(profile.id); setBio(false); toast(t('Déverrouillage biométrique désactivé')); return; }
+    try { await bioEnable(profile.id, profile.email, fullName(profile)); setBio(true); toast(t('Déverrouillage biométrique activé sur cet appareil')); }
+    catch (e) { toast(e.name === 'NotAllowedError' ? t('Activation annulée.') : e.message, true); }
+  };
+  const toggleMfa = async (v) => {
+    if (v) { await run(async () => { setCode(''); setEnroll(await api.mfaEnroll()); }); return; }
+    if (!(await confirm({ title: t('Désactiver la double authentification ?'), text: t('Votre compte ne sera plus protégé que par le mot de passe.'), ok: t('Désactiver'), danger: true }))) return;
+    await run(async () => { await api.mfaDisable(mfa.factorId); setMfa({ enabled: false }); }, t('Double authentification désactivée'));
+  };
+  const confirmMfa = () => run(async () => { await api.mfaConfirm(enroll.factorId, code); setEnroll(null); setMfa(await api.mfaStatus()); }, t('Double authentification activée'));
+  return (
+    <>
+      <Sec title={t('Connexion renforcée')} />
+      <div className="kv">
+        {bioOk === false
+          ? <div className="r set-row"><span className="k">{t('Face ID / empreinte')}<small>{t('Non disponible sur cet appareil ou ce navigateur (il faut Face ID, Touch ID, une empreinte ou Windows Hello).')}</small></span><Toggle checked={false} onChange={() => {}} /></div>
+          : <SettingToggle label={t('Face ID / empreinte')} hint={bio ? t('Demandé à l’ouverture de l’application sur cet appareil') : t('Déverrouillez l’application avec Face ID, Touch ID, votre empreinte ou Windows Hello')} checked={bio} onChange={toggleBio} />}
+        <SettingToggle label={t('Double authentification')} hint={mfa?.enabled ? t('Un code de votre application d’authentification est demandé à chaque connexion') : t('Ajoutez un code à 6 chiffres (Google Authenticator, Microsoft Authenticator…) en plus du mot de passe')} checked={!!mfa?.enabled} onChange={toggleMfa} />
+      </div>
+      <Sheet open={!!enroll} onClose={() => setEnroll(null)} title={t('Activer la double authentification')}>
+        {enroll && <>
+          <p className="small"><b>1.</b> {t('Installez une application d’authentification (Google Authenticator, Microsoft Authenticator, 1Password…).')}</p>
+          <p className="small"><b>2.</b> {enroll.qr ? t('Scannez ce QR code, ou saisissez la clé ci-dessous :') : t('Ajoutez un compte avec la clé ci-dessous (ou touchez « Ouvrir dans l’application » sur votre téléphone) :')}</p>
+          {enroll.qr && <div className="center"><img src={enroll.qr} alt="QR code" style={{ width: 180, height: 180, background: '#fff', borderRadius: 12, padding: 8 }} /></div>}
+          <div className="card soft center" style={{ fontFamily: 'ui-monospace, monospace', fontSize: 17, fontWeight: 700, letterSpacing: 1, userSelect: 'all', wordBreak: 'break-all' }}>{groupSecret(enroll.secret)}</div>
+          <div className="row" style={{ gap: 8, justifyContent: 'center', margin: '8px 0' }}>
+            <button className="btn xs ghost" onClick={() => { navigator.clipboard?.writeText(enroll.secret); toast(t('Clé copiée')); }}>{t('Copier la clé')}</button>
+            <a className="btn xs ghost" href={enroll.uri}>{t('Ouvrir dans l’application')}</a>
+          </div>
+          <p className="small"><b>3.</b> {t('Saisissez le code à 6 chiffres affiché :')}</p>
+          <input className="input center" style={{ fontSize: 24, letterSpacing: 6, fontWeight: 800 }} inputMode="numeric" autoComplete="one-time-code" maxLength={7} value={code} onChange={(e) => setCode(e.target.value.replace(/[^\d ]/g, ''))} placeholder="000000" aria-label={t('Code')} />
+          <button className="btn block mt" disabled={code.replace(/\D/g, '').length !== 6} onClick={confirmMfa}>{t('Activer')}</button>
+        </>}
+      </Sheet>
+    </>
   );
 }
 
