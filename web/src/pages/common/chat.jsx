@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck } from 'react-icons/lu';
+import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { t } from '../../lib/i18n.js';
 import { hm, dateMed, fullName, clientName } from '../../lib/format.js';
-import { Img, Sheet, pickFiles, openFile, Loader, Lightbox } from '../../ui/index.jsx';
+import { Img, Sheet, pickFiles, openFile, Loader, Lightbox, CameraSheet, isTouch } from '../../ui/index.jsx';
 
 export async function uploadTo(prefix, file) {
   const safe = file.name.normalize('NFD').replace(/[^\w.-]+/g, '_').slice(-60);
@@ -22,6 +22,7 @@ export function Chat({ convId, projects = [], banner }) {
   const [menu, setMenu] = useState(false);
   const [doneSheet, setDoneSheet] = useState(false);
   const [big, setBig] = useState(null);
+  const [cam, setCam] = useState(false);
   const endRef = useRef();
   const lastCount = useRef(0);
 
@@ -48,15 +49,31 @@ export function Chat({ convId, projects = [], banner }) {
     setText('');
     try { await post({ body: b }); } catch (x) { toast(x.message, true); setText(b); }
   };
-  const attach = async (accept) => {
-    setMenu(false);
-    const files = await pickFiles({ accept, multiple: true });
+  // Les photos envoyées dans une conversation sont aussi rangées dans Documents › Photos du client (ou du chantier)
+  const keepPhotos = async (atts) => {
+    const imgs = atts.filter((a) => (a.mime || '').startsWith('image/'));
+    if (!imgs.length || !conv) return;
+    let clientId = conv.client_id, companyId = conv.company_id || profile.company_id;
+    if (!clientId && conv.project_id) clientId = (await api.one('projects', { id: conv.project_id }).catch(() => null))?.client_id;
+    if (!clientId || !companyId) return;
+    for (const a of imgs) {
+      await api.insert('files', { company_id: companyId, client_id: clientId, project_id: conv.project_id || null, kind: 'photo', name: a.name, path: a.path, mime: a.mime, size: a.size,
+        ...(profile.company_id ? {} : { author_label: t('Envoyées par le client') }) }).catch(() => {});
+    }
+  };
+  const sendFiles = async (files) => {
     if (!files.length) return;
     try {
       const atts = [];
       for (const f of files) { if (f.size > 20e6) { toast(t('Fichier trop lourd (20 Mo max).'), true); continue; } atts.push(await uploadTo(myPrefix(profile) + '/chat/' + convId, f)); }
-      if (atts.length) await post({ attachments: atts });
+      if (atts.length) { await post({ attachments: atts }); await keepPhotos(atts); if (atts.some((a) => (a.mime || '').startsWith('image/')) && conv?.client_id) toast(t('Photos ajoutées dans Documents › Photos')); }
     } catch (x) { toast(x.message, true); }
+  };
+  const attach = async (accept) => { setMenu(false); sendFiles(await pickFiles({ accept, multiple: true })); };
+  const takePhoto = async () => {
+    setMenu(false);
+    if (isTouch()) sendFiles(await pickFiles({ accept: 'image/*', multiple: false, capture: 'environment' }));
+    else setCam(true);
   };
   const markDone = async (p) => {
     setDoneSheet(false);
@@ -103,11 +120,13 @@ export function Chat({ convId, projects = [], banner }) {
       </div>
       <form className="composer" onSubmit={send}>
         <button type="button" className="att" onClick={() => setMenu(true)} aria-label={t('Joindre')}><LuPlus /></button>
+        <button type="button" className="att" onClick={takePhoto} aria-label={t('Prendre une photo')}><LuCamera /></button>
         <input type="text" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('Écrire un message…')} aria-label={t('Message')} />
         <button className="send" aria-label={t('Envoyer')}><LuArrowRight /></button>
       </form>
       <Sheet open={menu} onClose={() => setMenu(false)} title={t('Joindre')}>
-        <button className="opt" onClick={() => attach('image/*')}><LuImage /><div><b>{t('Photos')}</b></div></button>
+        <button className="opt" onClick={takePhoto}><LuCamera /><div><b>{t('Prendre une photo')}</b><small>{t('Rangée aussi dans Documents › Photos')}</small></div></button>
+        <button className="opt" onClick={() => attach('image/*')}><LuImage /><div><b>{t('Photos de la galerie')}</b></div></button>
         <button className="opt" onClick={() => attach('application/pdf,image/*,.doc,.docx,.xls,.xlsx,.dwg')}><LuPaperclip /><div><b>{t('Fichier (PDF, plan…)')}</b></div></button>
         {conv?.kind === 'team' && <button className="opt" onClick={() => { setMenu(false); setDoneSheet(true); }}><LuHardHat /><div><b>{t('Chantier terminé')}</b><small>{t('Met à jour le statut projet')}</small></div></button>}
       </Sheet>
@@ -116,6 +135,7 @@ export function Chat({ convId, projects = [], banner }) {
         {!projects.filter((p) => !p.finished_at).length && <p className="muted">{t('Aucun chantier en cours.')}</p>}
       </Sheet>
       <Lightbox path={big} onClose={() => setBig(null)} />
+      <CameraSheet open={cam} onClose={() => setCam(false)} onShot={sendFiles} />
     </>
   );
 }

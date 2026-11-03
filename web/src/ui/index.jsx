@@ -152,10 +152,11 @@ export function SettingToggle({ label, hint, checked, onChange }) {
   return <div className="r set-row"><span className="k">{label}{hint && <small>{hint}</small>}</span><Toggle checked={checked} onChange={onChange} label={label} state /></div>;
 }
 
-export function pickFiles({ accept = '*/*', multiple = true } = {}) {
+export function pickFiles({ accept = '*/*', multiple = true, capture } = {}) {
   return new Promise((resolve) => {
     const i = document.createElement('input');
     i.type = 'file'; i.accept = accept; i.multiple = multiple;
+    if (capture) i.setAttribute('capture', capture); // ouvre directement l'appareil photo sur téléphone
     i.onchange = () => resolve([...i.files]);
     i.click();
   });
@@ -187,3 +188,40 @@ export function Stars({ n = 0, size }) {
 }
 
 export function ConfirmBar({ children }) { return <div className="btns">{children}</div>; }
+
+// Prise de photo : appareil photo natif sur téléphone, webcam (aperçu + déclencheur) sur ordinateur
+export function CameraSheet({ open, onClose, onShot }) {
+  const video = useRef(); const stream = useRef();
+  const [err, setErr] = useState('');
+  const [shots, setShots] = useState([]);
+  useEffect(() => {
+    if (!open) return;
+    setErr(''); setShots([]);
+    (async () => {
+      try {
+        stream.current = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1920 } }, audio: false });
+        if (video.current) { video.current.srcObject = stream.current; await video.current.play().catch(() => {}); }
+      } catch (e) { setErr(t("Impossible d'accéder à l'appareil photo. Autorisez la caméra dans votre navigateur, ou choisissez une photo.")); }
+    })();
+    return () => { stream.current?.getTracks().forEach((x) => x.stop()); stream.current = null; };
+  }, [open]);
+  if (!open) return null;
+  const snap = () => {
+    const v = video.current; if (!v?.videoWidth) return;
+    const c = document.createElement('canvas'); c.width = v.videoWidth; c.height = v.videoHeight;
+    c.getContext('2d').drawImage(v, 0, 0);
+    c.toBlob((b) => b && setShots((x) => [...x, new File([b], `photo-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}-${x.length + 1}.jpg`, { type: 'image/jpeg' })]), 'image/jpeg', 0.88);
+  };
+  return (
+    <Sheet open onClose={onClose} title={t('Prendre une photo')}>
+      {err ? <div className="notice">{err}</div> : <video ref={video} playsInline muted style={{ width: '100%', borderRadius: 14, background: '#000', maxHeight: '50vh' }} />}
+      {shots.length > 0 && <div className="photos-grid" style={{ marginTop: 10 }}>{shots.map((f, i) => <img key={i} src={URL.createObjectURL(f)} alt="" title={t('Retirer')} onClick={() => setShots(shots.filter((_, j) => j !== i))} />)}</div>}
+      <div className="btns"><div className="two">
+        {err ? <button className="btn ghost" onClick={async () => { const fs = await pickFiles({ accept: 'image/*', capture: 'environment' }); if (fs.length) { onShot(fs); onClose(); } }}>{t('Choisir une photo')}</button>
+          : <button className="btn ghost" onClick={snap}><LuCamera /> {t('Déclencher')}</button>}
+        <button className="btn" disabled={!shots.length} onClick={() => { onShot(shots); onClose(); }}>{shots.length ? t('Envoyer {n} photos', { n: shots.length }) : t('Envoyer')}</button>
+      </div></div>
+    </Sheet>
+  );
+}
+export const isTouch = () => typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
