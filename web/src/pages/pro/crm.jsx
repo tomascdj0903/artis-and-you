@@ -1,6 +1,6 @@
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
-import { LuFileSpreadsheet, LuPlus, LuChevronRight, LuDownload, LuMail, LuPencil, LuCamera, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
+import { LuFileSpreadsheet, LuPlus, LuChevronRight, LuDownload, LuMail, LuPencil, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
@@ -397,8 +397,7 @@ export function ItemEdit({ params }) {
   return (
     <div className="content narrow">
       <TopBar title={isO ? t('Fiche ouvrage') : t('Fiche produit')} sub={t('Ma bibliothèque')} />
-      <div className="card soft row" style={{ alignItems: 'flex-start' }}>
-        <div className="ficon" style={{ width: 64, height: 64, background: 'var(--marine-50)', color: 'var(--text-3)' }}><LuCamera /></div>
+      <div className="card soft">
         <div className="grow">
           <input className="input" style={{ fontWeight: 800, fontSize: 18 }} value={it.name} onChange={(e) => set({ name: e.target.value })} placeholder={t('Nom du produit')} />
           <input className="input mt" value={it.ref} onChange={(e) => set({ ref: e.target.value })} placeholder={t('Référence fournisseur')} />
