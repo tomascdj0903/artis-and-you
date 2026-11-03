@@ -159,10 +159,10 @@ export function A4({ d, company, client, source, logoUrl }) {
   const title = { devis: 'DEVIS', facture: 'FACTURE', acompte: "FACTURE D'ACOMPTE", avoir: 'AVOIR' }[d.kind];
   const rest = Math.max(0, tot.net - Number(d.paid_amount || 0));
   return (
-    <div className="a4" style={{ '--doc-color': color }}>
+    <div className={'a4 tpl-' + (company.settings?.pdf?.template || 'classique')} style={{ '--doc-color': color }}>
       <div className="hd">
         <div className="logo">
-          <div className="mk">{logoUrl ? <img src={logoUrl} alt="" crossOrigin="anonymous" /> : ini}</div>
+          <div className={'mk' + (logoUrl ? ' has' : '')}>{logoUrl ? <img src={logoUrl} alt="" crossOrigin="anonymous" /> : ini}</div>
           <div><b style={{ fontSize: 14 }}>{company.trade_name || company.name}</b><div className="small">{companyAddr(company)}<br />{[company.phone, company.email].filter(Boolean).join(' · ')}</div></div>
         </div>
         <div className="ttl">
@@ -233,7 +233,8 @@ export function A4({ d, company, client, source, logoUrl }) {
           {company.settings?.docs?.onlinePayment !== false && <div className="box"><div className="lab">{t('Paiement en ligne')}</div>{t('Carte ou prélèvement via le lien Artis & You')}</div>}
         </div>
       )}
-      <div className="foot">{[company.name, company.legal_form && company.capital ? `${company.legal_form} au capital de ${company.capital}` : company.legal_form, company.siret && 'SIRET ' + company.siret, company.rm && 'RM ' + company.rm, !franchise && company.vat_number && 'TVA ' + company.vat_number].filter(Boolean).join(' · ')}{company.settings?.pdf?.footer ? ' · ' + company.settings.pdf.footer : ''} · {t('Page 1/1')}</div>
+      <div className="foot">{[company.name, company.legal_form && company.capital ? `${company.legal_form} au capital de ${company.capital}` : company.legal_form, company.siret && 'SIRET ' + company.siret, company.rm && 'RM ' + company.rm, !franchise && company.vat_number && 'TVA ' + company.vat_number].filter(Boolean).join(' · ')}{company.settings?.pdf?.footer ? ' · ' + company.settings.pdf.footer : ''} · {t('Page 1/1')}
+        <div className="brand"><img src="/logo.svg" alt="" />{t('Document réalisé avec')} <b>Artis &amp; You</b></div></div>
     </div>
   );
 }

@@ -323,6 +323,12 @@ export function SendModal({ open, b, onClose, onSent, pdfNode }) {
   const { d, client } = b;
   const isQ = d.kind === 'devis';
   const finalize = async () => {
+    // Une facture (ou un avoir) porte la date du jour de son émission : la numérotation reste chronologique
+    if (!d.number && !isQ && d.issue_date !== iso(new Date())) {
+      const today = iso(new Date()); const shift = d.due_date && d.issue_date ? (new Date(d.due_date) - new Date(d.issue_date)) / 864e5 : null;
+      const due = shift != null ? iso(new Date(Date.now() + shift * 864e5)) : d.due_date;
+      await api.update('documents', { id: d.id }, { issue_date: today, due_date: due }); d.issue_date = today; d.due_date = due;
+    }
     const x = d.number ? d : await api.rpc('finalize_document', { p_id: d.id });
     if (d.kind === 'avoir' && d.source_id) {
       const src = await api.one('documents', { id: d.source_id });

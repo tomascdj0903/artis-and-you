@@ -575,3 +575,31 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
 .range-row b { min-width: 64px; text-align: right; }
 .missing-block .field input { border-color: var(--bordeaux) !important; }
 .range-row input[type=range] { border: 0 !important; padding: 0 !important; background: transparent !important; height: 24px; min-height: 0; box-shadow: none; }
+/* PDF : logo de l'artisan en haut à gauche, marque Artis & You en bas, 3 modèles */
+.a4 .logo .mk.has { width: 84px; height: 64px; background: transparent; border-radius: 6px; }
+.a4 .logo .mk.has img { object-fit: contain; object-position: left center; background: transparent; }
+.a4 .foot .brand { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 5px; font-size: 8px; color: #8A90A0; }
+.a4 .foot .brand img { width: 13px; height: 13px; }
+.a4 .foot .brand b { color: #00123B; }
+.a4.tpl-moderne .hd { margin: -46px -50px 0; padding: 28px 50px 22px; background: var(--doc-color, #7F1111); color: #fff; }
+.a4.tpl-moderne .hd .small { color: rgba(255,255,255,.88); }
+.a4.tpl-moderne .ttl h1 { color: #fff; }
+.a4.tpl-moderne .logo .mk { background: #fff; color: var(--doc-color, #7F1111); }
+.a4.tpl-moderne .logo .mk.has { padding: 4px; border-radius: 8px; }
+.a4.tpl-moderne .box { border: 0; background: #F5F6F9; }
+.a4.tpl-moderne .lab { color: #00123B; }
+.a4.tpl-moderne th { background: #00123B; }
+.a4.tpl-moderne tr.sec td { background: #F5F6F9; color: #00123B; }
+.a4.tpl-epure .hd { padding-bottom: 14px; border-bottom: 2px solid var(--doc-color, #7F1111); }
+.a4.tpl-epure .ttl h1 { font-weight: 300; letter-spacing: 4px; }
+.a4.tpl-epure .logo .mk:not(.has) { background: transparent; color: var(--doc-color, #7F1111); border: 2px solid var(--doc-color, #7F1111); }
+.a4.tpl-epure .box { border: 0; border-left: 3px solid var(--doc-color, #7F1111); border-radius: 0; }
+.a4.tpl-epure th { background: transparent; color: var(--doc-color, #7F1111); border-bottom: 2px solid var(--doc-color, #7F1111); }
+.a4.tpl-epure tr.sec td { background: transparent; text-transform: uppercase; font-size: 10px; letter-spacing: .5px; }
+.a4.tpl-epure .tot .g { background: transparent; color: var(--doc-color, #7F1111); border-top: 2px solid var(--doc-color, #7F1111); }
+.tpl-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.tpl-pick button { border: 2px solid var(--line-2); background: var(--surface); color: var(--text); border-radius: 14px; padding: 10px; text-align: left; font-size: 13px; }
+.tpl-pick button.on { border-color: var(--bordeaux); box-shadow: 0 0 0 3px var(--bordeaux-50); }
+.tpl-pick .mini { height: 70px; border-radius: 6px; background: #fff; border: 1px solid #E5E7EE; margin-bottom: 6px; position: relative; overflow: hidden; }
+.tpl-pick .mini i { position: absolute; display: block; }
+.num-lock { display: flex; gap: 10px; align-items: flex-start; }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LuUser, LuCreditCard, LuBuilding2, LuUsers, LuFileText, LuBell, LuPlug, LuShield, LuCircleHelp, LuLogOut, LuChevronRight, LuPalette, LuStar, LuCopy, LuPlus, LuImage, LuCheck, LuShieldCheck, LuDownload } from 'react-icons/lu';
+import { LuUser, LuCreditCard, LuBuilding2, LuUsers, LuFileText, LuBell, LuPlug, LuShield, LuCircleHelp, LuLogOut, LuChevronRight, LuPalette, LuStar, LuCopy, LuPlus, LuImage, LuCheck, LuShieldCheck, LuDownload, LuLock } from 'react-icons/lu';
 import { api, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
@@ -9,8 +9,8 @@ import { PLANS, TRADES, kindLabel, LEGAL_FORMS, SOCIETIES, companyMissing } from
 import { AddressFields, CityInput } from '../../ui/address.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 import { siretValid } from '../auth/index.jsx';
-import { TopBar, Sec, KV, Field, Chips, Toggle, SettingToggle, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img } from '../../ui/index.jsx';
-import { A4 } from '../common/docview.jsx';
+import { TopBar, Sec, KV, Field, Chips, Seg, Toggle, SettingToggle, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img } from '../../ui/index.jsx';
+import { A4, useLogo } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
 export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
@@ -259,19 +259,45 @@ export function MemberSettings({ params }) {
   );
 }
 
+// Numérotation : une série par préfixe et par année, continue et sans trou.
+// Un préfixe déjà utilisé cette année est verrouillé (exigence facture électronique : numéros uniques et chronologiques).
+const PREFIX_RE = /^[A-Z0-9]{1,6}$/;
+function PrefixField({ label, k, value, onChange, counters, kindLabel: kl }) {
+  const { confirm } = useApp();
+  const yr = new Date().getFullYear();
+  const used = Number(counters?.[`${value}-${yr}`] || 0);
+  const [edit, setEdit] = useState(false);
+  const locked = used > 0 && !edit;
+  const bad = value && !PREFIX_RE.test(value);
+  return (
+    <label className={'field' + (bad ? ' missing' : '')}><span>{label}</span>
+      <div className="row" style={{ gap: 6 }}>
+        <input value={value} disabled={locked} maxLength={6} onChange={(e) => onChange(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} style={{ flex: 1 }} />
+        {used > 0 && !edit && <button type="button" className="iconbtn" title={t('Déverrouiller')} onClick={async () => { if (await confirm({ title: t('Changer le préfixe des {k} ?', { k: kl }), text: t('{n} documents ont déjà été émis avec « {p} » cette année. Changer de préfixe crée une nouvelle série : c’est autorisé, mais chaque série doit rester continue et vous devrez pouvoir la justifier. Conseillé seulement au 1er janvier.', { n: used, p: value }), ok: t('Changer quand même'), danger: true })) setEdit(true); }}><LuLock /></button>}
+      </div>
+      <span className="small faint" style={{ fontWeight: 400 }}>{bad ? t('Lettres et chiffres uniquement (6 max.)') : t('Prochain : {n}', { n: `${value || '…'}-${yr}-${String((Number(counters?.[`${value}-${yr}`] || 0)) + 1).padStart(4, '0')}` })}</span>
+    </label>
+  );
+}
+
 export function DocSettings() {
-  const { company, setCompany, run } = useApp();
+  const { company, setCompany, run, toast } = useApp();
   const [s, setS] = useState({ quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', mediator: '', labourRate: 45, onlinePayment: true, einvoice: true, ...(company.settings?.docs || {}) });
   const [iban, setIban] = useState({ iban: company.iban || '', bic: company.bic || '' });
   const F = (k, label, props = {}) => <Field label={label}><input value={s[k] ?? ''} onChange={(e) => setS({ ...s, [k]: e.target.value })} {...props} /></Field>;
-  const save = () => run(async () => { const settings = { ...company.settings, docs: { ...s, vat: Number(s.vat), validity: Number(s.validity), labourRate: Number(s.labourRate) } }; await api.update('companies', { id: company.id }, { settings, ...iban }); setCompany({ ...company, settings, ...iban }); }, t('Réglages enregistrés'));
-  const yr = new Date().getFullYear();
+  const save = () => {
+    const ps = [s.quotePrefix, s.invoicePrefix, s.creditPrefix];
+    if (ps.some((x) => !PREFIX_RE.test(x || ''))) return toast(t('Préfixes : lettres et chiffres uniquement (6 max.)'), true);
+    if (new Set(ps).size < 3) return toast(t('Les trois préfixes doivent être différents.'), true);
+    return run(async () => { const settings = { ...company.settings, docs: { ...s, vat: Number(s.vat), validity: Number(s.validity), labourRate: Number(s.labourRate) } }; await api.update('companies', { id: company.id }, { settings, ...iban }); setCompany({ ...company, settings, ...iban }); }, t('Réglages enregistrés'));
+  };
+  const P = (k, label, kl) => <PrefixField k={k} label={label} kindLabel={kl} value={s[k] || ''} counters={company.counters} onChange={(v) => setS({ ...s, [k]: v })} />;
   return (
     <div className="content narrow">
       <TopBar title={t('Devis et factures')} />
       <Sec title={t('Numérotation')} />
-      <div className="form-grid three">{F('quotePrefix', t('Préfixe devis'))}{F('invoicePrefix', t('Préfixe factures'))}{F('creditPrefix', t('Préfixe avoirs'))}</div>
-      <p className="small muted">{t('Exemple : {a} · {b}. Numérotation continue, sans trou, par année (obligation légale).', { a: `${s.quotePrefix}-${yr}-0001`, b: `${s.invoicePrefix}-${yr}-0001` })}</p>
+      <div className="form-grid three">{P('quotePrefix', t('Préfixe devis'), t('devis'))}{P('invoicePrefix', t('Préfixe factures'), t('factures'))}{P('creditPrefix', t('Préfixe avoirs'), t('avoirs'))}</div>
+      <div className="notice small num-lock"><LuLock style={{ flexShrink: 0, marginTop: 2 }} /><div>{t('Les numéros sont attribués automatiquement à l’envoi, à la suite, sans trou, par année. Une facture envoyée ne peut plus être modifiée ni supprimée : pour la corriger, faites un avoir. La date d’une facture est celle de son émission.')}</div></div>
       <Sec title={t('Valeurs par défaut')} />
       <div className="form-grid two">
         <Field label={t('TVA par défaut')}><select value={s.vat} onChange={(e) => setS({ ...s, vat: e.target.value })}>{[20, 10, 5.5, 2.1, 0].map((r) => <option key={r} value={r}>{r} %</option>)}</select></Field>
@@ -281,34 +307,47 @@ export function DocSettings() {
       <Sec title={t('Paiement')} />
       <div className="form-grid two"><Field label="IBAN"><input value={iban.iban} onChange={(e) => setIban({ ...iban, iban: e.target.value.toUpperCase() })} /></Field><Field label="BIC"><input value={iban.bic} onChange={(e) => setIban({ ...iban, bic: e.target.value.toUpperCase() })} /></Field></div>
       <div className="kv">
-        <div className="r"><span className="k">{t('Paiement en ligne (carte, prélèvement)')}</span><Toggle checked={s.onlinePayment} onChange={(v) => setS({ ...s, onlinePayment: v })} /></div>
-        <div className="r"><span className="k">{t('Facture électronique')}</span><Toggle checked={s.einvoice} onChange={(v) => setS({ ...s, einvoice: v })} /></div>
-        <Link className="r" to="/pro/compte/pdf"><span className="k">{t('Modèle du PDF')}</span><span className="v">›</span></Link>
+        <SettingToggle label={t('Paiement en ligne (carte, prélèvement)')} hint={t('Ajoute un encart « Payer en ligne » sur vos factures (paiement en ligne bientôt disponible)')} checked={s.onlinePayment} onChange={(v) => setS({ ...s, onlinePayment: v })} />
+        <SettingToggle label={t('Facture électronique')} hint={t('Format exigé entre entreprises à partir de 2026–2027 (transmission via plateforme agréée bientôt disponible)')} checked={s.einvoice} onChange={(v) => setS({ ...s, einvoice: v })} />
+        <Link className="r" to="/pro/compte/pdf"><span className="k">{t('Modèle du PDF')}<small style={{ display: 'block', fontWeight: 400, color: 'var(--text-2)', fontSize: 12.5 }}>{t({ classique: 'Classique', moderne: 'Moderne', epure: 'Épuré' }[company.settings?.pdf?.template || 'classique'])}</small></span><span className="v">›</span></Link>
       </div>
       <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
     </div>
   );
 }
 
+const TEMPLATES = [
+  ['classique', 'Classique', 'Logo et titre en haut, tableau coloré'],
+  ['moderne', 'Moderne', 'Bandeau de couleur en en-tête'],
+  ['epure', 'Épuré', 'Sobre, filets fins, sans aplat'],
+];
 export function PdfSettings() {
   const { company, setCompany, run } = useApp();
-  const [p, setP] = useState({ color: '#7F1111', footer: '', signature: '', ...(company.settings?.pdf || {}) });
-  const sample = { kind: 'facture', number: 'FA-2027-0001', issue_date: new Date().toISOString().slice(0, 10), due_date: new Date().toISOString().slice(0, 10), object: t('Exemple de facture'), lines: [{ id: 'a', kind: 'section', label: t('Détail fournitures') }, { id: 'b', kind: 'item', label: t('Fourniture'), qty: 1, unit: 'u', price: 100, vat: 20 }, { id: 'c', kind: 'section', label: t('Détail prestations') }, { id: 'd', kind: 'item', label: t('Main-d’œuvre'), qty: 2, unit: 'h', price: 45, vat: 20 }], conditions: {}, totals: {}, operations_nature: 'Biens et services', paid_amount: 0 };
+  const [p, setP] = useState({ color: '#7F1111', footer: '', signature: '', template: 'classique', ...(company.settings?.pdf || {}) });
+  const [kind, setKind] = useState('facture');
+  const logoUrl = useLogo(company);
+  const sample = { kind, number: kind === 'devis' ? 'DE-2027-0001' : 'FA-2027-0001', issue_date: new Date().toISOString().slice(0, 10), due_date: new Date().toISOString().slice(0, 10), validity_days: 30, object: kind === 'devis' ? t('Exemple de devis') : t('Exemple de facture'), lines: [{ id: 'a', kind: 'section', label: t('Détail fournitures') }, { id: 'b', kind: 'item', label: t('Fourniture'), qty: 1, unit: 'u', price: 100, vat: 20 }, { id: 'c', kind: 'section', label: t('Détail prestations') }, { id: 'd', kind: 'item', label: t('Main-d’œuvre'), qty: 2, unit: 'h', price: 45, vat: 20 }], conditions: {}, totals: {}, operations_nature: 'Biens et services', paid_amount: 0 };
   const sig = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (!f) return; const r = new FileReader(); r.onload = () => setP({ ...p, signature: r.result }); r.readAsDataURL(f); };
+  const mini = (k) => k === 'moderne' ? <><i style={{ left: 0, right: 0, top: 0, height: 18, background: p.color }} /><i style={{ left: 8, top: 4, width: 14, height: 10, background: '#fff', borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 32, height: 6, background: '#00123B' }} /><i style={{ left: 8, right: 8, top: 42, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 48, height: 3, background: '#E5E7EE' }} /></>
+    : k === 'epure' ? <><i style={{ left: 8, top: 6, width: 14, height: 10, border: '1.5px solid ' + p.color, borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 22, height: 1.5, background: p.color }} /><i style={{ left: 8, right: 8, top: 32, height: 1.5, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>
+    : <><i style={{ left: 8, top: 6, width: 14, height: 10, background: '#00123B', borderRadius: 2 }} /><i style={{ right: 8, top: 7, width: 22, height: 5, background: p.color }} /><i style={{ left: 8, right: 8, top: 30, height: 6, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>;
   return (
     <div className="content">
       <TopBar title={t('Modèle du PDF')} />
       <div className="grid2">
         <div>
+          <Sec title={t('Modèle')} />
+          <div className="tpl-pick">{TEMPLATES.map(([k, l, d]) => <button key={k} type="button" className={p.template === k ? 'on' : ''} onClick={() => setP({ ...p, template: k })}><div className="mini">{mini(k)}</div><b>{t(l)}</b><div className="small muted">{t(d)}</div></button>)}</div>
           <Sec title={t('Personnalisation')} />
           <Field label={t('Couleur')}><input type="color" value={p.color} onChange={(e) => setP({ ...p, color: e.target.value })} style={{ height: 48 }} /></Field>
-          <div className="row mb"><button className="btn ghost sm" onClick={() => navigate('/pro/compte/entreprise')}><LuImage /> {t('Logo')}</button><button className="btn ghost sm" onClick={sig}>{t('Signature (image)')}</button></div>
+          <div className="row mb"><button className="btn ghost sm" onClick={() => navigate('/pro/compte/entreprise')}><LuImage /> {company.logo_path ? t('Changer le logo') : t('Ajouter mon logo')}</button><button className="btn ghost sm" onClick={sig}>{t('Signature (image)')}</button></div>
+          <p className="small faint">{t('Votre logo apparaît en haut à gauche ; la mention « Document réalisé avec Artis & You » en bas de page.')}</p>
           <Field label={t('Pied de page')}><input value={p.footer} onChange={(e) => setP({ ...p, footer: e.target.value })} placeholder={t('ex. Membre d’une association agréée')} /></Field>
           <button className="btn block" onClick={() => run(async () => { const settings = { ...company.settings, pdf: p }; await api.update('companies', { id: company.id }, { settings }); setCompany({ ...company, settings }); }, t('Modèle enregistré'))}>{t('Enregistrer')}</button>
         </div>
         <div>
-          <Sec title={t('Aperçu')} />
-          <div className="a4-wrap" style={{ height: 560 }}><div style={{ transform: 'scale(.46)', transformOrigin: 'top left', width: 794 }}><A4 d={sample} company={{ ...company, settings: { ...company.settings, pdf: p } }} client={{ type: 'particulier', first_name: 'Tiago', last_name: 'Bernard', billing_address: '3 rue des Fleurs', billing_zip: '06800', billing_city: 'Cagnes-sur-Mer' }} /></div></div>
+          <Sec title={t('Aperçu')}><div style={{ minWidth: 180 }}><Seg options={[['facture', t('Facture')], ['devis', t('Devis')]]} value={kind} onChange={setKind} /></div></Sec>
+          <div className="a4-wrap" style={{ height: 560 }}><div style={{ transform: 'scale(.46)', transformOrigin: 'top left', width: 794 }}><A4 d={sample} logoUrl={logoUrl} company={{ ...company, settings: { ...company.settings, pdf: p } }} client={{ type: 'particulier', first_name: 'Tiago', last_name: 'Bernard', billing_address: '3 rue des Fleurs', billing_zip: '06800', billing_city: 'Cagnes-sur-Mer' }} /></div></div>
         </div>
       </div>
     </div>
