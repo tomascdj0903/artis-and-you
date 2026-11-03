@@ -27,7 +27,7 @@ function AuthLayout({ children, art = true }) {
           <div className="row center" style={{ justifyContent: 'center', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
             {LANGS.map((l) => <button key={l.code} className={'link small' + (lang === l.code ? ' red' : '')} onClick={() => setLang(l.code)}>{l.label}</button>)}
           </div>
-          <div className="center small faint"><Link to="/mentions-legales">{t('Mentions légales')}</Link> · <Link to="/cgu">{t('CGU')}</Link> · <Link to="/confidentialite">{t('Confidentialité')}</Link> · <Link to="/telecharger">{t('Logiciel PC / Mac')}</Link></div>
+          <div className="center small faint"><Link to="/mentions-legales">{t('Mentions légales')}</Link> · <Link to="/cgu">{t('CGU')}</Link> · <Link to="/confidentialite">{t('Confidentialité')}</Link> · <Link to="/telecharger">{t('Applications')}</Link></div>
         </div>
       </div>
     </div>

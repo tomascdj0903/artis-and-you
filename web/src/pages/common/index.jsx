@@ -168,8 +168,8 @@ export function DataPrivacy() {
       {isPro && <><Sec title={t('Visibilité')} /><div className="kv"><Link className="r" to="/pro/compte/entreprise"><span className="k">{t('Profil public et visibilité')}</span><span className="v">›</span></Link></div></>}
       <Sec title={t('Vos choix')} />
       <div className="kv">
-        <div className="r"><span className="k">{t("Mesure d'audience anonyme")}</span><Toggle checked={pv.audience} onChange={(v) => set('audience', v)} /></div>
-        <div className="r"><span className="k">{t('Recevoir les nouveautés')}</span><Toggle checked={pv.news} onChange={(v) => set('news', v)} /></div>
+        <SettingToggle label={t('Aider à améliorer Artis & You')} hint={t('Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.')} checked={pv.audience} onChange={(v) => set('audience', v)} />
+        <SettingToggle label={t('Recevoir les nouveautés')} hint={t('Un e-mail de temps en temps sur les nouvelles fonctionnalités')} checked={pv.news} onChange={(v) => set('news', v)} />
       </div>
       <Sec title={t('Vos données')} />
       <div className="kv">

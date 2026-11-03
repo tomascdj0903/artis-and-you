@@ -19,9 +19,13 @@ export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
 }
 
 export function Account() {
-  const { profile, company, isPro } = useApp();
+  const { profile, company, isPro, confirm } = useApp();
   const ger = profile.member_role === 'gerant';
-  const logout = async () => { await api.signOut(); navigate('/connexion', { replace: true }); };
+  // Double demande avant de se déconnecter
+  const logout = async () => {
+    if (!(await confirm({ title: t('Se déconnecter ?'), text: OFFLINE ? t('Vos données restent dans ce navigateur. Vous devrez saisir à nouveau votre e-mail et votre mot de passe.') : t('Vous devrez saisir à nouveau votre e-mail et votre mot de passe (et votre code de double authentification si elle est activée).'), ok: t('Se déconnecter'), danger: true }))) return;
+    await api.signOut(); navigate('/connexion', { replace: true });
+  };
   return (
     <div className="content narrow">
       <TopBar title={t('Paramètres et compte')} />
@@ -47,7 +51,7 @@ export function Account() {
         <MenuRow to="/pro/compte/apparence" icon={LuPalette} label={t('Langue et apparence')} />
         {ger && <MenuRow to="/pro/compte/integrations" icon={LuPlug} label={t('Intégrations')} sub={t('Agenda, comptable, paiement')} />}
         <MenuRow to="/pro/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />
-        <MenuRow to="/telecharger" icon={LuDownload} label={t('Logiciel PC / Mac')} />
+        <MenuRow to="/telecharger" icon={LuDownload} label={t('Logiciel PC / Mac et application mobile')} />
         {profile.is_admin && <MenuRow to="/pro/admin" icon={LuShieldCheck} label={t('Administration Artis & You')} />}
       </div>
       <Sec title={t('Aide')} />

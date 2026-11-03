@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { LuFilePen, LuFileText, LuHardHat, LuFolderOpen, LuChevronRight, LuDownload, LuPrinter, LuMessageSquare, LuCreditCard, LuLandmark, LuUser, LuHouse, LuUsers, LuBell, LuShield, LuCircleHelp, LuScale, LuLogOut, LuPalette, LuStar, LuCamera, LuDownload as LuDl } from 'react-icons/lu';
-import { api, uid } from '../../lib/api.js';
+import { api, uid, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
@@ -244,8 +244,12 @@ export function OtherDocs() {
 
 // ─────────────── Compte particulier ───────────────
 export function Account() {
-  const { profile } = useApp();
-  const logout = async () => { await api.signOut(); navigate('/connexion', { replace: true }); };
+  const { profile, confirm } = useApp();
+  // Double demande avant de se déconnecter
+  const logout = async () => {
+    if (!(await confirm({ title: t('Se déconnecter ?'), text: OFFLINE ? t('Vos données restent dans ce navigateur. Vous devrez saisir à nouveau votre e-mail et votre mot de passe.') : t('Vous devrez saisir à nouveau votre e-mail et votre mot de passe (et votre code de double authentification si elle est activée).'), ok: t('Se déconnecter'), danger: true }))) return;
+    await api.signOut(); navigate('/connexion', { replace: true });
+  };
   return (
     <div className="content narrow">
       <TopBar title={t('Profil et réglages')} />

@@ -163,4 +163,8 @@ function App() {
   return <Shell tabs={pro ? PRO_TABS : CLI_TABS} path={path}><C params={params} key={path} /></Shell>;
 }
 
+// Installation sur téléphone (Android) : service worker minimal + bouton « Installer »
+if ('serviceWorker' in navigator && location.protocol === 'https:' && !navigator.userAgent.includes('Electron')) navigator.serviceWorker.register('/sw.js').catch(() => {});
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); window.__ayInstall = e; window.dispatchEvent(new Event('ay-installable')); });
+
 loadLang(getLang()).catch(() => {}).finally(() => createRoot(document.getElementById('root')).render(<AppProvider><App /></AppProvider>));

@@ -1,4 +1,5 @@
-import { LuMonitor, LuApple, LuDownload, LuArrowLeft, LuRefreshCw } from 'react-icons/lu';
+import { useEffect, useState } from 'react';
+import { LuMonitor, LuApple, LuDownload, LuArrowLeft, LuRefreshCw, LuSmartphone, LuShare } from 'react-icons/lu';
 import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { GITHUB_REPO, APP_VERSION } from '../../lib/api.js';
@@ -51,21 +52,58 @@ export function Privacy() {
   );
 }
 
+const isIOS = () => /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isAndroid = () => /Android/i.test(navigator.userAgent);
+const standalone = () => window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone;
 export function Download() {
   const base = `https://github.com/${GITHUB_REPO}/releases/latest/download/`;
-  const isMac = /Mac/i.test(navigator.platform || navigator.userAgent);
+  const mobile = isIOS() || isAndroid();
+  const isMac = !mobile && /Mac/i.test(navigator.platform || navigator.userAgent);
+  const [tab, setTab] = useState(mobile ? 'tel' : 'pc');
+  const [canInstall, setCanInstall] = useState(!!window.__ayInstall);
+  const [installed, setInstalled] = useState(standalone());
+  useEffect(() => { const f = () => setCanInstall(true); const g = () => setInstalled(true); window.addEventListener('ay-installable', f); window.addEventListener('appinstalled', g); return () => { window.removeEventListener('ay-installable', f); window.removeEventListener('appinstalled', g); }; }, []);
+  const install = async () => { const e = window.__ayInstall; if (!e) return; e.prompt(); const r = await e.userChoice.catch(() => null); if (r?.outcome === 'accepted') setInstalled(true); window.__ayInstall = null; setCanInstall(false); };
+  const url = location.origin;
   return (
     <div className="auth">
-      <div className="auth-box" style={{ maxWidth: 560 }}>
+      <div className="auth-box" style={{ maxWidth: 600 }}>
         <button className="iconbtn" onClick={() => (history.length > 1 ? navigate(-1) : navigate('/'))} aria-label={t('Retour')}><LuArrowLeft /></button>
-        <img className="auth-logo" src="/logo.svg" alt="Artis & You" style={{ width: 110, height: 110 }} />
-        <h1 className="center" style={{ fontSize: 28 }}>{t('Artis & You sur votre ordinateur')}</h1>
-        <p className="center muted">{t('Le logiciel s’ouvre dans sa propre fenêtre, avec son icône, et se met à jour tout seul. Une connexion internet est nécessaire.')}</p>
-        <a className={'opt' + (!isMac ? ' red' : '')} href={base + 'Artis-and-You-Setup.exe'}><LuMonitor /><div><b>{t('Télécharger pour Windows')}</b><small>Windows 10 / 11 · .exe</small></div><LuDownload /></a>
-        <a className={'opt' + (isMac ? ' red' : '')} href={base + 'Artis-and-You.dmg'}><LuApple /><div><b>{t('Télécharger pour Mac')}</b><small>macOS 11+ · Apple Silicon et Intel · .dmg</small></div><LuDownload /></a>
-        <div className="notice"><LuRefreshCw /><span>{t('Mises à jour automatiques : à chaque nouvelle version, le logiciel la télécharge en arrière-plan et l’installe au prochain démarrage.')}</span></div>
+        <img className="auth-logo" src="/logo.svg" alt="Artis & You" style={{ width: 100, height: 100 }} />
+        <h1 className="center" style={{ fontSize: 28 }}>{t('Installer Artis & You')}</h1>
+        <div className="seg" style={{ margin: '6px 0 14px' }}>{[['pc', t('Ordinateur')], ['tel', t('Téléphone et tablette')]].map(([v, l]) => <button key={v} className={tab === v ? 'on' : ''} onClick={() => setTab(v)}>{l}</button>)}</div>
+        {tab === 'pc' ? <>
+          <p className="center muted">{t('Le logiciel s’ouvre dans sa propre fenêtre, avec son icône, et se met à jour tout seul. Une connexion internet est nécessaire.')}</p>
+          <a className={'opt' + (!isMac ? ' red' : '')} href={base + 'Artis-and-You-Setup.exe'}><LuMonitor /><div><b>{t('Télécharger pour Windows')}</b><small>Windows 10 / 11 · .exe</small></div><LuDownload /></a>
+          <a className={'opt' + (isMac ? ' red' : '')} href={base + 'Artis-and-You.dmg'}><LuApple /><div><b>{t('Télécharger pour Mac')}</b><small>macOS 11+ · Apple Silicon et Intel · .dmg</small></div><LuDownload /></a>
+          <div className="notice"><LuRefreshCw /><span>{t('Mises à jour automatiques : à chaque nouvelle version, le logiciel la télécharge en arrière-plan et l’installe au prochain démarrage.')}</span></div>
+          <p className="small faint">{t('Au premier lancement sur Windows, si SmartScreen s’affiche, cliquez sur « Informations complémentaires » puis « Exécuter quand même » (le logiciel n’est pas encore signé). Sur Mac : clic droit sur l’application puis « Ouvrir ».')}</p>
+          {canInstall && <button className="opt" onClick={install}><LuMonitor /><div><b>{t('Ou installer la version web')}</b><small>{t('Sans téléchargement, depuis ce navigateur (Chrome, Edge)')}</small></div></button>}
+        </> : <>
+          <p className="center muted">{t('Ajoutez Artis & You sur l’écran d’accueil : l’application s’ouvre en plein écran avec son icône, comme une vraie application, et elle est toujours à jour.')}</p>
+          {installed ? <div className="notice">✅ {t('Artis & You est installée sur cet appareil.')}</div> : <>
+            <div className={'card' + (isAndroid() ? '' : ' soft')} style={{ marginBottom: 12 }}>
+              <div className="row" style={{ gap: 10 }}><LuSmartphone size={26} className="red-t" /><b style={{ fontSize: 17 }}>Android</b></div>
+              {canInstall ? <button className="btn block mt" onClick={install}><LuDownload /> {t('Installer l’application')}</button> : (
+                <ol className="small" style={{ paddingLeft: 20, margin: '8px 0 0' }}>
+                  <li>{t('Ouvrez {u} dans Chrome', { u: url.replace(/^https?:\/\//, '') })}</li>
+                  <li>{t('Touchez le menu ⋮ en haut à droite')}</li>
+                  <li>{t('Choisissez « Installer l’application » (ou « Ajouter à l’écran d’accueil »)')}</li>
+                </ol>)}
+            </div>
+            <div className={'card' + (isIOS() ? '' : ' soft')}>
+              <div className="row" style={{ gap: 10 }}><LuApple size={26} className="red-t" /><b style={{ fontSize: 17 }}>iPhone et iPad</b></div>
+              <ol className="small" style={{ paddingLeft: 20, margin: '8px 0 0' }}>
+                <li>{t('Ouvrez {u} dans Safari', { u: url.replace(/^https?:\/\//, '') })}</li>
+                <li>{t('Touchez le bouton Partager')} <LuShare style={{ verticalAlign: '-2px' }} /> {t('en bas de l’écran')}</li>
+                <li>{t('Choisissez « Sur l’écran d’accueil » puis « Ajouter »')}</li>
+              </ol>
+            </div>
+          </>}
+          {!mobile && <div className="notice mt"><LuSmartphone /><span>{t('Sur votre téléphone, ouvrez {u} puis suivez les étapes ci-dessus.', { u: url.replace(/^https?:\/\//, '') })} <button className="link bold" onClick={() => navigator.clipboard?.writeText(url)}>{t('Copier le lien')}</button></span></div>}
+          <p className="small faint center mt">{t('Les applications App Store et Google Play arrivent ensuite ; vos données seront les mêmes.')}</p>
+        </>}
         <p className="small faint center">{t('Version web')} {APP_VERSION} · <a className="bold" href={`https://github.com/${GITHUB_REPO}/releases`}>{t('Toutes les versions')}</a></p>
-        <p className="small faint">{t('Au premier lancement sur Windows, si SmartScreen s’affiche, cliquez sur « Informations complémentaires » puis « Exécuter quand même » (le logiciel n’est pas encore signé). Sur Mac : clic droit sur l’application puis « Ouvrir ».')}</p>
       </div>
     </div>
   );
