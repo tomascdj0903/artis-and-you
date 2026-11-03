@@ -142,8 +142,14 @@ export function Seg({ options, value, onChange }) {
 export function Field({ label, hint, children }) {
   return <label className="field"><span>{label} {hint && <span className="hint">{hint}</span>}</span>{children}</label>;
 }
-export function Toggle({ checked, onChange, label }) {
-  return <input type="checkbox" className="toggle" checked={!!checked} onChange={(e) => onChange(e.target.checked)} aria-label={label} />;
+export function Toggle({ checked, onChange, label, state }) {
+  const input = <input type="checkbox" role="switch" className="toggle" checked={!!checked} onChange={(e) => onChange(e.target.checked)} aria-label={label} />;
+  if (!state) return input;
+  return <label className={'toggle-wrap' + (checked ? ' on' : '')}>{checked ? t('Activé') : t('Désactivé')}{input}</label>;
+}
+// Ligne de réglage : intitulé, explication courte et interrupteur
+export function SettingToggle({ label, hint, checked, onChange }) {
+  return <div className="r set-row"><span className="k">{label}{hint && <small>{hint}</small>}</span><Toggle checked={checked} onChange={onChange} label={label} state /></div>;
 }
 
 export function pickFiles({ accept = '*/*', multiple = true } = {}) {

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { LuChevronLeft, LuChevronRight, LuSettings, LuPlus, LuVideo, LuMapPin, LuSend, LuImage, LuCalendarPlus, LuNavigation, LuCheck } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -7,11 +7,14 @@ import { t, locale } from '../../lib/i18n.js';
 import { clientName, dateShort, dateTime, hm, startOfWeek, addDays, weekNumber, iso, fullName, date } from '../../lib/format.js';
 import { apptStatus, APPT_TYPES, expandAppointments } from '../../lib/docs.js';
 import { icsFile, rrule } from '../../lib/ics.js';
-import { TopBar, SearchBar, KV, Sec, Sheet, Field, Chips, Seg, Toggle, useData, Loader, Empty, StatusPill, Img, Modal, Lightbox, Pill } from '../../ui/index.jsx';
+import { TopBar, SearchBar, KV, Sec, Sheet, Field, Chips, Seg, Toggle, SettingToggle, useData, Loader, Empty, StatusPill, Img, Modal, Lightbox, Pill } from '../../ui/index.jsx';
 
+export const DEFAULT_DURATIONS = { Diagnostic: 60, 'Dépannage': 90, Devis: 60, Entretien: 60, Chantier: 240 };
 const PALETTE = ['#00123B', '#7F1111', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
 const hashColor = (s = '') => PALETTE[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % PALETTE.length];
-export const planSettings = (company) => ({ view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true, ...(company?.settings?.planning || {}) });
+export const planSettings = (company) => ({ view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true, ...(company?.settings?.planning || {}), durations: { ...DEFAULT_DURATIONS, ...(company?.settings?.planning?.durations || {}) } });
+// Nombre de colonnes de la semaine : jusqu'au dernier jour travaillé (le dimanche s'affiche s'il est coché)
+export const weekLength = (s) => (s.weekend || s.days.includes(0) ? 7 : s.days.includes(6) ? 6 : 5);
 
 // Créneaux libres d'une journée (pour l'affichage « Dispo » et la prise de RDV)
 export function freeWindows(day, busy, s, minLen = 30) {
@@ -29,7 +32,7 @@ export function freeWindows(day, busy, s, minLen = 30) {
 }
 
 export function Planning() {
-  const { company, teams, profile, can } = useApp();
+  const { company, teams, profile, can, run } = useApp();
   const s = planSettings(company);
   const { query } = useLocation();
   const [view, setView] = useState(query.get('vue') || s.view);
@@ -42,17 +45,32 @@ export function Planning() {
     if (view === 'month') { const a = new Date(anchor.getFullYear(), anchor.getMonth(), 1); const st = startOfWeek(a); return [st, addDays(st, 42)]; }
     const st = startOfWeek(anchor); return [st, addDays(st, 7)];
   }, [view, anchor]);
-  const [data, , loading] = useData(async () => {
+  const [data, refetch, loading] = useData(async () => {
     const [appts, clients] = await Promise.all([
       api.select('appointments', { company_id: company.id, 'start_at<': range[1].toISOString(), status: ['a_valider', 'valide', 'termine'] }, { order: 'start_at.asc' }),
       api.select('clients', { company_id: company.id }, { columns: 'id,type,last_name,first_name,company_name,trade_name,site_city,billing_city' }),
     ]);
     return { appts, cm: Object.fromEntries(clients.map((c) => [c.id, c])) };
   }, [range[0].getTime(), view]);
+  // Recherche sur toutes les dates (pas seulement la semaine affichée)
+  const [allData] = useData(async () => (q.trim() ? api.select('appointments', { company_id: company.id }, { order: 'start_at.desc', limit: 1000 }) : null), [!!q.trim()]);
   const tm = Object.fromEntries(teams.map((x) => [x.id, x]));
+  const reload = () => refetch();
+  const [undo, setUndo] = useState(null);
+  const moveAppt = async (a, start) => {
+    const dur = new Date(a.end_at) - new Date(a.start_at);
+    if (+start === +new Date(a.start_at)) return;
+    const prev = { start_at: a.start_at, end_at: a.end_at };
+    await run(() => api.update('appointments', { id: a.id }, { start_at: start.toISOString(), end_at: new Date(+start + dur).toISOString() }));
+    setUndo({ a, prev, label: `${dateShort(start)} ${hm(start)}` }); reload();
+    setTimeout(() => setUndo((u) => (u && u.a.id === a.id ? null : u)), 8000);
+  };
   const color = (a) => (a.personal ? '#8A90A0' : s.colorBy === 'client' ? hashColor(a.client_id || a.title) : tm[a.team_id]?.color || '#00123B');
   const all = data ? expandAppointments(data.appts, range[0], range[1]) : [];
-  const evs = all.filter((a) => (!teamF.length || teamF.includes(a.team_id)) && (!q || [a.title, clientName(data.cm[a.client_id]), a.address].join(' ').toLowerCase().includes(q.toLowerCase())));
+  const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const match = (a) => { const c = data?.cm[a.client_id]; const hay = nz([a.title, a.type, clientName(c), c?.company_name, c?.last_name, c?.first_name, a.address, a.contact_name, a.notes, dateShort(a.start_at)].join(' ')); return nz(q).trim().split(/\s+/).every((w) => hay.includes(w)); };
+  const evs = all.filter((a) => !teamF.length || teamF.includes(a.team_id));
+  const dragOk = can('planning') && profile.member_role !== 'ouvrier';
   const move = (n) => { const a = new Date(anchor); if (view === 'day') a.setDate(a.getDate() + n); else if (view === 'month') a.setMonth(a.getMonth() + n); else a.setDate(a.getDate() + 7 * n); setAnchor(a); };
   const label = view === 'month' ? anchor.toLocaleDateString(locale(), { month: 'long', year: 'numeric' }) : view === 'day' ? dateShort(anchor) : t('Semaine {n}', { n: weekNumber(startOfWeek(anchor)) });
   const sub = view === 'week' ? `${range[0].toLocaleDateString(locale(), { day: 'numeric', month: 'short' })} – ${addDays(range[1], -1).toLocaleDateString(locale(), { day: 'numeric', month: 'short', year: 'numeric' })}` : '';
@@ -61,7 +79,7 @@ export function Planning() {
   return (
     <div className="content" style={{ maxWidth: 1400 }}>
       <TopBar title={t('Planning')} sub={sub} back={false} />
-      <SearchBar placeholder={t('Recherchez un rendez-vous')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={teamF.length > 0} />
+      <SearchBar placeholder={t('Recherchez un rendez-vous (client, objet, adresse)')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={teamF.length > 0} />
       <div className="cal-head">
         <button className="round" onClick={() => move(-1)} aria-label={t('Précédent')}><LuChevronLeft /></button>
         <b style={{ minWidth: 110, textAlign: 'center', textTransform: 'capitalize' }}>{label}</b>
@@ -78,12 +96,15 @@ export function Planning() {
         <span><i style={{ background: 'var(--ardoise)' }} />{t('Validé')}</span>
         <span><LuVideo /> {t('Visio')}</span>
       </div>
-      {loading ? <Loader /> : view === 'month' ? (
-        <MonthGrid range={range} anchor={anchor} evs={evs} color={color} cm={data.cm} onDay={(d) => { setAnchor(d); setView('day'); }} />
+      {undo && <div className="notice row" style={{ justifyContent: 'space-between', marginBottom: 8 }}><span>{t('Rendez-vous déplacé au {d}', { d: undo.label })}</span><button className="btn xs ghost" onClick={async () => { await run(() => api.update('appointments', { id: undo.a.id }, undo.prev)); setUndo(null); reload(); }}>{t('Annuler')}</button></div>}
+      {q.trim() ? <SearchResults list={(allData || []).filter((a) => match(a)).filter((a) => !teamF.length || teamF.includes(a.team_id))} loading={!allData} cm={data?.cm || {}} color={color} q={q.trim()} />
+      : loading ? <Loader /> : view === 'month' ? (
+        <MonthGrid range={range} anchor={anchor} evs={evs} color={color} cm={data.cm} onDay={(d) => { setAnchor(d); setView('day'); }} onMove={dragOk ? moveAppt : null} />
       ) : (
-        <WeekGrid days={view === 'day' ? [range[0]] : Array.from({ length: s.weekend ? 7 : 5 + (s.days.includes(6) ? 1 : 0) }, (_, i) => addDays(range[0], i))}
-          s={s} evs={evs} busy={all} color={color} cm={data.cm} onNew={newAt} />
+        <WeekGrid days={view === 'day' ? [range[0]] : Array.from({ length: weekLength(s) }, (_, i) => addDays(range[0], i))}
+          s={s} evs={evs} busy={all} color={color} cm={data.cm} onNew={newAt} onMove={dragOk ? moveAppt : null} />
       )}
+      {dragOk && !q.trim() && view !== 'month' && <p className="small faint" style={{ marginTop: 6 }}>{t('Astuce : faites glisser un rendez-vous pour le déplacer (par pas de 15 min).')}</p>}
       {can('planning') && profile.member_role !== 'ouvrier' && <button className="fab" onClick={() => navigate('/pro/planning/nouveau')} aria-label={t('Nouveau rendez-vous')}><LuPlus /></button>}
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer par équipe')}>
         <Chips multi options={teams.map((x) => [x.id, x.name])} value={teamF} onChange={setTeamF} />
@@ -93,10 +114,36 @@ export function Planning() {
   );
 }
 
-function WeekGrid({ days, s, evs, busy, color, cm, onNew }) {
+function WeekGrid({ days, s, evs, busy, color, cm, onNew, onMove }) {
   const [h0, h1] = s.hours; const H = 46;
   const todayKey = iso(new Date());
   const top = (d) => ((d.getHours() + d.getMinutes() / 60 - h0) * H);
+  const drag = useRef(null);
+  const [ghost, setGhost] = useState(null); // { id, day, start }
+  // Glisser-déposer à la souris ou au doigt : pas de 15 min, d'un jour à l'autre
+  const down = (e, a) => {
+    if (!onMove || a.occurrence > 0 || (a.recurrence && a.recurrence !== 'none' && a.occurrence !== 0) || e.button > 0) return;
+    const st = new Date(a.start_at);
+    drag.current = { a, x: e.clientX, y: e.clientY, st, moved: false };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const moveEv = (e) => {
+    const g = drag.current; if (!g) return;
+    const dy = e.clientY - g.y, dx = e.clientX - g.x;
+    if (!g.moved && Math.hypot(dx, dy) < 6) return;
+    g.moved = true;
+    const col = document.elementsFromPoint(e.clientX, e.clientY).find((el) => el.dataset?.day);
+    const day = col ? col.dataset.day : iso(g.st);
+    const mins = Math.round(((g.st.getHours() * 60 + g.st.getMinutes()) + (dy / H) * 60) / 15) * 15;
+    const start = new Date(day + 'T00:00:00'); start.setMinutes(Math.max(h0 * 60, Math.min((h1 * 60) - 15, mins)));
+    g.start = start; setGhost({ id: g.a.id, day, start });
+  };
+  const up = (e) => {
+    const g = drag.current; drag.current = null; setGhost(null);
+    if (!g) return;
+    if (!g.moved) { navigate('/pro/planning/rdv/' + g.a.id); return; }
+    if (g.start) onMove(g.a, g.start);
+  };
   return (
     <div className="cal" style={{ '--n': days.length, '--h': H + 'px' }}>
       <div className="cal-days"><div />{days.map((d) => <div key={d} className={iso(d) === todayKey ? 'today' : ''}>{d.toLocaleDateString(locale(), { weekday: 'short' }).replace('.', '')}<b>{d.getDate()}</b></div>)}</div>
@@ -107,17 +154,21 @@ function WeekGrid({ days, s, evs, busy, color, cm, onNew }) {
           const dayEv = evs.filter((a) => iso(new Date(a.start_at)) === key);
           const free = freeWindows(d, busy.filter((a) => a.status !== 'termine'), s, 30);
           return (
-            <div key={key} className={'cal-col' + (s.days.includes(d.getDay()) ? '' : ' off')} style={{ height: (h1 - h0) * H }}
+            <div key={key} data-day={key} className={'cal-col' + (s.days.includes(d.getDay()) ? '' : ' off') + (ghost?.day === key ? ' drop' : '')} style={{ height: (h1 - h0) * H }}
               onDoubleClick={(e) => { if (e.target !== e.currentTarget) return; const y = e.nativeEvent.offsetY; const x = new Date(d); x.setHours(h0, 0, 0, 0); x.setMinutes(Math.floor((y / H) * 2) * 30); onNew(x); }}>
               {free.map(([a, b], i) => <button key={'f' + i} className="ev dispo" style={{ top: top(a), height: Math.max(18, top(b) - top(a) - 2) }} onClick={() => onNew(a)} title={t('Créneau libre')}>{t('Dispo')}</button>)}
               {dayEv.map((a) => {
                 const st = new Date(a.start_at), en = new Date(a.end_at);
+                const fixed = !onMove || (a.recurrence && a.recurrence !== 'none');
                 return (
-                  <button key={a.id + (a.occurrence || '')} className={'ev' + (a.status === 'a_valider' ? ' pending' : '') + (a.status === 'termine' ? ' done' : '')} style={{ top: Math.max(0, top(st)), height: Math.max(22, top(en) - top(st) - 2), background: color(a) }} onClick={() => navigate('/pro/planning/rdv/' + a.id)}>
+                  <button key={a.id + (a.occurrence || '')} className={'ev' + (a.status === 'a_valider' ? ' pending' : '') + (a.status === 'termine' ? ' done' : '') + (fixed ? '' : ' draggable') + (ghost?.id === a.id ? ' dragging' : '')} style={{ top: Math.max(0, top(st)), height: Math.max(22, top(en) - top(st) - 2), background: color(a) }}
+                    onPointerDown={fixed ? undefined : (e) => down(e, a)} onPointerMove={fixed ? undefined : moveEv} onPointerUp={fixed ? undefined : up} onPointerCancel={() => { drag.current = null; setGhost(null); }}
+                    onClick={fixed ? () => navigate('/pro/planning/rdv/' + a.id) : undefined} title={fixed ? undefined : t('Cliquez pour ouvrir, faites glisser pour déplacer')}>
                     <b>{hm(st)}{a.mode === 'visio' && ' 🎥'}</b>{a.personal ? a.title : clientName(cm[a.client_id])}<br />{!a.personal && a.title}
                   </button>
                 );
               })}
+              {ghost?.day === key && (() => { const a = evs.find((x) => x.id === ghost.id); const dur = new Date(a.end_at) - new Date(a.start_at); const en = new Date(+ghost.start + dur); return <div className="ev ghost" style={{ top: top(ghost.start), height: Math.max(22, top(en) - top(ghost.start) - 2) }}><b>{hm(ghost.start)} – {hm(en)}</b></div>; })()}
             </div>
           );
         })}
@@ -126,7 +177,31 @@ function WeekGrid({ days, s, evs, busy, color, cm, onNew }) {
   );
 }
 
-function MonthGrid({ range, anchor, evs, color, cm, onDay }) {
+function SearchResults({ list, loading, cm, color, q }) {
+  if (loading) return <Loader />;
+  if (!list.length) return <Empty text={t('Aucun rendez-vous pour « {q} »', { q })} />;
+  const now = iso(new Date());
+  const up = list.filter((a) => iso(new Date(a.start_at)) >= now).sort((a, b) => a.start_at.localeCompare(b.start_at));
+  const past = list.filter((a) => iso(new Date(a.start_at)) < now);
+  const row = (a) => (
+    <button key={a.id} className="r" style={{ width: '100%', border: 0, background: 'transparent', color: 'inherit', textAlign: 'left' }} onClick={() => navigate('/pro/planning/rdv/' + a.id)}>
+      <span className="row" style={{ gap: 10 }}><i style={{ width: 10, height: 34, borderRadius: 4, background: color(a), display: 'inline-block' }} />
+        <span><b>{date(a.start_at)} · {hm(a.start_at)}–{hm(a.end_at)}</b><div className="small muted">{a.personal ? a.title : `${clientName(cm[a.client_id])} · ${a.title || t(a.type)}`}{a.address ? ' · ' + a.address : ''}</div></span></span>
+      <StatusPill s={apptStatus(a.status)} />
+    </button>
+  );
+  return (
+    <>
+      <Sec title={t('À venir')} meta={String(up.length)} />
+      {up.length ? <div className="kv">{up.map(row)}</div> : <p className="small muted">{t('Aucun rendez-vous à venir')}</p>}
+      <Sec title={t('Passés')} meta={String(past.length)} />
+      {past.length ? <div className="kv">{past.slice(0, 50).map(row)}</div> : <p className="small muted">{t('Aucun rendez-vous passé')}</p>}
+    </>
+  );
+}
+
+function MonthGrid({ range, anchor, evs, color, cm, onDay, onMove }) {
+  const [over, setOver] = useState(null);
   const days = Array.from({ length: 42 }, (_, i) => addDays(range[0], i));
   return (
     <div className="cal">
@@ -135,9 +210,11 @@ function MonthGrid({ range, anchor, evs, color, cm, onDay }) {
         {days.map((d) => {
           const k = iso(d); const list = evs.filter((a) => iso(new Date(a.start_at)) === k);
           return (
-            <div key={k} className={'cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '')} onClick={() => onDay(d)} style={{ cursor: 'pointer' }}>
+            <div key={k} className={'cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '') + (over === k ? ' drop' : '')} onClick={() => onDay(d)} style={{ cursor: 'pointer' }}
+              onDragOver={onMove ? (e) => { e.preventDefault(); setOver(k); } : undefined} onDragLeave={() => setOver(null)}
+              onDrop={onMove ? (e) => { e.preventDefault(); setOver(null); const a = evs.find((x) => x.id === e.dataTransfer.getData('text/plain')); if (!a) return; const o = new Date(a.start_at); const n = new Date(d); n.setHours(o.getHours(), o.getMinutes(), 0, 0); onMove(a, n); } : undefined}>
               <span className="n">{d.getDate()}</span>
-              {list.slice(0, 3).map((a) => <button key={a.id + (a.occurrence || '')} className="mini" style={{ background: a.status === 'a_valider' ? 'var(--bordeaux)' : color(a) }} onClick={(e) => { e.stopPropagation(); navigate('/pro/planning/rdv/' + a.id); }}>{hm(a.start_at)} {a.personal ? a.title : clientName(cm[a.client_id])}</button>)}
+              {list.slice(0, 3).map((a) => <button key={a.id + (a.occurrence || '')} draggable={!!onMove && (!a.recurrence || a.recurrence === 'none')} onDragStart={(e) => e.dataTransfer.setData('text/plain', a.id)} className="mini" style={{ background: a.status === 'a_valider' ? 'var(--bordeaux)' : color(a) }} onClick={(e) => { e.stopPropagation(); navigate('/pro/planning/rdv/' + a.id); }}>{hm(a.start_at)} {a.personal ? a.title : clientName(cm[a.client_id])}</button>)}
               {list.length > 3 && <span className="small faint">+{list.length - 3}</span>}
             </div>
           );
@@ -311,7 +388,7 @@ export function ApptEdit({ params }) {
     if (params.id) { setA(await api.one('appointments', { id: params.id })); return; }
     const st = query.get('start') ? new Date(query.get('start')) : (() => { const x = new Date(); x.setDate(x.getDate() + 1); x.setHours(9, 0, 0, 0); return x; })();
     const cl = query.get('client') ? await api.one('clients', { id: query.get('client') }) : null;
-    setA({ client_id: cl?.id || '', type: 'Chantier', title: '', start_at: st.toISOString(), end_at: new Date(+st + s.duration * 6e4).toISOString(), mode: 'site', status: 'valide', team_id: profile.team_id || teams[0]?.id || '', address: cl ? [cl.site_address, [cl.site_zip, cl.site_city].filter(Boolean).join(' ')].filter(Boolean).join(', ') : '', contact_name: cl ? clientName(cl) : '', contact_phone: cl?.mobile || cl?.phone || '', recurrence: 'none', personal: false, notes: '' });
+    setA({ client_id: cl?.id || '', type: 'Chantier', title: '', start_at: st.toISOString(), end_at: new Date(+st + (s.durations.Chantier || s.duration) * 6e4).toISOString(), mode: 'site', status: 'valide', team_id: profile.team_id || teams[0]?.id || '', address: cl ? [cl.site_address, [cl.site_zip, cl.site_city].filter(Boolean).join(' ')].filter(Boolean).join(', ') : '', contact_name: cl ? clientName(cl) : '', contact_phone: cl?.mobile || cl?.phone || '', recurrence: 'none', personal: false, notes: '' });
   }, [params.id]);
   if (!a || !clients) return <div className="content"><TopBar title={t('Rendez-vous')} /><Loader /></div>;
   const d = iso(new Date(a.start_at)), h1 = hm(a.start_at), h2 = hm(a.end_at);
@@ -340,7 +417,8 @@ export function ApptEdit({ params }) {
       <form onSubmit={save}>
         <label className="check"><input type="checkbox" checked={a.personal} onChange={(e) => setA({ ...a, personal: e.target.checked })} />{t('RDV personnel (sans client)')}</label>
         {!a.personal && <Field label={t('Client')}><select value={a.client_id || ''} onChange={(e) => pickClient(e.target.value)} required><option value="">{t('Choisir un client')}</option>{clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)} · {c.billing_city}</option>)}</select></Field>}
-        {!a.personal && <Chips options={APPT_TYPES.map((x) => [x, t(x)])} value={a.type} onChange={(type) => setA({ ...a, type })} red />}
+        {!a.personal && <Chips options={APPT_TYPES.map((x) => [x, t(x)])} value={a.type} onChange={(type) => setA({ ...a, type, ...(params.id ? {} : { end_at: new Date(+new Date(a.start_at) + (s.durations[type] || s.duration) * 6e4).toISOString() }) })} red />}
+        {!a.personal && !params.id && <p className="small faint" style={{ marginTop: -6 }}>{t('Durée prévue pour « {t} » : {d} (modifiable dans les réglages du planning)', { t: t(a.type), d: fmtDur(s.durations[a.type] || s.duration) })}</p>}
         <Field label={t('Objet')}><input value={a.title} onChange={(e) => setA({ ...a, title: e.target.value })} placeholder={t('ex. Changement d’un chauffe-eau')} /></Field>
         <div className="form-grid three">
           <Field label={t('Date')}><input type="date" value={d} onChange={(e) => setTime(e.target.value, h1, h2)} required /></Field>
@@ -362,6 +440,8 @@ export function ApptEdit({ params }) {
 }
 
 // ─────────────── Réglages du planning ───────────────
+const DUR_OPTS = [15, 30, 45, 60, 90, 120, 180, 240, 300, 360, 480];
+export const fmtDur = (m) => (m < 60 ? m + ' min' : Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + (m % 60) : '') + (m >= 480 ? ' (' + t('journée') + ')' : ''));
 export function PlanningSettings() {
   const { company, setCompany, run, wip, teams } = useApp();
   const [s, setS] = useState(planSettings(company));
@@ -380,7 +460,7 @@ export function PlanningSettings() {
       <div className="kv">
         <div className="r"><span className="k">{t('Vue par défaut')}</span><select value={s.view} onChange={(e) => save({ view: e.target.value })}><option value="day">{t('Jour')}</option><option value="week">{t('Semaine')}</option><option value="month">{t('Mois')}</option></select></div>
         <div className="r"><span className="k">{t('Heures affichées')}</span><span className="row"><select value={s.hours[0]} onChange={(e) => save({ hours: [+e.target.value, s.hours[1]] })}>{hours.map((h) => <option key={h} value={h}>{h} h</option>)}</select>–<select value={s.hours[1]} onChange={(e) => save({ hours: [s.hours[0], +e.target.value] })}>{hours.slice(1).map((h) => <option key={h} value={h}>{h} h</option>)}<option value={24}>24 h</option></select></span></div>
-        <div className="r"><span className="k">{t('Afficher le week-end')}</span><Toggle checked={s.weekend} onChange={(v) => save({ weekend: v })} /></div>
+        <SettingToggle label={t('Afficher le week-end')} hint={t('Samedi et dimanche toujours visibles, même non travaillés')} checked={s.weekend} onChange={(v) => save({ weekend: v })} />
       </div>
       <Sec title={t('Couleurs')} />
       <div className="kv">
@@ -393,10 +473,15 @@ export function PlanningSettings() {
           <Chips multi options={DAYS.map(([v, l]) => [v, t(l)])} value={s.days} onChange={(days) => save({ days })} />
           <span className="row">{t('de')} <select value={s.slot[0]} onChange={(e) => save({ slot: [+e.target.value, s.slot[1]] })}>{hours.map((h) => <option key={h} value={h}>{h} h</option>)}</select> {t('à')} <select value={s.slot[1]} onChange={(e) => save({ slot: [s.slot[0], +e.target.value] })}>{hours.map((h) => <option key={h} value={h}>{h} h</option>)}</select></span>
         </div>
-        <div className="r"><span className="k">{t('Durée par défaut')}</span><select value={s.duration} onChange={(e) => save({ duration: +e.target.value })}>{[30, 60, 90, 120, 180, 240].map((m) => <option key={m} value={m}>{m < 60 ? m + ' min' : m / 60 + ' h'}</option>)}</select></div>
-        <div className="r"><span className="k">{t('Validation manuelle')}</span><Toggle checked={s.manual} onChange={(v) => save({ manual: v })} /></div>
+        <SettingToggle label={t('Validation manuelle')} hint={s.manual ? t('Vous acceptez ou refusez chaque demande de rendez-vous') : t('Les demandes sur vos créneaux libres sont acceptées automatiquement')} checked={s.manual} onChange={(v) => save({ manual: v })} />
         <div className="r"><span className="k">{t('Rappel au client')}</span><select value={s.reminder} onChange={(e) => save({ reminder: +e.target.value })}>{[0, 2, 24, 48].map((h) => <option key={h} value={h}>{h ? t('{n} h avant', { n: h }) : t('Aucun')}</option>)}</select></div>
-        <div className="r"><span className="k">{t('Visio WhatsApp')}</span><Toggle checked={s.visio} onChange={(v) => save({ visio: v })} /></div>
+        <SettingToggle label={t('Rendez-vous en visio (WhatsApp)')} hint={s.visio ? t('Vos clients peuvent demander une visio WhatsApp') : t('Vos clients ne peuvent demander que des rendez-vous sur place')} checked={s.visio} onChange={(v) => save({ visio: v })} />
+      </div>
+      <Sec title={t('Durée par type de rendez-vous')} />
+      <p className="small muted" style={{ marginTop: -4 }}>{t('Utilisée pour proposer les créneaux aux clients et pré-remplir l’heure de fin.')}</p>
+      <div className="kv">
+        {APPT_TYPES.map((ty) => <div className="r" key={ty}><span className="k">{t(ty)}</span><select value={s.durations[ty] || s.duration} onChange={(e) => save({ durations: { ...s.durations, [ty]: +e.target.value } })}>{DUR_OPTS.map((m) => <option key={m} value={m}>{fmtDur(m)}</option>)}</select></div>)}
+        <div className="r"><span className="k">{t('Autre rendez-vous')}</span><select value={s.duration} onChange={(e) => save({ duration: +e.target.value })}>{DUR_OPTS.map((m) => <option key={m} value={m}>{fmtDur(m)}</option>)}</select></div>
       </div>
       <Sec title={t('Synchronisation')} />
       <div className="kv">

@@ -168,8 +168,10 @@ export function NewRequest({ params }) {
     const st = new Date(curDay); st.setHours(s.slot[0], 0, 0, 0);
     const en = new Date(curDay); en.setHours(s.slot[1], 0, 0, 0);
     const free = freeWindows(curDay, b.busySlots, s, 30);
+    // Le créneau doit pouvoir contenir la durée prévue pour ce type de RDV (réglée par l'artisan)
+    const need = (mode === 'visio' ? 30 : (s.durations?.[type] || s.duration || 60)) * 6e4;
     for (let x = new Date(st); x < en; x = new Date(+x + 18e5)) {
-      const ok = free.some(([a, z]) => x >= a && +x + 18e5 <= +z);
+      const ok = free.some(([a, z]) => x >= a && +x + need <= +z);
       slots.push([new Date(x), ok]);
     }
   }
@@ -183,7 +185,7 @@ export function NewRequest({ params }) {
         if (JSON.stringify(home) !== JSON.stringify(profile.home || {})) { await api.update('profiles', { id: profile.id }, { home }); setProfile({ ...profile, home }); }
         const ups = [];
         for (const f of photos) ups.push(await uploadTo('u/' + profile.id + '/demandes', f));
-        const dur = mode === 'visio' ? 30 : Math.max(60, s.duration || 60);
+        const dur = mode === 'visio' ? 30 : (s.durations?.[type] || s.duration || 60);
         const id = await api.rpc('request_appointment', { p: { company_id: params.id, type, title: type + (text ? ' · ' + text.split(/[.\n]/)[0].slice(0, 50) : ''), text, mode, start_at: slot.toISOString(), end_at: new Date(+slot + dur * 6e4).toISOString(), photos: ups } });
         navigate('/client/demande-envoyee/' + id, { replace: true });
       });

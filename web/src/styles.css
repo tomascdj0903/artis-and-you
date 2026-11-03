@@ -268,10 +268,19 @@ table.t .strong { font-weight: 700; }
 .check input:checked { background: var(--navy); border-color: var(--navy); }
 .check input:checked::after { content: ''; width: 8px; height: 14px; border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg) translate(-1px,-2px); }
 .checklist .check { border-bottom: 1px solid var(--line-2); padding: 14px 0; }
-.toggle { appearance: none; width: 50px; height: 30px; border-radius: 15px; background: var(--marine-50); position: relative; transition: background .15s; flex-shrink: 0; cursor: pointer; margin: 0; }
-.toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: left .15s; }
-.toggle:checked { background: var(--navy); }
-.toggle:checked::after { left: 23px; }
+/* Interrupteurs : taille fixe, jamais étirés par les règles des champs (.kv input…) */
+input.toggle, .kv input.toggle { appearance: none; -webkit-appearance: none; width: 44px; min-width: 44px; max-width: 44px; height: 26px; flex: 0 0 44px; padding: 0; border: 0; border-radius: 13px; background: var(--marine-50); position: relative; transition: background .15s; cursor: pointer; margin: 0; }
+input.toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: left .15s; }
+input.toggle:checked, .kv input.toggle:checked { background: var(--vert); }
+input.toggle:checked::after { left: 21px; }
+input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset: 2px; }
+.kv input.toggle:focus { background: var(--marine-50); }
+.kv input.toggle:checked:focus { background: var(--vert); }
+:root[data-theme="dark"] input.toggle:not(:checked) { background: #3A4256; }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.set-row .k small { display: block; font-weight: 400; color: var(--text-2); font-size: 12.5px; margin-top: 2px; line-height: 1.35; }
+.toggle-wrap { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; font-size: 12.5px; font-weight: 700; color: var(--text-2); }
+.toggle-wrap.on { color: var(--vert); }
 .form-grid { display: grid; gap: 0 14px; }
 @media (min-width: 720px) { .form-grid.two { grid-template-columns: 1fr 1fr; } .form-grid.three { grid-template-columns: 1fr 1fr 1fr; } .form-grid .full { grid-column: 1 / -1; } }
 .error { background: var(--bordeaux-50); color: var(--bordeaux); border: 1px solid var(--bordeaux-200); padding: 10px 14px; border-radius: 12px; font-weight: 600; margin: 10px 0; }
@@ -540,3 +549,11 @@ table.t .strong { font-weight: 700; }
 .suggest .grp { padding: 8px 14px 4px; font-size: 11px; font-weight: 800; color: var(--bordeaux); text-transform: uppercase; letter-spacing: .5px; background: var(--bg-soft); }
 .search.suggest-wrap .suggest { color: var(--text); }
 .mini-select { border: 1.5px solid var(--line-2); background: var(--surface); color: var(--text); border-radius: 999px; padding: 4px 10px; font-size: 13px; font-weight: 600; }
+.ev.draggable { cursor: grab; touch-action: none; user-select: none; }
+.ev.dragging { opacity: .35; }
+.ev.ghost { background: transparent !important; border: 2px dashed var(--navy); color: var(--navy); pointer-events: none; z-index: 5; }
+:root[data-theme="dark"] .ev.ghost { border-color: #fff; color: #fff; }
+.cal-col.drop { background-color: var(--bordeaux-50); }
+.cal-month .cell.drop { background: var(--bordeaux-50); outline: 2px dashed var(--bordeaux); outline-offset: -2px; }
+.set-row .k { flex: 1; min-width: 0; white-space: normal; }
+@media (max-width: 520px) { .toggle-wrap { font-size: 0; gap: 0; } }
