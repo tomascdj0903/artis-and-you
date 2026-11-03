@@ -608,3 +608,7 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
 .help-cat span { font-size: 20px; }
 .help-cat small { font-weight: 400; color: var(--text-2); font-size: 12px; }
 .help-cat.on { border-color: var(--bordeaux); background: var(--bordeaux-50); }
+.req-card { align-self: flex-start; max-width: 82%; border: 2px dashed var(--bordeaux); background: var(--bordeaux-50); color: var(--text); border-radius: 16px; padding: 10px 14px; display: grid; gap: 4px; margin: 4px 0; }
+.req-card.r { align-self: flex-end; }
+.req-card svg { color: var(--bordeaux); }
+.req-card .req-text { font-style: italic; font-size: 14px; }

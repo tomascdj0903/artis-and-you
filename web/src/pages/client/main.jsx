@@ -42,7 +42,7 @@ export function Home() {
       mine.cids.length ? api.select('appointments', { client_id: mine.cids, 'end_at>=': new Date().toISOString(), status: ['a_valider', 'valide'] }, { order: 'start_at.asc', limit: 10 }) : [],
       api.select('conversations', {}, { order: 'last_at.desc', limit: 10 }), api.select('notifications', { user_id: uid() }, { order: 'created_at.desc', limit: 10 }),
     ]);
-    return { ...mine, appts, convs: convs.filter((c) => c.last_message), notifs };
+    return { ...mine, appts, convs: await withLast(convs.filter((c) => c.last_message)), notifs };
   }, []);
   const go = () => navigate('/client/artisans' + (q ? '?q=' + encodeURIComponent(q) : ''));
   return (
@@ -57,7 +57,7 @@ export function Home() {
             : <Empty icon={LuCalendarPlus} text={t('Aucun rendez-vous à venir.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button></Empty>}
           <Sec title={t('Mes messages')} to="/client/messages" />
           {b.convs.length ? <div className="carousel">{b.convs.map((c) => { const co = b.cm[c.company_id]; return (
-            <Link key={c.id} to={'/client/messages/' + c.id} className="rdvcard"><div className="row"><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} size="sm" /><div><b>{coName(co)}</b><div className="small muted">{(co?.trades || [])[0] ? t(co.trades[0]) : ''}</div></div></div><div className="small" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{c.last_message}</div><div className="small faint">{rel(c.last_at)}</div></Link>
+            <Link key={c.id} to={'/client/messages/' + c.id} className="rdvcard"><div className="row"><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} size="sm" /><div><b>{coName(co)}</b><div className="small muted">{(co?.trades || [])[0] ? t(co.trades[0]) : ''}</div></div></div><div className="small" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{c.mine ? <b>{t('Vous')} : </b> : null}{c.last_message}</div><div className="row small faint" style={{ gap: 6 }}><SentTag mine={c.mine} /><span>{whenMsg(c.last_at)}</span></div></Link>
           ); })}</div> : <Empty text={t('Pas encore de message.')} />}
           <Sec title={t('Mes notifications')} to="/client/notifications" />
           {b.notifs.length ? <div className="carousel">{b.notifs.map((n) => (
@@ -327,12 +327,20 @@ export function ApptDetail({ params }) {
   );
 }
 
+// Dernier message de chaque conversation : qui l'a envoyé (vous / l'artisan) et à quelle heure
+async function withLast(convs) {
+  const lasts = await Promise.all(convs.slice(0, 30).map((c) => api.select('messages', { conversation_id: c.id }, { order: 'created_at.desc', limit: 1, columns: 'sender_id,created_at,card' }).then((r) => r[0]).catch(() => null)));
+  return convs.map((c, i) => ({ ...c, mine: lasts[i] ? lasts[i].sender_id === uid() : null }));
+}
+const whenMsg = (d) => { const x = new Date(d); const today = new Date().toDateString() === x.toDateString(); return today ? hm(d) : `${dateShort(d)} · ${hm(d)}`; };
+export const SentTag = ({ mine }) => mine == null ? null : <span className={'pill ' + (mine ? 'grey' : 'navy')} style={{ fontSize: 10.5, padding: '1px 7px' }}>{mine ? t('Envoyé') : t('Reçu')}</span>;
+
 // ─────────────── Messages ───────────────
 export function Messages() {
   const { unread } = useApp();
   const [q, setQ] = useState('');
   const [nw, setNw] = useState(false);
-  const [b] = useData(async () => { const m = await loadMine(); const convs = await api.select('conversations', {}, { order: 'last_at.desc' }); return { ...m, convs }; }, []);
+  const [b] = useData(async () => { const m = await loadMine(); const convs = await api.select('conversations', {}, { order: 'last_at.desc' }); return { ...m, convs: await withLast(convs.filter((c) => c.last_message)) }; }, []);
   if (!b) return <div className="content"><TopBar title={t('Messages')} /><Loader /></div>;
   const reads = unread.reads || {};
   const list = b.convs.filter((c) => c.last_message && (!q || (coName(b.cm[c.company_id]) + ' ' + c.last_message).toLowerCase().includes(q.toLowerCase())));
@@ -346,8 +354,8 @@ export function Messages() {
         <div className="list">{list.map((c) => { const co = b.cm[c.company_id]; const un = !reads[c.id] || reads[c.id] < c.last_at; return (
           <button key={c.id} className="li click" onClick={() => navigate('/client/messages/' + c.id)}>
             <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} />
-            <div className="grow"><div className="t1">{coName(co)} {(co?.trades || [])[0] && <Pill c="grey">{t(co.trades[0])}</Pill>}</div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.last_message}</div></div>
-            <div className="side-r"><span className={un ? 'red-t bold' : ''}>{rel(c.last_at)}</span>{un && <span className="badge-n">1</span>}</div>
+            <div className="grow"><div className="t1">{coName(co)} {(co?.trades || [])[0] && <Pill c="grey">{t(co.trades[0])}</Pill>}</div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.mine ? t('Vous') + ' : ' : ''}{c.last_message}</div></div>
+            <div className="side-r"><SentTag mine={c.mine} /><span className={un ? 'red-t bold' : ''}>{whenMsg(c.last_at)}</span>{un && <span className="badge-n">1</span>}</div>
           </button>
         ); })}</div>
       )}

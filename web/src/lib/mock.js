@@ -94,7 +94,8 @@ export function mockBackend({ saveSession, getSession }) {
     if (table === 'messages') {
       const c = db.conversations.find((x) => x.id === row.conversation_id);
       if (c) {
-        c.last_message = (row.body || (row.card ? row.card.title : '📎 Pièce jointe')).slice(0, 140); c.last_at = row.created_at;
+        c.last_message = (row.card?.type === 'demande' ? '📅 ' + row.card.title + (row.body ? ' · ' + row.body : '') : row.body || (row.card ? row.card.title : '📎 Pièce jointe')).slice(0, 140); c.last_at = row.created_at;
+        if (row.sender_id) { const r = db.conversation_reads.find((x) => x.conversation_id === c.id && x.user_id === row.sender_id); if (r) { if (!r.last_read_at || r.last_read_at < row.created_at) r.last_read_at = row.created_at; } else db.conversation_reads.push({ conversation_id: c.id, user_id: row.sender_id, last_read_at: row.created_at }); }
         if (c.client_user_id && c.client_user_id !== row.sender_id) notify(c.client_user_id, 'message', 'Nouveau message', `${row.sender_name} : ${(row.body || row.card?.title || '📎').slice(0, 80)}`, '/client/messages/' + c.id);
       }
     }
@@ -237,8 +238,14 @@ export function mockBackend({ saveSession, getSession }) {
         address: [prof.home?.address, [prof.home?.zip, prof.home?.city].filter(Boolean).join(' ')].filter(Boolean).join(', '), contact_name: `${prof.first_name} ${prof.last_name}`.trim(), contact_phone: prof.phone, requested_by: me(), created_at: now() });
       let conv = db.conversations.find((c) => c.kind === 'client' && c.company_id === p.company_id && c.client_user_id === me());
       if (!conv) { conv = { id: id(), kind: 'client', company_id: p.company_id, client_id: cid, client_user_id: me(), project_id: pid, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(conv); }
-      if (p.text) { const m = { ...defaults.messages, id: id(), conversation_id: conv.id, sender_id: me(), sender_name: `${prof.first_name} ${prof.last_name}`.trim(), body: p.text, attachments: p.photos || [], created_at: now() }; db.messages.push(m); afterInsert('messages', m); }
-      notifyCompany(p.company_id, 'rdv', 'Nouvelle demande de RDV', `${prof.first_name} ${prof.last_name} · ${p.type}`, '/pro/planning/rdv/' + aid);
+      // La demande apparaît comme une carte « Demande de RDV envoyée » dans la conversation
+      const when = fmtDT(p.start_at);
+      const m = { ...defaults.messages, id: id(), conversation_id: conv.id, sender_id: me(), sender_name: `${prof.first_name} ${prof.last_name}`.trim(), body: p.text || '', attachments: p.photos || [], card: { type: 'demande', title: 'Demande de RDV envoyée', sub: `${p.type} · ${when}${p.mode === 'visio' ? ' · visio' : ''}`, appointment_id: aid }, created_at: now() };
+      db.messages.push(m); afterInsert('messages', m);
+      notifyCompany(p.company_id, 'rdv', 'Nouvelle demande de RDV', `${prof.first_name} ${prof.last_name} · ${p.type} · ${when}`, '/pro/planning/rdv/' + aid);
+      // Confirmation d'envoi pour le particulier
+      const co = db.companies.find((c) => c.id === p.company_id);
+      notify(me(), 'rdv', 'Demande envoyée', `${co?.trade_name || co?.name || ''} · ${p.type} · ${when} · en attente de confirmation`, '/client/rdv/' + aid);
       return aid;
     },
     start_conversation({ p_company }) {

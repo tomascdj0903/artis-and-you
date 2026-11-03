@@ -14,6 +14,14 @@ import { statusPill, kindLabel, apptStatus } from '../../lib/docs.js';
 export function Home() {
   const { company, can, profile } = useApp();
   const [relN, setRelN] = useState(0);
+  const { unread } = useApp();
+  // Demandes de RDV des particuliers à traiter (visibles dès l'accueil)
+  const [reqs] = useData(async () => {
+    if (!can('planning')) return [];
+    const [ap, cl] = await Promise.all([api.select('appointments', { company_id: company.id, status: 'a_valider' }, { order: 'start_at.asc' }), api.select('clients', { company_id: company.id })]);
+    const cm = Object.fromEntries(cl.map((c) => [c.id, c]));
+    return ap.map((a) => ({ ...a, c: cm[a.client_id] }));
+  }, [unread.rdv]);
   useEffect(() => {
     if (profile.member_role === 'ouvrier') return;
     checkVaultReminders(company, profile).catch(() => {});
@@ -44,12 +52,20 @@ export function Home() {
             : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artis & You vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
         </Link>
       )}
+ {reqs?.length > 0 && (
+        <div className="card" style={{ marginBottom: 12 }}>
+          <div className="row" style={{ justifyContent: 'space-between' }}><b>📥 {reqs.length > 1 ? t('{n} demandes de rendez-vous à traiter', { n: reqs.length }) : t('1 demande de rendez-vous à traiter')}</b><Link to="/pro/planning" className="small bold">{t('Planning')} ›</Link></div>
+          <div className="list" style={{ marginTop: 8 }}>{reqs.slice(0, 4).map((a) => (
+            <Link key={a.id} to={'/pro/planning/rdv/' + a.id} className="li click"><div className="grow"><div className="t1">{clientName(a.c) || a.contact_name} · {t(a.type)}</div><div className="t2">{dateShort(a.start_at)} {hm(a.start_at)}{a.mode === 'visio' ? ' · ' + t('Visio') : a.address ? ' · ' + a.address : ''}</div>{a.request_text && <div className="small muted ellipsis">« {a.request_text} »</div>}</div><span className="pill red-o">{t('À valider')}</span></Link>
+          ))}</div>
+        </div>
+      )}
       {relN > 0 && <Link to="/pro/relances" className="notice">🔔 <span>{relN > 1 ? t('{n} relances clients à envoyer aujourd’hui', { n: relN }) : t('1 relance client à envoyer aujourd’hui')} →</span></Link>}
       {days !== null && days >= 0 && days <= 30 && company?.plan && (
         <Link to="/pro/compte/abonnement" className="notice">⏳ <span>{t('Essai gratuit : encore {n} jours. Choisir ma formule', { n: days })} →</span></Link>
       )}
       <div className="tiles home">
-        {tiles.map(([to, I, l]) => <button key={to} className="tile" onClick={() => navigate(to)}><I />{t(l)}</button>)}
+        {tiles.map(([to, I, l]) => <button key={to} className="tile" style={{ position: 'relative' }} onClick={() => navigate(to)}><I />{t(l)}{to === '/pro/planning' && unread.rdv > 0 && <span className="dot" style={{ position: 'absolute', top: 10, right: 12 }}>{unread.rdv}</span>}{to === '/pro/messages' && unread.messages > 0 && <span className="dot" style={{ position: 'absolute', top: 10, right: 12 }}>{unread.messages}</span>}</button>)}
       </div>
       <div className="row" style={{ justifyContent: 'flex-end', marginTop: 40 }}><Link to="/mentions-legales" className="bold">{t('Mentions légales')}</Link></div>
     </div>

@@ -153,3 +153,57 @@ $$;
 -- ───────────────── Relances clients (historique et pause par document) ─────────────────
 alter table public.documents add column if not exists reminders jsonb default '[]'::jsonb;
 alter table public.documents add column if not exists reminders_paused boolean default false;
+
+-- ───────────────── Demande de RDV : carte distincte dans la conversation + confirmation d'envoi ─────────────────
+create or replace function public.request_appointment(p jsonb) returns uuid
+language plpgsql security definer set search_path = public as $$
+declare cid uuid; pid uuid; aid uuid; comp uuid := (p->>'company_id')::uuid; prof public.profiles; conv uuid;
+begin
+  cid := public.ensure_client(comp);
+  select * into prof from public.profiles where id = auth.uid();
+  insert into public.projects(company_id, client_id, title, address)
+    values (comp, cid, coalesce(nullif(p->>'title',''), p->>'type'), coalesce(prof.home->>'address','') || ' ' || coalesce(prof.home->>'city',''))
+    returning id into pid;
+  insert into public.appointments(company_id, client_id, project_id, type, title, start_at, end_at, mode, status, request_text, photos,
+     address, contact_name, contact_phone, requested_by)
+  values (comp, cid, pid, p->>'type', coalesce(nullif(p->>'title',''), p->>'type'), (p->>'start_at')::timestamptz, (p->>'end_at')::timestamptz,
+     coalesce(p->>'mode','site'), 'a_valider', coalesce(p->>'text',''), coalesce(p->'photos','[]'::jsonb),
+     trim(coalesce(prof.home->>'address','') || ', ' || coalesce(prof.home->>'zip','') || ' ' || coalesce(prof.home->>'city',''), ', '),
+     trim(prof.first_name || ' ' || prof.last_name), prof.phone, auth.uid())
+  returning id into aid;
+  -- conversation client
+  select id into conv from public.conversations where kind='client' and company_id=comp and client_user_id=auth.uid();
+  if conv is null then
+    insert into public.conversations(kind, company_id, client_id, client_user_id, project_id) values ('client', comp, cid, auth.uid(), pid) returning id into conv;
+  end if;
+  -- La demande apparaît comme une carte « Demande de RDV envoyée » (et non comme un message ordinaire)
+  insert into public.messages(conversation_id, sender_id, sender_name, body, attachments, card)
+  values (conv, auth.uid(), trim(prof.first_name || ' ' || prof.last_name), coalesce(p->>'text',''), coalesce(p->'photos','[]'::jsonb),
+          jsonb_build_object('type','demande','title','Demande de RDV envoyée','sub', coalesce(p->>'type','') || ' · ' || to_char((p->>'start_at')::timestamptz at time zone 'Europe/Paris','DD/MM HH24:MI') || case when p->>'mode' = 'visio' then ' · visio' else '' end, 'appointment_id', aid));
+  perform public.notify_company(comp, 'rdv', 'Nouvelle demande de RDV', trim(prof.first_name||' '||prof.last_name)||' · '||coalesce(p->>'type','')||' · '||to_char((p->>'start_at')::timestamptz at time zone 'Europe/Paris','DD/MM HH24:MI'), '/pro/planning/rdv/'||aid);
+  -- Confirmation d'envoi pour le particulier
+  insert into public.notifications(user_id, category, title, body, link)
+  values (auth.uid(), 'rdv', 'Demande envoyée', (select coalesce(nullif(trade_name,''), name) from public.companies where id = comp) || ' · ' || coalesce(p->>'type','') || ' · ' || to_char((p->>'start_at')::timestamptz at time zone 'Europe/Paris','DD/MM HH24:MI') || ' · en attente de confirmation', '/client/rdv/'||aid);
+  return aid;
+end $$;
+
+-- Aperçu de la conversation : une demande de RDV s'affiche comme telle
+create or replace function public.on_message() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare c public.conversations;
+begin
+  select * into c from public.conversations where id = new.conversation_id;
+  update public.conversations set last_message = left(
+      case when new.card->>'type' = 'demande' then '📅 ' || (new.card->>'title') || coalesce(' · ' || nullif(new.body,''), '')
+           else coalesce(nullif(new.body,''), case when new.card is not null then new.card->>'title' else '📎 Pièce jointe' end) end, 140),
+    last_at = new.created_at where id = c.id;
+  -- Son propre message n'est jamais « non lu »
+  if new.sender_id is not null then
+    insert into public.conversation_reads(conversation_id, user_id, last_read_at) values (c.id, new.sender_id, new.created_at)
+    on conflict (conversation_id, user_id) do update set last_read_at = greatest(public.conversation_reads.last_read_at, excluded.last_read_at);
+  end if;
+  if c.client_user_id is not null and c.client_user_id <> new.sender_id then
+    insert into public.notifications(user_id, category, title, body, link) values (c.client_user_id, 'message', 'Nouveau message', coalesce(new.sender_name,'') || ' : ' || left(coalesce(nullif(new.body,''), new.card->>'title', '📎'),80), '/client/messages/'||c.id);
+  end if;
+  return new;
+end $$;

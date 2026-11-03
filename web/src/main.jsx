@@ -78,7 +78,7 @@ function Shell({ tabs, children, path }) {
   if (/^\/pro\/clients\/[^/]+\/(factures|devis)/.test(path)) p = '/pro/documents';
   if (/^\/pro\/documents\/[^/]+/.test(path) && history.state?.from === 'client') p = '/pro/clients';
   const active = (to, exact) => (exact ? p === to : p === to || p.startsWith(to + '/'));
-  const badge = (to) => (to.endsWith('/messages') ? unread.messages : to.endsWith('/notifications') ? unread.notifs : 0);
+  const badge = (to) => (to.endsWith('/messages') ? unread.messages : to.endsWith('/notifications') ? unread.notifs : to === '/pro/planning' ? unread.rdv || 0 : 0);
   const hideTabs = path === '/pro'; // Accueil artisan : pas de barre d'onglets (maquette 02)
   return (
     <div className="app">

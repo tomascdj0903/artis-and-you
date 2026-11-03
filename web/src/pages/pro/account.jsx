@@ -9,7 +9,7 @@ import { PLANS, TRADES, kindLabel, LEGAL_FORMS, SOCIETIES, companyMissing } from
 import { AddressFields, CityInput } from '../../ui/address.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 import { siretValid } from '../auth/index.jsx';
-import { TopBar, Sec, KV, Field, Chips, Seg, Toggle, SettingToggle, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img } from '../../ui/index.jsx';
+import { TopBar, Sec, KV, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img } from '../../ui/index.jsx';
 import { A4, useLogo } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
@@ -368,7 +368,7 @@ export function NotifSettings() {
     <div className="content narrow">
       <TopBar title={t('Notifications')} />
       <Sec title={t('Canaux')} />
-      <div className="kv">{[['push', 'Notifications dans l’application'], ['email', 'E-mail', 'Bientôt disponible'], ['sms', 'SMS', 'Bientôt disponible']].map(R)}</div>
+      <div className="kv"><DeviceNotif />{[['push', 'Notifications dans l’application'], ['email', 'E-mail', 'Bientôt disponible'], ['sms', 'SMS', 'Bientôt disponible']].map(R)}</div>
       <Sec title={t('Mes alertes')} />
       <div className="kv">{[['demande', 'Nouvelle demande', 'Un particulier demande un rendez-vous'], ['rdv', 'RDV à valider'], ['devis', 'Devis signé ou refusé'], ['paiement', 'Paiement reçu'], ['message', 'Nouveau message']].map(R)}</div>
       <Sec title={t('Envois automatiques aux clients')} />

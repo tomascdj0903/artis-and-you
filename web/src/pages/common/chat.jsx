@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
+import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { hm, dateMed, fullName, clientName } from '../../lib/format.js';
 import { Img, Sheet, pickFiles, openFile, Loader, Lightbox, CameraSheet, isTouch } from '../../ui/index.jsx';
@@ -103,7 +104,14 @@ export function Chat({ convId, projects = [], banner }) {
             <div key={m.id} style={{ display: 'contents' }}>
               {showDay && <div className="day">{dateMed(day)}</div>}
               {showWho && <div className="who">{m.sender_name}</div>}
-              {m.card && (
+              {m.card?.type === 'demande' ? (
+                <div className={'req-card' + (mine ? ' r' : '')}>
+                  <div className="row" style={{ gap: 8 }}><LuCalendarCheck size={20} /><b>{t(m.card.title)}</b></div>
+                  <div className="small">{m.card.sub}</div>
+                  {m.body && <div className="req-text">« {m.body} »</div>}
+                  {m.card.appointment_id && <a className="small bold" href={(profile.company_id ? '/pro/planning/rdv/' : '/client/rdv/') + m.card.appointment_id} onClick={(e) => { e.preventDefault(); navigate((profile.company_id ? '/pro/planning/rdv/' : '/client/rdv/') + m.card.appointment_id); }}>{profile.company_id ? t('Voir et répondre à la demande') : t('Voir ma demande')} ›</a>}
+                </div>
+              ) : m.card && (
                 <div className={'sys' + (m.card.type === 'done' ? ' ok' : '')}>
                   {m.card.type === 'done' ? <LuCircleCheck className="green-t" size={26} /> : m.card.type === 'rdv' ? <LuVideo size={24} /> : m.card.type === 'relance' ? <LuFileText size={24} /> : <LuCalendarCheck size={24} />}
                   <div><b className={m.card.type === 'done' ? 'green-t' : ''}>{m.card.title}</b><span className="small muted">{m.card.sub}</span></div>
@@ -111,7 +119,7 @@ export function Chat({ convId, projects = [], banner }) {
               )}
               {photos.length > 0 && <div className={'photos' + (mine ? ' r' : '')}>{photos.map((p) => <Img key={p.path} path={p.path} onClick={() => setBig(p.path)} />)}</div>}
               {files.map((f) => <button key={f.path} className={'file' + (mine ? ' r' : '')} onClick={() => openFile(f.path, f.name)}><span className="pill red">PDF</span>{f.name}</button>)}
-              {m.body && <div className={'bubble ' + (mine ? 'out' : 'in')}>{m.body}</div>}
+              {m.body && m.card?.type !== 'demande' && <div className={'bubble ' + (mine ? 'out' : 'in')}>{m.body}</div>}
               <div className={'when' + (mine ? ' r' : '')}>{hm(m.created_at)}</div>
             </div>
           );

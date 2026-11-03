@@ -2,6 +2,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { api, onAuth, getSession, uid } from './api.js';
 import { setLang as setI18nLang, getLang, t, loadLang } from './i18n.js';
+import { navigate } from './router.jsx';
 
 const Ctx = createContext(null);
 export const useApp = () => useContext(Ctx);
@@ -19,6 +20,8 @@ export function AppProvider({ children }) {
   const [dialog, setDialog] = useState(null);
   const [unread, setUnread] = useState({ notifs: 0, messages: 0 });
   const toastTimer = useRef();
+  const showToastRef = useRef(() => {});
+  const showToast = (m) => showToastRef.current(m);
 
   useEffect(() => onAuth(setSession), []);
 
@@ -41,21 +44,40 @@ export function AppProvider({ children }) {
   }, []);
   useEffect(() => { setReady(false); load(); }, [session?.user?.id, session?.access_token]);
 
-  // Compteurs non lus (rafraîchis régulièrement)
+  // Compteurs non lus + nouvelles notifications en direct (bandeau dans l'app et notification de l'appareil)
+  const seen = useRef(null);
   const refreshUnread = useCallback(async () => {
     if (!uid()) return;
     try {
-      const [ns, convs, reads] = await Promise.all([
-        api.select('notifications', { user_id: uid(), read: false }, { columns: 'id' }),
+      const pro = profile?.company_id;
+      const [ns, convs, reads, pend] = await Promise.all([
+        api.select('notifications', { user_id: uid(), read: false }, { columns: 'id,title,body,link,category,created_at', order: 'created_at.desc', limit: 50 }),
         api.select('conversations', {}, { columns: 'id,last_at', order: 'last_at.desc', limit: 200 }),
         api.select('conversation_reads', { user_id: uid() }),
+        pro ? api.select('appointments', { company_id: pro, status: 'a_valider' }, { columns: 'id' }) : Promise.resolve([]),
       ]);
       const rm = Object.fromEntries(reads.map((r) => [r.conversation_id, r.last_read_at]));
       const msg = convs.filter((c) => c.last_message !== '' && (!rm[c.id] || rm[c.id] < c.last_at)).length;
-      setUnread({ notifs: ns.length, messages: msg, reads: rm });
+      setUnread({ notifs: ns.length, messages: msg, reads: rm, rdv: pend.length });
+      if (seen.current) {
+        const fresh = ns.filter((n) => !seen.current.has(n.id));
+        if (fresh.length) {
+          const prefs = profile?.notif_prefs || {};
+          const h = new Date().getHours();
+          const quiet = prefs.dnd && (h >= 21 || h < 8);
+          const n0 = fresh[0];
+          if (!quiet) {
+            showToast(fresh.length > 1 ? t('{n} nouvelles notifications', { n: fresh.length }) : '🔔 ' + t(n0.title) + (n0.body ? ' · ' + n0.body : ''));
+            if (prefs.push !== false && typeof Notification !== 'undefined' && Notification.permission === 'granted' && document.hidden) {
+              try { const sys = new Notification(t(n0.title), { body: n0.body || '', icon: '/icon-192.png', tag: n0.id }); sys.onclick = () => { window.focus(); if (n0.link) navigate(n0.link); sys.close(); }; } catch {}
+            }
+          }
+        }
+      }
+      seen.current = new Set(ns.map((n) => n.id));
     } catch {}
-  }, []);
-  useEffect(() => { if (!profile) return; refreshUnread(); const i = setInterval(refreshUnread, 20000); return () => clearInterval(i); }, [profile?.id]);
+  }, [profile?.id, profile?.company_id, profile?.notif_prefs]);
+  useEffect(() => { if (!profile) return; seen.current = null; refreshUnread(); const i = setInterval(refreshUnread, 10000); return () => clearInterval(i); }, [profile?.id, refreshUnread]);
 
   function applyTheme(th) {
     setThemeState(th);
@@ -65,6 +87,7 @@ export function AppProvider({ children }) {
   async function setTheme(th) { applyTheme(th); if (profile) { await api.update('profiles', { id: profile.id }, { theme: th }); setProfile({ ...profile, theme: th }); } }
   async function setLang(l) { await loadLang(l); setI18nLang(l); setLangState(l); if (profile) { await api.update('profiles', { id: profile.id }, { lang: l }); setProfile({ ...profile, lang: l }); } }
 
+  showToastRef.current = (m) => toast(m);
   const toast = useCallback((msg, err = false) => {
     clearTimeout(toastTimer.current); setToast({ msg, err });
     toastTimer.current = setTimeout(() => setToast(null), 3200);

@@ -6,7 +6,7 @@ import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, date, dateMed, rel, dateShort, hm } from '../../lib/format.js';
 import { statusPill, effectiveStatus, kindLabel, clientProgress, DOC_TYPES, VAULT_TYPES, docTypeLabel } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Chips, Field, Toggle, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet, KV } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Chips, Field, Toggle, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet, KV } from '../../ui/index.jsx';
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
 import { MenuRow } from '../pro/account.jsx';
 import { loadMine, coName } from './main.jsx';
@@ -317,12 +317,12 @@ export function NotifSettings() {
   const { profile, setProfile } = useApp();
   const [n, setN] = useState({ push: true, email: true, sms: false, rdv: true, message: true, chantier: true, documents: true, paiement: true, rappel: 24, dnd: false, ...(profile.notif_prefs || {}) });
   const set = async (k, v) => { const x = { ...n, [k]: v }; setN(x); await api.update('profiles', { id: profile.id }, { notif_prefs: x }); setProfile({ ...profile, notif_prefs: x }); };
-  const R = ([k, l, s]) => <div key={k} className="r"><span className="k">{t(l)}{s && <div className="small faint">{t(s)}</div>}</span><Toggle checked={n[k]} onChange={(v) => set(k, v)} /></div>;
+  const R = ([k, l, s]) => <SettingToggle key={k} label={t(l)} hint={s && t(s)} checked={n[k]} onChange={(v) => set(k, v)} />;
   return (
     <div className="content narrow">
       <TopBar title={t('Notifications')} />
       <Sec title={t('Comment être prévenu')} />
-      <div className="kv">{[['push', 'Sur mon téléphone / ordinateur'], ['email', 'Par e-mail', 'Bientôt disponible'], ['sms', 'Par SMS', 'Bientôt disponible']].map(R)}</div>
+      <div className="kv"><DeviceNotif />{[['push', 'Sur mon téléphone / ordinateur'], ['email', 'Par e-mail', 'Bientôt disponible'], ['sms', 'Par SMS', 'Bientôt disponible']].map(R)}</div>
       <Sec title={t('Ce que je reçois')} />
       <div className="kv">{[['rdv', 'Rendez-vous'], ['message', 'Messages'], ['chantier', 'Avancement du chantier'], ['documents', 'Devis et factures'], ['paiement', 'Paiements']].map(R)}</div>
       <Sec title={t('Rappels')} />
