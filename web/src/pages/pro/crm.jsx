@@ -5,7 +5,7 @@ import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
-import { money, money0, date, clientName, iso, num } from '../../lib/format.js';
+import { money, money0, date, dateShort, clientName, iso, num } from '../../lib/format.js';
 import { STEPS, autoSteps, stepState, ALL_TRADES, VAT_RATES, kindLabel } from '../../lib/docs.js';
 import { makeXlsx, download } from '../../lib/xlsx.js';
 import { TopBar, SearchBar, Sec, Sheet, Field, Chips, Seg, useData, Loader, Empty, Pill, Table } from '../../ui/index.jsx';
@@ -28,10 +28,34 @@ export function CrmHome() {
   );
 }
 
+// Étape actuelle d'un projet et prochaine action conseillée
+const PHASES = [['devis', 'Devis'], ['planifier', 'À planifier'], ['chantier', 'Chantier'], ['facturer', 'À facturer'], ['encaisser', 'À encaisser'], ['termine', 'Terminé']];
+function projectInfo(p, auto, ctx) {
+  const on = (k) => stepState(p, auto, k) !== 'off';
+  const pd = ctx.docs.filter((d) => d.project_id === p.id);
+  const quote = pd.filter((d) => d.kind === 'devis').sort((a, b) => (b.status === 'accepte') - (a.status === 'accepte'))[0];
+  const invs = pd.filter((d) => d.number && ['facture', 'acompte'].includes(d.kind) && d.status !== 'annulee');
+  const due = invs.reduce((s, d) => s + Math.max(0, Number(d.totals?.net ?? d.totals?.ttc ?? 0) - Number(d.paid_amount || 0)), 0);
+  const appt = ctx.appts.filter((a) => a.project_id === p.id && ['valide', 'a_valider'].includes(a.status)).sort((a, b) => a.start_at.localeCompare(b.start_at)).find((a) => a.end_at >= new Date().toISOString());
+  const amount = quote?.status === 'accepte' ? Number(quote.totals?.ht || 0) : invs.reduce((s, d) => s + Number(d.totals?.ht || 0), 0) || Number(quote?.totals?.ht || 0);
+  const c = `client=${p.client_id}&project=${p.id}`;
+  let phase, next;
+  if (on('facture_envoyee') && due < 0.005 && (on('avis_poste') || on('chantier_termine') || p.finished_at)) { phase = 'termine'; next = on('avis_poste') ? null : [t('Demander un avis'), '/pro/clients/' + p.client_id + '/chat']; }
+  else if (on('facture_envoyee') || (on('facture_faite') && due > 0.005)) { phase = 'encaisser'; const inv = invs.find((d) => Number(d.paid_amount || 0) < Number(d.totals?.net ?? d.totals?.ttc ?? 0) - 0.005) || invs[0]; next = inv ? [t('Suivre le paiement'), '/pro/documents/' + inv.id] : null; }
+  else if (on('chantier_termine') || on('facture_faite')) { phase = 'facturer'; const draft = pd.find((d) => d.kind === 'facture' && !d.number); next = draft ? [t('Envoyer la facture'), '/pro/documents/' + draft.id] : [t('Faire la facture'), `/pro/documents/nouveau?kind=facture&${c}`]; }
+  else if (on('chantier_planifie') || on('chantier_en_cours')) { phase = 'chantier'; next = appt ? [t('Voir le RDV du {d}', { d: dateShort(appt.start_at) }), '/pro/planning/rdv/' + appt.id] : [t('Marquer le chantier terminé'), 'finish']; }
+  else if (on('devis_signe')) { phase = 'planifier'; next = [t('Planifier le chantier'), `/pro/planning/nouveau?${c}&type=Chantier`]; }
+  else { phase = 'devis'; next = !quote ? [t('Créer le devis'), `/pro/documents/nouveau?kind=devis&${c}`] : !quote.number ? [t('Finaliser et envoyer le devis'), '/pro/documents/' + quote.id] : [t('Relancer le client'), '/pro/documents/' + quote.id]; }
+  const done = STEPS.filter(([k]) => on(k)).length;
+  const last = [...pd.map((d) => d.updated_at || d.created_at || d.issue_date), ...ctx.appts.filter((a) => a.project_id === p.id).map((a) => a.start_at), p.created_at].filter(Boolean).sort().pop();
+  return { phase, next, done, amount, due, last, waiting: quote && quote.number && quote.status === 'envoye' && phase === 'devis' };
+}
+
 export function ProjectStatus() {
   const { company, run } = useApp();
   const [q, setQ] = useState('');
-  const [showDone, setShowDone] = useState(false);
+  const [view, setView] = useState(() => { try { return localStorage.getItem('ay-projects-view') || 'cards'; } catch { return 'cards'; } });
+  const [phase, setPhase] = useState('');
   const [add, setAdd] = useState(false);
   const [b, reload] = useData(async () => {
     const [projects, clients, docs, appts, reviews] = await Promise.all([
@@ -41,8 +65,12 @@ export function ProjectStatus() {
     return { projects, cm: Object.fromEntries(clients.map((c) => [c.id, c])), clients, ctx: { docs, appts, reviews } };
   }, []);
   if (!b) return <div className="content"><TopBar title={t('Statut projet')} /><Loader /></div>;
-  const rows = b.projects.map((p) => ({ p, auto: autoSteps(p, b.ctx) }))
-    .filter(({ p, auto }) => (showDone || !(stepState(p, auto, 'avis_poste') !== 'off')) && (!q || (p.title + ' ' + clientName(b.cm[p.client_id])).toLowerCase().includes(q.toLowerCase())));
+  const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const all = b.projects.map((p) => { const auto = autoSteps(p, b.ctx); return { p, auto, info: projectInfo(p, auto, b.ctx) }; })
+    .filter(({ p }) => !q || nz([p.title, p.address, clientName(b.cm[p.client_id])].join(' ')).includes(nz(q)));
+  const count = (ph) => all.filter((r) => r.info.phase === ph).length;
+  const rows = all.filter((r) => (phase ? r.info.phase === phase : r.info.phase !== 'termine'));
+  const setV = (v) => { setView(v); try { localStorage.setItem('ay-projects-view', v); } catch {} };
   const toggle = async (p, auto, k) => {
     const s = stepState(p, auto, k);
     const manual = { ...(p.manual || {}) };
@@ -51,29 +79,61 @@ export function ProjectStatus() {
     await run(() => api.update('projects', { id: p.id }, { manual }));
     reload();
   };
+  const go = async (p, to) => {
+    if (to === 'finish') { await run(() => api.update('projects', { id: p.id }, { finished_at: new Date().toISOString() }), t('Chantier marqué terminé')); reload(); }
+    else navigate(to);
+  };
+  const enCours = all.filter((r) => r.info.phase !== 'termine');
   return (
     <div className="content" style={{ maxWidth: 1300 }}>
-      <TopBar title={t('Statut projet')} sub={t('{n} projets en cours', { n: rows.length })} />
-      <SearchBar placeholder={t('Recherchez un projet ou un client')} value={q} onChange={setQ} />
-      <div className="row wrap small mb" style={{ gap: 14 }}>
-        <span className="row"><span className="ck auto" style={{ width: 18, height: 18, borderRadius: 9, background: 'var(--vert)', display: 'inline-block' }} /> {t('Automatique')}</span>
-        <span className="row"><span style={{ width: 18, height: 18, borderRadius: 9, border: '2px solid var(--vert)', display: 'inline-block' }} /> {t('Coché à la main')}</span>
-        <span className="row"><span style={{ width: 18, height: 18, borderRadius: 9, border: '2px solid var(--line-2)', display: 'inline-block' }} /> {t('À venir')}</span>
-        <label className="check" style={{ padding: 0, marginLeft: 'auto' }}><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} />{t('Afficher les projets terminés')}</label>
+      <TopBar title={t('Statut projet')} sub={t('{n} projets en cours', { n: enCours.length })} />
+      <SearchBar placeholder={t('Recherchez un projet, un client, une adresse')} value={q} onChange={setQ} />
+      <div className="kpis" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
+        <div className="kpi"><div className="l">{t('Montant des projets en cours')}</div><div className="n">{money0(enCours.reduce((s, r) => s + r.info.amount, 0))} <small>{t('HT')}</small></div></div>
+        <div className="kpi"><div className="l">{t('Devis en attente de réponse')}</div><div className="n">{all.filter((r) => r.info.waiting).length}</div></div>
+        <div className="kpi"><div className="l">{t('À facturer')}</div><div className="n">{count('facturer')}</div></div>
+        <div className="kpi"><div className="l">{t('Reste à encaisser')}</div><div className="n">{money0(all.reduce((s, r) => s + r.info.due, 0))}</div></div>
       </div>
-      <p className="small faint">{t('Touchez une case pour la cocher ou la décocher.')}</p>
-      {!rows.length ? <Empty text={t('Aucun projet. Les projets sont créés avec les demandes de RDV, les devis ou le bouton +.')} /> : (
-        <div className="sp">
-          <table>
-            <thead><tr><th>{t('Client')}</th>{STEPS.map(([k, l]) => <th key={k} className="v"><span>{t(l)}</span></th>)}</tr></thead>
-            <tbody>{rows.map(({ p, auto }) => (
-              <tr key={p.id}>
-                <td><b style={{ cursor: 'pointer' }} onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small faint">{p.title}</div></td>
-                {STEPS.map(([k, l]) => { const s = stepState(p, auto, k); return <td key={k}><button className={'ck ' + (s === 'auto' ? 'auto' : s === 'man' ? 'man' : '')} onClick={() => toggle(p, auto, k)} aria-label={t(l)} title={t(l)}>✓</button></td>; })}
-              </tr>
-            ))}</tbody>
-          </table>
+      <div className="row wrap" style={{ gap: 8, margin: '6px 0 10px' }}>
+        <Chips scroll options={[['', t('En cours ({n})', { n: enCours.length })], ...PHASES.map(([k, l]) => [k, `${t(l)} (${count(k)})`])]} value={phase} onChange={setPhase} />
+        <div style={{ flex: 1 }} />
+        <div style={{ minWidth: 220 }}><Seg options={[['cards', t('Suivi')], ['table', t('Tableau des étapes')]]} value={view} onChange={setV} /></div>
+      </div>
+      {!rows.length ? <Empty text={b.projects.length ? t('Aucun projet dans cette étape.') : t('Aucun projet. Les projets sont créés avec les demandes de RDV, les devis ou le bouton +.')} /> : view === 'cards' ? (
+        <div className="proj-grid">
+          {rows.map(({ p, info }) => (
+            <div key={p.id} className="card proj">
+              <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                <div style={{ minWidth: 0 }}><b className="click" onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small muted ellipsis">{p.title}{p.address ? ' · ' + p.address : ''}</div></div>
+                <Pill c={{ devis: 'navy-o', planifier: 'yellow', chantier: 'navy', facturer: 'red-o', encaisser: 'red', termine: 'green' }[info.phase]}>{t(PHASES.find((x) => x[0] === info.phase)[1])}</Pill>
+              </div>
+              <div className="progress" style={{ margin: '12px 0 4px' }}><i style={{ width: `${(info.done / STEPS.length) * 100}%` }} /></div>
+              <div className="row small muted" style={{ justifyContent: 'space-between' }}><span>{t('{n}/{m} étapes', { n: info.done, m: STEPS.length })}</span><span>{info.amount ? money0(info.amount) + ' ' + t('HT') : ''}{info.due > 0.005 ? ' · ' + t('{m} dû', { m: money0(info.due) }) : ''}</span></div>
+              <div className="small faint" style={{ marginTop: 2 }}>{info.last ? t('Dernière activité : {d}', { d: date(info.last) }) : ''}</div>
+              {info.next && <button className="btn sm block" style={{ marginTop: 10 }} onClick={() => go(p, info.next[1])}>{info.next[0]} <LuChevronRight /></button>}
+            </div>
+          ))}
         </div>
+      ) : (
+        <>
+          <div className="row wrap small mb" style={{ gap: 14 }}>
+            <span className="row"><span style={{ width: 18, height: 18, borderRadius: 9, background: 'var(--vert)', display: 'inline-block' }} /> {t('Automatique')}</span>
+            <span className="row"><span style={{ width: 18, height: 18, borderRadius: 9, border: '2px solid var(--vert)', display: 'inline-block' }} /> {t('Coché à la main')}</span>
+            <span className="row"><span style={{ width: 18, height: 18, borderRadius: 9, border: '2px solid var(--line-2)', display: 'inline-block' }} /> {t('À venir')}</span>
+            <span className="faint">{t('Touchez une case pour la cocher ou la décocher.')}</span>
+          </div>
+          <div className="sp">
+            <table>
+              <thead><tr><th>{t('Client')}</th>{STEPS.map(([k, l]) => <th key={k} className="v"><span>{t(l)}</span></th>)}</tr></thead>
+              <tbody>{rows.map(({ p, auto }) => (
+                <tr key={p.id}>
+                  <td><b style={{ cursor: 'pointer' }} onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small faint">{p.title}</div></td>
+                  {STEPS.map(([k, l]) => { const s = stepState(p, auto, k); return <td key={k}><button className={'ck ' + (s === 'auto' ? 'auto' : s === 'man' ? 'man' : '')} onClick={() => toggle(p, auto, k)} aria-label={t(l)} title={t(l)}>✓</button></td>; })}
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        </>
       )}
       <button className="fab" onClick={() => setAdd(true)} aria-label={t('Nouveau projet')}><LuPlus /></button>
       <NewProject open={add} clients={b.clients} onClose={() => setAdd(false)} onDone={() => { setAdd(false); reload(); }} />

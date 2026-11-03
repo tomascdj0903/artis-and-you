@@ -557,3 +557,7 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
 .cal-month .cell.drop { background: var(--bordeaux-50); outline: 2px dashed var(--bordeaux); outline-offset: -2px; }
 .set-row .k { flex: 1; min-width: 0; white-space: normal; }
 @media (max-width: 520px) { .toggle-wrap { font-size: 0; gap: 0; } }
+.proj-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.card.proj { padding: 14px 16px; }
+.ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.click { cursor: pointer; }
