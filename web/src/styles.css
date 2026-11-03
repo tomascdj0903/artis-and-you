@@ -603,3 +603,8 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
 .tpl-pick .mini { height: 70px; border-radius: 6px; background: #fff; border: 1px solid #E5E7EE; margin-bottom: 6px; position: relative; overflow: hidden; }
 .tpl-pick .mini i { position: absolute; display: block; }
 .num-lock { display: flex; gap: 10px; align-items: flex-start; }
+.help-cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 6px 0 4px; }
+.help-cat { display: grid; gap: 2px; text-align: left; border: 1.5px solid var(--line-2); background: var(--surface); color: var(--text); border-radius: 14px; padding: 10px 12px; font-weight: 700; font-size: 14px; }
+.help-cat span { font-size: 20px; }
+.help-cat small { font-weight: 400; color: var(--text-2); font-size: 12px; }
+.help-cat.on { border-color: var(--bordeaux); background: var(--bordeaux-50); }

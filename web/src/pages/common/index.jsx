@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { companyMissing } from '../../lib/docs.js';
+import { HELP, HELP_CATS } from '../../lib/help.js';
 import { bioAvailable, bioEnabled, bioEnable, bioDisable, groupSecret } from '../../lib/security.js';
 import { LuBell, LuCalendar, LuFileText, LuEuro, LuMessageSquare, LuInfo, LuSearch, LuMail, LuPhone, LuCirclePlay, LuBug, LuDownload, LuTrash2, LuMoon, LuSun, LuShieldCheck, LuCheck, LuX } from 'react-icons/lu';
 import JSZip from 'jszip';
@@ -191,39 +192,49 @@ export function DataPrivacy() {
   );
 }
 
-const FAQ = {
-  pro: [
-    ['Devis et factures', 'Comment transformer un devis en facture ?', 'Ouvrez le devis signé puis touchez « Transformer en facture ». Les acomptes déjà facturés sont déduits automatiquement.'],
-    ['Devis et factures', 'Puis-je modifier une facture envoyée ?', 'Non : une facture émise est figée (obligation légale). Créez un avoir depuis la facture, puis une nouvelle facture.'],
-    ['Devis et factures', 'Comment gérer la TVA à 5,5 % ou 10 % ?', 'Chaque ligne a son propre taux. Le PDF détaille la TVA par taux. Pour la micro-entreprise, choisissez la franchise en base dans Mon entreprise.'],
-    ['Planning', 'Comment mes clients prennent-ils rendez-vous ?', 'Ils voient vos créneaux libres (Réglages du planning → plages disponibles) et envoient une demande que vous validez.'],
-    ['Équipe', 'Comment ajouter un ouvrier ?', 'Paramètres → Mon équipe → Inviter un membre : un code est généré, il l’utilise à l’inscription.'],
-    ['Comptabilité', 'Que contient l’export comptable ?', 'Un fichier Excel avec 4 onglets (ventes, encaissements, achats, TVA) et le FEC pour votre comptable.'],
-  ],
-  client: [
-    ['Rendez-vous', 'Comment prendre rendez-vous ?', 'Cherchez un artisan, ouvrez sa fiche, touchez « Demander un RDV », décrivez votre besoin et choisissez un créneau.'],
-    ['Documents', 'Où sont mes devis et factures ?', 'Onglet Documents : devis, factures, suivi de chantier et attestations.'],
-    ['Avis', 'Quand puis-je donner un avis ?', 'Après un vrai rendez-vous avec l’artisan. Les avis sont relus avant publication.'],
-    ['Compte', 'Mes données sont-elles partagées ?', 'Seulement avec les artisans à qui vous faites une demande : nom, téléphone, adresse.'],
-  ],
-};
 export function Help() {
   const { isPro, wip } = useApp();
+  const who = isPro ? 'pro' : 'client';
   const [q, setQ] = useState('');
-  const [open, setOpen] = useState(null);
-  const list = FAQ[isPro ? 'pro' : 'client'].filter((f) => !q || (t(f[1]) + ' ' + t(f[2])).toLowerCase().includes(q.toLowerCase()));
+  const [cat, setCat] = useState('');
+  const [art, setArt] = useState(null);
+  const [vote, setVote] = useState(() => { try { return JSON.parse(localStorage.getItem('ay-help-votes') || '{}'); } catch { return {}; } });
+  const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const all = HELP[who].map((a, i) => ({ i, cat: a[0], title: t(a[1]), sum: t(a[2]), steps: a[3].map((x) => t(x)), to: a[4], kw: a[5] || '' }));
+  const words = nz(q).trim().split(/\s+/).filter(Boolean);
+  const score = (a) => { const hay = nz([a.title, a.sum, a.steps.join(' '), a.kw].join(' ')); const ti = nz(a.title + ' ' + a.kw); return words.every((w) => hay.includes(w)) ? words.reduce((s, w) => s + (ti.includes(w) ? 3 : 1), 0) : 0; };
+  const list = words.length ? all.map((a) => [a, score(a)]).filter((x) => x[1]).sort((a, b) => b[1] - a[1]).map((x) => x[0]) : all.filter((a) => !cat || a.cat === cat);
+  const cats = HELP_CATS[who];
+  const setV = (i, v) => { const x = { ...vote, [who + i]: v }; setVote(x); try { localStorage.setItem('ay-help-votes', JSON.stringify(x)); } catch {} };
+  const a = art != null ? all[art] : null;
+  if (a) return (
+    <div className="content narrow">
+      <TopBar title={t('Aide et support')} sub={t(cats.find((c) => c[0] === a.cat)?.[1] || '')} />
+      <button className="link bold mb" onClick={() => setArt(null)}>‹ {t('Retour aux articles')}</button>
+      <h2 style={{ fontSize: 22, margin: '6px 0' }}>{a.title}</h2>
+      <p className="muted">{a.sum}</p>
+      <div className="steps" style={{ margin: '16px 0' }}>{a.steps.map((st, i) => <div key={i} className="step done"><div className="b">{i + 1}</div><div className="grow" style={{ paddingTop: 5 }}>{st}</div></div>)}</div>
+      {a.to && <button className="btn block" onClick={() => navigate(a.to)}>{t('Y aller')} ›</button>}
+      <div className="card soft center mt">
+        {vote[who + a.i] ? <span className="small">{t('Merci pour votre retour !')}</span> : <><div className="small bold mb">{t('Cet article vous a-t-il aidé ?')}</div><div className="row" style={{ gap: 8, justifyContent: 'center' }}><button className="btn xs ghost" onClick={() => setV(a.i, 'oui')}>👍 {t('Oui')}</button><button className="btn xs ghost" onClick={() => setV(a.i, 'non')}>👎 {t('Non')}</button></div></>}
+        {vote[who + a.i] === 'non' && <a className="small bold red-t" style={{ display: 'block', marginTop: 6 }} href={`mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Aide : {a}', { a: a.title }))}`}>{t('Écrire au support')}</a>}
+      </div>
+      {(() => { const rel = all.filter((x) => x.cat === a.cat && x.i !== a.i).slice(0, 3); return rel.length > 0 && <><Sec title={t('Articles liés')} /><div className="list">{rel.map((x) => <button key={x.i} className="li click" onClick={() => setArt(x.i)}><div className="grow"><div className="t1">{x.title}</div></div><span>›</span></button>)}</div></>; })()}
+    </div>
+  );
   return (
     <div className="content narrow">
       <TopBar title={t('Aide et support')} />
-      <SearchBar placeholder={t("Rechercher dans l'aide")} value={q} onChange={setQ} />
-      <Sec title={t('Questions fréquentes')} />
-      <div className="list">{list.map((f, i) => <button key={i} className="li click" style={{ display: 'block' }} onClick={() => setOpen(open === i ? null : i)}><div className="small red-t bold">{t(f[0])}</div><div className="t1">{t(f[1])}</div>{open === i && <p className="muted" style={{ margin: '8px 0 0' }}>{t(f[2])}</p>}</button>)}</div>
+      <SearchBar placeholder={t('Comment faire… (ex. relancer une facture, dimanche, logo)')} value={q} onChange={setQ} />
+      {!words.length && <div className="help-cats">{cats.map(([k, l, e]) => <button key={k} className={'help-cat' + (cat === k ? ' on' : '')} onClick={() => setCat(cat === k ? '' : k)}><span>{e}</span>{t(l)}<small>{t('{n} articles', { n: all.filter((x) => x.cat === k).length })}</small></button>)}</div>}
+      <Sec title={words.length ? (list.length > 1 ? t('{n} résultats', { n: list.length }) : t('{n} résultat', { n: list.length })) : cat ? t(cats.find((c) => c[0] === cat)[1]) : t('Tous les articles')} />
+      {list.length ? <div className="list">{list.map((x) => <button key={x.i} className="li click" style={{ display: 'flex' }} onClick={() => setArt(x.i)}><div className="grow"><div className="small red-t bold">{t(cats.find((c) => c[0] === x.cat)?.[1] || '')}</div><div className="t1">{x.title}</div><div className="t2">{x.sum}</div></div><span>›</span></button>)}</div>
+        : <Empty text={t('Aucun article ne correspond. Écrivez-nous, on vous répond rapidement.')} />}
       <Sec title={t('Nous contacter')} />
       <div className="list">
-        <a className="li click" href="mailto:support@artisandyou.fr"><span className="ficon navy"><LuMail /></span><div className="grow"><div className="t1">{t('Écrire au support')}</div><div className="t2">support@artisandyou.fr</div></div></a>
+        <a className="li click" href="mailto:support@artisandyou.fr"><span className="ficon navy"><LuMail /></span><div className="grow"><div className="t1">{t('Écrire au support')}</div><div className="t2">support@artisandyou.fr · {t('réponse sous 24 h ouvrées')}</div></div></a>
         <button className="li click" onClick={() => wip(t('Le chat avec le support'))}><span className="ficon navy"><LuMessageSquare /></span><div className="grow t1">{t('Chat avec le support')}</div></button>
         <button className="li click" onClick={() => wip(t('La ligne téléphonique'))}><span className="ficon navy"><LuPhone /></span><div className="grow t1">{t('Appeler')}</div></button>
-        {isPro && <button className="li click" onClick={() => wip(t('Les tutoriels vidéo'))}><span className="ficon navy"><LuCirclePlay /></span><div className="grow t1">{t('Visite guidée et tutoriels vidéo')}</div></button>}
         <a className="li click" href={`mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Signaler un problème'))}&body=${encodeURIComponent('\n\n---\nVersion ' + APP_VERSION + ' · ' + navigator.userAgent)}`}><span className="ficon"><LuBug /></span><div className="grow t1">{t('Signaler un problème')}</div></a>
       </div>
       <Sec title={t('Informations')} />
