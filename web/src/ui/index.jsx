@@ -48,11 +48,11 @@ export function TopBar({ title, sub, back = true, right, onBack, home }) {
   );
 }
 
-export function SearchBar({ placeholder, value, onChange, onFilter, filterActive, onSubmit }) {
+export function SearchBar({ placeholder, value, onChange, onFilter, filterActive, onSubmit, onFocus, onBlur }) {
   return (
     <div className="searchrow">
       <label className="search">
-        <input value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && onSubmit?.()} aria-label={placeholder} />
+        <input value={value} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur} onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && onSubmit?.()} aria-label={placeholder} />
         {value ? <button className="link" style={{ color: '#fff' }} onClick={() => onChange('')} aria-label={t('Effacer')}><LuX /></button> : <LuSearch />}
       </label>
       {onFilter && <button className="filterbtn" onClick={onFilter} aria-label={t('Filtrer')}><LuSlidersHorizontal />{filterActive && <span className="dot" />}</button>}

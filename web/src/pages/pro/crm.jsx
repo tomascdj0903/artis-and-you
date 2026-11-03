@@ -94,20 +94,54 @@ function NewProject({ open, clients, onClose, onDone }) {
   );
 }
 
+const normz = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 export function CompanyKpi() {
   const { company } = useApp();
   const [q, setQ] = useState('');
+  const [sel, setSel] = useState([]);
+  const [focus, setFocus] = useState(false);
   const [b] = useData(async () => {
     const [docs, appts, clients] = await Promise.all([api.select('documents', { company_id: company.id }), api.select('appointments', { company_id: company.id }), api.select('clients', { company_id: company.id })]);
-    return { docs, appts, cm: Object.fromEntries(clients.map((c) => [c.id, c])) };
+    return { docs, appts, clients, cm: Object.fromEntries(clients.map((c) => [c.id, c])) };
   }, []);
   if (!b) return <div className="content"><TopBar title={t('KPI')} /><Loader /></div>;
-  const match = (cid) => !q || clientName(b.cm[cid]).toLowerCase().includes(q.toLowerCase());
+  const n = normz(q.trim());
+  const sugg = n ? b.clients.filter((c) => !sel.includes(c.id) && normz([clientName(c), c.company_name, c.last_name, c.first_name, c.number, c.billing_city, c.site_city].join(' ')).includes(n)).slice(0, 8) : [];
+  const add = (id) => { setSel([...sel, id]); setQ(''); };
+  const keep = (cid) => !sel.length || sel.includes(cid);
+  const docs = b.docs.filter((d) => keep(d.client_id));
+  const appts = b.appts.filter((a) => keep(a.client_id));
+  // Statut général par client
+  const today = iso(new Date());
+  const rows = (sel.length ? sel.map((id) => b.cm[id]).filter(Boolean) : b.clients).map((c) => {
+    const ds = b.docs.filter((d) => d.client_id === c.id && d.number);
+    const inv = ds.filter((d) => ['facture', 'acompte'].includes(d.kind) && d.status !== 'annulee');
+    const due = inv.reduce((s, d) => s + Math.max(0, Number(d.totals?.net ?? d.totals?.ttc ?? 0) - Number(d.paid_amount || 0)), 0);
+    const late = inv.some((d) => d.due_date && d.due_date < today && Number(d.paid_amount || 0) < Number(d.totals?.net ?? d.totals?.ttc ?? 0) - 0.005);
+    const openQuote = ds.some((d) => d.kind === 'devis' && ['envoye', 'brouillon'].includes(d.status));
+    const last = ds.map((d) => d.issue_date).sort().pop();
+    const ca = inv.reduce((s, d) => s + Number(d.totals?.ht || 0), 0);
+    const status = late ? ['red', 'En retard de paiement'] : due > 0.005 ? ['yellow', 'Paiement en attente'] : openQuote ? ['navy-o', 'Devis en cours'] : ds.length ? ['green', 'À jour'] : ['grey', 'Aucun document'];
+    return { c, ca, due, last, status };
+  }).sort((a, b2) => b2.ca - a.ca);
   return (
     <div className="content">
-      <TopBar title={t('KPI')} sub={q ? q : t('Tous les clients')} />
-      <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} />
-      <KpiView docs={b.docs.filter((d) => match(d.client_id))} appts={b.appts.filter((a) => match(a.client_id))} />
+      <TopBar title={t('KPI')} sub={sel.length ? t('{n} clients sélectionnés', { n: sel.length }) : t('Tous les clients')} />
+      <div className="suggest-wrap" style={{ marginBottom: 10 }}>
+        <SearchBar placeholder={t('Recherchez un client à analyser')} value={q} onChange={setQ} onFocus={() => setFocus(true)} onBlur={() => setTimeout(() => setFocus(false), 150)} />
+        {focus && sugg.length > 0 && <div className="suggest" role="listbox">{sugg.map((c) => <button type="button" key={c.id} onMouseDown={(e) => { e.preventDefault(); add(c.id); }}><LuPlus /><span><b>{clientName(c)}</b><small>{[c.number, c.site_city || c.billing_city].filter(Boolean).join(' · ')}</small></span></button>)}</div>}
+        {focus && n && !sugg.length && <div className="suggest"><div className="grp">{t('Aucun client trouvé')}</div></div>}
+      </div>
+      {sel.length > 0 && <div className="chips" style={{ marginBottom: 12, flexWrap: 'wrap' }}>
+        {sel.map((id) => <button key={id} className="chip on" onClick={() => setSel(sel.filter((x) => x !== id))}>{clientName(b.cm[id])} <LuX /></button>)}
+        <button className="chip" onClick={() => setSel([])}>{t('Tous les clients')}</button>
+      </div>}
+      <KpiView docs={docs} appts={appts} scope="company" />
+      <Sec title={t('Statut général des clients')} />
+      {rows.length ? (
+        <div className="table-wrap"><table className="t"><thead><tr><th>{t('Client')}</th><th>{t('Statut')}</th><th className="num">{t('CA HT')}</th><th className="num">{t('Dû')}</th><th className="num">{t('Dernier document')}</th></tr></thead>
+          <tbody>{rows.slice(0, 50).map((r) => <tr key={r.c.id} style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/clients/' + r.c.id)}><td className="strong">{clientName(r.c)}</td><td><Pill c={r.status[0]}>{t(r.status[1])}</Pill></td><td className="num">{money0(r.ca)}</td><td className={'num' + (r.due > 0.005 ? ' red-t' : '')}>{money0(r.due)}</td><td className="num" style={{ fontWeight: 400 }}>{r.last ? date(r.last) : '—'}</td></tr>)}</tbody></table></div>
+      ) : <Empty text={t('Aucun client')} />}
     </div>
   );
 }

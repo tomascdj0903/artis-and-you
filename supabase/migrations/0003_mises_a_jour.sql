@@ -95,3 +95,6 @@ language sql stable security definer set search_path = public as $$
   order by c.name
   limit 100
 $$;
+
+-- ───────────────── Clients : pays ─────────────────
+alter table public.clients add column if not exists billing_country text default 'France';

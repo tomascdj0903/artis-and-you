@@ -45,7 +45,7 @@ export function AddressFields({ value, onChange, required, keys = {} }) {
   const [focus, setFocus] = useState(null);
   const [addr, setAddr] = useSuggest(fetchAddress, focus === 'a' && (v[k.country] || 'France') === 'France' ? v[k.address] : '');
   const [cities, setCities] = useSuggest(fetchCities, focus === 'c' && (v[k.country] || 'France') === 'France' ? v[k.city] || v[k.zip] : '', 2);
-  const set = (patch) => onChange({ ...v, ...patch });
+  const set = (patch) => { const p2 = { ...patch }; delete p2.null; delete p2.undefined; onChange({ ...v, ...p2 }); };
   return (
     <div className="form-grid two addr">
       <label className="field full suggest-wrap"><span>{t('Adresse')}</span>

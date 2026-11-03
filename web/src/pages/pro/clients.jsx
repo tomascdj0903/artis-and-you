@@ -5,7 +5,8 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, date, dateTime, clientName, fullName, dateMed, hm } from '../../lib/format.js';
-import { effectiveStatus } from '../../lib/docs.js';
+import { effectiveStatus, LEGAL_FORMS } from '../../lib/docs.js';
+import { AddressFields, COUNTRIES } from '../../ui/address.jsx';
 import { TopBar, SearchBar, Sec, KV, Table, Pill, Sheet, Chips, Field, useData, Loader, Empty, Seg } from '../../ui/index.jsx';
 import { KpiView } from './kpi.jsx';
 import { DocList } from './doclist.jsx';
@@ -21,42 +22,92 @@ export function balanceOf(docs) {
   }, 0);
 }
 
+const norm = (x) => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const PERIODS = [['', 'Toutes'], ['30', '30 derniers jours'], ['90', '3 derniers mois'], ['365', '12 derniers mois'], ['year', 'Cette année']];
+const SORTS = [['recent', 'Plus récents'], ['name', 'Nom (A → Z)'], ['city', 'Ville'], ['ca', 'Chiffre d’affaires'], ['due', 'Montant dû']];
+const EMPTY_F = { type: '', status: '', cities: [], country: '', period: '', from: '', to: '', caMin: '', caMax: '', due: false, account: '', sort: 'recent' };
+
 export function Clients() {
   const { company } = useApp();
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
-  const [f, setF] = useState({ type: '', status: '' });
-  const [data, , loading] = useData(() => api.select('clients', { company_id: company.id }, { order: 'created_at.desc' }), []);
-  if (loading) return <div className="content"><TopBar title={t('Clients')} /><Loader /></div>;
-  const list = data.filter((c) => (!f.type || c.type === f.type) && (!f.status || c.status === f.status))
-    .filter((c) => !q || [c.last_name, c.first_name, c.company_name, c.trade_name, c.billing_city, c.number].join(' ').toLowerCase().includes(q.toLowerCase()));
+  const [f, setF] = useState(() => { try { return { ...EMPTY_F, ...JSON.parse(localStorage.getItem('ay-clients-filter') || '{}') }; } catch { return EMPTY_F; } });
+  const setFilter = (x) => { setF(x); try { localStorage.setItem('ay-clients-filter', JSON.stringify(x)); } catch {} };
+  const [b, , loading] = useData(async () => {
+    const [clients, docs] = await Promise.all([api.select('clients', { company_id: company.id }, { order: 'created_at.desc' }), api.select('documents', { company_id: company.id })]);
+    const stats = {};
+    for (const d of docs) {
+      if (!d.number || d.kind === 'devis' || d.status === 'annulee') continue;
+      const s = (stats[d.client_id] = stats[d.client_id] || { ca: 0, due: 0 });
+      const sign = d.kind === 'avoir' ? -1 : 1;
+      s.ca += sign * Math.abs(Number(d.totals?.ht || 0));
+      if (d.kind !== 'avoir') s.due += Math.max(0, Number(d.totals?.net ?? d.totals?.ttc ?? 0) - Number(d.paid_amount || 0));
+    }
+    return { clients: clients.map((c) => ({ ...c, ca: stats[c.id]?.ca || 0, due: stats[c.id]?.due || 0 })) };
+  }, []);
+  if (loading || !b) return <div className="content"><TopBar title={t('Clients')} /><Loader /></div>;
+  const data = b.clients;
+  const city = (c) => c.site_city || c.billing_city || '';
+  const cities = [...new Set(data.map(city).filter(Boolean))].sort((x, y) => x.localeCompare(y));
+  const countries = [...new Set(data.map((c) => c.billing_country || 'France'))];
+  const since = f.period === 'year' ? `${new Date().getFullYear()}-01-01` : f.period ? new Date(Date.now() - Number(f.period) * 864e5).toISOString().slice(0, 10) : f.from;
+  const n = norm(q);
+  let list = data.filter((c) => (!f.type || c.type === f.type) && (!f.status || c.status === f.status)
+    && (!f.cities.length || f.cities.includes(city(c))) && (!f.country || (c.billing_country || 'France') === f.country)
+    && (!since || (c.created_at || '').slice(0, 10) >= since) && (!f.to || (c.created_at || '').slice(0, 10) <= f.to)
+    && (f.caMin === '' || c.ca >= Number(f.caMin)) && (f.caMax === '' || c.ca <= Number(f.caMax)) && (!f.due || c.due > 0.005)
+    && (!f.account || (f.account === 'oui' ? !!c.user_id : !c.user_id)))
+    .filter((c) => !n || norm([c.last_name, c.first_name, c.company_name, c.trade_name, c.billing_city, c.site_city, c.number, c.email, c.mobile, c.phone].join(' ')).includes(n));
+  const by = { name: (x, y) => clientName(x).localeCompare(clientName(y)), city: (x, y) => city(x).localeCompare(city(y)), ca: (x, y) => y.ca - x.ca, due: (x, y) => y.due - x.due, recent: (x, y) => (y.created_at || '').localeCompare(x.created_at || '') }[f.sort];
+  list = list.slice().sort(by);
+  const active = [
+    f.type && [t(f.type === 'pro' ? 'Pro' : 'Particulier'), { type: '' }], f.status && [t({ actif: 'Actif', prospect: 'Prospect', inactif: 'Inactif' }[f.status]), { status: '' }],
+    ...f.cities.map((x) => [x, { cities: f.cities.filter((y) => y !== x) }]), f.country && [t(f.country), { country: '' }],
+    (f.period || f.from || f.to) && [f.period ? t(PERIODS.find((p) => p[0] === f.period)[1]) : `${f.from ? date(f.from) : '…'} → ${f.to ? date(f.to) : '…'}`, { period: '', from: '', to: '' }],
+    (f.caMin !== '' || f.caMax !== '') && [`${t('CA')} ${f.caMin || 0} – ${f.caMax || '∞'} €`, { caMin: '', caMax: '' }], f.due && [t('Avec un montant dû'), { due: false }],
+    f.account && [f.account === 'oui' ? t('Avec compte Artis & You') : t('Sans compte Artis & You'), { account: '' }],
+  ].filter(Boolean);
   return (
     <div className="content">
       <TopBar title={t('Clients')} back={false} />
-      <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={!!(f.type || f.status)} />
-      <Sec title={t('Mes clients')} meta={t('{n} clients', { n: data.length })} />
-      <Table rows={list} onRow={(c) => navigate('/pro/clients/' + c.id)} empty={t('Aucun client. Ajoutez votre premier client avec le bouton +.')}
+      <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={active.length > 0} />
+      {active.length > 0 && <div className="chips">{active.map(([l, patch], i) => <button key={i} className="chip on" onClick={() => setFilter({ ...f, ...patch })}>{l} ✕</button>)}<button className="link red small" onClick={() => setFilter({ ...EMPTY_F, sort: f.sort })}>{t('Tout effacer')}</button></div>}
+      <Sec title={t('Mes clients')} meta={<span className="row" style={{ gap: 8 }}>{list.length !== data.length ? t('{n} sur {m}', { n: list.length, m: data.length }) : t('{n} clients', { n: data.length })}
+        <select className="mini-select" value={f.sort} onChange={(e) => setFilter({ ...f, sort: e.target.value })} aria-label={t('Trier')}>{SORTS.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></span>} />
+      <Table rows={list} onRow={(c) => navigate('/pro/clients/' + c.id)} empty={data.length ? t('Aucun client ne correspond à ces filtres.') : t('Aucun client. Ajoutez votre premier client avec le bouton +.')}
         cols={[
           { label: t('Type'), render: typePill },
           { label: t('Nom'), strong: true, render: (c) => c.last_name || '—' },
           { label: t('Prénom'), render: (c) => c.first_name || '—' },
           { label: t('Raison sociale'), strong: true, render: (c) => c.trade_name || c.company_name || '—' },
-          { label: t('Ville'), render: (c) => <span className="muted">{c.site_city || c.billing_city}</span> },
+          { label: t('Ville'), render: (c) => <span className="muted">{city(c)}</span> },
+          ...(f.sort === 'ca' || f.caMin !== '' || f.caMax !== '' ? [{ label: t('CA HT'), num: true, render: (c) => money(c.ca, 0) }] : []),
+          ...(f.sort === 'due' || f.due ? [{ label: t('Dû'), num: true, render: (c) => <span className={c.due > 0 ? 'red-t' : ''}>{money(c.due)}</span> }] : []),
         ]} />
       <button className="fab" onClick={() => navigate('/pro/clients/nouveau')} aria-label={t('Nouveau client')}><LuPlus /></button>
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer')}>
         <div className="small bold">{t('Type')}</div>
-        <Chips options={[['', t('Tous')], ['pro', t('Pro')], ['particulier', t('Particulier')]]} value={f.type} onChange={(type) => setF({ ...f, type })} />
+        <Chips options={[['', t('Tous')], ['pro', t('Pro')], ['particulier', t('Particulier')]]} value={f.type} onChange={(type) => setFilter({ ...f, type })} />
         <div className="small bold">{t('Statut')}</div>
-        <Chips options={[['', t('Tous')], ['actif', t('Actif')], ['prospect', t('Prospect')], ['inactif', t('Inactif')]]} value={f.status} onChange={(status) => setF({ ...f, status })} />
-        <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setF({ type: '', status: '' })}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} clients', { n: list.length })}</button></div></div>
+        <Chips options={[['', t('Tous')], ['actif', t('Actif')], ['prospect', t('Prospect')], ['inactif', t('Inactif')]]} value={f.status} onChange={(status) => setFilter({ ...f, status })} />
+        {cities.length > 0 && <><div className="small bold">{t('Ville')}</div><Chips multi scroll={cities.length > 8} options={cities.map((x) => [x, x])} value={f.cities} onChange={(c2) => setFilter({ ...f, cities: c2 })} /></>}
+        {countries.length > 1 && <><div className="small bold">{t('Pays')}</div><Chips options={[['', t('Tous')], ...countries.map((x) => [x, t(x)])]} value={f.country} onChange={(country) => setFilter({ ...f, country })} /></>}
+        <div className="small bold">{t('Client depuis')}</div>
+        <Chips options={PERIODS.map(([k, l]) => [k, t(l)])} value={f.period} onChange={(period) => setFilter({ ...f, period, from: '', to: '' })} />
+        <div className="form-grid two"><Field label={t('Du')}><input type="date" value={f.from} onChange={(e) => setFilter({ ...f, from: e.target.value, period: '' })} /></Field><Field label={t('Au')}><input type="date" value={f.to} onChange={(e) => setFilter({ ...f, to: e.target.value, period: '' })} /></Field></div>
+        <div className="small bold">{t('Chiffre d’affaires facturé (€ HT)')}</div>
+        <div className="form-grid two"><Field label={t('Minimum')}><input type="number" min="0" value={f.caMin} onChange={(e) => setFilter({ ...f, caMin: e.target.value })} /></Field><Field label={t('Maximum')}><input type="number" min="0" value={f.caMax} onChange={(e) => setFilter({ ...f, caMax: e.target.value })} /></Field></div>
+        <label className="check"><input type="checkbox" checked={f.due} onChange={(e) => setFilter({ ...f, due: e.target.checked })} />{t('Seulement les clients avec un montant dû')}</label>
+        <div className="small bold">{t('Compte Artis & You')}</div>
+        <Chips options={[['', t('Tous')], ['oui', t('Avec compte')], ['non', t('Sans compte')]]} value={f.account} onChange={(account) => setFilter({ ...f, account })} />
+        <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setFilter({ ...EMPTY_F, sort: f.sort })}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} clients', { n: list.length })}</button></div></div>
       </Sheet>
     </div>
   );
 }
 
 const EMPTY_CLIENT = { type: 'particulier', civility: '', last_name: '', first_name: '', company_name: '', trade_name: '', legal_form: '', creation_date: '', email: '', phone: '', mobile: '', website: '', contact_name: '', contact_role: '',
-  billing_address: '', billing_zip: '', billing_city: '', site_name: '', site_address: '', site_zip: '', site_city: '', siret: '', siren: '', vat_number: '', rcs: '', payment_terms: '30 jours fin de mois', payment_mode: 'Virement', max_outstanding: 0, status: 'actif' };
+  billing_address: '', billing_zip: '', billing_city: '', billing_country: 'France', site_name: '', site_address: '', site_zip: '', site_city: '', siret: '', siren: '', vat_number: '', rcs: '', payment_terms: '30 jours fin de mois', payment_mode: 'Virement', max_outstanding: 0, status: 'actif' };
 
 export function ClientEdit({ params }) {
   const { company, run } = useApp();
@@ -90,13 +141,14 @@ export function ClientEdit({ params }) {
           <Field label={t('Civilité')}><select value={c.civility} onChange={(e) => setC({ ...c, civility: e.target.value })}><option value="">—</option><option>M.</option><option>Mme</option></select></Field>
           {F('last_name', t('Nom'), { required: c.type === 'particulier' })}{F('first_name', t('Prénom'))}
         </div>
-        {c.type === 'pro' && <div className="form-grid two">{F('company_name', t('Raison sociale'), { required: true })}{F('trade_name', t('Enseigne commerciale'))}{F('legal_form', t('Forme juridique'), { placeholder: 'SARL, SAS, EI…' })}{F('creation_date', t('Date de création'), { type: 'date' })}</div>}
+        {c.type === 'pro' && <div className="form-grid two">{F('company_name', t('Raison sociale'), { required: true })}{F('trade_name', t('Enseigne commerciale'))}<Field label={t('Forme juridique')}><select value={c.legal_form || ''} onChange={(e) => setC({ ...c, legal_form: e.target.value })}><option value="">{t('Choisir')}</option>{LEGAL_FORMS.map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>{F('creation_date', t('Date de création'), { type: 'date' })}</div>}
         <Sec title={t('Coordonnées')} />
         <div className="form-grid two">{F('email', t('E-mail'), { type: 'email' })}{F('mobile', t('Tél. mobile'), { type: 'tel' })}{F('phone', t('Tél. fixe'), { type: 'tel' })}{c.type === 'pro' && F('website', t('Site web'))}{c.type === 'pro' && F('contact_name', t('Contact'))}{c.type === 'pro' && F('contact_role', t('Fonction du contact'))}</div>
         <Sec title={t('Adresse de facturation')} />
-        <div className="form-grid three">{F('billing_address', t('Adresse'))}{F('billing_zip', t('Code postal'))}{F('billing_city', t('Ville'))}</div>
+        <AddressFields value={c} onChange={(x) => setC({ ...c, ...x })} required={c.type === 'pro'} keys={{ address: 'billing_address', zip: 'billing_zip', city: 'billing_city', country: 'billing_country' }} />
         <Sec title={t('Adresse de livraison (lieu du chantier)')} />
-        <div className="form-grid two">{F('site_name', t('Nom du chantier'), { placeholder: t('ex. Villa Les Lauriers') })}{F('site_address', t('Adresse'))}{F('site_zip', t('Code postal'))}{F('site_city', t('Ville'))}</div>
+        {F('site_name', t('Nom du chantier'), { placeholder: t('ex. Villa Les Lauriers') })}
+        <AddressFields value={c} onChange={(x) => setC({ ...c, ...x })} keys={{ address: 'site_address', zip: 'site_zip', city: 'site_city', country: null }} />
         {c.type === 'pro' && <><Sec title={t('Informations légales')} /><div className="form-grid two">{F('siret', t('SIRET'))}{F('siren', t('SIREN'))}{F('vat_number', t('N° TVA'))}{F('rcs', t('RCS'))}</div></>}
         <Sec title={t('Paiement')} />
         <div className="form-grid three">
