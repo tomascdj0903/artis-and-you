@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
+import { LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
@@ -22,6 +22,14 @@ export function Home() {
       <TopBar back={false} home />
       <h1 className="hide-mob" style={{ fontSize: 28, marginBottom: 4 }}>{t('Bonjour {n}', { n: profile.first_name })} <span className="muted" style={{ fontSize: 18, fontWeight: 600 }}>· {company?.name}</span></h1>
       <SearchBar placeholder={t('Que recherchez-vous ?')} value={q} onChange={setQ} onSubmit={() => q.trim() && navigate('/pro/recherche?q=' + encodeURIComponent(q.trim()))} />
+      {company && (company.verification_status || (company.verified ? 'approved' : 'pending')) !== 'approved' && (
+        <Link to="/pro/compte/entreprise" className="alert" style={{ color: 'inherit' }}>
+          <LuShieldAlert className="red-t" size={28} style={{ flexShrink: 0 }} />
+          <div>{company.verification_status === 'rejected'
+            ? <><b>{t('Votre inscription est à compléter')}</b><div className="small">{company.verification_note || t('L’équipe Artis & You a besoin d’informations supplémentaires.')}</div></>
+            : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artis & You vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
+        </Link>
+      )}
       {days !== null && days >= 0 && days <= 30 && company?.plan && (
         <Link to="/pro/compte/abonnement" className="notice">⏳ <span>{t('Essai gratuit : encore {n} jours. Choisir ma formule', { n: days })} →</span></Link>
       )}

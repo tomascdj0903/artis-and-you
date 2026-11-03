@@ -155,3 +155,5 @@ export const PLANS = [
   { id: 'equipe', name: 'Équipe', price: 39, users: 5, desc: 'Jusqu’à 5 utilisateurs', features: ['Tout Solo', 'Équipes et couleurs au planning', 'Rôles et droits (chef d’équipe, ouvrier)', 'Messagerie d’équipe', 'Statut projet et KPI'] },
   { id: 'entreprise', name: 'Entreprise', price: 69, users: 0, desc: 'Utilisateurs illimités', features: ['Tout Équipe', 'Utilisateurs illimités', 'Chantiers partagés avec le réseau', 'Bibliothèque d’ouvrages avancée', 'Support prioritaire'] },
 ];
+
+export const LEGAL_FORMS = ['Entrepreneur individuel (EI)', 'Micro-entreprise', 'EURL', 'SARL', 'SASU', 'SAS', 'SA', 'SNC', 'SCI', 'SCOP', 'Association', 'Autre'];

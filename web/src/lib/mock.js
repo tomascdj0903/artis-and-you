@@ -6,6 +6,7 @@ const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random(
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
 
+import { ADMIN_EMAILS } from './api.js';
 export function mockBackend({ saveSession, getSession }) {
   // Stockage dans IndexedDB : les tables dans « kv », les fichiers (photos, PDF) dans « blobs ».
   // Chaque modification attend que l'écriture soit terminée : rien n'est perdu si on ferme la fenêtre.
@@ -37,6 +38,7 @@ export function mockBackend({ saveSession, getSession }) {
   const me = () => getSession()?.user?.id;
   const profile = () => db.profiles.find((p) => p.id === me());
   const myCompany = () => profile()?.company_id || null;
+  const isAdmin = () => ADMIN_EMAILS.includes(String(profile()?.email || '').toLowerCase());
   const myClientIds = () => db.clients.filter((c) => c.user_id === me()).map((c) => c.id);
   const wait = (v) => new Promise((r) => setTimeout(() => r(structuredClone(v)), 40));
   const fail = (m) => Promise.reject(new Error(m));
@@ -155,16 +157,24 @@ export function mockBackend({ saveSession, getSession }) {
     }
   }
   const rpcs = {
-    is_admin() { return true; },
+    is_admin() { return isAdmin(); },
+    admin_review_company({ p_id, p_status, p_note = '' }) {
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
+      const c = db.companies.find((x) => x.id === p_id); if (!c) throw new Error('Entreprise introuvable');
+      Object.assign(c, { verification_status: p_status, verified: p_status === 'approved', verification_note: p_note, verified_at: now() });
+      notifyCompany(c.id, 'systeme', p_status === 'approved' ? 'Votre entreprise est validée' : 'Votre inscription est à compléter', p_status === 'approved' ? 'Votre profil est maintenant visible des clients.' : p_note, '/pro/compte/entreprise');
+      return c;
+    },
     create_company({ p }) {
       if (myCompany()) throw new Error('Vous avez déjà une entreprise');
       const ref = p.referral ? db.companies.find((c) => c.referral_code === p.referral.toUpperCase()) : null;
-      const c = { ...defaults.companies, id: id(), owner_id: me(), name: p.name, siret: p.siret || '', siren: (p.siret || '').replace(/\D/g, '').slice(0, 9), trades: p.trades || [], city: p.city || '', zip: p.zip || '', address: p.address || '', phone: p.phone || '', email: p.email || '',
+      const c = { ...defaults.companies, id: id(), owner_id: me(), name: p.name, siret: p.siret || '', siren: (p.siret || '').replace(/\D/g, '').slice(0, 9), trades: p.trades || [], city: p.city || '', zip: p.zip || '', address: p.address || '', country: p.country || 'France', legal_form: p.legal_form || '', phone: p.phone || '', email: p.email || '', verification_status: 'pending', verified: false,
         referred_by: ref?.id || null, referral_code: Math.random().toString(36).slice(2, 10).toUpperCase(), trial_ends_at: new Date(Date.now() + 30 * 864e5).toISOString(), created_at: now(),
         settings: { planning: { view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true }, docs: { quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', onlinePayment: true, einvoice: true }, pdf: { color: '#7F1111', footer: '' }, notifications: { push: true, email: true, sms: false } } };
       db.companies.push(c);
       Object.assign(profile(), { kind: 'artisan', company_id: c.id, member_role: 'gerant' });
       db.teams.push({ id: id(), company_id: c.id, name: 'Équipe principale', color: '#00123B', created_at: now() });
+      db.profiles.filter((x) => ADMIN_EMAILS.includes(String(x.email).toLowerCase())).forEach((x) => notify(x.id, 'systeme', 'Nouvelle entreprise à valider', c.name + ' · SIRET ' + c.siret, '/' + (x.company_id ? 'pro' : 'client') + '/admin'));
       return c;
     },
     join_company({ p_code }) {
@@ -193,7 +203,7 @@ export function mockBackend({ saveSession, getSession }) {
     },
     directory_search({ p_query = '', p_trade = '', p_city = '' }) {
       const q = p_query.toLowerCase(), t = p_trade.toLowerCase(), ci = p_city.toLowerCase();
-      return db.companies.filter((c) => (c.visible_particuliers || myCompany()) &&
+      return db.companies.filter((c) => (c.verification_status === 'approved' || c.verified) && (c.visible_particuliers || myCompany()) &&
         (!q || (c.name + ' ' + (c.trade_name || '') + ' ' + c.trades.join(' ')).toLowerCase().includes(q)) &&
         (!t || c.trades.join(' ').toLowerCase().includes(t)) && (!ci || (c.city + ' ' + (c.zone || '')).toLowerCase().includes(ci)))
         .map((c) => ({ id: c.id, name: c.name, trade_name: c.trade_name, city: c.city, zip: c.zip, trades: c.trades, zone: c.zone, verified: c.verified, rating: avg(reviewsOf(c.id)), reviews_count: reviewsOf(c.id).length, visio: c.settings?.planning?.visio !== false, is_mine: db.clients.some((x) => x.company_id === c.id && x.user_id === me()), logo_path: c.logo_path }));
@@ -279,6 +289,7 @@ export function mockBackend({ saveSession, getSession }) {
     async update(table, filters, patch) { await ready;
       let last = null;
       for (const r of db[table].filter((x) => match(x, filters))) {
+        if (table === 'companies' && !isAdmin() && ('verified' in patch || 'verification_status' in patch)) return fail('Seule l’équipe Artis & You peut valider une entreprise.');
         if (table === 'documents' && r.locked && ('lines' in patch || 'totals' in patch || 'client_id' in patch)) return fail('Cette facture est émise : elle ne peut plus être modifiée. Créez un avoir.');
         const old = { ...r }; Object.assign(r, patch); afterUpdate(table, old, r); last = r;
       }
@@ -302,18 +313,35 @@ export function mockBackend({ saveSession, getSession }) {
     async signedUrls(paths) { await ready; const o = {}; for (const p of paths) o[p] = (await blobGet(p)) || null; return o; },
     async removeFile(path) { await ready; await blobDel(path); },
     async signUp(email, password, data) { await ready;
+      email = String(email).toLowerCase();
       if (db._users.some((u) => u.email === email)) return fail('Un compte existe déjà avec cet e-mail.');
       if ((password || '').length < 6) return fail('Le mot de passe doit contenir au moins 6 caractères.');
-      const u = { id: id(), email, password, user_metadata: data };
+      const code = String(Math.floor(100000 + Math.random() * 900000));
+      const u = { id: id(), email, password, user_metadata: data, verified: false, code, code_at: now() };
       db._users.push(u);
-      db.profiles.push({ ...defaults.profiles, id: u.id, kind: data.kind || 'particulier', first_name: data.first_name || '', last_name: data.last_name || '', email, phone: data.phone || '', lang: data.lang || 'fr', created_at: now() });
-      await persist(); saveSession({ access_token: 'local', user: { id: u.id, email } });
-      return { needsConfirm: false };
+      db.profiles.push({ ...defaults.profiles, ...(data.home ? { home: data.home } : {}), id: u.id, kind: data.kind || 'particulier', civility: data.civility || '', first_name: data.first_name || '', last_name: data.last_name || '', email, phone: data.phone || '', lang: data.lang || 'fr', created_at: now() });
+      await persist();
+      // Mode local : aucun e-mail n'est envoyé, le code est renvoyé pour être affiché à l'écran
+      return { needsConfirm: true, devCode: code };
+    },
+    async verifyEmail(email, code) { await ready;
+      const u = db._users.find((x) => x.email === String(email).toLowerCase());
+      if (!u) return fail('Compte introuvable.');
+      if (!u.verified && String(code).trim() !== u.code) return fail('Code incorrect.');
+      u.verified = true; delete u.code; await persist();
+      saveSession({ access_token: 'local', user: { id: u.id, email: u.email } });
+    },
+    async resendCode(email) { await ready;
+      const u = db._users.find((x) => x.email === String(email).toLowerCase());
+      if (!u) return fail('Compte introuvable.');
+      u.code = String(Math.floor(100000 + Math.random() * 900000)); await persist();
+      return { devCode: u.code };
     },
     async signIn(email, password, remember) { await ready;
-      const u = db._users.find((x) => x.email === email && x.password === password);
+      const u = db._users.find((x) => x.email === String(email).toLowerCase() && x.password === password);
       if (!u) return fail('E-mail ou mot de passe incorrect.');
-      saveSession({ access_token: 'local', user: { id: u.id, email } }, remember);
+      if (u.verified === false) { const e = new Error('Confirmez votre adresse e-mail avant de vous connecter.'); e.code = 'email_not_confirmed'; throw e; }
+      saveSession({ access_token: 'local', user: { id: u.id, email: u.email } }, remember);
     },
     async signOut() { await ready; saveSession(null); },
     async recover() { await ready; return wait(null); },

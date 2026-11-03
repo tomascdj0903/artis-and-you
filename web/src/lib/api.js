@@ -7,6 +7,7 @@ const KEY = ENV.SUPABASE_KEY || '';
 export const OFFLINE = !URL_ || !KEY || new URLSearchParams(location.search).has('local');
 export const APP_VERSION = ENV.APP_VERSION || '1.0.0';
 export const GITHUB_REPO = ENV.GITHUB_REPO || '';
+export const ADMIN_EMAILS = String(ENV.ADMIN_EMAILS || '').toLowerCase().split(',').map((x) => x.trim()).filter(Boolean);
 
 // ─────────────── Session ───────────────
 const SKEY = 'ay-session';
@@ -136,9 +137,17 @@ const remote = {
     if (d.access_token) saveSession({ ...d, expires_at: Date.now() / 1000 + d.expires_in });
     return { needsConfirm: !d.access_token };
   },
+  // Code à 6 chiffres reçu par e-mail (modèle Supabase « Confirm signup » avec {{ .Token }})
+  async verifyEmail(email, token) {
+    const d = await http('/auth/v1/verify', { method: 'POST', body: { type: 'signup', email, token: String(token).trim() }, auth: false });
+    if (d.access_token) saveSession({ ...d, expires_at: Date.now() / 1000 + d.expires_in });
+  },
+  async resendCode(email) { await http('/auth/v1/resend', { method: 'POST', body: { type: 'signup', email }, auth: false }); return {}; },
   async signIn(email, password, remember = true) {
-    const d = await http('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password }, auth: false });
-    saveSession({ ...d, expires_at: Date.now() / 1000 + d.expires_in }, remember);
+    try {
+      const d = await http('/auth/v1/token?grant_type=password', { method: 'POST', body: { email, password }, auth: false });
+      saveSession({ ...d, expires_at: Date.now() / 1000 + d.expires_in }, remember);
+    } catch (e) { if (/Confirmez votre adresse/.test(e.message)) e.code = 'email_not_confirmed'; throw e; }
   },
   async signOut() { try { await http('/auth/v1/logout', { method: 'POST' }); } catch {} saveSession(null); },
   async recover(email) { await http('/auth/v1/recover?redirect_to=' + encodeURIComponent(location.origin + '/nouveau-mot-de-passe'), { method: 'POST', body: { email }, auth: false }); },

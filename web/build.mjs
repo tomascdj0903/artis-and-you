@@ -6,6 +6,7 @@ fs.cpSync('public', 'dist', { recursive: true });
 const env = {
   SUPABASE_URL: process.env.SUPABASE_URL || '',
   SUPABASE_KEY: process.env.SUPABASE_KEY || '',
+  ADMIN_EMAILS: process.env.ADMIN_EMAILS || 'tomascdj0903@gmail.com',
   APP_VERSION: JSON.parse(fs.readFileSync('package.json', 'utf8')).version,
   GITHUB_REPO: process.env.GITHUB_REPO || 'tomascdj0903/artis-and-you',
 };

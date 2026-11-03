@@ -17,7 +17,7 @@ import * as Common from './pages/common/index.jsx';
 
 const PUBLIC = [
   ['/connexion', Auth.Login], ['/inscription', Auth.SignupChoice], ['/inscription/artisan', Auth.SignupPro], ['/inscription/particulier', Auth.SignupClient],
-  ['/mot-de-passe-oublie', Auth.Forgot], ['/nouveau-mot-de-passe', Auth.NewPassword], ['/telecharger', Legal.Download],
+  ['/mot-de-passe-oublie', Auth.Forgot], ['/verification', Auth.Verify], ['/nouveau-mot-de-passe', Auth.NewPassword], ['/telecharger', Legal.Download],
   ['/mentions-legales', Legal.Mentions], ['/cgu', Legal.CGU], ['/confidentialite', Legal.Privacy],
 ];
 const PRO = [

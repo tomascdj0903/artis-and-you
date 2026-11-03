@@ -7,7 +7,7 @@ import { navigate, Link } from '../../lib/router.jsx';
 import { t, LANGS } from '../../lib/i18n.js';
 import { rel, dateMed, fullName, date } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
-import { TopBar, SearchBar, Sec, Chips, Field, Toggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Chips, Field, Toggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet } from '../../ui/index.jsx';
 import { uploadTo } from './chat.jsx';
 
 const NICON = { rdv: LuCalendar, documents: LuFileText, paiement: LuEuro, message: LuMessageSquare, systeme: LuInfo };
@@ -187,27 +187,50 @@ export function NotFound() {
 
 // ─────────────── Administration Artis & You (vérification SIRET, avis) ───────────────
 export function Admin() {
-  const { run } = useApp();
-  const [tab, setTab] = useState('avis');
+  const { run, profile } = useApp();
+  const [tab, setTab] = useState('siret');
+  const [refuse, setRefuse] = useState(null);
   const [b, reload] = useData(async () => {
-    const [cos, revs] = await Promise.all([api.select('companies', {}, { order: 'created_at.desc', limit: 200 }), api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' })]);
+    if (!profile.is_admin) return null;
+    const [cos, revs] = await Promise.all([api.select('companies', {}, { order: 'created_at.desc', limit: 300 }), api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' })]);
     return { cos, revs, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
   }, []);
+  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artis & You.')} /></div>;
   if (!b) return <div className="content"><TopBar title={t('Administration')} /><Loader /></div>;
+  const st = (c) => c.verification_status || (c.verified ? 'approved' : 'pending');
+  const pending = b.cos.filter((c) => st(c) === 'pending');
+  const review = (c, status, note = '') => run(() => api.rpc('admin_review_company', { p_id: c.id, p_status: status, p_note: note }), status === 'approved' ? t('Entreprise validée') : t('Demande de compléments envoyée')).then(reload);
+  const missing = (c) => [['legal_form', 'Forme juridique'], ['siret', 'SIRET'], ['address', 'Adresse'], ['zip', 'Code postal'], ['city', 'Ville'], ['phone', 'Téléphone'], ['email', 'E-mail'], ['insurer', 'Assurance décennale']].filter(([k]) => !c[k]).map(([, l]) => t(l));
   return (
     <div className="content">
       <TopBar title={t('Administration')} sub="Artis & You" />
-      <Chips options={[['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['siret', t('Entreprises ({n})', { n: b.cos.length })]]} value={tab} onChange={setTab} />
+      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })]]} value={tab} onChange={setTab} />
       {tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
         <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>
           <div className="row mt"><button className="btn xs" onClick={() => run(() => api.update('reviews', { id: r.id }, { status: 'publie' }), t('Avis publié')).then(reload)}><LuCheck /> {t('Publier')}</button><button className="btn xs ghost" onClick={() => run(() => api.update('reviews', { id: r.id }, { status: 'refuse' }), t('Avis refusé')).then(reload)}><LuX /> {t('Refuser')}</button></div></div>
       ))) : (
-        <div className="list">{b.cos.map((c) => (
-          <div key={c.id} className="li"><div className="grow"><div className="t1">{c.name} {c.verified && <Pill c="green">{t('Vérifiée')}</Pill>}</div><div className="t2">SIRET {c.siret} · {c.city} · {date(c.created_at)}</div>
-            <a className="small red-t bold" href={'https://annuaire-entreprises.data.gouv.fr/etablissement/' + (c.siret || '').replace(/\D/g, '')} target="_blank" rel="noreferrer">{t('Vérifier sur l’annuaire des entreprises')} ↗</a></div>
-            <Toggle checked={c.verified} onChange={(v) => run(() => api.update('companies', { id: c.id }, { verified: v })).then(reload)} label={t('Vérifiée')} /></div>
-        ))}</div>
+        (tab === 'siret' ? pending : b.cos).length === 0 ? <Empty text={t('Aucune entreprise en attente')} /> : (tab === 'siret' ? pending : b.cos).map((c) => {
+          const m = missing(c);
+          return (
+            <div key={c.id} className="card soft mb">
+              <div className="row between wrap"><b style={{ fontSize: 17 }}>{c.name}</b><Pill c={st(c) === 'approved' ? 'green' : st(c) === 'rejected' ? 'red' : 'yellow'}>{t({ approved: 'Validée', rejected: 'À compléter', pending: 'En attente' }[st(c)])}</Pill></div>
+              <div className="small muted">{[c.legal_form, 'SIRET ' + c.siret, [c.address, c.zip, c.city].filter(Boolean).join(' '), c.phone, c.email].filter(Boolean).join(' · ')}</div>
+              <div className="small">{(c.trades || []).map(t).join(', ')} · {t('Inscrite le {d}', { d: date(c.created_at) })}</div>
+              {m.length > 0 && <div className="small red-t bold mt">{t('Manquant : {l}', { l: m.join(', ') })}</div>}
+              {c.verification_note && <div className="small mt">{t('Note')} : {c.verification_note}</div>}
+              <div className="row wrap mt">
+                <a className="btn xs ghost" href={'https://annuaire-entreprises.data.gouv.fr/etablissement/' + (c.siret || '').replace(/\D/g, '')} target="_blank" rel="noreferrer">{t('Vérifier le SIRET')} ↗</a>
+                {st(c) !== 'approved' && <button className="btn xs" onClick={() => review(c, 'approved')}><LuCheck /> {t('Valider')}</button>}
+                {st(c) !== 'rejected' && <button className="btn xs ghost" onClick={() => setRefuse({ c, note: m.length ? t('Merci de compléter : {l}.', { l: m.join(', ') }) : '' })}><LuX /> {t('Demander des compléments')}</button>}
+              </div>
+            </div>
+          );
+        })
       )}
+      <Sheet open={!!refuse} onClose={() => setRefuse(null)} title={t('Demander des compléments')}>
+        {refuse && <><Field label={t('Message à l’entreprise')}><textarea value={refuse.note} onChange={(e) => setRefuse({ ...refuse, note: e.target.value })} /></Field>
+          <button className="btn block" onClick={() => { review(refuse.c, 'rejected', refuse.note); setRefuse(null); }}>{t('Envoyer')}</button></>}
+      </Sheet>
     </div>
   );
 }

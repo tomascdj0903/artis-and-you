@@ -528,3 +528,14 @@ table.t .strong { font-weight: 700; }
   .a4 { position: absolute; left: 0; top: 0; box-shadow: none; margin: 0; }
   @page { size: A4; margin: 0; }
 }
+
+/* ─────────────── Propositions (adresse, ville, recherche) ─────────────── */
+.suggest-wrap { position: relative; }
+.suggest { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 60; background: var(--surface); border: 1px solid var(--line-2); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; max-height: 320px; overflow-y: auto; }
+.suggest button { display: flex; gap: 10px; align-items: center; width: 100%; text-align: left; border: 0; background: transparent; color: var(--text); padding: 10px 14px; font-size: 14px; }
+.suggest button + button { border-top: 1px solid var(--line-2); }
+.suggest button:hover, .suggest button.on { background: var(--bordeaux-50); }
+.suggest button svg { color: var(--bordeaux); flex-shrink: 0; }
+.suggest small { display: block; color: var(--text-2); font-size: 12px; }
+.suggest .grp { padding: 8px 14px 4px; font-size: 11px; font-weight: 800; color: var(--bordeaux); text-transform: uppercase; letter-spacing: .5px; background: var(--bg-soft); }
+.search.suggest-wrap .suggest { color: var(--text); }
