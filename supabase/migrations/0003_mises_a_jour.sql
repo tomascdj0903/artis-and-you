@@ -98,3 +98,6 @@ $$;
 
 -- ───────────────── Clients : pays ─────────────────
 alter table public.clients add column if not exists billing_country text default 'France';
+
+-- ───────────────── Coffre-fort : rappel d'expiration envoyé une seule fois ─────────────────
+alter table public.files add column if not exists reminded_at timestamptz;

@@ -6,7 +6,7 @@ import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { clientName, dateMed, date, iso, rel } from '../../lib/format.js';
 import { DOC_TYPES, VAULT_TYPES, docTypeLabel, validity } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Sheet, Field, Chips, useData, Loader, Empty, Img, Lightbox, openFile, pickFiles, Toggle, StatusPill, Pill } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Sheet, Field, Chips, useData, Loader, Empty, Img, Lightbox, openFile, pickFiles, Toggle, SettingToggle, StatusPill, Pill } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
 function useClientsWith(kind) {
@@ -166,19 +166,20 @@ export function OtherDocsClient({ params }) {
 
 function UploadSheet({ open, onClose, kind, types, clientId, onDone, presetType }) {
   const { company, run } = useApp();
-  const [v, setV] = useState({ doc_type: presetType || types[0][0], name: '', issued_at: iso(new Date()), valid_until: '', shared_with_client: kind === 'doc' });
+  const vp = kind === 'vault' ? vaultPrefs(company, presetType || types[0][0]) : null;
+  const [v, setV] = useState({ doc_type: presetType || types[0][0], name: '', issued_at: iso(new Date()), valid_until: '', shared_with_client: kind === 'doc' || !!vp?.shared });
   const [file, setFile] = useState(null);
   if (!open) return null;
   const save = () => run(async () => {
     if (!file) throw new Error(t('Choisissez un fichier.'));
     const up = await uploadTo(`${company.id}/${kind}/${clientId || 'entreprise'}`, file);
-    await api.insert('files', { company_id: company.id, client_id: clientId || null, kind, doc_type: v.doc_type, name: v.name || file.name.replace(/\.[^.]+$/, ''), path: up.path, mime: file.type, size: file.size, issued_at: v.issued_at || null, valid_until: v.valid_until || null, shared_with_client: v.shared_with_client });
+    await api.insert('files', { company_id: company.id, client_id: clientId || null, kind, doc_type: v.doc_type, name: v.name || file.name.replace(/\.[^.]+$/, ''), path: up.path, mime: file.type, size: file.size, issued_at: v.issued_at || null, valid_until: v.valid_until || null, shared_with_client: v.shared_with_client, ...(kind === 'vault' ? { remind_days: vaultPrefs(company, v.doc_type).remind } : {}) });
     onDone();
   }, t('Document ajouté'));
   return (
     <Sheet open onClose={onClose} title={t('Ajouter un document')}>
       <button className="btn ghost block mb" onClick={async () => { const [f] = await pickFiles({ multiple: false, accept: 'application/pdf,image/*,.doc,.docx,.xls,.xlsx' }); if (f) { setFile(f); if (!v.name) setV({ ...v, name: f.name.replace(/\.[^.]+$/, '') }); } }}>{file ? '📎 ' + file.name : t('Choisir le fichier')}</button>
-      <Field label={t('Type')}><select value={v.doc_type} onChange={(e) => setV({ ...v, doc_type: e.target.value })}>{types.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></Field>
+      <Field label={t('Type')}><select value={v.doc_type} onChange={(e) => setV({ ...v, doc_type: e.target.value, ...(kind === 'vault' ? { shared_with_client: vaultPrefs(company, e.target.value).shared } : {}) })}>{types.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></Field>
       <Field label={t('Nom')}><input value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} /></Field>
       <div className="form-grid two"><Field label={t('Délivré le')}><input type="date" value={v.issued_at} onChange={(e) => setV({ ...v, issued_at: e.target.value })} /></Field><Field label={t('Valide jusqu’au')}><input type="date" value={v.valid_until} onChange={(e) => setV({ ...v, valid_until: e.target.value })} /></Field></div>
       <label className="check"><input type="checkbox" checked={v.shared_with_client} onChange={(e) => setV({ ...v, shared_with_client: e.target.checked })} />{kind === 'vault' ? t('Partager avec mes clients (visible dans leur espace)') : t('Partager avec le client')}</label>
@@ -194,7 +195,7 @@ function EditFile({ f, onClose, onDone, types }) {
     <Sheet open onClose={onClose} title={f.name}>
       <div className="kv">
         <div className="r"><span className="k">{t('Type')}</span><span className="v">{docTypeLabel(f.doc_type, types)}</span></div>
-        <div className="r"><span className="k">{t('Partagé avec le client')}</span><Toggle checked={f.shared_with_client} onChange={(v) => run(() => api.update('files', { id: f.id }, { shared_with_client: v })).then(onDone)} /></div>
+        <SettingToggle label={t('Partagé avec le client')} hint={t('Visible dans son espace Artis & You')} checked={f.shared_with_client} onChange={(v) => run(() => api.update('files', { id: f.id }, { shared_with_client: v })).then(onDone)} />
       </div>
       <div className="btns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
         <button className="btn ghost" onClick={() => openFile(f.path, f.name)}><LuDownload /> {t('Télécharger')}</button>
@@ -251,14 +252,43 @@ export function Vault() {
   );
 }
 
+// Réglages par type de document du coffre-fort (gardés même sans document, appliqués aux prochains ajouts)
+export const vaultPrefs = (company, type) => ({ remind: 15, shared: false, ...(company?.settings?.vault?.[type] || {}) });
+
+// Rappels d'expiration : une notification par document, une seule fois, quand on entre dans la période de rappel
+export async function checkVaultReminders(company, profile) {
+  if (!company?.id || !profile?.id) return;
+  const files = await api.select('files', { company_id: company.id, kind: 'vault' });
+  const now = new Date();
+  for (const f of files) {
+    const days = Number(f.remind_days) || 0;
+    if (!days || !f.valid_until || f.reminded_at) continue;
+    const left = Math.ceil((new Date(f.valid_until + 'T23:59:59') - now) / 864e5);
+    if (left > days) continue;
+    await api.insert('notifications', { user_id: profile.id, category: 'documents', title: left < 0 ? t('Document expiré : {n}', { n: f.name }) : t('Document à renouveler : {n}', { n: f.name }),
+      body: left < 0 ? t('Expiré depuis le {d}', { d: date(f.valid_until) }) : t('Expire le {d} (dans {n} jours)', { d: date(f.valid_until), n: left }), link: '/pro/coffre-fort/' + f.doc_type });
+    await api.update('files', { id: f.id }, { reminded_at: now.toISOString() });
+  }
+}
+
 export function VaultType({ params }) {
-  const { company, run } = useApp();
+  const { company, setCompany, run } = useApp();
   const [add, setAdd] = useState(false);
   const [files, reload] = useData(() => api.select('files', { company_id: company.id, kind: 'vault', doc_type: params.type }, { order: 'issued_at.desc' }), [params.type]);
+  const [p, setP] = useState(() => vaultPrefs(company, params.type));
   if (!files) return <div className="content"><TopBar title={t('Mon coffre-fort')} /><Loader /></div>;
-  const remind = files[0]?.remind_days ?? 15;
-  const shared = files.some((f) => f.shared_with_client);
-  const setAll = (patch) => run(async () => { for (const f of files) await api.update('files', { id: f.id }, patch); }, t('Réglage enregistré')).then(reload);
+  const remind = p.remind;
+  const shared = p.shared;
+  // Enregistre le réglage pour ce type (même sans document) et l'applique aux documents existants
+  const setAll = (patch) => {
+    const n = { ...p, ...('remind_days' in patch ? { remind: patch.remind_days } : {}), ...('shared_with_client' in patch ? { shared: patch.shared_with_client } : {}) };
+    setP(n);
+    return run(async () => {
+      const settings = { ...company.settings, vault: { ...(company.settings?.vault || {}), [params.type]: n } };
+      await api.update('companies', { id: company.id }, { settings }); setCompany({ ...company, settings });
+      for (const f of files) await api.update('files', { id: f.id }, { ...patch, ...('remind_days' in patch ? { reminded_at: null } : {}) });
+    }, t('Réglage enregistré')).then(reload);
+  };
   return (
     <div className="content narrow">
       <TopBar title={t('Mon coffre-fort')} sub={docTypeLabel(params.type, VAULT_TYPES)} />
@@ -273,11 +303,13 @@ export function VaultType({ params }) {
           </div>
         ))}</div>
       )}
-      <Sec title={t('Rappel')} />
+      <Sec title={t('Rappel et partage')} />
       <div className="kv">
-        <div className="r"><span className="k">{t('Me prévenir avant expiration')}<div className="small faint">{t('{n} jours avant', { n: remind || 15 })}</div></span><Toggle checked={remind > 0} onChange={(v) => setAll({ remind_days: v ? 15 : 0 })} /></div>
-        <div className="r"><span className="k">{t('Partager avec mes clients pros')}<div className="small faint">{t('Visible dans leur espace Artis & You')}</div></span><Toggle checked={shared} onChange={(v) => setAll({ shared_with_client: v })} /></div>
+        <SettingToggle label={t('Me prévenir avant expiration')} hint={remind > 0 ? t('Notification {n} jours avant la date de fin de validité', { n: remind }) : t('Aucun rappel pour ce type de document')} checked={remind > 0} onChange={(v) => setAll({ remind_days: v ? 15 : 0 })} />
+        {remind > 0 && <div className="r"><span className="k">{t('Délai du rappel')}</span><select value={remind} onChange={(e) => setAll({ remind_days: +e.target.value })}>{[7, 15, 30, 60, 90].map((n) => <option key={n} value={n}>{t('{n} jours avant', { n })}</option>)}</select></div>}
+        <SettingToggle label={t('Partager avec mes clients')} hint={shared ? t('Visible dans l’espace Artis & You de vos clients (ex. attestation décennale)') : t('Visible uniquement par votre entreprise')} checked={shared} onChange={(v) => setAll({ shared_with_client: v })} />
       </div>
+      {!files.length && <p className="small faint">{t('Ces réglages s’appliqueront aux documents que vous ajouterez.')}</p>}
       <button className="fab" onClick={() => setAdd(true)} aria-label={t('Ajouter')}><LuPlus /></button>
       <UploadSheet open={add} onClose={() => setAdd(false)} kind="vault" types={VAULT_TYPES} presetType={params.type} onDone={() => { setAdd(false); reload(); }} />
     </div>

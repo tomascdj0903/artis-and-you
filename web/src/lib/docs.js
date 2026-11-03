@@ -138,7 +138,8 @@ export function validity(f) {
   if (!f.valid_until) return ['green', t('À jour')];
   const d = new Date(f.valid_until + 'T23:59:59'), n = new Date();
   if (d < n) return ['grey', t('Expiré')];
-  if ((d - n) / 864e5 <= (f.remind_days || 15) + 15) return ['red', t('Expire bientôt')];
+  // « Expire bientôt » : dans les 30 jours, ou plus tôt si le rappel choisi est plus long
+  if ((d - n) / 864e5 <= Math.max(30, Number(f.remind_days) || 0)) return ['red', t('Expire bientôt')];
   return ['green', t('À jour')];
 }
 

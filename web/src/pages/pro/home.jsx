@@ -1,5 +1,6 @@
 import { SmartSearch } from '../../ui/smartsearch.jsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { checkVaultReminders } from './files.jsx';
 import { LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
@@ -11,6 +12,7 @@ import { statusPill, kindLabel, apptStatus } from '../../lib/docs.js';
 
 export function Home() {
   const { company, can, profile } = useApp();
+  useEffect(() => { if (profile.member_role !== 'ouvrier') checkVaultReminders(company, profile).catch(() => {}); }, [company.id]);
   const [q, setQ] = useState('');
   const days = company?.trial_ends_at ? Math.ceil((new Date(company.trial_ends_at) - new Date()) / 864e5) : null;
   const tiles = [
