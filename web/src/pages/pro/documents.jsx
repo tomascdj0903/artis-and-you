@@ -1,3 +1,4 @@
+import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useRef, useState } from 'react';
 import { LuFilePen, LuFileText, LuCamera, LuFolderOpen, LuLock, LuPlus, LuTrash2, LuArrowUp, LuArrowDown, LuBookOpen, LuMail, LuSend, LuPrinter, LuDownload, LuCopy, LuPencil, LuEye, LuCheck } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
@@ -16,7 +17,7 @@ export function DocumentsHome() {
   return (
     <div className="content">
       <TopBar title={t('Documents')} back={false} />
-      <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onSubmit={() => q && navigate('/pro/recherche?q=' + encodeURIComponent(q))} />
+      <SmartSearch scope="documents" placeholder={t('Recherchez un devis, une facture, un document')} />
       <div className="tiles home" style={{ marginTop: 10 }}>
         {can('devis') && <button className="tile" onClick={() => navigate('/pro/documents/devis')}><LuFilePen />{t('Devis')}</button>}
         {can('devis') && <button className="tile" onClick={() => navigate('/pro/documents/factures')}><LuFileText />{t('Factures')}</button>}

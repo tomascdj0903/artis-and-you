@@ -1,3 +1,4 @@
+import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
 import { LuFileSpreadsheet, LuPlus, LuChevronRight, LuDownload, LuMail, LuPencil, LuCamera, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
@@ -16,7 +17,7 @@ export function CrmHome() {
   return (
     <div className="content">
       <TopBar title={t('CRM')} back={false} />
-      <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onSubmit={() => q && navigate('/pro/recherche?q=' + encodeURIComponent(q))} />
+      <SmartSearch scope="crm" placeholder={t('Recherchez un client, un devis, un produit')} />
       <div className="tiles home" style={{ marginTop: 10 }}>
         <button className="tile" onClick={() => navigate('/pro/crm/statut')}>{t('Statut projet')}</button>
         {can('kpi') && <button className="tile" onClick={() => navigate('/pro/crm/kpi')}>{t('KPI')}</button>}

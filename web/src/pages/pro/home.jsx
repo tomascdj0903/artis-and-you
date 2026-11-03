@@ -1,3 +1,4 @@
+import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
 import { LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
 import { useApp } from '../../lib/store.jsx';
@@ -21,7 +22,7 @@ export function Home() {
     <div className="content">
       <TopBar back={false} home />
       <h1 className="hide-mob" style={{ fontSize: 28, marginBottom: 4 }}>{t('Bonjour {n}', { n: profile.first_name })} <span className="muted" style={{ fontSize: 18, fontWeight: 600 }}>· {company?.name}</span></h1>
-      <SearchBar placeholder={t('Que recherchez-vous ?')} value={q} onChange={setQ} onSubmit={() => q.trim() && navigate('/pro/recherche?q=' + encodeURIComponent(q.trim()))} />
+      <SmartSearch />
       {company && (company.verification_status || (company.verified ? 'approved' : 'pending')) !== 'approved' && (
         <Link to="/pro/compte/entreprise" className="alert" style={{ color: 'inherit' }}>
           <LuShieldAlert className="red-t" size={28} style={{ flexShrink: 0 }} />

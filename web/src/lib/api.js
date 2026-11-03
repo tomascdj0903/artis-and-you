@@ -178,3 +178,6 @@ export async function fileUrls(paths) {
   return out;
 }
 export const cachedUrl = (p) => urlCache.get(p);
+
+// Mode local : accès pour les tests automatisés
+if (OFFLINE && typeof window !== 'undefined') window.__ayApi = api;
