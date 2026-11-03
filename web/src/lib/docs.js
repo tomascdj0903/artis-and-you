@@ -157,4 +157,23 @@ export const PLANS = [
   { id: 'entreprise', name: 'Entreprise', price: 69, users: 0, desc: 'Utilisateurs illimités', features: ['Tout Équipe', 'Utilisateurs illimités', 'Chantiers partagés avec le réseau', 'Bibliothèque d’ouvrages avancée', 'Support prioritaire'] },
 ];
 
+// Informations obligatoires pour que l'équipe Artis & You valide une entreprise
+export const SOCIETIES = ['EURL', 'SARL', 'SASU', 'SAS', 'SA', 'SNC', 'SCI', 'SCOP'];
+export function companyMissing(c) {
+  const out = [];
+  const need = (ok, k, l) => { if (!ok) out.push([k, l]); };
+  need(c.name, 'name', 'Raison sociale');
+  need(c.legal_form, 'legal_form', 'Forme juridique');
+  need(String(c.siret || '').replace(/\s/g, '').length === 14, 'siret', 'SIRET (14 chiffres)');
+  need(c.address, 'address', 'Adresse');
+  need(c.zip, 'zip', 'Code postal');
+  need(c.city, 'city', 'Ville');
+  need(c.phone, 'phone', 'Téléphone');
+  need(c.email, 'email', 'E-mail');
+  need((c.trades || []).length, 'trades', 'Au moins un métier');
+  if (SOCIETIES.includes(c.legal_form)) need(c.capital, 'capital', 'Capital social');
+  need(c.insurer, 'insurer', 'Assureur décennale');
+  need(c.insurance_contract, 'insurance_contract', 'N° de contrat décennale');
+  return out;
+}
 export const LEGAL_FORMS = ['Entrepreneur individuel (EI)', 'Micro-entreprise', 'EURL', 'SARL', 'SASU', 'SAS', 'SA', 'SNC', 'SCI', 'SCOP', 'Association', 'Autre'];

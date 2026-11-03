@@ -5,8 +5,11 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { date, fullName, initials, money } from '../../lib/format.js';
-import { PLANS, TRADES, kindLabel } from '../../lib/docs.js';
-import { TopBar, Sec, KV, Field, Chips, Toggle, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img } from '../../ui/index.jsx';
+import { PLANS, TRADES, kindLabel, LEGAL_FORMS, SOCIETIES, companyMissing } from '../../lib/docs.js';
+import { AddressFields, CityInput } from '../../ui/address.jsx';
+import { CropSheet } from '../../ui/crop.jsx';
+import { siretValid } from '../auth/index.jsx';
+import { TopBar, Sec, KV, Field, Chips, Toggle, SettingToggle, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img } from '../../ui/index.jsx';
 import { A4 } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
@@ -93,45 +96,78 @@ export function Subscription() {
 }
 
 export function CompanySettings() {
-  const { company, setCompany, run } = useApp();
+  const { company, setCompany, run, toast } = useApp();
   const [c, setC] = useState(company);
-  const F = (k, label, props = {}) => <Field label={label}><input value={c[k] ?? ''} onChange={(e) => setC({ ...c, [k]: e.target.value })} {...props} /></Field>;
-  const save = () => run(async () => {
-    const { id, counters, owner_id, created_at, referral_code, verified, plan, trial_ends_at, referred_by, ...row } = c;
-    const x = await api.update('companies', { id: company.id }, row); setCompany({ ...company, ...row, ...(x || {}) });
-  }, t('Entreprise enregistrée'));
-  const logo = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (!f) return; await run(async () => { const up = await uploadTo(company.id + '/logo', f); setC({ ...c, logo_path: up.path }); await api.update('companies', { id: company.id }, { logo_path: up.path }); setCompany({ ...company, logo_path: up.path }); }, t('Logo enregistré')); };
+  const [crop, setCrop] = useState(null);
+  const [tried, setTried] = useState(false);
+  const miss = companyMissing(c);
+  const missKeys = new Set(tried ? miss.map((m) => m[0]) : []);
+  const F = (k, label, props = {}) => <label className={'field' + (missKeys.has(k) ? ' missing' : '')}><span>{label}{props.req && <b className="red-t"> *</b>}</span><input value={c[k] ?? ''} onChange={(e) => setC({ ...c, [k]: e.target.value })} {...props} req={undefined} /></label>;
+  const visio = c.settings?.planning?.visio !== false;
+  const pending = company.verification_status !== 'approved' && !company.verified;
+  const save = async () => {
+    setTried(true);
+    if (pending && miss.length) { toast(t('Complétez les champs obligatoires : {l}', { l: miss.map((m) => t(m[1])).join(', ') }), true); return; }
+    if (c.siret && !siretValid(c.siret)) { toast(t('Le SIRET doit contenir 14 chiffres valides.'), true); return; }
+    await run(async () => {
+      const { id, counters, owner_id, created_at, referral_code, verified, plan, trial_ends_at, referred_by, verification_status, verification_note, verified_at, ...row } = c;
+      const x = await api.update('companies', { id: company.id }, row); setCompany({ ...company, ...row, ...(x || {}) });
+      // Compléments envoyés : le dossier repart en vérification
+      if (company.verification_status === 'rejected' && !miss.length) { const y = await api.rpc('resubmit_company', {}); if (y) setCompany({ ...company, ...row, ...y }); }
+    }, company.verification_status === 'rejected' && !miss.length ? t('Merci ! Votre dossier est renvoyé à l’équipe Artis & You.') : t('Entreprise enregistrée'));
+  };
+  const logo = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (f) setCrop(f); };
+  const saveLogo = (f) => { setCrop(null); run(async () => { const up = await uploadTo(company.id + '/logo', f); setC((x) => ({ ...x, logo_path: up.path })); await api.update('companies', { id: company.id }, { logo_path: up.path }); setCompany({ ...company, logo_path: up.path }); }, t('Logo enregistré')); };
+  const km = Number(c.zone_km || 30);
+  const zoneText = (city, n) => (city ? `${city} + ${n} km` : '');
   return (
     <div className="content">
       <TopBar title={t('Mon entreprise')} />
       <div className="grid2">
         <div>
-          <div className="row mb"><Avatar name={c.name} path={c.logo_path} size="lg" /><button className="btn ghost sm" onClick={logo}><LuImage /> {t('Logo de l’entreprise')}</button></div>
-          {company.verified ? <Pill c="green"><LuShieldCheck /> {t('Entreprise vérifiée')}</Pill> : <div className="notice">{t('Votre SIRET est en cours de vérification par l’équipe Artis & You.')}</div>}
+          <div className="row mb"><Avatar name={c.name} path={c.logo_path} size="lg" /><div style={{ display: 'grid', gap: 6 }}><button className="btn ghost sm" onClick={logo}><LuImage /> {c.logo_path ? t('Changer le logo') : t('Ajouter le logo')}</button><span className="small faint">{t('Vous pourrez le recadrer avant de l’enregistrer.')}</span></div></div>
+          {company.verified || company.verification_status === 'approved' ? <Pill c="green"><LuShieldCheck /> {t('Entreprise vérifiée')}</Pill> : (
+            <div className="notice">
+              <b>{company.verification_status === 'rejected' ? t('Informations à compléter') : t('Validation en cours par l’équipe Artis & You')}</b>
+              {company.verification_note && <div className="small">« {company.verification_note} »</div>}
+              <ul className="req-list">{companyMissing(c).length ? companyMissing(c).map(([k, l]) => <li key={k} className="ko">✕ {t(l)}</li>) : <li className="ok">✓ {t('Toutes les informations obligatoires sont renseignées')}</li>}</ul>
+            </div>
+          )}
           <Sec title={t('Identité')} />
-          <div className="form-grid two">{F('name', t('Raison sociale'))}{F('trade_name', t('Nom commercial'))}{F('legal_form', t('Forme juridique'), { placeholder: 'SARL, SAS, EI, micro-entreprise…' })}{F('capital', t('Capital'), { placeholder: '10 000 €' })}{F('siret', 'SIRET')}{F('siren', 'SIREN')}{F('vat_number', t('N° TVA intracom.'))}{F('rm', t('N° RM (Répertoire des métiers)'))}</div>
+          <p className="small faint" style={{ marginTop: -6 }}><b className="red-t">*</b> {t('obligatoire pour la validation du compte')}</p>
+          <div className="form-grid two">
+            {F('name', t('Raison sociale'), { req: 1 })}{F('trade_name', t('Nom commercial'))}
+            <label className={'field' + (missKeys.has('legal_form') ? ' missing' : '')}><span>{t('Forme juridique')}<b className="red-t"> *</b></span><select value={c.legal_form || ''} onChange={(e) => setC({ ...c, legal_form: e.target.value, ...(e.target.value === 'Micro-entreprise' ? { vat_regime: 'franchise' } : {}) })}><option value="">{t('Choisir…')}</option>{[...new Set([...LEGAL_FORMS, c.legal_form].filter(Boolean))].map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></label>
+            {F('capital', t('Capital'), { placeholder: '10 000 €', req: SOCIETIES.includes(c.legal_form) ? 1 : 0 })}
+            {F('siret', 'SIRET', { req: 1, inputMode: 'numeric', onBlur: () => { const d = String(c.siret || '').replace(/\D/g, ''); if (d.length === 14) setC((x) => ({ ...x, siren: d.slice(0, 9) })); } })}{F('siren', 'SIREN')}{F('vat_number', t('N° TVA intracom.'))}{F('rm', t('N° RM (Répertoire des métiers)'))}
+          </div>
           <Field label={t('Régime de TVA')}><select value={c.vat_regime} onChange={(e) => setC({ ...c, vat_regime: e.target.value })}><option value="normal">{t('Assujetti à la TVA')}</option><option value="franchise">{t('Franchise en base (art. 293 B du CGI, micro-entreprise)')}</option></select></Field>
-          <div className="form-grid three">{F('address', t('Adresse'))}{F('zip', t('Code postal'))}{F('city', t('Ville'))}</div>
-          <div className="form-grid two">{F('phone', t('Téléphone'))}{F('email', t('E-mail'))}{F('website', t('Site web'))}</div>
+          <div className={missKeys.has('address') || missKeys.has('city') || missKeys.has('zip') ? 'missing-block' : ''}><AddressFields value={c} onChange={setC} required /></div>
+          <div className="form-grid two">{F('phone', t('Téléphone'), { req: 1, type: 'tel' })}{F('email', t('E-mail'), { req: 1, type: 'email' })}{F('website', t('Site web'))}</div>
           <p className="small muted">{t('Ces informations figurent sur les devis et factures.')}</p>
           <Sec title={t('Assurance décennale')} />
-          <div className="form-grid three">{F('insurer', t('Assureur'))}{F('insurance_contract', t('N° de contrat'))}{F('insurance_coverage', t('Couverture'))}</div>
+          <div className="form-grid three">{F('insurer', t('Assureur'), { req: 1 })}{F('insurance_contract', t('N° de contrat'), { req: 1 })}{F('insurance_coverage', t('Couverture'))}</div>
         </div>
         <div>
-          <Sec title={t('Activité')} />
+          <Sec title={<>{t('Activité')}{missKeys.has('trades') && <span className="small red-t"> · {t('choisissez au moins un métier')}</span>}</>} />
           {Object.entries(TRADES).map(([g, ls]) => <div key={g}><div className="small bold red-t">{t(g).toUpperCase()}</div><Chips multi options={ls.map((x) => [x, t(x)])} value={c.trades || []} onChange={(trades) => setC({ ...c, trades })} /></div>)}
-          {F('zone', t("Zone d'intervention"), { placeholder: t('ex. Antibes + 30 km') })}
+          <Sec title={t("Zone d'intervention")} />
+          <Field label={t('Ville de départ')}><CityInput value={c.zone_city ?? c.city ?? ''} placeholder={t('ex. Antibes')} onChange={(v) => setC({ ...c, zone_city: v, zone: zoneText(v, km) })} onPick={(s) => setC((x) => ({ ...x, zone_city: s.city, zone_lat: s.lat, zone_lon: s.lon, zone: zoneText(s.city, km) }))} /></Field>
+          <div className="range-row"><span className="small">{t('Rayon')}</span><input type="range" min={5} max={150} step={5} value={km} onChange={(e) => setC({ ...c, zone_km: +e.target.value, zone: zoneText(c.zone_city || c.city, +e.target.value) })} aria-label={t('Rayon')} /><b>{km} km</b></div>
+          <p className="small faint">{c.zone_lat ? t('Les particuliers qui cherchent une ville à moins de {n} km de {v} vous trouveront.', { n: km, v: c.zone_city }) : t('Choisissez la ville dans la liste proposée pour activer la recherche par distance.')}</p>
           {F('certifications', t('Certifications'), { placeholder: 'RGE, Qualibat, Qualifelec…' })}
           <Field label={t('Présentation')}><textarea value={c.description || ''} onChange={(e) => setC({ ...c, description: e.target.value })} /></Field>
           <Sec title={t('Profil public')} />
           <div className="card soft"><b>{c.trade_name || c.name}</b><div className="small muted">{(c.trades || []).slice(0, 2).map(t).join(' · ')} · {c.zone || c.city}</div><p className="small">{c.description}</p></div>
           <div className="kv mt">
-            <div className="r"><span className="k">{t('Visible par les particuliers')}</span><Toggle checked={c.visible_particuliers} onChange={(v) => setC({ ...c, visible_particuliers: v })} /></div>
-            <div className="r"><span className="k">{t('Visible par les pros')}</span><Toggle checked={c.visible_pros} onChange={(v) => setC({ ...c, visible_pros: v })} /></div>
+            <SettingToggle label={t('Visible par les particuliers')} hint={t('Votre fiche apparaît dans la recherche d’artisans')} checked={c.visible_particuliers} onChange={(v) => setC({ ...c, visible_particuliers: v })} />
+            <SettingToggle label={t('Visible par les pros')} hint={t('Les autres artisans peuvent vous trouver et vous écrire')} checked={c.visible_pros} onChange={(v) => setC({ ...c, visible_pros: v })} />
+            <SettingToggle label={t('Rendez-vous en visio (WhatsApp)')} hint={visio ? t('Vos clients peuvent demander une visio WhatsApp') : t('Uniquement des rendez-vous sur place')} checked={visio} onChange={(v) => setC({ ...c, settings: { ...c.settings, planning: { ...(c.settings?.planning || {}), visio: v } } })} />
           </div>
           <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
         </div>
       </div>
+      <CropSheet file={crop} onClose={() => setCrop(null)} onDone={saveLogo} title={t('Recadrer le logo')} />
     </div>
   );
 }

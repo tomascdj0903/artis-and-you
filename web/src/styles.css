@@ -561,3 +561,17 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
 .card.proj { padding: 14px 16px; }
 .ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .click { cursor: pointer; }
+.crop-wrap { display: grid; place-items: center; padding: 10px; background: repeating-conic-gradient(var(--line-2) 0 25%, transparent 0 50%) 0 0 / 16px 16px; border-radius: 14px; }
+.crop-box { position: relative; overflow: hidden; border-radius: 14px; cursor: grab; touch-action: none; box-shadow: 0 0 0 2px var(--bordeaux); user-select: none; }
+.crop-box.round { border-radius: 50%; }
+.crop-box:active { cursor: grabbing; }
+.req-list { display: grid; gap: 4px; margin: 8px 0 0; padding: 0; list-style: none; }
+.req-list li { display: flex; gap: 8px; align-items: center; font-size: 13.5px; }
+.req-list li.ok { color: var(--vert); }
+.req-list li.ko { color: var(--bordeaux); font-weight: 700; }
+.field.missing input, .field.missing select { border-color: var(--bordeaux) !important; background: var(--bordeaux-50); }
+.range-row { display: flex; align-items: center; gap: 12px; }
+.range-row input[type=range] { flex: 1; accent-color: var(--bordeaux); }
+.range-row b { min-width: 64px; text-align: right; }
+.missing-block .field input { border-color: var(--bordeaux) !important; }
+.range-row input[type=range] { border: 0 !important; padding: 0 !important; background: transparent !important; height: 24px; min-height: 0; box-shadow: none; }

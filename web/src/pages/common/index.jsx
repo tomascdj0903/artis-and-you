@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { companyMissing } from '../../lib/docs.js';
 import { bioAvailable, bioEnabled, bioEnable, bioDisable, groupSecret } from '../../lib/security.js';
 import { LuBell, LuCalendar, LuFileText, LuEuro, LuMessageSquare, LuInfo, LuSearch, LuMail, LuPhone, LuCirclePlay, LuBug, LuDownload, LuTrash2, LuMoon, LuSun, LuShieldCheck, LuCheck, LuX } from 'react-icons/lu';
 import JSZip from 'jszip';
@@ -10,6 +11,7 @@ import { rel, dateMed, fullName, date } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
 import { TopBar, SearchBar, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet } from '../../ui/index.jsx';
 import { uploadTo } from './chat.jsx';
+import { CropSheet } from '../../ui/crop.jsx';
 
 const NICON = { rdv: LuCalendar, documents: LuFileText, paiement: LuEuro, message: LuMessageSquare, systeme: LuInfo };
 export function Notifications() {
@@ -48,7 +50,9 @@ export function MyProfile() {
   const { profile, setProfile, run, wip, reload } = useApp();
   const [p, setP] = useState(profile);
   const [pw, setPw] = useState('');
-  const photo = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (!f) return; await run(async () => { const up = await uploadTo((profile.company_id || 'u/' + profile.id) + '/avatars', f); setP({ ...p, avatar_path: up.path }); await api.update('profiles', { id: profile.id }, { avatar_path: up.path }); setProfile({ ...profile, avatar_path: up.path }); }, t('Photo enregistrée')); };
+  const [crop, setCrop] = useState(null);
+  const photo = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (f) setCrop(f); };
+  const savePhoto = async (f) => { setCrop(null); await run(async () => { const up = await uploadTo((profile.company_id || 'u/' + profile.id) + '/avatars', f); setP({ ...p, avatar_path: up.path }); await api.update('profiles', { id: profile.id }, { avatar_path: up.path }); setProfile({ ...profile, avatar_path: up.path }); }, t('Photo enregistrée')); };
   const save = () => run(async () => {
     await api.update('profiles', { id: profile.id }, { first_name: p.first_name, last_name: p.last_name, phone: p.phone });
     if (p.email !== profile.email) { await api.updateEmail(p.email); await api.update('profiles', { id: profile.id }, { email: p.email }); }
@@ -70,6 +74,7 @@ export function MyProfile() {
       <Field label={t('Nouveau mot de passe')} hint={t('laisser vide pour ne pas changer')}><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} minLength={6} autoComplete="new-password" /></Field>
       <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
       <Security />
+      <CropSheet file={crop} round onClose={() => setCrop(null)} onDone={savePhoto} title={t('Recadrer la photo')} />
     </div>
   );
 }
@@ -246,7 +251,7 @@ export function Admin() {
   const st = (c) => c.verification_status || (c.verified ? 'approved' : 'pending');
   const pending = b.cos.filter((c) => st(c) === 'pending');
   const review = (c, status, note = '') => run(() => api.rpc('admin_review_company', { p_id: c.id, p_status: status, p_note: note }), status === 'approved' ? t('Entreprise validée') : t('Demande de compléments envoyée')).then(reload);
-  const missing = (c) => [['legal_form', 'Forme juridique'], ['siret', 'SIRET'], ['address', 'Adresse'], ['zip', 'Code postal'], ['city', 'Ville'], ['phone', 'Téléphone'], ['email', 'E-mail'], ['insurer', 'Assurance décennale']].filter(([k]) => !c[k]).map(([, l]) => t(l));
+  const missing = (c) => companyMissing(c).map(([, l]) => t(l));
   return (
     <div className="content">
       <TopBar title={t('Administration')} sub="Artis & You" />

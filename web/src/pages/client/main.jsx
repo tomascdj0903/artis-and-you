@@ -10,6 +10,7 @@ import { icsFile } from '../../lib/ics.js';
 import { TopBar, SearchBar, Sec, Sheet, Chips, Field, Seg, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
 import { planSettings, freeWindows, MoveSheet } from '../pro/planning.jsx';
+import { CityInput, distanceKm } from '../../ui/address.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
 export async function loadMine() {
@@ -75,18 +76,22 @@ export function Search() {
   const [term, setTerm] = useState(q);
   const [trade, setTrade] = useState('');
   const [city, setCity] = useState('');
+  const [place, setPlace] = useState(null); // ville choisie dans la liste (avec coordonnées)
   const [visio, setVisio] = useState(false);
   const [good, setGood] = useState(false);
   const [open, setOpen] = useState(false);
-  const [res] = useData(() => api.rpc('directory_search', { p_query: term, p_trade: trade, p_city: city }), [term, trade, city]);
-  const list = (res || []).filter((r) => (!visio || r.visio) && (!good || (r.rating || 0) >= 4)).sort((a, b) => b.is_mine - a.is_mine);
+  // Ville choisie avec ses coordonnées : on garde les artisans dont la zone d'intervention couvre cette ville
+  const [res] = useData(() => api.rpc('directory_search', { p_query: term, p_trade: trade, p_city: place ? '' : city }), [term, trade, place ? 'geo:' + place.city : city]);
+  const withDist = (res || []).map((r) => ({ ...r, dist: place && r.zone_lat ? distanceKm(place, { lat: r.zone_lat, lon: r.zone_lon }) : null }));
+  const covers = (r) => !place || (r.dist != null ? r.dist <= (r.zone_km || 30) : (r.city + ' ' + (r.zone || '')).toLowerCase().includes(place.city.toLowerCase()));
+  const list = withDist.filter((r) => covers(r) && (!visio || r.visio) && (!good || (r.rating || 0) >= 4)).sort((a, b) => b.is_mine - a.is_mine || (a.dist ?? 999) - (b.dist ?? 999));
   return (
     <div className="content">
       <TopBar title={t('Rechercher un artisan')} />
       <SearchBar placeholder={t('Métier, nom, besoin…')} value={q} onChange={(v) => { setQ(v); if (v.length === 0 || v.length > 2) setTerm(v); }} onSubmit={() => setTerm(q)} onFilter={() => setOpen(true)} filterActive={!!(trade || city)} />
       <div className="chips scroll">
         <button className={'chip' + (trade ? ' on' : '')} onClick={() => setOpen(true)}>{trade ? t(trade) : t('Métier')}</button>
-        <button className={'chip' + (city ? ' on' : '')} onClick={() => setOpen(true)}>{city || t('Ville et rayon')}</button>
+        <button className={'chip' + (city ? ' on' : '')} onClick={() => setOpen(true)}>{city || t('Ville des travaux')}</button>
         <button className={'chip' + (visio ? ' on' : '')} onClick={() => setVisio(!visio)}><LuVideo /> {t('Visio')}</button>
         <button className={'chip' + (good ? ' on' : '')} onClick={() => setGood(!good)}>★ 4+ {t('avis')}</button>
       </div>
@@ -96,7 +101,7 @@ export function Search() {
             <Avatar name={coName(a).split(' ')[0]} last={coName(a).split(' ')[1]} path={a.logo_path} size="lg" />
             <div className="grow">
               <div className="bold" style={{ fontSize: 17 }}>{coName(a)}</div>
-              <div className="small muted">{(a.trades || []).slice(0, 2).map(t).join(' · ')} · {a.city}</div>
+              <div className="small muted">{(a.trades || []).slice(0, 2).map(t).join(' · ')} · {a.city}{a.dist != null ? ' · ' + t('à {n} km', { n: a.dist }) : ''}</div>
               <div className="row small wrap" style={{ marginTop: 4, gap: 6 }}>{a.rating ? <span><Stars n={a.rating} /> {String(a.rating).replace('.', ',')} ({a.reviews_count})</span> : <span className="faint">{t('Nouveau')}</span>}
                 {a.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}{a.is_mine && <Pill c="red">{t('Votre artisan')}</Pill>}{a.visio && <Pill c="grey"><LuVideo /> {t('Visio')}</Pill>}</div>
             </div><LuChevronRight />
@@ -104,10 +109,11 @@ export function Search() {
         ))}</div>
       )}
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtres')}>
-        <Field label={t('Ville ou zone')}><input value={city} onChange={(e) => setCity(e.target.value)} placeholder={t('ex. Nice, Antibes…')} /></Field>
+        <Field label={t('Ville des travaux')}><CityInput value={city} onChange={(v) => { setCity(v); setPlace(null); }} onPick={(s) => setPlace(s)} placeholder={t('ex. Nice, Antibes…')} /></Field>
+        {place && <p className="small faint" style={{ marginTop: -6 }}>{t('Artisans qui interviennent à {v} (selon leur zone d’intervention).', { v: place.city })}</p>}
         <div className="small bold mb">{t('Métier')}</div>
         {Object.entries(TRADES).map(([g, ls]) => <div key={g}><div className="small red-t bold">{t(g).toUpperCase()}</div><Chips options={ls.map((x) => [x, t(x)])} value={trade} onChange={(v) => setTrade(v === trade ? '' : v)} /></div>)}
-        <div className="btns"><div className="two"><button className="btn ghost" onClick={() => { setTrade(''); setCity(''); }}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} artisans', { n: list.length })}</button></div></div>
+        <div className="btns"><div className="two"><button className="btn ghost" onClick={() => { setTrade(''); setCity(''); setPlace(null); }}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} artisans', { n: list.length })}</button></div></div>
       </Sheet>
     </div>
   );

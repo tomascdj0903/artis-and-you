@@ -167,6 +167,14 @@ export function mockBackend({ saveSession, getSession }) {
       notifyCompany(c.id, 'systeme', p_status === 'approved' ? 'Votre entreprise est validée' : 'Votre inscription est à compléter', p_status === 'approved' ? 'Votre profil est maintenant visible des clients.' : p_note, '/pro/compte/entreprise');
       return c;
     },
+    // Après une demande de compléments : le gérant renvoie son dossier à l'équipe
+    resubmit_company() {
+      const c = db.companies.find((x) => x.id === myCompany()); if (!c) throw new Error('Entreprise introuvable');
+      if (c.verification_status !== 'rejected') return c;
+      Object.assign(c, { verification_status: 'pending' });
+      db.profiles.filter((x) => ADMIN_EMAILS.includes(String(x.email).toLowerCase())).forEach((x) => notify(x.id, 'systeme', 'Dossier complété à revalider', c.name + ' · SIRET ' + c.siret, '/' + (x.company_id ? 'pro' : 'client') + '/admin'));
+      return c;
+    },
     create_company({ p }) {
       if (myCompany()) throw new Error('Vous avez déjà une entreprise');
       const ref = p.referral ? db.companies.find((c) => c.referral_code === p.referral.toUpperCase()) : null;
@@ -208,7 +216,7 @@ export function mockBackend({ saveSession, getSession }) {
       return db.companies.filter((c) => (c.verification_status === 'approved' || c.verified) && (c.visible_particuliers || myCompany()) &&
         (!q || (c.name + ' ' + (c.trade_name || '') + ' ' + c.trades.join(' ')).toLowerCase().includes(q)) &&
         (!t || c.trades.join(' ').toLowerCase().includes(t)) && (!ci || (c.city + ' ' + (c.zone || '')).toLowerCase().includes(ci)))
-        .map((c) => ({ id: c.id, name: c.name, trade_name: c.trade_name, city: c.city, zip: c.zip, trades: c.trades, zone: c.zone, verified: c.verified, rating: avg(reviewsOf(c.id)), reviews_count: reviewsOf(c.id).length, visio: c.settings?.planning?.visio !== false, is_mine: db.clients.some((x) => x.company_id === c.id && x.user_id === me()), logo_path: c.logo_path }));
+        .map((c) => ({ id: c.id, name: c.name, trade_name: c.trade_name, city: c.city, zip: c.zip, trades: c.trades, zone: c.zone, verified: c.verified, rating: avg(reviewsOf(c.id)), reviews_count: reviewsOf(c.id).length, visio: c.settings?.planning?.visio !== false, zone_lat: c.zone_lat, zone_lon: c.zone_lon, zone_km: c.zone_km, is_mine: db.clients.some((x) => x.company_id === c.id && x.user_id === me()), logo_path: c.logo_path }));
     },
     directory_get({ p_id }) {
       const c = db.companies.find((x) => x.id === p_id); if (!c) return null;

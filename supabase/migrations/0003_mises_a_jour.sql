@@ -30,6 +30,10 @@ update public.companies set verification_status = 'approved' where verified and 
 create or replace function public.protect_company_verification() returns trigger
 language plpgsql security definer set search_path = public as $$
 begin
+  -- Exception : renvoi du dossier (rejected → pending) via resubmit_company()
+  if coalesce(current_setting('ay.trusted', true),'') = '1' and old.verification_status = 'rejected' and new.verification_status = 'pending' and new.verified is not distinct from old.verified then
+    return new;
+  end if;
   if not public.is_admin() and (new.verified is distinct from old.verified or new.verification_status is distinct from old.verification_status) then
     raise exception 'Seule l''équipe Artis & You peut valider une entreprise.';
   end if;
@@ -101,3 +105,47 @@ alter table public.clients add column if not exists billing_country text default
 
 -- ───────────────── Coffre-fort : rappel d'expiration envoyé une seule fois ─────────────────
 alter table public.files add column if not exists reminded_at timestamptz;
+
+-- ───────────────── Mon entreprise : zone d'intervention (ville + rayon) ─────────────────
+alter table public.companies add column if not exists zone_city text default '';
+alter table public.companies add column if not exists zone_lat double precision;
+alter table public.companies add column if not exists zone_lon double precision;
+alter table public.companies add column if not exists zone_km int default 30;
+
+-- Renvoi du dossier après une demande de compléments
+create or replace function public.resubmit_company() returns public.companies
+language plpgsql security definer set search_path = public as $$
+declare c public.companies;
+begin
+  select * into c from public.companies where id = public.my_company();
+  if c.id is null then raise exception 'Entreprise introuvable'; end if;
+  if c.verification_status <> 'rejected' then return c; end if;
+  perform set_config('ay.trusted','1',true);
+  update public.companies set verification_status = 'pending' where id = c.id returning * into c;
+  insert into public.notifications(user_id, category, title, body, link)
+    select a.user_id, 'systeme', 'Dossier complété à revalider', c.name || ' · SIRET ' || c.siret, '/client/admin' from public.admins a;
+  return c;
+end $$;
+
+-- L'annuaire renvoie aussi la zone (pour la recherche par distance)
+drop function if exists public.directory_search(text, text, text);
+create or replace function public.directory_search(p_query text default '', p_trade text default '', p_city text default '')
+returns table(id uuid, name text, trade_name text, city text, zip text, trades text[], zone text, verified boolean,
+              rating numeric, reviews_count int, visio boolean, is_mine boolean, logo_path text, zone_lat double precision, zone_lon double precision, zone_km int)
+language sql stable security definer set search_path = public as $$
+  select c.id, c.name, c.trade_name, c.city, c.zip, c.trades, c.zone, c.verified,
+    (select round(avg(rating)::numeric,1) from public.reviews r where r.company_id = c.id and r.status='publie'),
+    (select count(*)::int from public.reviews r where r.company_id = c.id and r.status='publie'),
+    coalesce((c.settings->'planning'->>'visio')::boolean, true),
+    exists(select 1 from public.clients cl where cl.company_id = c.id and cl.user_id = auth.uid()),
+    c.logo_path, c.zone_lat, c.zone_lon, c.zone_km
+  from public.companies c
+  where auth.uid() is not null and c.verification_status = 'approved'
+    and (c.visible_particuliers or exists(select 1 from public.clients cl where cl.company_id = c.id and cl.user_id = auth.uid())
+         or c.visible_pros and public.my_company() is not null)
+    and (p_query = '' or c.name ilike '%'||p_query||'%' or c.trade_name ilike '%'||p_query||'%' or array_to_string(c.trades,' ') ilike '%'||p_query||'%')
+    and (p_trade = '' or array_to_string(c.trades,' ') ilike '%'||p_trade||'%')
+    and (p_city = '' or c.city ilike '%'||p_city||'%' or c.zone ilike '%'||p_city||'%')
+  order by c.name
+  limit 200
+$$;
