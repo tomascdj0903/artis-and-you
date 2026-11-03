@@ -105,7 +105,7 @@ export function Chat({ convId, projects = [], banner }) {
               {showWho && <div className="who">{m.sender_name}</div>}
               {m.card && (
                 <div className={'sys' + (m.card.type === 'done' ? ' ok' : '')}>
-                  {m.card.type === 'done' ? <LuCircleCheck className="green-t" size={26} /> : m.card.type === 'rdv' ? <LuVideo size={24} /> : <LuCalendarCheck size={24} />}
+                  {m.card.type === 'done' ? <LuCircleCheck className="green-t" size={26} /> : m.card.type === 'rdv' ? <LuVideo size={24} /> : m.card.type === 'relance' ? <LuFileText size={24} /> : <LuCalendarCheck size={24} />}
                   <div><b className={m.card.type === 'done' ? 'green-t' : ''}>{m.card.title}</b><span className="small muted">{m.card.sub}</span></div>
                 </div>
               )}

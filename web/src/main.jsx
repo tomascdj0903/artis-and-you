@@ -39,7 +39,7 @@ const PRO = [
   ['/pro/notifications', Common.Notifications], ['/pro/admin', Common.Admin],
   ['/pro/compte', Pro.Account], ['/pro/compte/profil', Common.MyProfile], ['/pro/compte/abonnement', Pro.Subscription], ['/pro/compte/entreprise', Pro.CompanySettings],
   ['/pro/compte/equipe', Pro.TeamSettings], ['/pro/compte/equipe/:id', Pro.MemberSettings], ['/pro/compte/documents', Pro.DocSettings], ['/pro/compte/pdf', Pro.PdfSettings],
-  ['/pro/compte/notifications', Pro.NotifSettings], ['/pro/compte/integrations', Pro.Integrations], ['/pro/compte/donnees', Common.DataPrivacy],
+  ['/pro/compte/notifications', Pro.NotifSettings], ['/pro/relances', Pro.Relances], ['/pro/compte/integrations', Pro.Integrations], ['/pro/compte/donnees', Common.DataPrivacy],
   ['/pro/compte/aide', Common.Help], ['/pro/compte/apparence', Common.Appearance], ['/pro/compte/avis', Pro.Reviews], ['/pro/reglages/profil-public', Pro.Reviews],
 ];
 const CLIENT = [

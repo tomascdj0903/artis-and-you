@@ -355,20 +355,24 @@ export function PdfSettings() {
 }
 
 export function NotifSettings() {
-  const { profile, setProfile, run } = useApp();
-  const [n, setN] = useState({ push: true, email: true, sms: false, demande: true, rdv: true, devis: true, paiement: true, message: true, rappel_rdv: true, relance_devis: false, relance_facture: false, ...(profile.notif_prefs || {}) });
+  const { profile, setProfile, company } = useApp();
+  const [n, setN] = useState({ push: true, email: true, sms: false, demande: true, rdv: true, devis: true, paiement: true, message: true, rappel_rdv: true, ...(profile.notif_prefs || {}) });
   const set = async (k, v) => { const x = { ...n, [k]: v }; setN(x); await api.update('profiles', { id: profile.id }, { notif_prefs: x }); setProfile({ ...profile, notif_prefs: x }); };
-  const R = ([k, l, sub]) => <div key={k} className="r"><span className="k">{t(l)}{sub && <div className="small faint">{t(sub)}</div>}</span><Toggle checked={n[k]} onChange={(v) => set(k, v)} /></div>;
+  const R = ([k, l, sub]) => <SettingToggle key={k} label={t(l)} hint={sub && t(sub)} checked={n[k]} onChange={(v) => set(k, v)} />;
+  const rel = company?.settings?.relances;
   return (
     <div className="content narrow">
       <TopBar title={t('Notifications')} />
       <Sec title={t('Canaux')} />
       <div className="kv">{[['push', 'Notifications dans l’application'], ['email', 'E-mail', 'Bientôt disponible'], ['sms', 'SMS', 'Bientôt disponible']].map(R)}</div>
       <Sec title={t('Mes alertes')} />
-      <div className="kv">{[['demande', 'Nouvelle demande'], ['rdv', 'RDV à valider'], ['devis', 'Devis signé ou refusé'], ['paiement', 'Paiement reçu'], ['message', 'Nouveau message']].map(R)}</div>
+      <div className="kv">{[['demande', 'Nouvelle demande', 'Un particulier demande un rendez-vous'], ['rdv', 'RDV à valider'], ['devis', 'Devis signé ou refusé'], ['paiement', 'Paiement reçu'], ['message', 'Nouveau message']].map(R)}</div>
       <Sec title={t('Envois automatiques aux clients')} />
-      <div className="kv">{[['rappel_rdv', 'Rappel de RDV'], ['relance_devis', 'Relance devis', 'Après 7 jours sans réponse'], ['relance_facture', 'Relance facture', "Le lendemain de l'échéance"]].map(R)}</div>
-      <p className="small muted">{t('Les envois automatiques par e-mail et SMS arrivent bientôt.')}</p>
+      <div className="kv">
+        {R(['rappel_rdv', 'Rappel de RDV', 'La veille du rendez-vous'])}
+        <Link className="r" to="/pro/relances?tab=settings"><span className="k">{t('Relances factures et devis')}<small style={{ display: 'block', fontWeight: 400, color: 'var(--text-2)', fontSize: 12.5 }}>{rel?.auto ? t('Automatiques · scénario personnalisé') : t('Validées une par une · scénario personnalisable')}</small></span><span className="v">›</span></Link>
+        <Link className="r" to="/pro/relances"><span className="k">{t('Relances à faire')}</span><span className="v">›</span></Link>
+      </div>
     </div>
   );
 }

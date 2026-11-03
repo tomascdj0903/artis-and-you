@@ -3,12 +3,13 @@ import { useRef, useState } from 'react';
 import { LuFilePen, LuFileText, LuCamera, LuFolderOpen, LuLock, LuPlus, LuTrash2, LuArrowUp, LuArrowDown, LuBookOpen, LuMail, LuSend, LuPrinter, LuDownload, LuCopy, LuPencil, LuEye, LuCheck } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
-import { navigate, useLocation } from '../../lib/router.jsx';
+import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, iso, clientName, date, fullName } from '../../lib/format.js';
 import { computeTotals, newLine, defaultLines, VAT_RATES, kindLabel, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
 import { TopBar, Sec, Field, Seg, Chips, Sheet, Modal, useData, Loader, Empty, Toggle, SearchBar } from '../../ui/index.jsx';
 import { DocList } from './doclist.jsx';
+import { dueReminders, nextReminder, scenarios, fillTemplate, sendReminder } from '../../lib/relances.js';
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
 
 export function DocumentsHome() {
@@ -235,19 +236,23 @@ export function DocDetail({ params }) {
   const [pay, setPay] = useState(false);
   const [sign, setSign] = useState(false);
   const [acompte, setAcompte] = useState(false);
+  const [rel, setRel] = useState(null);
   if (!b) return <div className="content"><TopBar title={t('Document')} /><Loader /></div>;
   const { d, client } = b;
   const isQ = d.kind === 'devis';
   const st = effectiveStatus(d);
   const dup = () => navigate(`/pro/documents/nouveau?kind=${d.kind === 'devis' ? 'devis' : 'facture'}&from=${d.id}&client=${d.client_id}`);
-  const remind = async () => {
-    const msg = isQ ? t('Bonjour, je me permets de vous relancer au sujet du devis {n} ({m}). N’hésitez pas si vous avez des questions.', { n: d.number, m: money(totalsOf(d, b.company).ttc) })
-      : t('Bonjour, sauf erreur de ma part, la facture {n} ({m}) reste à régler. Merci d’avance.', { n: d.number, m: money(Math.max(0, totalsOf(d, b.company).net - d.paid_amount)) });
-    if (b.clientLive?.user_id) {
-      let conv = await api.one('conversations', { kind: 'client', company_id: company.id, client_id: d.client_id });
-      if (!conv) conv = await api.insert('conversations', { kind: 'client', company_id: company.id, client_id: d.client_id, client_user_id: b.clientLive.user_id });
-      await run(() => api.insert('messages', { conversation_id: conv.id, sender_name: fullName(profile), sender_company_id: company.id, body: msg }), t('Relance envoyée dans la messagerie du client'));
-    } else window.location.href = `mailto:${client.email || ''}?subject=${encodeURIComponent((isQ ? t('Devis') : t('Facture')) + ' ' + d.number)}&body=${encodeURIComponent(msg)}`;
+  // Relance : étape du scénario la plus adaptée, message modifiable, historique gardé sur le document
+  const remind = () => {
+    const due = dueReminders([d], company)[0];
+    const sc = scenarios(company)[isQ ? 'devis' : 'facture'];
+    const sent = new Set((d.reminders || []).map((r) => r.step));
+    const step = due?.step || sc.find((x) => x.on && !sent.has(x.id) && x.days >= 0) || sc[sc.length - 1];
+    setRel({ step, text: fillTemplate(step.text, d, b.clientLive || client, company) });
+  };
+  const doRemind = async (channel) => {
+    await run(() => sendReminder({ d, step: rel.step, client: b.clientLive || client, company, profile, text: rel.text, channel }), channel === 'app' ? t('Relance envoyée dans la messagerie du client') : t('Relance préparée dans votre messagerie e-mail'));
+    setRel(null); reload();
   };
   const del = async () => { if (await confirm({ title: t('Supprimer ce brouillon ?'), ok: t('Supprimer'), danger: true })) { await run(() => api.remove('documents', { id: d.id }), t('Brouillon supprimé')); navigate(-1); } };
   return (
@@ -276,7 +281,21 @@ export function DocDetail({ params }) {
         {d.kind === 'avoir' && d.number && <button className="btn ghost sm" onClick={() => navigate(`/pro/documents/${d.id}/pdf`)}>{t('Télécharger le PDF')}</button>}
         {d.number && <button className="btn light sm" onClick={dup}><LuCopy /> {t('Dupliquer')}</button>}
       </div>
+      {d.number && (isQ ? st === 'envoye' : d.kind !== 'avoir' && st !== 'payee' && st !== 'annulee') && (() => { const nx = nextReminder(d, company); const h = d.reminders || []; return (
+        <div className="notice small row" style={{ justifyContent: 'space-between', gap: 10 }}>
+          <span>🔔 {h.length ? t('Relancé {n} fois (dernière le {d}).', { n: h.length, d: date(h[h.length - 1].at) }) : t('Pas encore relancé.')} {d.reminders_paused ? t('Relances suspendues.') : nx ? t('Prochaine relance prévue le {d} ({s}).', { d: date(nx.at), s: t(nx.step.title) }) : ''}</span>
+          <Link to="/pro/relances" className="bold">{t('Relances')} ›</Link>
+        </div>); })()}
       <DocSections {...b} />
+      <Sheet open={!!rel} onClose={() => setRel(null)} title={rel ? t(rel.step.title) : ''}>
+        {rel && <>
+          <Field label={t('Message (modifiable)')}><textarea value={rel.text} onChange={(e) => setRel({ ...rel, text: e.target.value })} style={{ minHeight: 200 }} /></Field>
+          <div className="btns"><div className="two">
+            <button className="btn ghost" onClick={() => doRemind('email')}><LuMail /> {t('Par e-mail')}</button>
+            <button className="btn" disabled={!b.clientLive?.user_id} title={!b.clientLive?.user_id ? t('Ce client n’a pas de compte Artis & You') : ''} onClick={() => doRemind('app')}><LuSend /> {t('Messagerie')}</button>
+          </div></div>
+        </>}
+      </Sheet>
       <SendModal open={send} b={b} onClose={() => setSend(false)} onSent={reload} />
       <PaySheet open={pay} d={d} b={b} onClose={() => setPay(false)} onDone={() => { setPay(false); reload(); }} />
       <Sheet open={sign} onClose={() => setSign(false)} title={t('Devis signé')}>

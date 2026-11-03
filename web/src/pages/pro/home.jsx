@@ -1,6 +1,7 @@
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useEffect, useState } from 'react';
 import { checkVaultReminders } from './files.jsx';
+import { dueReminders, autoReminders } from '../../lib/relances.js';
 import { LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
@@ -12,7 +13,17 @@ import { statusPill, kindLabel, apptStatus } from '../../lib/docs.js';
 
 export function Home() {
   const { company, can, profile } = useApp();
-  useEffect(() => { if (profile.member_role !== 'ouvrier') checkVaultReminders(company, profile).catch(() => {}); }, [company.id]);
+  const [relN, setRelN] = useState(0);
+  useEffect(() => {
+    if (profile.member_role === 'ouvrier') return;
+    checkVaultReminders(company, profile).catch(() => {});
+    (async () => {
+      if (!can('devis')) return;
+      await autoReminders(company, profile).catch(() => 0);
+      const docs = await api.select('documents', { company_id: company.id });
+      setRelN(dueReminders(docs, company).length);
+    })();
+  }, [company.id]);
   const [q, setQ] = useState('');
   const days = company?.trial_ends_at ? Math.ceil((new Date(company.trial_ends_at) - new Date()) / 864e5) : null;
   const tiles = [
@@ -33,6 +44,7 @@ export function Home() {
             : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artis & You vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
         </Link>
       )}
+      {relN > 0 && <Link to="/pro/relances" className="notice">🔔 <span>{relN > 1 ? t('{n} relances clients à envoyer aujourd’hui', { n: relN }) : t('1 relance client à envoyer aujourd’hui')} →</span></Link>}
       {days !== null && days >= 0 && days <= 30 && company?.plan && (
         <Link to="/pro/compte/abonnement" className="notice">⏳ <span>{t('Essai gratuit : encore {n} jours. Choisir ma formule', { n: days })} →</span></Link>
       )}

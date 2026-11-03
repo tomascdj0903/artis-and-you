@@ -6,3 +6,4 @@ export { PhotosClients, PhotosClient, OtherDocsClients, OtherDocsClient, Vault, 
 export { CrmHome, ProjectStatus, CompanyKpi, Export, Library, ItemEdit } from './crm.jsx';
 export { Messages, Conversation, Network, NetworkAdd, ProProfile } from './messages.jsx';
 export { Account, Subscription, CompanySettings, TeamSettings, MemberSettings, DocSettings, PdfSettings, NotifSettings, Integrations, Reviews } from './account.jsx';
+export { Relances } from './relances.jsx';

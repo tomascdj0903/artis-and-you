@@ -149,3 +149,7 @@ language sql stable security definer set search_path = public as $$
   order by c.name
   limit 200
 $$;
+
+-- ───────────────── Relances clients (historique et pause par document) ─────────────────
+alter table public.documents add column if not exists reminders jsonb default '[]'::jsonb;
+alter table public.documents add column if not exists reminders_paused boolean default false;
