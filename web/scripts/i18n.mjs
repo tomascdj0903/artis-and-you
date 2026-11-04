@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 const dir = new URL('../src/i18n/', import.meta.url);
 const keys = JSON.parse(fs.readFileSync(new URL('_keys.json', dir), 'utf8'));
-const extra = fs.readFileSync(new URL('_extra.txt', dir), 'utf8').split('\n').filter(Boolean).map((l) => l.split('|'));
+const extra = fs.readFileSync(new URL('_extra.txt', dir), 'utf8').split('\n').filter(Boolean).map((l) => l.split('|').map((x) => x.replace(/\\n/g, '\n')));
 const vars = (s) => (s.match(/\{\w+\}/g) || []).sort().join(',');
 let problems = 0;
 ['en', 'pt', 'it'].forEach((lang, li) => {

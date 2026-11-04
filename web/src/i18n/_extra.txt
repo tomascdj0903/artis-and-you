@@ -62,3 +62,603 @@ Nouvelle facture|New invoice|Nova fatura|Nuova fattura
 Devis en cours|Quote in progress|Orçamento em curso|Preventivo in corso
 Équipe|Team|Equipa|Squadra
 Entreprise|Company|Empresa|Azienda
+{m} restant|{m} remaining|{m} em falta|{m} restanti
+{n} nouvelles notifications|{n} new notifications|{n} novas notificações|{n} nuove notifiche
+Déverrouillage annulé.|Unlock cancelled.|Desbloqueio cancelado.|Sblocco annullato.
+Application verrouillée. Utilisez Face ID, Touch ID, votre empreinte ou Windows Hello.|App locked. Use Face ID, Touch ID, your fingerprint or Windows Hello.|Aplicação bloqueada. Use Face ID, Touch ID, a sua impressão digital ou Windows Hello.|App bloccata. Usa Face ID, Touch ID, la tua impronta o Windows Hello.
+Déverrouiller|Unlock|Desbloquear|Sblocca
+Utiliser mon mot de passe|Use my password|Usar a minha palavra-passe|Usa la mia password
+Applications|Apps|Aplicações|App
+Saisissez le code à 6 chiffres affiché dans votre application d’authentification.|Enter the 6-digit code shown in your authenticator app.|Introduza o código de 6 dígitos apresentado na sua aplicação de autenticação.|Inserisci il codice a 6 cifre mostrato nella tua app di autenticazione.
+Code|Code|Código|Codice
+Valider|Confirm|Validar|Conferma
+Plus accès à votre application ? Écrivez à support@artisandyou.fr depuis votre adresse e-mail.|Lost access to your app? Email support@artisandyou.fr from your email address.|Perdeu o acesso à aplicação? Escreva para support@artisandyou.fr a partir do seu e-mail.|Non hai più accesso all'app? Scrivi a support@artisandyou.fr dal tuo indirizzo e-mail.
+M.|Mr|Sr.|Sig.
+Mme|Ms|Sra.|Sig.ra
+8 caractères minimum, dont un chiffre|At least 8 characters, including a digit|Mínimo 8 caracteres, incluindo um algarismo|Almeno 8 caratteri, di cui una cifra
+Numéro de téléphone invalide.|Invalid phone number.|Número de telefone inválido.|Numero di telefono non valido.
+Le mot de passe doit contenir au moins 8 caractères, dont un chiffre.|The password must contain at least 8 characters, including a digit.|A palavra-passe deve ter pelo menos 8 caracteres, incluindo um algarismo.|La password deve contenere almeno 8 caratteri, di cui una cifra.
+Adresse de votre logement|Your home address|Morada da sua habitação|Indirizzo della tua abitazione
+Un nouveau code vient d’être envoyé.|A new code has just been sent.|Acabou de ser enviado um novo código.|È stato appena inviato un nuovo codice.
+Vérifiez votre adresse e-mail|Check your email address|Verifique o seu e-mail|Verifica il tuo indirizzo e-mail
+Nous avons envoyé un code à 6 chiffres à {e}. Saisissez-le pour activer votre compte.|We sent a 6-digit code to {e}. Enter it to activate your account.|Enviámos um código de 6 dígitos para {e}. Introduza-o para ativar a sua conta.|Abbiamo inviato un codice a 6 cifre a {e}. Inseriscilo per attivare il tuo account.
+Mode local : aucun e-mail n’est envoyé. Votre code est {c}.|Local mode: no email is sent. Your code is {c}.|Modo local: nenhum e-mail é enviado. O seu código é {c}.|Modalità locale: nessuna e-mail viene inviata. Il tuo codice è {c}.
+Code de vérification|Verification code|Código de verificação|Codice di verifica
+Valider mon adresse|Confirm my address|Validar o meu e-mail|Conferma il mio indirizzo
+Renvoyer le code|Resend the code|Reenviar o código|Invia di nuovo il codice
+Choisissez la forme juridique.|Choose the legal form.|Escolha a forma jurídica.|Scegli la forma giuridica.
+L’adresse complète de l’entreprise est obligatoire.|The company's full address is required.|A morada completa da empresa é obrigatória.|L'indirizzo completo dell'azienda è obbligatorio.
+Étape {n} sur 3|Step {n} of 3|Passo {n} de 3|Passo {n} di 3
+Choisir|Choose|Escolher|Scegli
+vérifié par notre équipe|checked by our team|verificado pela nossa equipa|verificato dal nostro team
+Adresse du siège|Registered office address|Morada da sede|Indirizzo della sede
+Téléphone de l’entreprise|Company phone|Telefone da empresa|Telefono dell'azienda
+E-mail de l’entreprise|Company email|E-mail da empresa|E-mail dell'azienda
+Votre compte sera vérifié par l’équipe Artis & You (SIRET, informations légales) avant d’être visible des clients.|Your account will be checked by the Artis & You team (SIRET, legal information) before being visible to clients.|A sua conta será verificada pela equipa Artis & You (SIRET, informações legais) antes de ficar visível para os clientes.|Il tuo account sarà verificato dal team Artis & You (SIRET, informazioni legali) prima di essere visibile ai clienti.
+Se déconnecter ?|Log out?|Terminar sessão?|Disconnettersi?
+Vos données restent dans ce navigateur. Vous devrez saisir à nouveau votre e-mail et votre mot de passe.|Your data stays in this browser. You will need to enter your email and password again.|Os seus dados ficam neste navegador. Terá de introduzir novamente o e-mail e a palavra-passe.|I tuoi dati restano in questo browser. Dovrai inserire di nuovo e-mail e password.
+Vous devrez saisir à nouveau votre e-mail et votre mot de passe (et votre code de double authentification si elle est activée).|You will need to enter your email and password again (and your two-factor code if it is enabled).|Terá de introduzir novamente o e-mail e a palavra-passe (e o código de dupla autenticação, se estiver ativa).|Dovrai inserire di nuovo e-mail e password (e il codice di autenticazione a due fattori, se attiva).
+Vous|You|Você|Tu
+Ville des travaux|Job location|Localidade da obra|Città dei lavori
+à {n} km|{n} km away|a {n} km|a {n} km
+Artisans qui interviennent à {v} (selon leur zone d’intervention).|Tradespeople who work in {v} (according to their service area).|Profissionais que trabalham em {v} (segundo a sua zona de intervenção).|Artigiani che intervengono a {v} (secondo la loro zona di intervento).
+Envoyé|Sent|Enviado|Inviato
+Reçu|Received|Recebido|Ricevuto
+Photos ajoutées dans Documents › Photos|Photos added to Documents › Photos|Fotos adicionadas em Documentos › Fotos|Foto aggiunte in Documenti › Foto
+Voir et répondre à la demande|View and reply to the request|Ver e responder ao pedido|Vedi e rispondi alla richiesta
+Voir ma demande|View my request|Ver o meu pedido|Vedi la mia richiesta
+Prendre une photo|Take a photo|Tirar uma foto|Scatta una foto
+Rangée aussi dans Documents › Photos|Also saved in Documents › Photos|Também guardada em Documentos › Fotos|Salvata anche in Documenti › Foto
+Photos de la galerie|Photos from gallery|Fotos da galeria|Foto dalla galleria
+Document réalisé avec|Document made with|Documento criado com|Documento realizzato con
+Recadrer la photo|Crop the photo|Recortar a foto|Ritaglia la foto
+Déverrouillage biométrique désactivé|Biometric unlock turned off|Desbloqueio biométrico desativado|Sblocco biometrico disattivato
+Déverrouillage biométrique activé sur cet appareil|Biometric unlock turned on for this device|Desbloqueio biométrico ativado neste dispositivo|Sblocco biometrico attivato su questo dispositivo
+Activation annulée.|Activation cancelled.|Ativação cancelada.|Attivazione annullata.
+Désactiver la double authentification ?|Turn off two-factor authentication?|Desativar a dupla autenticação?|Disattivare l'autenticazione a due fattori?
+Votre compte ne sera plus protégé que par le mot de passe.|Your account will only be protected by your password.|A sua conta ficará protegida apenas pela palavra-passe.|Il tuo account sarà protetto solo dalla password.
+Désactiver|Turn off|Desativar|Disattiva
+Double authentification désactivée|Two-factor authentication turned off|Dupla autenticação desativada|Autenticazione a due fattori disattivata
+Double authentification activée|Two-factor authentication turned on|Dupla autenticação ativada|Autenticazione a due fattori attivata
+Connexion renforcée|Stronger sign-in|Início de sessão reforçado|Accesso rafforzato
+Face ID / empreinte|Face ID / fingerprint|Face ID / impressão digital|Face ID / impronta
+Non disponible sur cet appareil ou ce navigateur (il faut Face ID, Touch ID, une empreinte ou Windows Hello).|Not available on this device or browser (Face ID, Touch ID, a fingerprint reader or Windows Hello is required).|Indisponível neste dispositivo ou navegador (é necessário Face ID, Touch ID, impressão digital ou Windows Hello).|Non disponibile su questo dispositivo o browser (servono Face ID, Touch ID, un'impronta o Windows Hello).
+Demandé à l’ouverture de l’application sur cet appareil|Requested when opening the app on this device|Pedido ao abrir a aplicação neste dispositivo|Richiesto all'apertura dell'app su questo dispositivo
+Déverrouillez l’application avec Face ID, Touch ID, votre empreinte ou Windows Hello|Unlock the app with Face ID, Touch ID, your fingerprint or Windows Hello|Desbloqueie a aplicação com Face ID, Touch ID, a impressão digital ou Windows Hello|Sblocca l'app con Face ID, Touch ID, la tua impronta o Windows Hello
+Un code de votre application d’authentification est demandé à chaque connexion|A code from your authenticator app is required at each sign-in|É pedido um código da sua aplicação de autenticação em cada início de sessão|Un codice della tua app di autenticazione è richiesto a ogni accesso
+Ajoutez un code à 6 chiffres (Google Authenticator, Microsoft Authenticator…) en plus du mot de passe|Add a 6-digit code (Google Authenticator, Microsoft Authenticator…) on top of your password|Adicione um código de 6 dígitos (Google Authenticator, Microsoft Authenticator…) além da palavra-passe|Aggiungi un codice a 6 cifre (Google Authenticator, Microsoft Authenticator…) oltre alla password
+Activer la double authentification|Turn on two-factor authentication|Ativar a dupla autenticação|Attiva l'autenticazione a due fattori
+Installez une application d’authentification (Google Authenticator, Microsoft Authenticator, 1Password…).|Install an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password…).|Instale uma aplicação de autenticação (Google Authenticator, Microsoft Authenticator, 1Password…).|Installa un'app di autenticazione (Google Authenticator, Microsoft Authenticator, 1Password…).
+Scannez ce QR code, ou saisissez la clé ci-dessous :|Scan this QR code, or enter the key below:|Leia este código QR ou introduza a chave abaixo:|Scansiona questo codice QR o inserisci la chiave qui sotto:
+Ajoutez un compte avec la clé ci-dessous (ou touchez « Ouvrir dans l’application » sur votre téléphone) :|Add an account with the key below (or tap “Open in the app” on your phone):|Adicione uma conta com a chave abaixo (ou toque em “Abrir na aplicação” no telemóvel):|Aggiungi un account con la chiave qui sotto (o tocca “Apri nell'app” sul telefono):
+Clé copiée|Key copied|Chave copiada|Chiave copiata
+Copier la clé|Copy the key|Copiar a chave|Copia la chiave
+Ouvrir dans l’application|Open in the app|Abrir na aplicação|Apri nell'app
+Saisissez le code à 6 chiffres affiché :|Enter the 6-digit code shown:|Introduza o código de 6 dígitos apresentado:|Inserisci il codice a 6 cifre mostrato:
+Activer|Turn on|Ativar|Attiva
+Aider à améliorer Artis & You|Help improve Artis & You|Ajudar a melhorar o Artis & You|Aiuta a migliorare Artis & You
+Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.|Share anonymous usage statistics (pages viewed, errors). No client, quote or invoice data is sent.|Partilhar estatísticas de utilização anónimas (páginas consultadas, erros). Nenhum dado de clientes, orçamentos ou faturas é transmitido.|Condividi statistiche d'uso anonime (pagine visitate, errori). Nessun dato di clienti, preventivi o fatture viene trasmesso.
+Un e-mail de temps en temps sur les nouvelles fonctionnalités|An occasional email about new features|Um e-mail de vez em quando sobre as novidades|Un'e-mail ogni tanto sulle novità
+Retour aux articles|Back to articles|Voltar aos artigos|Torna agli articoli
+Y aller|Go there|Ir para lá|Vai
+Merci pour votre retour !|Thanks for your feedback!|Obrigado pela sua opinião!|Grazie per il tuo feedback!
+Cet article vous a-t-il aidé ?|Was this article helpful?|Este artigo foi útil?|Questo articolo ti è stato utile?
+Aide : {a}|Help: {a}|Ajuda: {a}|Aiuto: {a}
+Articles liés|Related articles|Artigos relacionados|Articoli correlati
+Comment faire… (ex. relancer une facture, dimanche, logo)|How do I… (e.g. chase an invoice, Sunday, logo)|Como fazer… (ex.: cobrar uma fatura, domingo, logótipo)|Come fare… (es. sollecitare una fattura, domenica, logo)
+{n} articles|{n} articles|{n} artigos|{n} articoli
+{n} résultats|{n} results|{n} resultados|{n} risultati
+{n} résultat|{n} result|{n} resultado|{n} risultato
+Tous les articles|All articles|Todos os artigos|Tutti gli articoli
+Aucun article ne correspond. Écrivez-nous, on vous répond rapidement.|No matching article. Write to us, we'll answer quickly.|Nenhum artigo corresponde. Escreva-nos, respondemos rapidamente.|Nessun articolo corrisponde. Scrivici, ti rispondiamo rapidamente.
+réponse sous 24 h ouvrées|reply within 1 business day|resposta em 24 h úteis|risposta entro 24 h lavorative
+Réservé à l’équipe Artis & You.|Reserved for the Artis & You team.|Reservado à equipa Artis & You.|Riservato al team Artis & You.
+Entreprise validée|Company approved|Empresa validada|Azienda convalidata
+Demande de compléments envoyée|Request for more information sent|Pedido de informações adicionais enviado|Richiesta di integrazioni inviata
+Aucune entreprise en attente|No company waiting|Nenhuma empresa em espera|Nessuna azienda in attesa
+Inscrite le {d}|Signed up on {d}|Inscrita em {d}|Iscritta il {d}
+Manquant : {l}|Missing: {l}|Em falta: {l}|Mancante: {l}
+Vérifier le SIRET|Check the SIRET|Verificar o SIRET|Verifica il SIRET
+Merci de compléter : {l}.|Please complete: {l}.|Por favor complete: {l}.|Completa per favore: {l}.
+Demander des compléments|Ask for more information|Pedir informações adicionais|Chiedi integrazioni
+Message à l’entreprise|Message to the company|Mensagem para a empresa|Messaggio all'azienda
+serveurs situés dans l’Union européenne, région Paris|servers located in the European Union, Paris region|servidores situados na União Europeia, região de Paris|server situati nell'Unione europea, regione di Parigi
+Installer Artis & You|Install Artis & You|Instalar o Artis & You|Installa Artis & You
+Ordinateur|Computer|Computador|Computer
+Téléphone et tablette|Phone and tablet|Telemóvel e tablet|Telefono e tablet
+Ou installer la version web|Or install the web version|Ou instalar a versão web|Oppure installa la versione web
+Sans téléchargement, depuis ce navigateur (Chrome, Edge)|No download, from this browser (Chrome, Edge)|Sem download, a partir deste navegador (Chrome, Edge)|Senza download, da questo browser (Chrome, Edge)
+Ajoutez Artis & You sur l’écran d’accueil : l’application s’ouvre en plein écran avec son icône, comme une vraie application, et elle est toujours à jour.|Add Artis & You to your home screen: the app opens full screen with its icon, like a real app, and is always up to date.|Adicione o Artis & You ao ecrã principal: a aplicação abre em ecrã inteiro com o seu ícone, como uma aplicação a sério, e está sempre atualizada.|Aggiungi Artis & You alla schermata Home: l'app si apre a schermo intero con la sua icona, come una vera app, ed è sempre aggiornata.
+Artis & You est installée sur cet appareil.|Artis & You is installed on this device.|O Artis & You está instalado neste dispositivo.|Artis & You è installata su questo dispositivo.
+Installer l’application|Install the app|Instalar a aplicação|Installa l'app
+Ouvrez {u} dans Chrome|Open {u} in Chrome|Abra {u} no Chrome|Apri {u} in Chrome
+Touchez le menu ⋮ en haut à droite|Tap the ⋮ menu at the top right|Toque no menu ⋮ no canto superior direito|Tocca il menu ⋮ in alto a destra
+Choisissez « Installer l’application » (ou « Ajouter à l’écran d’accueil »)|Choose “Install app” (or “Add to Home screen”)|Escolha “Instalar aplicação” (ou “Adicionar ao ecrã principal”)|Scegli “Installa app” (o “Aggiungi a schermata Home”)
+Ouvrez {u} dans Safari|Open {u} in Safari|Abra {u} no Safari|Apri {u} in Safari
+Touchez le bouton Partager|Tap the Share button|Toque no botão Partilhar|Tocca il pulsante Condividi
+en bas de l’écran|at the bottom of the screen|na parte de baixo do ecrã|in fondo allo schermo
+Choisissez « Sur l’écran d’accueil » puis « Ajouter »|Choose “Add to Home Screen”, then “Add”|Escolha “Adicionar ao ecrã principal” e depois “Adicionar”|Scegli “Aggiungi alla schermata Home”, poi “Aggiungi”
+Sur votre téléphone, ouvrez {u} puis suivez les étapes ci-dessus.|On your phone, open {u} and follow the steps above.|No telemóvel, abra {u} e siga os passos acima.|Sul telefono, apri {u} e segui i passaggi qui sopra.
+Copier le lien|Copy the link|Copiar a ligação|Copia il link
+Logiciel PC / Mac et application mobile|PC / Mac software and mobile app|Software PC / Mac e aplicação móvel|Software PC / Mac e app mobile
+Complétez les champs obligatoires : {l}|Fill in the required fields: {l}|Preencha os campos obrigatórios: {l}|Compila i campi obbligatori: {l}
+Merci ! Votre dossier est renvoyé à l’équipe Artis & You.|Thank you! Your file has been sent back to the Artis & You team.|Obrigado! O seu processo foi reenviado à equipa Artis & You.|Grazie! La tua pratica è stata rinviata al team Artis & You.
+Changer le logo|Change the logo|Alterar o logótipo|Cambia il logo
+Ajouter le logo|Add the logo|Adicionar o logótipo|Aggiungi il logo
+Vous pourrez le recadrer avant de l’enregistrer.|You can crop it before saving.|Poderá recortá-lo antes de guardar.|Potrai ritagliarlo prima di salvarlo.
+Informations à compléter|Information to complete|Informações a completar|Informazioni da completare
+Validation en cours par l’équipe Artis & You|Being checked by the Artis & You team|Validação em curso pela equipa Artis & You|Verifica in corso da parte del team Artis & You
+Toutes les informations obligatoires sont renseignées|All required information has been filled in|Todas as informações obrigatórias estão preenchidas|Tutte le informazioni obbligatorie sono compilate
+obligatoire pour la validation du compte|required for account approval|obrigatório para a validação da conta|obbligatorio per la convalida dell'account
+Choisir…|Choose…|Escolher…|Scegli…
+choisissez au moins un métier|choose at least one trade|escolha pelo menos uma profissão|scegli almeno un mestiere
+Ville de départ|Starting town|Localidade de partida|Città di partenza
+ex. Antibes|e.g. Antibes|ex.: Antibes|es. Antibes
+Rayon|Radius|Raio|Raggio
+Les particuliers qui cherchent une ville à moins de {n} km de {v} vous trouveront.|Clients looking for a town less than {n} km from {v} will find you.|Os particulares que procurem uma localidade a menos de {n} km de {v} vão encontrá-lo.|I privati che cercano una città a meno di {n} km da {v} ti troveranno.
+Choisissez la ville dans la liste proposée pour activer la recherche par distance.|Pick the town from the suggested list to enable distance search.|Escolha a localidade na lista proposta para ativar a pesquisa por distância.|Scegli la città dall'elenco proposto per attivare la ricerca per distanza.
+Votre fiche apparaît dans la recherche d’artisans|Your profile appears in the tradesperson search|O seu perfil aparece na pesquisa de profissionais|La tua scheda appare nella ricerca di artigiani
+Les autres artisans peuvent vous trouver et vous écrire|Other tradespeople can find you and message you|Os outros profissionais podem encontrá-lo e escrever-lhe|Gli altri artigiani possono trovarti e scriverti
+Rendez-vous en visio (WhatsApp)|Video appointments (WhatsApp)|Marcações por videochamada (WhatsApp)|Appuntamenti in video (WhatsApp)
+Vos clients peuvent demander une visio WhatsApp|Your clients can request a WhatsApp video call|Os seus clientes podem pedir uma videochamada WhatsApp|I tuoi clienti possono richiedere una videochiamata WhatsApp
+Uniquement des rendez-vous sur place|On-site appointments only|Apenas marcações no local|Solo appuntamenti in loco
+Recadrer le logo|Crop the logo|Recortar o logótipo|Ritaglia il logo
+Changer le préfixe des {k} ?|Change the {k} prefix?|Alterar o prefixo dos {k}?|Cambiare il prefisso dei {k}?
+{n} documents ont déjà été émis avec « {p} » cette année. Changer de préfixe crée une nouvelle série : c’est autorisé, mais chaque série doit rester continue et vous devrez pouvoir la justifier. Conseillé seulement au 1er janvier.|{n} documents have already been issued with “{p}” this year. Changing the prefix starts a new series: this is allowed, but each series must stay continuous and you must be able to justify it. Recommended only on 1 January.|Já foram emitidos {n} documentos com “{p}” este ano. Alterar o prefixo cria uma nova série: é permitido, mas cada série deve manter-se contínua e terá de a poder justificar. Aconselhado apenas a 1 de janeiro.|Quest'anno sono già stati emessi {n} documenti con “{p}”. Cambiare prefisso crea una nuova serie: è consentito, ma ogni serie deve restare continua e dovrai poterla giustificare. Consigliato solo il 1° gennaio.
+Changer quand même|Change anyway|Alterar mesmo assim|Cambia comunque
+Lettres et chiffres uniquement (6 max.)|Letters and digits only (6 max.)|Apenas letras e algarismos (máx. 6)|Solo lettere e cifre (max 6)
+Prochain : {n}|Next: {n}|Próximo: {n}|Prossimo: {n}
+Préfixes : lettres et chiffres uniquement (6 max.)|Prefixes: letters and digits only (6 max.)|Prefixos: apenas letras e algarismos (máx. 6)|Prefissi: solo lettere e cifre (max 6)
+Les trois préfixes doivent être différents.|The three prefixes must be different.|Os três prefixos têm de ser diferentes.|I tre prefissi devono essere diversi.
+devis|quotes|orçamentos|preventivi
+factures|invoices|faturas|fatture
+avoirs|credit notes|notas de crédito|note di credito
+Les numéros sont attribués automatiquement à l’envoi, à la suite, sans trou, par année. Une facture envoyée ne peut plus être modifiée ni supprimée : pour la corriger, faites un avoir. La date d’une facture est celle de son émission.|Numbers are assigned automatically when sending, in sequence, without gaps, per year. A sent invoice can no longer be edited or deleted: to correct it, issue a credit note. An invoice is dated the day it is issued.|Os números são atribuídos automaticamente no envio, em sequência, sem falhas, por ano. Uma fatura enviada já não pode ser alterada nem apagada: para a corrigir, emita uma nota de crédito. A data de uma fatura é a da sua emissão.|I numeri vengono assegnati automaticamente all'invio, in sequenza, senza buchi, per anno. Una fattura inviata non può più essere modificata né eliminata: per correggerla emetti una nota di credito. La data di una fattura è quella della sua emissione.
+Ajoute un encart « Payer en ligne » sur vos factures (paiement en ligne bientôt disponible)|Adds a “Pay online” box to your invoices (online payment coming soon)|Adiciona um quadro “Pagar online” às suas faturas (pagamento online em breve)|Aggiunge un riquadro “Paga online” alle tue fatture (pagamento online in arrivo)
+Format exigé entre entreprises à partir de 2026–2027 (transmission via plateforme agréée bientôt disponible)|Format required between businesses from 2026–2027 (transmission via an approved platform coming soon)|Formato exigido entre empresas a partir de 2026–2027 (transmissão via plataforma certificada em breve)|Formato richiesto tra imprese dal 2026–2027 (trasmissione tramite piattaforma accreditata in arrivo)
+Exemple de devis|Sample quote|Exemplo de orçamento|Esempio di preventivo
+Modèle|Template|Modelo|Modello
+Ajouter mon logo|Add my logo|Adicionar o meu logótipo|Aggiungi il mio logo
+Relances factures et devis|Invoice and quote reminders|Lembretes de faturas e orçamentos|Solleciti di fatture e preventivi
+Automatiques · scénario personnalisé|Automatic · custom scenario|Automáticos · cenário personalizado|Automatici · scenario personalizzato
+Validées une par une · scénario personnalisable|Approved one by one · customisable scenario|Validados um a um · cenário personalizável|Convalidati uno per uno · scenario personalizzabile
+Relances à faire|Reminders to send|Lembretes a enviar|Solleciti da inviare
+CA|Revenue|Faturação|Fatturato
+Avec un montant dû|With an amount due|Com montante em dívida|Con importo dovuto
+Avec compte Artis & You|With an Artis & You account|Com conta Artis & You|Con account Artis & You
+Sans compte Artis & You|Without an Artis & You account|Sem conta Artis & You|Senza account Artis & You
+Tout effacer|Clear all|Limpar tudo|Cancella tutto
+{n} sur {m}|{n} of {m}|{n} de {m}|{n} su {m}
+Trier|Sort|Ordenar|Ordina
+Aucun client ne correspond à ces filtres.|No client matches these filters.|Nenhum cliente corresponde a estes filtros.|Nessun cliente corrisponde a questi filtri.
+Dû|Due|Em dívida|Dovuto
+Pays|Country|País|Paese
+Client depuis|Client since|Cliente desde|Cliente dal
+Du|From|De|Dal
+Au|To|Até|Al
+Chiffre d’affaires facturé (€ HT)|Invoiced revenue (€ excl. VAT)|Faturação faturada (€ sem IVA)|Fatturato fatturato (€ IVA escl.)
+Minimum|Minimum|Mínimo|Minimo
+Maximum|Maximum|Máximo|Massimo
+Seulement les clients avec un montant dû|Only clients with an amount due|Apenas clientes com montante em dívida|Solo clienti con un importo dovuto
+Avec compte|With account|Com conta|Con account
+Sans compte|Without account|Sem conta|Senza account
+Recherchez un client, un devis, un produit|Search a client, a quote, a product|Pesquise um cliente, um orçamento, um produto|Cerca un cliente, un preventivo, un prodotto
+Demander un avis|Ask for a review|Pedir uma avaliação|Chiedi una recensione
+Suivre le paiement|Track the payment|Acompanhar o pagamento|Segui il pagamento
+Faire la facture|Create the invoice|Fazer a fatura|Fai la fattura
+Voir le RDV du {d}|See the appointment on {d}|Ver a marcação de {d}|Vedi l'appuntamento del {d}
+Marquer le chantier terminé|Mark the job as finished|Marcar a obra como terminada|Segna il cantiere come terminato
+Créer le devis|Create the quote|Criar o orçamento|Crea il preventivo
+Finaliser et envoyer le devis|Finalise and send the quote|Finalizar e enviar o orçamento|Finalizza e invia il preventivo
+Chantier marqué terminé|Job marked as finished|Obra marcada como terminada|Cantiere segnato come terminato
+Recherchez un projet, un client, une adresse|Search a project, a client, an address|Pesquise um projeto, um cliente, uma morada|Cerca un progetto, un cliente, un indirizzo
+Montant des projets en cours|Value of ongoing projects|Montante dos projetos em curso|Importo dei progetti in corso
+Devis en attente de réponse|Quotes awaiting an answer|Orçamentos a aguardar resposta|Preventivi in attesa di risposta
+À facturer|To invoice|A faturar|Da fatturare
+Reste à encaisser|To collect|Por receber|Da incassare
+Suivi|Follow-up|Acompanhamento|Monitoraggio
+Tableau des étapes|Step table|Tabela de etapas|Tabella delle fasi
+Aucun projet dans cette étape.|No project at this step.|Nenhum projeto nesta etapa.|Nessun progetto in questa fase.
+{n}/{m} étapes|{n}/{m} steps|{n}/{m} etapas|{n}/{m} fasi
+{m} dû|{m} due|{m} em dívida|{m} dovuti
+Dernière activité : {d}|Last activity: {d}|Última atividade: {d}|Ultima attività: {d}
+{n} clients sélectionnés|{n} clients selected|{n} clientes selecionados|{n} clienti selezionati
+Recherchez un client à analyser|Search a client to analyse|Pesquise um cliente para analisar|Cerca un cliente da analizzare
+Aucun client trouvé|No client found|Nenhum cliente encontrado|Nessun cliente trovato
+Statut général des clients|Overall client status|Estado geral dos clientes|Stato generale dei clienti
+Dernier document|Last document|Último documento|Ultimo documento
+Ce mois-ci|This month|Este mês|Questo mese
+3 derniers mois|Last 3 months|Últimos 3 meses|Ultimi 3 mesi
+Cette année|This year|Este ano|Quest'anno
+Dates…|Dates…|Datas…|Date…
+du {d}|from {d}|de {d}|dal {d}
+au {d}|to {d}|até {d}|al {d}
+Dates|Dates|Datas|Date
+≥ {m}|≥ {m}|≥ {m}|≥ {m}
+≤ {m}|≤ {m}|≤ {m}|≤ {m}
+N°, client, objet, montant…|No., client, subject, amount…|N.º, cliente, assunto, montante…|N°, cliente, oggetto, importo…
+{n} sur {m} · {s} HT|{n} of {m} · {s} excl. VAT|{n} de {m} · {s} sem IVA|{n} su {m} · {s} IVA escl.
+Plus récents|Most recent|Mais recentes|Più recenti
+Aucun résultat avec ces critères|No result with these criteria|Nenhum resultado com estes critérios|Nessun risultato con questi criteri
+Reste dû|Balance due|Em dívida|Residuo dovuto
+Filtrer les devis|Filter quotes|Filtrar orçamentos|Filtra i preventivi
+Filtrer les factures|Filter invoices|Filtrar faturas|Filtra le fatture
+Montant TTC min.|Min. amount incl. VAT|Montante mín. com IVA|Importo min. IVA incl.
+Montant TTC max.|Max. amount incl. VAT|Montante máx. com IVA|Importo max. IVA incl.
+Seulement les factures avec un reste à payer|Only invoices with a balance due|Apenas faturas com montante em dívida|Solo fatture con un residuo da pagare
+Recherchez un devis, une facture, un document|Search a quote, an invoice, a document|Pesquise um orçamento, uma fatura, um documento|Cerca un preventivo, una fattura, un documento
+Relance préparée dans votre messagerie e-mail|Reminder prepared in your email app|Lembrete preparado no seu e-mail|Sollecito preparato nella tua e-mail
+Pas encore relancé.|Not reminded yet.|Ainda sem lembretes.|Non ancora sollecitato.
+Relances suspendues.|Reminders paused.|Lembretes suspensos.|Solleciti sospesi.
+Relances|Reminders|Lembretes|Solleciti
+Message (modifiable)|Message (editable)|Mensagem (editável)|Messaggio (modificabile)
+Ce client n’a pas de compte Artis & You|This client has no Artis & You account|Este cliente não tem conta Artis & You|Questo cliente non ha un account Artis & You
+Messagerie|Messaging|Mensagens|Messaggi
+Visible dans son espace Artis & You|Visible in their Artis & You space|Visível no seu espaço Artis & You|Visibile nel suo spazio Artis & You
+Document expiré : {n}|Expired document: {n}|Documento expirado: {n}|Documento scaduto: {n}
+Document à renouveler : {n}|Document to renew: {n}|Documento a renovar: {n}|Documento da rinnovare: {n}
+Expiré depuis le {d}|Expired since {d}|Expirado desde {d}|Scaduto dal {d}
+Expire le {d} (dans {n} jours)|Expires on {d} (in {n} days)|Expira a {d} (dentro de {n} dias)|Scade il {d} (tra {n} giorni)
+Rappel et partage|Reminder and sharing|Lembrete e partilha|Promemoria e condivisione
+Notification {n} jours avant la date de fin de validité|Notification {n} days before the expiry date|Notificação {n} dias antes do fim da validade|Notifica {n} giorni prima della scadenza
+Aucun rappel pour ce type de document|No reminder for this type of document|Nenhum lembrete para este tipo de documento|Nessun promemoria per questo tipo di documento
+Délai du rappel|Reminder delay|Antecedência do lembrete|Anticipo del promemoria
+Partager avec mes clients|Share with my clients|Partilhar com os meus clientes|Condividi con i miei clienti
+Visible dans l’espace Artis & You de vos clients (ex. attestation décennale)|Visible in your clients' Artis & You space (e.g. ten-year insurance certificate)|Visível no espaço Artis & You dos seus clientes (ex.: certificado de seguro decenal)|Visibile nello spazio Artis & You dei tuoi clienti (es. attestato di assicurazione decennale)
+Visible uniquement par votre entreprise|Visible only to your company|Visível apenas para a sua empresa|Visibile solo alla tua azienda
+Ces réglages s’appliqueront aux documents que vous ajouterez.|These settings will apply to the documents you add.|Estas definições aplicam-se aos documentos que adicionar.|Queste impostazioni si applicheranno ai documenti che aggiungerai.
+Votre inscription est à compléter|Your registration needs completing|A sua inscrição está por completar|La tua iscrizione è da completare
+L’équipe Artis & You a besoin d’informations supplémentaires.|The Artis & You team needs more information.|A equipa Artis & You precisa de mais informações.|Il team Artis & You ha bisogno di altre informazioni.
+Compte en cours de validation|Account being approved|Conta em validação|Account in fase di convalida
+{n} demandes de rendez-vous à traiter|{n} appointment requests to handle|{n} pedidos de marcação a tratar|{n} richieste di appuntamento da gestire
+1 demande de rendez-vous à traiter|1 appointment request to handle|1 pedido de marcação a tratar|1 richiesta di appuntamento da gestire
+{n} relances clients à envoyer aujourd’hui|{n} client reminders to send today|{n} lembretes a clientes para enviar hoje|{n} solleciti ai clienti da inviare oggi
+1 relance client à envoyer aujourd’hui|1 client reminder to send today|1 lembrete a cliente para enviar hoje|1 sollecito al cliente da inviare oggi
+Du {a} au {b}|From {a} to {b}|De {a} a {b}|Dal {a} al {b}
+Encaissé|Collected|Recebido|Incassato
+sur les factures de la période|on invoices for the period|nas faturas do período|sulle fatture del periodo
+{n} factures en retard|{n} overdue invoices|{n} faturas em atraso|{n} fatture in ritardo
+Aucune facture en retard|No overdue invoice|Nenhuma fatura em atraso|Nessuna fattura in ritardo
+Facture moyenne|Average invoice|Fatura média|Fattura media
+Montant HT moyen par facture|Average amount excl. VAT per invoice|Montante médio sem IVA por fatura|Importo medio IVA escl. per fattura
+Devis signés|Signed quotes|Orçamentos assinados|Preventivi firmati
+Aucun devis envoyé|No quote sent|Nenhum orçamento enviado|Nessun preventivo inviato
+{n} % de devis acceptés|{n}% of quotes accepted|{n} % dos orçamentos aceites|{n}% dei preventivi accettati
+RDV réalisés sur la période|Appointments completed in the period|Marcações realizadas no período|Appuntamenti svolti nel periodo
+CA par semaine|Revenue per week|Faturação por semana|Fatturato per settimana
+Part|Share|Parte|Quota
+Recherchez un rendez-vous (client, objet, adresse)|Search an appointment (client, subject, address)|Pesquise uma marcação (cliente, assunto, morada)|Cerca un appuntamento (cliente, oggetto, indirizzo)
+Rendez-vous déplacé au {d}|Appointment moved to {d}|Marcação movida para {d}|Appuntamento spostato al {d}
+Astuce : faites glisser un rendez-vous pour le déplacer (par pas de 15 min).|Tip: drag an appointment to move it (in 15-minute steps).|Dica: arraste uma marcação para a mover (de 15 em 15 min).|Suggerimento: trascina un appuntamento per spostarlo (a passi di 15 min).
+Cliquez pour ouvrir, faites glisser pour déplacer|Click to open, drag to move|Clique para abrir, arraste para mover|Clicca per aprire, trascina per spostare
+Aucun rendez-vous pour « {q} »|No appointment for “{q}”|Nenhuma marcação para “{q}”|Nessun appuntamento per “{q}”
+Aucun rendez-vous à venir|No upcoming appointment|Nenhuma marcação futura|Nessun appuntamento in arrivo
+Aucun rendez-vous passé|No past appointment|Nenhuma marcação passada|Nessun appuntamento passato
+Durée prévue pour « {t} » : {d} (modifiable dans les réglages du planning)|Planned duration for “{t}”: {d} (can be changed in planning settings)|Duração prevista para “{t}”: {d} (alterável nas definições da agenda)|Durata prevista per “{t}”: {d} (modificabile nelle impostazioni del planning)
+journée|day|dia|giornata
+Samedi et dimanche toujours visibles, même non travaillés|Saturday and Sunday always visible, even when not working|Sábado e domingo sempre visíveis, mesmo sem trabalho|Sabato e domenica sempre visibili, anche se non lavorativi
+Vous acceptez ou refusez chaque demande de rendez-vous|You accept or decline each appointment request|Aceita ou recusa cada pedido de marcação|Accetti o rifiuti ogni richiesta di appuntamento
+Les demandes sur vos créneaux libres sont acceptées automatiquement|Requests on your free slots are accepted automatically|Os pedidos nos seus horários livres são aceites automaticamente|Le richieste sui tuoi orari liberi sono accettate automaticamente
+Vos clients ne peuvent demander que des rendez-vous sur place|Your clients can only request on-site appointments|Os seus clientes só podem pedir marcações no local|I tuoi clienti possono richiedere solo appuntamenti in loco
+Durée par type de rendez-vous|Duration by appointment type|Duração por tipo de marcação|Durata per tipo di appuntamento
+Utilisée pour proposer les créneaux aux clients et pré-remplir l’heure de fin.|Used to offer slots to clients and prefill the end time.|Usada para propor horários aos clientes e preencher a hora de fim.|Usata per proporre gli orari ai clienti e precompilare l'ora di fine.
+Autre rendez-vous|Other appointment|Outra marcação|Altro appuntamento
+J+{n} après l’envoi|D+{n} after sending|D+{n} após o envio|G+{n} dopo l'invio
+{n} jours avant l’échéance|{n} days before the due date|{n} dias antes do vencimento|{n} giorni prima della scadenza
+Le jour de l’échéance|On the due date|No dia do vencimento|Il giorno della scadenza
+J+{n} après l’échéance|D+{n} after the due date|D+{n} após o vencimento|G+{n} dopo la scadenza
+Relance envoyée dans la messagerie|Reminder sent via messaging|Lembrete enviado pelas mensagens|Sollecito inviato tramite messaggi
+{n} relances envoyées|{n} reminders sent|{n} lembretes enviados|{n} solleciti inviati
+Relances suspendues pour ce document|Reminders paused for this document|Lembretes suspensos para este documento|Solleciti sospesi per questo documento
+Relances réactivées|Reminders resumed|Lembretes reativados|Solleciti riattivati
+Factures impayées et devis sans réponse|Unpaid invoices and unanswered quotes|Faturas por pagar e orçamentos sem resposta|Fatture non pagate e preventivi senza risposta
+À relancer aujourd’hui|To remind today|A lembrar hoje|Da sollecitare oggi
+Factures en retard|Overdue invoices|Faturas em atraso|Fatture in ritardo
+Relances envoyées (30 j)|Reminders sent (30 days)|Lembretes enviados (30 dias)|Solleciti inviati (30 g)
+Programmées|Scheduled|Programados|Programmati
+Devis envoyé il y a {n} j|Quote sent {n} days ago|Orçamento enviado há {n} dias|Preventivo inviato {n} g fa
+Échéance dans {n} j|Due in {n} days|Vence dentro de {n} dias|Scade tra {n} g
+{n} j de retard|{n} days late|{n} dias de atraso|{n} g di ritardo
+Déjà relancé {n} fois · dernière le {d}|Already reminded {n} times · last on {d}|Já lembrado {n} vezes · último a {d}|Già sollecitato {n} volte · l'ultima il {d}
+Ne plus relancer ce document|Stop reminding for this document|Deixar de lembrar este documento|Non sollecitare più questo documento
+Aucune relance à faire aujourd’hui. 👍|No reminder to send today. 👍|Nenhum lembrete a enviar hoje. 👍|Nessun sollecito da inviare oggi. 👍
+Suspendre|Pause|Suspender|Sospendi
+Aucune relance programmée.|No reminder scheduled.|Nenhum lembrete programado.|Nessun sollecito programmato.
+Relances suspendues|Paused reminders|Lembretes suspensos|Solleciti sospesi
+Réactiver|Resume|Reativar|Riattiva
+Messagerie Artis & You|Artis & You messaging|Mensagens Artis & You|Messaggi Artis & You
+Aucune relance envoyée pour l’instant.|No reminder sent yet.|Nenhum lembrete enviado por enquanto.|Nessun sollecito inviato per ora.
+À|To|Para|A
+messagerie Artis & You|Artis & You messaging|mensagens Artis & You|messaggi Artis & You
+aucune adresse e-mail|no email address|nenhum e-mail|nessun indirizzo e-mail
+Ouvrir l’e-mail|Open the email|Abrir o e-mail|Apri l'e-mail
+Envoi automatique|Automatic sending|Envio automático|Invio automatico
+Les relances dues partent seules dans la messagerie des clients qui ont un compte (à l’ouverture de l’application). Les autres restent à envoyer par e-mail.|Due reminders are sent automatically in the messaging of clients who have an account (when the app opens). The others remain to be sent by email.|Os lembretes devidos são enviados sozinhos nas mensagens dos clientes com conta (ao abrir a aplicação). Os restantes ficam para enviar por e-mail.|I solleciti dovuti partono da soli nei messaggi dei clienti con un account (all'apertura dell'app). Gli altri restano da inviare per e-mail.
+Vous validez chaque relance avant l’envoi.|You approve each reminder before sending.|Valida cada lembrete antes do envio.|Convalidi ogni sollecito prima dell'invio.
+Scénarios|Scenarios|Cenários|Scenari
+Factures impayées|Unpaid invoices|Faturas por pagar|Fatture non pagate
+Devis sans réponse|Unanswered quotes|Orçamentos sem resposta|Preventivi senza risposta
+Ajouter une étape|Add a step|Adicionar uma etapa|Aggiungi una fase
+Rétablir le scénario conseillé|Restore the recommended scenario|Repor o cenário aconselhado|Ripristina lo scenario consigliato
+Jours après l’envoi|Days after sending|Dias após o envio|Giorni dopo l'invio
+Jours par rapport à l’échéance|Days relative to the due date|Dias em relação ao vencimento|Giorni rispetto alla scadenza
+négatif = avant|negative = before|negativo = antes|negativo = prima
+Ton|Tone|Tom|Tono
+Insérer :|Insert:|Inserir:|Inserisci:
+Enregistrer l’étape|Save the step|Guardar a etapa|Salva la fase
+Numéro et rue|Number and street|Número e rua|Numero e via
+Recadrer l’image|Crop the image|Recortar a imagem|Ritaglia l'immagine
+Dézoomer|Zoom out|Diminuir zoom|Riduci zoom
+Zoom|Zoom|Zoom|Zoom
+Zoomer|Zoom in|Aumentar zoom|Aumenta zoom
+Pivoter|Rotate|Rodar|Ruota
+Glissez pour déplacer · molette ou curseur pour zoomer|Drag to move · wheel or slider to zoom|Arraste para mover · roda ou cursor para ampliar|Trascina per spostare · rotellina o cursore per zoomare
+Fond|Background|Fundo|Sfondo
+Image entière|Whole image|Imagem inteira|Immagine intera
+Activé|On|Ativado|Attivo
+Désactivé|Off|Desativado|Disattivato
+Impossible d'accéder à l'appareil photo. Autorisez la caméra dans votre navigateur, ou choisissez une photo.|Cannot access the camera. Allow the camera in your browser, or choose a photo.|Não é possível aceder à câmara. Autorize a câmara no navegador ou escolha uma foto.|Impossibile accedere alla fotocamera. Autorizza la fotocamera nel browser o scegli una foto.
+Choisir une photo|Choose a photo|Escolher uma foto|Scegli una foto
+Déclencher|Take|Disparar|Scatta
+Envoyer {n} photos|Send {n} photos|Enviar {n} fotos|Invia {n} foto
+Notifications activées|Notifications turned on|Notificações ativadas|Notifiche attivate
+Vous serez prévenu ici des nouvelles demandes, messages et documents.|You will be alerted here about new requests, messages and documents.|Será avisado aqui de novos pedidos, mensagens e documentos.|Sarai avvisato qui di nuove richieste, messaggi e documenti.
+Activées : vous êtes prévenu même quand l’application est en arrière-plan|On: you are alerted even when the app is in the background|Ativadas: é avisado mesmo com a aplicação em segundo plano|Attive: sei avvisato anche quando l'app è in background
+Bloquées dans le navigateur : autorisez-les dans les réglages du site (cadenas à gauche de l’adresse)|Blocked in the browser: allow them in the site settings (padlock left of the address)|Bloqueadas no navegador: autorize-as nas definições do site (cadeado à esquerda do endereço)|Bloccate nel browser: consentile nelle impostazioni del sito (lucchetto a sinistra dell'indirizzo)
+Non disponibles ici. Sur iPhone, installez d’abord l’application sur l’écran d’accueil.|Not available here. On iPhone, first install the app on the home screen.|Indisponíveis aqui. No iPhone, instale primeiro a aplicação no ecrã principal.|Non disponibili qui. Su iPhone, installa prima l'app sulla schermata Home.
+Pour être prévenu même quand l’application est en arrière-plan|To be alerted even when the app is in the background|Para ser avisado mesmo com a aplicação em segundo plano|Per essere avvisato anche quando l'app è in background
+Notifications sur cet appareil|Notifications on this device|Notificações neste dispositivo|Notifiche su questo dispositivo
+Activées|On|Ativadas|Attive
+Recherche récente|Recent search|Pesquisa recente|Ricerca recente
+Récent|Recent|Recentes|Recenti
+Raccourcis|Shortcuts|Atalhos|Scorciatoie
+Actions|Actions|Ações|Azioni
+Voir tous les résultats pour « {q} »|See all results for “{q}”|Ver todos os resultados para “{q}”|Vedi tutti i risultati per “{q}”
+Aucun résultat|No result|Nenhum resultado|Nessun risultato
+Bien démarrer|Getting started|Primeiros passos|Per iniziare
+Planning et rendez-vous|Planning and appointments|Agenda e marcações|Planning e appuntamenti
+Factures et paiements|Invoices and payments|Faturas e pagamentos|Fatture e pagamenti
+Documents et photos|Documents and photos|Documentos e fotos|Documenti e foto
+CRM, KPI et export|CRM, KPIs and export|CRM, KPI e exportação|CRM, KPI ed esportazione
+Équipe et messagerie|Team and messaging|Equipa e mensagens|Team e messaggi
+Compte et sécurité|Account and security|Conta e segurança|Account e sicurezza
+Devis, factures et chantiers|Quotes, invoices and jobs|Orçamentos, faturas e obras|Preventivi, fatture e cantieri
+Valider mon compte entreprise|Get my company account approved|Validar a minha conta de empresa|Far convalidare il mio account aziendale
+L’équipe Artis & You vérifie chaque entreprise avant qu’elle soit visible des particuliers.|The Artis & You team checks each company before it becomes visible to clients.|A equipa Artis & You verifica cada empresa antes de ficar visível para os particulares.|Il team Artis & You verifica ogni azienda prima che sia visibile ai privati.
+Ouvrez Paramètres › Mon entreprise.|Open Settings › My company.|Abra Definições › A minha empresa.|Apri Impostazioni › La mia azienda.
+Remplissez tous les champs marqués d’une étoile : forme juridique, SIRET, adresse, téléphone, e-mail, métier et assurance décennale.|Fill in all fields marked with an asterisk: legal form, SIRET, address, phone, email, trade and ten-year insurance.|Preencha todos os campos marcados com asterisco: forma jurídica, SIRET, morada, telefone, e-mail, profissão e seguro decenal.|Compila tutti i campi con l'asterisco: forma giuridica, SIRET, indirizzo, telefono, e-mail, mestiere e assicurazione decennale.
+Enregistrez. Si l’équipe vous a demandé des compléments, votre dossier repart automatiquement en vérification.|Save. If the team asked for more information, your file is automatically sent back for checking.|Guarde. Se a equipa pediu informações adicionais, o seu processo volta automaticamente à verificação.|Salva. Se il team ha chiesto integrazioni, la tua pratica torna automaticamente in verifica.
+Vous recevez une notification dès que l’entreprise est validée.|You get a notification as soon as the company is approved.|Recebe uma notificação assim que a empresa for validada.|Ricevi una notifica appena l'azienda è convalidata.
+Ajouter mon logo et le recadrer|Add and crop my logo|Adicionar e recortar o meu logótipo|Aggiungere e ritagliare il mio logo
+Le logo apparaît sur vos devis, factures et votre fiche publique.|The logo appears on your quotes, invoices and public profile.|O logótipo aparece nos seus orçamentos, faturas e perfil público.|Il logo appare sui tuoi preventivi, fatture e sulla scheda pubblica.
+Paramètres › Mon entreprise › Ajouter le logo.|Settings › My company › Add the logo.|Definições › A minha empresa › Adicionar o logótipo.|Impostazioni › La mia azienda › Aggiungi il logo.
+Choisissez l’image, faites-la glisser et zoomez pour la cadrer.|Choose the image, drag it and zoom to frame it.|Escolha a imagem, arraste-a e amplie para a enquadrar.|Scegli l'immagine, trascinala e fai zoom per inquadrarla.
+Choisissez la couleur de fond, puis Valider.|Choose the background colour, then Confirm.|Escolha a cor de fundo e depois Validar.|Scegli il colore di sfondo, poi Conferma.
+Définir ma zone d’intervention|Set my service area|Definir a minha zona de intervenção|Definire la mia zona di intervento
+Les particuliers vous trouvent quand ils cherchent une ville dans votre rayon.|Clients find you when they search for a town within your radius.|Os particulares encontram-no quando procuram uma localidade dentro do seu raio.|I privati ti trovano quando cercano una città nel tuo raggio.
+Paramètres › Mon entreprise › Zone d’intervention.|Settings › My company › Service area.|Definições › A minha empresa › Zona de intervenção.|Impostazioni › La mia azienda › Zona di intervento.
+Tapez votre ville de départ et choisissez-la dans la liste proposée.|Type your starting town and pick it from the suggested list.|Escreva a localidade de partida e escolha-a na lista proposta.|Digita la città di partenza e sceglila dall'elenco proposto.
+Réglez le rayon (de 5 à 150 km) puis Enregistrer.|Set the radius (5 to 150 km), then Save.|Defina o raio (de 5 a 150 km) e depois Guardar.|Imposta il raggio (da 5 a 150 km), poi Salva.
+Installer l’application sur ordinateur ou téléphone|Install the app on a computer or phone|Instalar a aplicação no computador ou telemóvel|Installare l'app su computer o telefono
+Logiciel Windows et Mac avec mises à jour automatiques, ou application sur l’écran d’accueil du téléphone.|Windows and Mac software with automatic updates, or an app on the phone home screen.|Software Windows e Mac com atualizações automáticas, ou aplicação no ecrã principal do telemóvel.|Software Windows e Mac con aggiornamenti automatici, o app sulla schermata Home del telefono.
+Paramètres › Logiciel PC / Mac et application mobile.|Settings › PC / Mac software and mobile app.|Definições › Software PC / Mac e aplicação móvel.|Impostazioni › Software PC / Mac e app mobile.
+Sur ordinateur : téléchargez le .exe (Windows) ou le .dmg (Mac).|On a computer: download the .exe (Windows) or the .dmg (Mac).|No computador: descarregue o .exe (Windows) ou o .dmg (Mac).|Su computer: scarica il .exe (Windows) o il .dmg (Mac).
+Sur téléphone : suivez les étapes Android ou iPhone pour l’ajouter à l’écran d’accueil.|On a phone: follow the Android or iPhone steps to add it to the home screen.|No telemóvel: siga os passos Android ou iPhone para o adicionar ao ecrã principal.|Su telefono: segui i passaggi Android o iPhone per aggiungerla alla schermata Home.
+Créer un client|Create a client|Criar um cliente|Creare un cliente
+Particulier ou professionnel, avec adresse de facturation et adresse du chantier.|Private or business, with billing address and job address.|Particular ou profissional, com morada de faturação e morada da obra.|Privato o professionista, con indirizzo di fatturazione e del cantiere.
+Clients › bouton +.|Clients › + button.|Clientes › botão +.|Clienti › pulsante +.
+Choisissez Particulier ou Pro, renseignez le nom et les coordonnées.|Choose Private or Business, enter the name and contact details.|Escolha Particular ou Profissional, indique o nome e os contactos.|Scegli Privato o Pro, inserisci nome e recapiti.
+Tapez l’adresse : des propositions apparaissent, choisissez la bonne pour remplir code postal et ville.|Type the address: suggestions appear, pick the right one to fill in postcode and town.|Escreva a morada: aparecem sugestões, escolha a certa para preencher código postal e localidade.|Digita l'indirizzo: compaiono dei suggerimenti, scegli quello giusto per compilare CAP e città.
+Filtrer et trier mes clients|Filter and sort my clients|Filtrar e ordenar os meus clientes|Filtrare e ordinare i miei clienti
+Par type, statut, ville, pays, date, chiffre d’affaires ou montant dû.|By type, status, town, country, date, revenue or amount due.|Por tipo, estado, localidade, país, data, faturação ou montante em dívida.|Per tipo, stato, città, paese, data, fatturato o importo dovuto.
+Clients › bouton filtres à droite de la recherche.|Clients › filters button next to the search.|Clientes › botão de filtros ao lado da pesquisa.|Clienti › pulsante filtri accanto alla ricerca.
+Retirez un filtre en touchant son étiquette, ou « Tout effacer ».|Remove a filter by tapping its label, or “Clear all”.|Retire um filtro tocando na etiqueta, ou “Limpar tudo”.|Rimuovi un filtro toccandone l'etichetta, o “Cancella tutto”.
+Changez le tri avec la liste au-dessus du tableau.|Change the sorting with the list above the table.|Altere a ordenação com a lista por cima da tabela.|Cambia l'ordinamento con l'elenco sopra la tabella.
+Inviter un client sur Artis & You|Invite a client to Artis & You|Convidar um cliente para o Artis & You|Invitare un cliente su Artis & You
+Avec un compte, le client voit ses devis, signe en ligne et échange avec vous.|With an account, the client sees their quotes, signs online and chats with you.|Com uma conta, o cliente vê os orçamentos, assina online e fala consigo.|Con un account, il cliente vede i preventivi, firma online e ti scrive.
+Ouvrez la fiche du client › Chatbox.|Open the client card › Chatbox.|Abra a ficha do cliente › Chatbox.|Apri la scheda del cliente › Chatbox.
+Touchez « L’inviter par e-mail ».|Tap “Invite by email”.|Toque em “Convidar por e-mail”.|Tocca “Invitalo via e-mail”.
+Il crée son compte avec la même adresse e-mail : tout est relié automatiquement.|They create their account with the same email address: everything is linked automatically.|Ele cria a conta com o mesmo e-mail: tudo fica ligado automaticamente.|Crea il suo account con lo stesso indirizzo e-mail: tutto viene collegato automaticamente.
+Créer un rendez-vous|Create an appointment|Criar uma marcação|Creare un appuntamento
+RDV client ou personnel, sur site ou en visio.|Client or personal appointment, on site or by video.|Marcação de cliente ou pessoal, no local ou por vídeo.|Appuntamento cliente o personale, in loco o in video.
+Planning › bouton +, ou double-cliquez sur un créneau.|Planning › + button, or double-click a slot.|Agenda › botão +, ou duplo clique num horário.|Planning › pulsante +, o doppio clic su una fascia.
+Choisissez le client et le type : la durée se remplit selon vos réglages.|Choose the client and the type: the duration fills in from your settings.|Escolha o cliente e o tipo: a duração é preenchida segundo as suas definições.|Scegli il cliente e il tipo: la durata si compila secondo le tue impostazioni.
+Ajustez la date et les heures, l’équipe et l’adresse, puis Enregistrer.|Adjust the date and times, the team and the address, then Save.|Ajuste a data e as horas, a equipa e a morada, e depois Guardar.|Regola data e orari, team e indirizzo, poi Salva.
+Déplacer un rendez-vous par glisser-déposer|Move an appointment by drag and drop|Mover uma marcação arrastando-a|Spostare un appuntamento con il trascinamento
+Faites glisser le RDV vers un autre jour ou une autre heure.|Drag the appointment to another day or time.|Arraste a marcação para outro dia ou outra hora.|Trascina l'appuntamento su un altro giorno o orario.
+Dans la vue Semaine ou Jour, maintenez le rendez-vous et faites-le glisser (pas de 15 min).|In Week or Day view, hold the appointment and drag it (15-minute steps).|Na vista Semana ou Dia, mantenha a marcação premida e arraste-a (de 15 em 15 min).|Nella vista Settimana o Giorno, tieni premuto l'appuntamento e trascinalo (passi di 15 min).
+Relâchez : le client est prévenu s’il a un compte.|Release: the client is notified if they have an account.|Solte: o cliente é avisado se tiver conta.|Rilascia: il cliente viene avvisato se ha un account.
+Un bouton « Annuler » permet de revenir en arrière pendant quelques secondes.|An “Undo” button lets you go back for a few seconds.|Um botão “Anular” permite voltar atrás durante alguns segundos.|Un pulsante “Annulla” permette di tornare indietro per qualche secondo.
+En vue Mois, glissez le RDV sur un autre jour (même heure).|In Month view, drag the appointment to another day (same time).|Na vista Mês, arraste a marcação para outro dia (mesma hora).|Nella vista Mese, trascina l'appuntamento su un altro giorno (stessa ora).
+Durées par type de rendez-vous|Durations by appointment type|Durações por tipo de marcação|Durate per tipo di appuntamento
+Temps prévu pour un devis, un dépannage, un chantier…|Time planned for a quote visit, a repair, a job…|Tempo previsto para um orçamento, uma reparação, uma obra…|Tempo previsto per un preventivo, un intervento, un cantiere…
+Planning › Réglages › Durée par type de rendez-vous.|Planning › Settings › Duration by appointment type.|Agenda › Definições › Duração por tipo de marcação.|Planning › Impostazioni › Durata per tipo di appuntamento.
+Choisissez une durée pour chaque type.|Choose a duration for each type.|Escolha uma duração para cada tipo.|Scegli una durata per ogni tipo.
+Elle sert à pré-remplir l’heure de fin et à proposer les bons créneaux aux clients.|It prefills the end time and offers the right slots to clients.|Serve para preencher a hora de fim e propor os horários certos aos clientes.|Serve a precompilare l'ora di fine e a proporre le fasce giuste ai clienti.
+Travailler le samedi ou le dimanche|Work on Saturday or Sunday|Trabalhar ao sábado ou domingo|Lavorare il sabato o la domenica
+Les jours cochés apparaissent dans le planning et dans les créneaux proposés.|Ticked days appear in the planning and in the slots offered.|Os dias marcados aparecem na agenda e nos horários propostos.|I giorni selezionati compaiono nel planning e nelle fasce proposte.
+Planning › Réglages › Plages disponibles.|Planning › Settings › Available slots.|Agenda › Definições › Horários disponíveis.|Planning › Impostazioni › Fasce disponibili.
+Cochez Sam et/ou Dim, et réglez les heures.|Tick Sat and/or Sun, and set the hours.|Marque Sáb e/ou Dom e defina as horas.|Seleziona Sab e/o Dom e imposta gli orari.
+Pour toujours voir le week-end, activez « Afficher le week-end ».|To always see the weekend, turn on “Show the weekend”.|Para ver sempre o fim de semana, ative “Mostrar o fim de semana”.|Per vedere sempre il weekend, attiva “Mostra il weekend”.
+Valider les demandes de rendez-vous|Handle appointment requests|Validar os pedidos de marcação|Gestire le richieste di appuntamento
+Les demandes des particuliers arrivent « À valider ».|Client requests arrive as “To approve”.|Os pedidos dos particulares chegam “A validar”.|Le richieste dei privati arrivano “Da convalidare”.
+Une notification vous prévient, et la demande apparaît en pointillés dans le planning et sur l’accueil.|A notification alerts you, and the request appears dotted in the planning and on the home screen.|Uma notificação avisa-o e o pedido aparece tracejado na agenda e no ecrã inicial.|Una notifica ti avvisa e la richiesta appare tratteggiata nel planning e nella home.
+Ouvrez-la : Accepter, proposer un autre créneau ou Refuser.|Open it: Accept, suggest another slot or Decline.|Abra-o: Aceitar, propor outro horário ou Recusar.|Aprila: Accetta, proponi un'altra fascia o Rifiuta.
+Pour tout accepter automatiquement, désactivez « Validation manuelle » dans les réglages du planning.|To accept everything automatically, turn off “Manual approval” in the planning settings.|Para aceitar tudo automaticamente, desative “Validação manual” nas definições da agenda.|Per accettare tutto automaticamente, disattiva “Convalida manuale” nelle impostazioni del planning.
+Faire un devis|Make a quote|Fazer um orçamento|Fare un preventivo
+Lignes, sections, TVA par ligne et bibliothèque de produits.|Lines, sections, VAT per line and product library.|Linhas, secções, IVA por linha e biblioteca de produtos.|Righe, sezioni, IVA per riga e libreria di prodotti.
+Documents › Devis › bouton +.|Documents › Quotes › + button.|Documentos › Orçamentos › botão +.|Documenti › Preventivi › pulsante +.
+Choisissez le client et l’objet.|Choose the client and the subject.|Escolha o cliente e o assunto.|Scegli il cliente e l'oggetto.
+Aperçu PDF puis « Envoyer au client » : le numéro est attribué à l’envoi.|PDF preview, then “Send to client”: the number is assigned when sending.|Pré-visualização PDF e depois “Enviar ao cliente”: o número é atribuído no envio.|Anteprima PDF, poi “Invia al cliente”: il numero viene assegnato all'invio.
+Faire signer un devis|Get a quote signed|Fazer assinar um orçamento|Far firmare un preventivo
+Le client signe depuis son espace, ou vous marquez le devis comme signé.|The client signs from their space, or you mark the quote as signed.|O cliente assina no seu espaço, ou marca o orçamento como assinado.|Il cliente firma dal suo spazio, oppure segni il preventivo come firmato.
+Le client reçoit le devis dans son espace et peut l’accepter en ligne.|The client receives the quote in their space and can accept it online.|O cliente recebe o orçamento no seu espaço e pode aceitá-lo online.|Il cliente riceve il preventivo nel suo spazio e può accettarlo online.
+S’il a signé sur papier : ouvrez le devis › « Marquer comme signé ».|If they signed on paper: open the quote › “Mark as signed”.|Se assinou em papel: abra o orçamento › “Marcar como assinado”.|Se ha firmato su carta: apri il preventivo › “Segna come firmato”.
+Le statut projet se met à jour tout seul.|The project status updates by itself.|O estado do projeto atualiza-se sozinho.|Lo stato del progetto si aggiorna da solo.
+Transformer un devis en facture|Turn a quote into an invoice|Transformar um orçamento em fatura|Trasformare un preventivo in fattura
+Avec ou sans facture d’acompte.|With or without a deposit invoice.|Com ou sem fatura de adiantamento.|Con o senza fattura d'acconto.
+Ouvrez le devis signé.|Open the signed quote.|Abra o orçamento assinado.|Apri il preventivo firmato.
+« Facture d’acompte » pour demander un pourcentage, ou « Transformer en facture ».|“Deposit invoice” to request a percentage, or “Turn into invoice”.|“Fatura de adiantamento” para pedir uma percentagem, ou “Transformar em fatura”.|“Fattura d'acconto” per chiedere una percentuale, o “Trasforma in fattura”.
+Les acomptes déjà facturés sont déduits automatiquement.|Deposits already invoiced are deducted automatically.|Os adiantamentos já faturados são deduzidos automaticamente.|Gli acconti già fatturati vengono dedotti automaticamente.
+Comment sont numérotées les factures ?|How are invoices numbered?|Como são numeradas as faturas?|Come sono numerate le fatture?
+Numérotation continue, sans trou, par année, attribuée à l’envoi.|Continuous numbering, without gaps, per year, assigned when sending.|Numeração contínua, sem falhas, por ano, atribuída no envio.|Numerazione continua, senza buchi, per anno, assegnata all'invio.
+Le numéro (ex. FA-2026-0001) est attribué quand vous envoyez la facture.|The number (e.g. FA-2026-0001) is assigned when you send the invoice.|O número (ex.: FA-2026-0001) é atribuído quando envia a fatura.|Il numero (es. FA-2026-0001) viene assegnato quando invii la fattura.
+La facture prend la date du jour de son émission.|The invoice takes the date of the day it is issued.|A fatura fica com a data do dia da sua emissão.|La fattura prende la data del giorno di emissione.
+Un préfixe déjà utilisé dans l’année est verrouillé, pour garder une série continue (obligatoire avec la facture électronique).|A prefix already used during the year is locked, to keep a continuous series (required with e-invoicing).|Um prefixo já usado no ano fica bloqueado, para manter uma série contínua (obrigatório com a fatura eletrónica).|Un prefisso già usato nell'anno è bloccato, per mantenere una serie continua (obbligatorio con la fattura elettronica).
+Corriger une facture envoyée|Correct a sent invoice|Corrigir uma fatura enviada|Correggere una fattura inviata
+Une facture émise ne se modifie plus : on fait un avoir.|An issued invoice can no longer be changed: you issue a credit note.|Uma fatura emitida já não se altera: faz-se uma nota de crédito.|Una fattura emessa non si modifica più: si fa una nota di credito.
+Ouvrez la facture › « Créer un avoir ».|Open the invoice › “Create a credit note”.|Abra a fatura › “Criar uma nota de crédito”.|Apri la fattura › “Crea una nota di credito”.
+L’avoir annule tout ou partie de la facture.|The credit note cancels all or part of the invoice.|A nota de crédito anula toda ou parte da fatura.|La nota di credito annulla tutta o parte della fattura.
+Refaites ensuite une nouvelle facture correcte.|Then issue a new, correct invoice.|Depois faça uma nova fatura correta.|Poi emetti una nuova fattura corretta.
+Paiement total ou partiel, par virement, chèque, espèces ou carte.|Full or partial payment, by transfer, cheque, cash or card.|Pagamento total ou parcial, por transferência, cheque, numerário ou cartão.|Pagamento totale o parziale, con bonifico, assegno, contanti o carta.
+Ouvrez la facture › « Enregistrer un paiement ».|Open the invoice › “Record a payment”.|Abra a fatura › “Registar um pagamento”.|Apri la fattura › “Registra un pagamento”.
+Indiquez le montant, la date et le moyen de paiement.|Enter the amount, the date and the payment method.|Indique o montante, a data e o meio de pagamento.|Indica importo, data e metodo di pagamento.
+Le statut passe à Partielle ou Payée, et le reste dû se met à jour partout.|The status changes to Partial or Paid, and the balance due updates everywhere.|O estado passa a Parcial ou Paga, e o montante em dívida atualiza-se em todo o lado.|Lo stato passa a Parziale o Pagata, e il residuo si aggiorna ovunque.
+Trouver une facture|Find an invoice|Encontrar uma fatura|Trovare una fattura
+Recherche par numéro, client, objet ou montant, et filtres.|Search by number, client, subject or amount, and filters.|Pesquisa por número, cliente, assunto ou montante, e filtros.|Ricerca per numero, cliente, oggetto o importo, e filtri.
+Documents › Factures.|Documents › Invoices.|Documentos › Faturas.|Documenti › Fatture.
+Tapez dans la recherche : « fa 2026 3 », un nom de client ou un montant.|Type in the search: “fa 2026 3”, a client name or an amount.|Escreva na pesquisa: “fa 2026 3”, um nome de cliente ou um montante.|Digita nella ricerca: “fa 2026 3”, il nome di un cliente o un importo.
+Filtres : statut, type, période, montant min/max, reste à payer. Tri par date, montant, client ou échéance.|Filters: status, type, period, min/max amount, balance due. Sort by date, amount, client or due date.|Filtros: estado, tipo, período, montante mín./máx., em dívida. Ordenação por data, montante, cliente ou vencimento.|Filtri: stato, tipo, periodo, importo min/max, residuo. Ordinamento per data, importo, cliente o scadenza.
+Choisir le modèle de PDF|Choose the PDF template|Escolher o modelo de PDF|Scegliere il modello PDF
+Classique, Moderne ou Épuré, avec votre couleur et votre logo.|Classic, Modern or Minimal, with your colour and logo.|Clássico, Moderno ou Minimalista, com a sua cor e o seu logótipo.|Classico, Moderno o Essenziale, con il tuo colore e il tuo logo.
+Paramètres › Devis et factures › Modèle du PDF.|Settings › Quotes and invoices › PDF template.|Definições › Orçamentos e faturas › Modelo do PDF.|Impostazioni › Preventivi e fatture › Modello PDF.
+Ajoutez un pied de page ou une signature si besoin, puis Enregistrer.|Add a footer or a signature if needed, then Save.|Adicione um rodapé ou uma assinatura se necessário e depois Guardar.|Aggiungi un piè di pagina o una firma se serve, poi Salva.
+Mentions obligatoires sur mes factures|Mandatory information on my invoices|Menções obrigatórias nas minhas faturas|Diciture obbligatorie sulle mie fatture
+Artis & You les ajoute automatiquement à partir de vos réglages.|Artis & You adds them automatically from your settings.|O Artis & You adiciona-as automaticamente a partir das suas definições.|Artis & You le aggiunge automaticamente dalle tue impostazioni.
+Identité complète (SIRET, forme juridique, capital, RM, TVA) : Mon entreprise.|Full identity (SIRET, legal form, capital, RM, VAT): My company.|Identidade completa (SIRET, forma jurídica, capital, RM, IVA): A minha empresa.|Identità completa (SIRET, forma giuridica, capitale, RM, IVA): La mia azienda.
+Conditions de paiement, pénalités de retard, escompte : Devis et factures.|Payment terms, late penalties, discount: Quotes and invoices.|Condições de pagamento, penalidades de atraso, desconto: Orçamentos e faturas.|Condizioni di pagamento, penali di ritardo, sconto: Preventivi e fatture.
+Assurance décennale et médiateur de la consommation (obligatoire pour les particuliers) : à renseigner une fois.|Ten-year insurance and consumer mediator (mandatory for private clients): fill in once.|Seguro decenal e mediador do consumo (obrigatório para particulares): a preencher uma vez.|Assicurazione decennale e mediatore del consumo (obbligatorio per i privati): da compilare una volta.
+Relancer une facture impayée|Chase an unpaid invoice|Lembrar uma fatura por pagar|Sollecitare una fattura non pagata
+Un message prêt à l’emploi, modifiable, par la messagerie ou par e-mail.|A ready-to-use, editable message, by messaging or email.|Uma mensagem pronta a usar, editável, pelas mensagens ou por e-mail.|Un messaggio pronto all'uso, modificabile, tramite messaggi o e-mail.
+Ouvrez la facture › « Relancer le client », ou allez dans Relances.|Open the invoice › “Remind the client”, or go to Reminders.|Abra a fatura › “Lembrar o cliente”, ou vá a Lembretes.|Apri la fattura › “Sollecita il cliente”, o vai in Solleciti.
+Relisez et modifiez le message si besoin.|Read and edit the message if needed.|Releia e altere a mensagem se necessário.|Rileggi e modifica il messaggio se serve.
+Envoyez par la messagerie (si le client a un compte) ou par e-mail. La relance est gardée dans l’historique.|Send via messaging (if the client has an account) or by email. The reminder is kept in the history.|Envie pelas mensagens (se o cliente tiver conta) ou por e-mail. O lembrete fica no histórico.|Invia tramite messaggi (se il cliente ha un account) o per e-mail. Il sollecito resta nello storico.
+Personnaliser mes relances|Customise my reminders|Personalizar os meus lembretes|Personalizzare i miei solleciti
+Étapes, délais, ton et texte de chaque relance.|Steps, delays, tone and text of each reminder.|Etapas, prazos, tom e texto de cada lembrete.|Fasi, tempi, tono e testo di ogni sollecito.
+Relances › Réglages.|Reminders › Settings.|Lembretes › Definições.|Solleciti › Impostazioni.
+Activez ou désactivez chaque étape, modifiez le délai (ex. J+1 après l’échéance) et le ton.|Turn each step on or off, change the delay (e.g. D+1 after the due date) and the tone.|Ative ou desative cada etapa, altere o prazo (ex.: D+1 após o vencimento) e o tom.|Attiva o disattiva ogni fase, cambia il tempo (es. G+1 dopo la scadenza) e il tono.
+Modifiez le texte et insérez des variables comme {client}, {numero}, {reste}.|Edit the text and insert variables such as {client}, {numero}, {reste}.|Altere o texto e insira variáveis como {client}, {numero}, {reste}.|Modifica il testo e inserisci variabili come {client}, {numero}, {reste}.
+Activez « Envoi automatique » pour que les relances partent seules dans la messagerie.|Turn on “Automatic sending” so reminders go out by themselves via messaging.|Ative “Envio automático” para que os lembretes saiam sozinhos pelas mensagens.|Attiva “Invio automatico” perché i solleciti partano da soli tramite messaggi.
+Arrêter les relances pour un client|Stop reminders for a client|Parar os lembretes para um cliente|Fermare i solleciti per un cliente
+Suspendez les relances d’un document (litige, accord de paiement…).|Pause reminders for a document (dispute, payment arrangement…).|Suspenda os lembretes de um documento (litígio, acordo de pagamento…).|Sospendi i solleciti di un documento (contestazione, accordo di pagamento…).
+Relances › À faire ou Programmées › bouton pause.|Reminders › To do or Scheduled › pause button.|Lembretes › A fazer ou Programados › botão pausa.|Solleciti › Da fare o Programmati › pulsante pausa.
+Pour reprendre : Programmées › Relances suspendues › Réactiver.|To resume: Scheduled › Paused reminders › Resume.|Para retomar: Programados › Lembretes suspensos › Reativar.|Per riprendere: Programmati › Solleciti sospesi › Riattiva.
+Mon coffre-fort et les rappels d’expiration|My safe and expiry reminders|O meu cofre e os lembretes de validade|La mia cassaforte e i promemoria di scadenza
+Kbis, URSSAF, décennale… avec un rappel avant la fin de validité.|Kbis, URSSAF, ten-year insurance… with a reminder before expiry.|Kbis, URSSAF, seguro decenal… com lembrete antes do fim da validade.|Kbis, URSSAF, decennale… con un promemoria prima della scadenza.
+Documents › Mon coffre-fort › bouton +.|Documents › My safe › + button.|Documentos › O meu cofre › botão +.|Documenti › La mia cassaforte › pulsante +.
+Indiquez la date de fin de validité.|Enter the expiry date.|Indique a data de fim de validade.|Indica la data di scadenza.
+Dans le dossier du document, réglez le rappel (7 à 90 jours avant) et le partage avec vos clients.|In the document folder, set the reminder (7 to 90 days before) and sharing with your clients.|Na pasta do documento, defina o lembrete (7 a 90 dias antes) e a partilha com os clientes.|Nella cartella del documento, imposta il promemoria (da 7 a 90 giorni prima) e la condivisione con i clienti.
+Prendre des photos de chantier|Take job site photos|Tirar fotos da obra|Scattare foto del cantiere
+Depuis la chatbox : elles sont aussi rangées dans Documents › Photos.|From the chatbox: they are also saved in Documents › Photos.|A partir da chatbox: também ficam guardadas em Documentos › Fotos.|Dalla chatbox: vengono salvate anche in Documenti › Foto.
+Ouvrez la chatbox du client ou de l’équipe.|Open the client's or the team's chatbox.|Abra a chatbox do cliente ou da equipa.|Apri la chatbox del cliente o del team.
+Touchez l’appareil photo : sur téléphone l’appareil s’ouvre, sur ordinateur la webcam.|Tap the camera: the camera opens on a phone, the webcam on a computer.|Toque na câmara: no telemóvel abre a câmara, no computador a webcam.|Tocca la fotocamera: sul telefono si apre la fotocamera, sul computer la webcam.
+Envoyez : la photo apparaît dans la conversation et dans les photos du client.|Send: the photo appears in the conversation and in the client's photos.|Envie: a foto aparece na conversa e nas fotos do cliente.|Invia: la foto appare nella conversazione e nelle foto del cliente.
+Suivre mes projets|Follow my projects|Acompanhar os meus projetos|Seguire i miei progetti
+Chaque projet affiche son étape et la prochaine action à faire.|Each project shows its step and the next action to take.|Cada projeto mostra a sua etapa e a próxima ação a fazer.|Ogni progetto mostra la sua fase e la prossima azione da fare.
+CRM › Statut projet.|CRM › Project status.|CRM › Estado do projeto.|CRM › Stato progetto.
+Filtrez par étape : devis, à planifier, chantier, à facturer, à encaisser.|Filter by step: quote, to schedule, job, to invoice, to collect.|Filtre por etapa: orçamento, a planear, obra, a faturar, por receber.|Filtra per fase: preventivo, da pianificare, cantiere, da fatturare, da incassare.
+Touchez le bouton de la carte pour faire l’action suivante.|Tap the card button to take the next action.|Toque no botão do cartão para fazer a ação seguinte.|Tocca il pulsante della scheda per fare l'azione successiva.
+Le « Tableau des étapes » permet de cocher une étape à la main.|The “Step table” lets you tick a step by hand.|A “Tabela de etapas” permite marcar uma etapa à mão.|La “Tabella delle fasi” permette di spuntare una fase a mano.
+Lire mes KPI|Read my KPIs|Ler os meus KPI|Leggere i miei KPI
+Chiffre d’affaires, encaissé, reste à encaisser, devis signés…|Revenue, collected, to collect, signed quotes…|Faturação, recebido, por receber, orçamentos assinados…|Fatturato, incassato, da incassare, preventivi firmati…
+CRM › KPI.|CRM › KPIs.|CRM › KPI.|CRM › KPI.
+Choisissez la période : 1, 3, 6, 12 mois, depuis le début ou des dates.|Choose the period: 1, 3, 6, 12 months, since the start or dates.|Escolha o período: 1, 3, 6, 12 meses, desde o início ou datas.|Scegli il periodo: 1, 3, 6, 12 mesi, dall'inizio o date.
+Recherchez un ou plusieurs clients pour n’analyser qu’eux.|Search one or more clients to analyse only them.|Pesquise um ou vários clientes para analisar só esses.|Cerca uno o più clienti per analizzare solo loro.
+Le tableau « Statut général » montre où en est chaque client.|The “Overall status” table shows where each client stands.|A tabela “Estado geral” mostra a situação de cada cliente.|La tabella “Stato generale” mostra a che punto è ogni cliente.
+Envoyer mes chiffres au comptable|Send my figures to the accountant|Enviar os meus números ao contabilista|Inviare i miei dati al commercialista
+Export Excel (ventes, encaissements, achats, TVA) et FEC.|Excel export (sales, receipts, purchases, VAT) and FEC.|Exportação Excel (vendas, recebimentos, compras, IVA) e FEC.|Esportazione Excel (vendite, incassi, acquisti, IVA) e FEC.
+CRM › Export comptable.|CRM › Accounting export.|CRM › Exportação contabilística.|CRM › Esportazione contabile.
+Choisissez le mois, le trimestre ou l’année.|Choose the month, quarter or year.|Escolha o mês, o trimestre ou o ano.|Scegli il mese, il trimestre o l'anno.
+Téléchargez ou envoyez à votre comptable.|Download or send to your accountant.|Descarregue ou envie ao seu contabilista.|Scarica o invia al tuo commercialista.
+Ajouter un membre à mon équipe|Add a member to my team|Adicionar um membro à minha equipa|Aggiungere un membro al mio team
+Ouvrier ou chef d’équipe, avec des droits adaptés.|Worker or team leader, with suitable rights.|Operário ou chefe de equipa, com direitos adequados.|Operaio o caposquadra, con i diritti adatti.
+Paramètres › Mon équipe › Inviter un membre.|Settings › My team › Invite a member.|Definições › A minha equipa › Convidar um membro.|Impostazioni › Il mio team › Invita un membro.
+Un code est généré : la personne l’utilise à son inscription.|A code is generated: the person uses it when signing up.|É gerado um código: a pessoa usa-o na inscrição.|Viene generato un codice: la persona lo usa all'iscrizione.
+Réglez ensuite son rôle et ses droits.|Then set their role and rights.|Depois defina o papel e os direitos.|Poi imposta il ruolo e i diritti.
+Parler avec mes clients et mon équipe|Talk with my clients and my team|Falar com os meus clientes e a minha equipa|Parlare con i miei clienti e il mio team
+Messagerie avec photos, fichiers et « chantier terminé ».|Messaging with photos, files and “job finished”.|Mensagens com fotos, ficheiros e “obra terminada”.|Messaggi con foto, file e “cantiere terminato”.
+Messages : conversations clients, équipes et autres pros.|Messages: client, team and other pro conversations.|Mensagens: conversas com clientes, equipas e outros profissionais.|Messaggi: conversazioni con clienti, team e altri professionisti.
+Le + permet de joindre des photos, un fichier ou de marquer un chantier terminé.|The + lets you attach photos, a file or mark a job as finished.|O + permite anexar fotos, um ficheiro ou marcar uma obra como terminada.|Il + permette di allegare foto, un file o segnare un cantiere come terminato.
+Un code à 6 chiffres en plus du mot de passe.|A 6-digit code on top of your password.|Um código de 6 dígitos além da palavra-passe.|Un codice a 6 cifre oltre alla password.
+Paramètres › Mon profil › Connexion renforcée.|Settings › My profile › Stronger sign-in.|Definições › O meu perfil › Início de sessão reforçado.|Impostazioni › Il mio profilo › Accesso rafforzato.
+Activez « Double authentification ».|Turn on “Two-factor authentication”.|Ative “Dupla autenticação”.|Attiva “Autenticazione a due fattori”.
+Ajoutez la clé dans une application (Google Authenticator, Microsoft Authenticator…), puis saisissez le code affiché.|Add the key in an app (Google Authenticator, Microsoft Authenticator…), then enter the code shown.|Adicione a chave numa aplicação (Google Authenticator, Microsoft Authenticator…) e introduza o código apresentado.|Aggiungi la chiave in un'app (Google Authenticator, Microsoft Authenticator…), poi inserisci il codice mostrato.
+Déverrouiller avec Face ID ou l’empreinte|Unlock with Face ID or fingerprint|Desbloquear com Face ID ou impressão digital|Sbloccare con Face ID o impronta
+L’application vous le demande à l’ouverture sur cet appareil.|The app asks for it when it opens on this device.|A aplicação pede-o ao abrir neste dispositivo.|L'app lo chiede all'apertura su questo dispositivo.
+Activez « Face ID / empreinte » et validez avec votre visage, votre doigt ou Windows Hello.|Turn on “Face ID / fingerprint” and confirm with your face, finger or Windows Hello.|Ative “Face ID / impressão digital” e valide com o rosto, o dedo ou Windows Hello.|Attiva “Face ID / impronta” e conferma con il viso, il dito o Windows Hello.
+En cas de souci, « Utiliser mon mot de passe » sur l’écran de verrouillage.|If there's a problem, “Use my password” on the lock screen.|Em caso de problema, “Usar a minha palavra-passe” no ecrã de bloqueio.|In caso di problemi, “Usa la mia password” nella schermata di blocco.
+Sauvegarder mes données|Back up my data|Fazer cópia dos meus dados|Salvare i miei dati
+Export complet en .zip à tout moment.|Full export as .zip at any time.|Exportação completa em .zip a qualquer momento.|Esportazione completa in .zip in qualsiasi momento.
+Paramètres › Données et confidentialité.|Settings › Data and privacy.|Definições › Dados e privacidade.|Impostazioni › Dati e privacy.
+« Exporter toutes mes données (zip) ».|“Export all my data (zip)”.|“Exportar todos os meus dados (zip)”.|“Esporta tutti i miei dati (zip)”.
+Par métier, nom ou ville des travaux.|By trade, name or job location.|Por profissão, nome ou localidade da obra.|Per mestiere, nome o città dei lavori.
+Accueil › recherche, ou Rechercher un artisan.|Home › search, or Find a tradesperson.|Início › pesquisa, ou Procurar um profissional.|Home › ricerca, o Cerca un artigiano.
+Filtres : choisissez la ville des travaux dans la liste pour voir les artisans qui interviennent chez vous.|Filters: choose the job location from the list to see the tradespeople who work in your area.|Filtros: escolha a localidade da obra na lista para ver os profissionais que trabalham na sua zona.|Filtri: scegli la città dei lavori dall'elenco per vedere gli artigiani che intervengono da te.
+Ouvrez la fiche pour voir les avis et les disponibilités.|Open the profile to see reviews and availability.|Abra o perfil para ver as avaliações e as disponibilidades.|Apri la scheda per vedere recensioni e disponibilità.
+Demander un rendez-vous|Request an appointment|Pedir uma marcação|Richiedere un appuntamento
+Décrivez votre besoin et choisissez un créneau libre.|Describe your need and choose a free slot.|Descreva a sua necessidade e escolha um horário livre.|Descrivi la tua esigenza e scegli una fascia libera.
+Fiche de l’artisan › « Demander un RDV ».|Tradesperson profile › “Request an appointment”.|Perfil do profissional › “Pedir uma marcação”.|Scheda dell'artigiano › “Richiedi un appuntamento”.
+Choisissez le type, décrivez le problème, ajoutez des photos.|Choose the type, describe the problem, add photos.|Escolha o tipo, descreva o problema, adicione fotos.|Scegli il tipo, descrivi il problema, aggiungi foto.
+Choisissez un créneau et envoyez : vous recevez une confirmation d’envoi, puis la réponse de l’artisan.|Choose a slot and send: you get a sending confirmation, then the tradesperson's answer.|Escolha um horário e envie: recebe uma confirmação de envio e depois a resposta do profissional.|Scegli una fascia e invia: ricevi una conferma d'invio, poi la risposta dell'artigiano.
+Déplacer ou annuler un rendez-vous|Move or cancel an appointment|Mover ou cancelar uma marcação|Spostare o annullare un appuntamento
+Depuis Mes rendez-vous.|From My appointments.|A partir de As minhas marcações.|Da I miei appuntamenti.
+Ouvrez le rendez-vous.|Open the appointment.|Abra a marcação.|Apri l'appuntamento.
+« Déplacer » pour proposer un autre créneau, ou « Annuler ».|“Move” to suggest another slot, or “Cancel”.|“Mover” para propor outro horário, ou “Cancelar”.|“Sposta” per proporre un'altra fascia, o “Annulla”.
+L’artisan est prévenu.|The tradesperson is notified.|O profissional é avisado.|L'artigiano viene avvisato.
+Signer un devis|Sign a quote|Assinar um orçamento|Firmare un preventivo
+Lisez, puis acceptez en ligne.|Read it, then accept online.|Leia e depois aceite online.|Leggilo, poi accetta online.
+Documents › Devis.|Documents › Quotes.|Documentos › Orçamentos.|Documenti › Preventivi.
+Ouvrez le devis, vérifiez le détail et le PDF.|Open the quote, check the details and the PDF.|Abra o orçamento, verifique o detalhe e o PDF.|Apri il preventivo, controlla il dettaglio e il PDF.
+« Accepter le devis » : l’artisan est prévenu tout de suite.|“Accept the quote”: the tradesperson is notified right away.|“Aceitar o orçamento”: o profissional é avisado de imediato.|“Accetta il preventivo”: l'artigiano viene avvisato subito.
+Suivre mon chantier|Follow my job|Acompanhar a minha obra|Seguire il mio cantiere
+Étapes, photos et documents du chantier.|Steps, photos and documents of the job.|Etapas, fotos e documentos da obra.|Fasi, foto e documenti del cantiere.
+Documents › Suivi de chantier.|Documents › Job follow-up.|Documentos › Acompanhamento da obra.|Documenti › Avanzamento cantiere.
+Vous voyez l’étape en cours et les photos partagées par l’artisan.|You see the current step and the photos shared by the tradesperson.|Vê a etapa em curso e as fotos partilhadas pelo profissional.|Vedi la fase in corso e le foto condivise dall'artigiano.
+Sécuriser mon compte|Secure my account|Proteger a minha conta|Proteggere il mio account
+Double authentification et Face ID.|Two-factor authentication and Face ID.|Dupla autenticação e Face ID.|Autenticazione a due fattori e Face ID.
+Compte › Mon profil › Connexion renforcée.|Account › My profile › Stronger sign-in.|Conta › O meu perfil › Início de sessão reforçado.|Account › Il mio profilo › Accesso rafforzato.
+Activez la double authentification et/ou Face ID / empreinte.|Turn on two-factor authentication and/or Face ID / fingerprint.|Ative a dupla autenticação e/ou Face ID / impressão digital.|Attiva l'autenticazione a due fattori e/o Face ID / impronta.
+Rappel avant échéance|Reminder before the due date|Lembrete antes do vencimento|Promemoria prima della scadenza
+Première relance|First reminder|Primeiro lembrete|Primo sollecito
+Bonjour {client},\n\nSauf erreur de notre part, la facture {numero} de {montant}, échue le {echeance}, reste à régler ({reste} restant).\nSi le paiement est déjà parti, merci de ne pas tenir compte de ce message.\n\nCordialement,\n{entreprise}|Hello {client},\n\nUnless we are mistaken, invoice {numero} for {montant}, due on {echeance}, is still unpaid ({reste} remaining).\nIf the payment has already been made, please disregard this message.\n\nKind regards,\n{entreprise}|Olá {client},\n\nSalvo erro da nossa parte, a fatura {numero} de {montant}, vencida a {echeance}, continua por pagar ({reste} em falta).\nSe o pagamento já foi feito, ignore esta mensagem.\n\nCom os melhores cumprimentos,\n{entreprise}|Buongiorno {client},\n\nsalvo errore, la fattura {numero} di {montant}, scaduta il {echeance}, risulta ancora da saldare ({reste} restanti).\nSe il pagamento è già partito, non tenga conto di questo messaggio.\n\nCordiali saluti,\n{entreprise}
+Deuxième relance|Second reminder|Segundo lembrete|Secondo sollecito
+Bonjour {client},\n\nMalgré notre précédent message, la facture {numero} ({reste} restant) n’est toujours pas réglée alors qu’elle était due le {echeance}.\nMerci de procéder au paiement sous 8 jours ou de nous contacter si vous rencontrez une difficulté.\n\nCordialement,\n{entreprise}|Hello {client},\n\nDespite our previous message, invoice {numero} ({reste} remaining) is still unpaid although it was due on {echeance}.\nPlease make the payment within 8 days or contact us if you are having any difficulty.\n\nKind regards,\n{entreprise}|Olá {client},\n\nApesar da nossa mensagem anterior, a fatura {numero} ({reste} em falta) continua por pagar, quando vencia a {echeance}.\nPor favor efetue o pagamento no prazo de 8 dias ou contacte-nos se tiver alguma dificuldade.\n\nCom os melhores cumprimentos,\n{entreprise}|Buongiorno {client},\n\nnonostante il nostro precedente messaggio, la fattura {numero} ({reste} restanti) non è ancora saldata, pur essendo scaduta il {echeance}.\nLa preghiamo di procedere al pagamento entro 8 giorni o di contattarci in caso di difficoltà.\n\nCordiali saluti,\n{entreprise}
+Dernière relance avant mise en demeure|Last reminder before formal notice|Último lembrete antes de notificação formal|Ultimo sollecito prima della messa in mora
+Suivi du devis|Quote follow-up|Acompanhamento do orçamento|Follow-up del preventivo
+Dernier rappel du devis|Last reminder about the quote|Último lembrete do orçamento|Ultimo promemoria del preventivo
+Bonjour {client},\n\nNotre devis {numero} est valable jusqu’au {validite}. Souhaitez-vous que nous planifiions les travaux ?\n\nCordialement,\n{entreprise}|Hello {client},\n\nOur quote {numero} is valid until {validite}. Would you like us to schedule the work?\n\nKind regards,\n{entreprise}|Olá {client},\n\nO nosso orçamento {numero} é válido até {validite}. Quer que planeemos os trabalhos?\n\nCom os melhores cumprimentos,\n{entreprise}|Buongiorno {client},\n\nil nostro preventivo {numero} è valido fino al {validite}. Desidera che pianifichiamo i lavori?\n\nCordiali saluti,\n{entreprise}
+1 mois|1 month|1 mês|1 mese
+3 mois|3 months|3 meses|3 mesi
+À planifier|To schedule|A planear|Da pianificare
+À encaisser|To collect|Por receber|Da incassare
+En retard de paiement|Late payment|Pagamento em atraso|Pagamento in ritardo
+Paiement en attente|Payment pending|Pagamento pendente|Pagamento in attesa
+TVA déductible|Deductible VAT|IVA dedutível|IVA detraibile
+pièce|piece|peça|pezzo
+Épuré|Minimal|Minimalista|Essenziale
+Logo et titre en haut, tableau coloré|Logo and title at the top, coloured table|Logótipo e título em cima, tabela colorida|Logo e titolo in alto, tabella colorata
+Bandeau de couleur en en-tête|Coloured header band|Faixa de cor no cabeçalho|Banda colorata nell'intestazione
+Sobre, filets fins, sans aplat|Plain, thin lines, no colour fills|Sóbrio, linhas finas, sem preenchimentos|Sobrio, linee sottili, senza campiture
+Un particulier demande un rendez-vous|A client requests an appointment|Um particular pede uma marcação|Un privato richiede un appuntamento
+La veille du rendez-vous|The day before the appointment|Na véspera da marcação|Il giorno prima dell'appuntamento
+Google Agenda|Google Calendar|Google Agenda|Google Calendar
+Publié|Published|Publicado|Pubblicato
+En relecture|Under review|Em revisão|In revisione
+SIRET (14 chiffres)|SIRET (14 digits)|SIRET (14 algarismos)|SIRET (14 cifre)
+Au moins un métier|At least one trade|Pelo menos uma profissão|Almeno un mestiere
+Capital social|Share capital|Capital social|Capitale sociale
+Assureur décennale|Ten-year insurer|Seguradora decenal|Assicuratore decennale
+N° de contrat décennale|Ten-year insurance policy no.|N.º de apólice decenal|N° di polizza decennale
+Entrepreneur individuel (EI)|Sole trader (EI)|Empresário individual (EI)|Imprenditore individuale (EI)
+Nouvelle relance|New reminder|Novo lembrete|Nuovo sollecito
+Planning de la semaine|This week's planning|Agenda da semana|Planning della settimana
+Tous les devis|All quotes|Todos os orçamentos|Tutti i preventivi
+Toutes les factures|All invoices|Todas as faturas|Tutte le fatture
+Photos des chantiers|Job site photos|Fotos das obras|Foto dei cantieri
+KPI de l’entreprise|Company KPIs|KPI da empresa|KPI dell'azienda
+Réglages du planning|Planning settings|Definições da agenda|Impostazioni del planning
+Bonjour {client},\n\nPetit rappel : la facture {numero} de {montant} arrive à échéance le {echeance}.\nVous pouvez la régler par virement (IBAN {iban}, référence {numero}).\n\nMerci et bonne journée,\n{entreprise}|Hello {client},\n\nA quick reminder: invoice {numero} for {montant} is due on {echeance}.\nYou can pay it by bank transfer (IBAN {iban}, reference {numero}).\n\nThank you and have a good day,\n{entreprise}|Olá {client},\n\nUm pequeno lembrete: a fatura {numero} de {montant} vence a {echeance}.\nPode pagá-la por transferência (IBAN {iban}, referência {numero}).\n\nObrigado e bom dia,\n{entreprise}|Buongiorno {client},\n\nun piccolo promemoria: la fattura {numero} di {montant} scade il {echeance}.\nPuò saldarla con bonifico (IBAN {iban}, causale {numero}).\n\nGrazie e buona giornata,\n{entreprise}
+Bonjour {client},\n\nLa facture {numero} ({reste} restant, échue le {echeance}) demeure impayée malgré nos relances.\nSans règlement sous 8 jours, nous serons contraints d’engager une procédure de recouvrement. Des pénalités de retard sont applicables conformément à nos conditions.\n\n{entreprise}|Hello {client},\n\nInvoice {numero} ({reste} remaining, due on {echeance}) remains unpaid despite our reminders.\nWithout payment within 8 days, we will have to start debt collection proceedings. Late payment penalties apply in accordance with our terms.\n\n{entreprise}|Olá {client},\n\nA fatura {numero} ({reste} em falta, vencida a {echeance}) continua por pagar apesar dos nossos lembretes.\nSem pagamento no prazo de 8 dias, seremos obrigados a iniciar um processo de cobrança. Aplicam-se penalidades de atraso de acordo com as nossas condições.\n\n{entreprise}|Buongiorno {client},\n\nla fattura {numero} ({reste} restanti, scaduta il {echeance}) risulta ancora non pagata nonostante i nostri solleciti.\nIn assenza di pagamento entro 8 giorni saremo costretti ad avviare una procedura di recupero crediti. Si applicano penali di ritardo secondo le nostre condizioni.\n\n{entreprise}
+Bonjour {client},\n\nAvez-vous pu consulter notre devis {numero} ({montant}) ? Je reste disponible pour en parler ou l’ajuster si besoin.\n\nBonne journée,\n{entreprise}|Hello {client},\n\nHave you had a chance to look at our quote {numero} ({montant})? I'm available to discuss it or adjust it if needed.\n\nHave a good day,\n{entreprise}|Olá {client},\n\nJá teve oportunidade de ver o nosso orçamento {numero} ({montant})? Fico disponível para falar sobre ele ou ajustá-lo se necessário.\n\nBom dia,\n{entreprise}|Buongiorno {client},\n\nha avuto modo di consultare il nostro preventivo {numero} ({montant})? Resto a disposizione per parlarne o adattarlo se necessario.\n\nBuona giornata,\n{entreprise}
+À faire ({n})|To do ({n})|A fazer ({n})|Da fare ({n})
+En cours ({n})|Ongoing ({n})|Em curso ({n})|In corso ({n})
