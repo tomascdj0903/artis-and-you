@@ -1,4 +1,4 @@
-// Artizy — logiciel PC / Mac
+// Artis & You — logiciel PC / Mac
 // Ouvre la webapp dans sa propre fenêtre et se met à jour tout seul depuis GitHub Releases.
 const { app, BrowserWindow, shell, dialog, Menu, ipcMain, session } = require('electron');
 const path = require('path');
@@ -16,7 +16,7 @@ app.setAppUserModelId('fr.artisandyou.app');
 function createWindow() {
   win = new BrowserWindow({
     width: 1360, height: 880, minWidth: 380, minHeight: 600,
-    title: 'Artizy',
+    title: 'Artis & You',
     icon: path.join(__dirname, 'build', 'icon.png'),
     backgroundColor: '#FFFFFF',
     show: false,
@@ -52,7 +52,7 @@ function permissions() {
 function menu() {
   const isMac = process.platform === 'darwin';
   Menu.setApplicationMenu(Menu.buildFromTemplate([
-    ...(isMac ? [{ role: 'appMenu', label: 'Artizy' }] : []),
+    ...(isMac ? [{ role: 'appMenu', label: 'Artis & You' }] : []),
     { label: 'Fichier', submenu: [{ label: 'Accueil', accelerator: 'CmdOrCtrl+H', click: () => win.loadURL(APP_URL) }, { label: 'Imprimer', accelerator: 'CmdOrCtrl+P', click: () => win.webContents.print() }, { type: 'separator' }, isMac ? { role: 'close', label: 'Fermer' } : { role: 'quit', label: 'Quitter' }] },
     { label: 'Édition', submenu: [{ role: 'undo', label: 'Annuler' }, { role: 'redo', label: 'Rétablir' }, { type: 'separator' }, { role: 'cut', label: 'Couper' }, { role: 'copy', label: 'Copier' }, { role: 'paste', label: 'Coller' }, { role: 'selectAll', label: 'Tout sélectionner' }] },
     { label: 'Affichage', submenu: [{ role: 'reload', label: 'Actualiser' }, { role: 'resetZoom', label: 'Taille normale' }, { role: 'zoomIn', label: 'Zoom avant' }, { role: 'zoomOut', label: 'Zoom arrière' }, { type: 'separator' }, { role: 'togglefullscreen', label: 'Plein écran' }] },
@@ -69,11 +69,11 @@ function setupUpdater() {
   autoUpdater.autoInstallOnAppQuit = true;
   autoUpdater.on('update-available', async (info) => {
     if (process.platform === 'darwin') {
-      const r = await dialog.showMessageBox(win, { type: 'info', buttons: ['Télécharger', 'Plus tard'], defaultId: 0, title: 'Mise à jour disponible', message: `La version ${info.version} d'Artizy est disponible.`, detail: 'Téléchargez-la puis remplacez l’application dans le dossier Applications.' });
+      const r = await dialog.showMessageBox(win, { type: 'info', buttons: ['Télécharger', 'Plus tard'], defaultId: 0, title: 'Mise à jour disponible', message: `La version ${info.version} d'Artis & You est disponible.`, detail: 'Téléchargez-la puis remplacez l’application dans le dossier Applications.' });
       if (r.response === 0) shell.openExternal(config.releasesPage);
     }
   });
-  autoUpdater.on('update-not-available', () => { if (manual) dialog.showMessageBox(win, { type: 'info', message: 'Artizy est à jour.', detail: `Version ${app.getVersion()}` }); manual = false; });
+  autoUpdater.on('update-not-available', () => { if (manual) dialog.showMessageBox(win, { type: 'info', message: 'Artis & You est à jour.', detail: `Version ${app.getVersion()}` }); manual = false; });
   autoUpdater.on('update-downloaded', async (info) => {
     const r = await dialog.showMessageBox(win, { type: 'info', buttons: ['Redémarrer maintenant', 'Au prochain démarrage'], defaultId: 0, title: 'Mise à jour prête', message: `La version ${info.version} est prête.`, detail: 'Elle s’installera automatiquement à la fermeture du logiciel.' });
     if (r.response === 0) autoUpdater.quitAndInstall();

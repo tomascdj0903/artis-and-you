@@ -52,7 +52,7 @@ export function Account() {
         {ger && <MenuRow to="/pro/compte/integrations" icon={LuPlug} label={t('Intégrations')} sub={t('Agenda, comptable, paiement')} />}
         <MenuRow to="/pro/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />
         <MenuRow to="/telecharger" icon={LuDownload} label={t('Logiciel PC / Mac et application mobile')} />
-        {profile.is_admin && <MenuRow to="/pro/admin" icon={LuShieldCheck} label={t('Administration Artizy')} />}
+        {profile.is_admin && <MenuRow to="/pro/admin" icon={LuShieldCheck} label={t('Administration Artis & You')} />}
       </div>
       <Sec title={t('Aide')} />
       <div className="list">
@@ -86,12 +86,12 @@ export function Subscription() {
         ))}
       </div>
       <Sec title={t('Paiement et factures')} />
-      <div className="list"><MenuRow onClick={() => wip(t('Le paiement de l’abonnement'))} icon={LuCreditCard} label={t('Moyen de paiement')} sub={t('Aucun pour l’instant')} /><MenuRow onClick={() => wip(t('Les factures d’abonnement'))} icon={LuFileText} label={t('Mes factures Artizy')} /></div>
+      <div className="list"><MenuRow onClick={() => wip(t('Le paiement de l’abonnement'))} icon={LuCreditCard} label={t('Moyen de paiement')} sub={t('Aucun pour l’instant')} /><MenuRow onClick={() => wip(t('Les factures d’abonnement'))} icon={LuFileText} label={t('Mes factures Artis & You')} /></div>
       <Sec title={t('Parrainage')} />
       <div className="card soft">
         <p>{t('Partagez votre code : votre filleul et vous gagnez chacun 1 mois offert.')}</p>
         <div className="row"><b style={{ fontSize: 24, letterSpacing: 3 }} className="red-t">{company.referral_code}</b><button className="btn xs ghost" onClick={copy}><LuCopy /> {t('Copier')}</button>
-          <a className="btn xs ghost" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artizy'))}&body=${encodeURIComponent(t('Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert.', { u: location.origin + '/inscription/artisan', c: company.referral_code }))}`}>{t('Partager')}</a></div>
+          <a className="btn xs ghost" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artis & You'))}&body=${encodeURIComponent(t('Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert.', { u: location.origin + '/inscription/artisan', c: company.referral_code }))}`}>{t('Partager')}</a></div>
       </div>
       <Sec title={t('Mes filleuls')} meta={t('{n} mois gagnés', { n: filleuls?.length || 0 })} />
       {filleuls?.length ? <div className="list">{filleuls.map((f) => <div className="li" key={f.id}><div className="grow"><div className="t1">{f.name}</div><div className="t2">{t('Inscrit le {d}', { d: date(f.created_at) })}</div></div><Pill c="green">+1 {t('mois')}</Pill></div>)}</div> : <Empty text={t('Pas encore de filleul.')} />}
@@ -118,7 +118,7 @@ export function CompanySettings() {
       const x = await api.update('companies', { id: company.id }, row); setCompany({ ...company, ...row, ...(x || {}) });
       // Compléments envoyés : le dossier repart en vérification
       if (company.verification_status === 'rejected' && !miss.length) { const y = await api.rpc('resubmit_company', {}); if (y) setCompany({ ...company, ...row, ...y }); }
-    }, company.verification_status === 'rejected' && !miss.length ? t('Merci ! Votre dossier est renvoyé à l’équipe Artizy.') : t('Entreprise enregistrée'));
+    }, company.verification_status === 'rejected' && !miss.length ? t('Merci ! Votre dossier est renvoyé à l’équipe Artis & You.') : t('Entreprise enregistrée'));
   };
   const logo = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (f) setCrop(f); };
   const saveLogo = (f) => { setCrop(null); run(async () => { const up = await uploadTo(company.id + '/logo', f); setC((x) => ({ ...x, logo_path: up.path })); await api.update('companies', { id: company.id }, { logo_path: up.path }); setCompany({ ...company, logo_path: up.path }); }, t('Logo enregistré')); };
@@ -132,7 +132,7 @@ export function CompanySettings() {
           <div className="row mb"><Avatar name={c.name} path={c.logo_path} size="lg" /><div style={{ display: 'grid', gap: 6 }}><button className="btn ghost sm" onClick={logo}><LuImage /> {c.logo_path ? t('Changer le logo') : t('Ajouter le logo')}</button><span className="small faint">{t('Vous pourrez le recadrer avant de l’enregistrer.')}</span></div></div>
           {company.verified || company.verification_status === 'approved' ? <Pill c="green"><LuShieldCheck /> {t('Entreprise vérifiée')}</Pill> : (
             <div className="notice">
-              <b>{company.verification_status === 'rejected' ? t('Informations à compléter') : t('Validation en cours par l’équipe Artizy')}</b>
+              <b>{company.verification_status === 'rejected' ? t('Informations à compléter') : t('Validation en cours par l’équipe Artis & You')}</b>
               {company.verification_note && <div className="small">« {company.verification_note} »</div>}
               <ul className="req-list">{companyMissing(c).length ? companyMissing(c).map(([k, l]) => <li key={k} className="ko">✕ {t(l)}</li>) : <li className="ok">✓ {t('Toutes les informations obligatoires sont renseignées')}</li>}</ul>
             </div>
@@ -228,11 +228,11 @@ function InviteSheet({ open, onClose }) {
   const [v, setV] = useState({ label: '', member_role: 'ouvrier', team_id: teams[0]?.id || '' });
   const [code, setCode] = useState(null);
   if (!open) return null;
-  const msg = code && t('Rejoignez {c} sur Artizy : créez votre compte sur {u} puis choisissez « Rejoindre une équipe » avec le code {k}.', { c: company.name, u: location.origin + '/inscription/artisan', k: code });
+  const msg = code && t('Rejoignez {c} sur Artis & You : créez votre compte sur {u} puis choisissez « Rejoindre une équipe » avec le code {k}.', { c: company.name, u: location.origin + '/inscription/artisan', k: code });
   return (
     <Sheet open onClose={() => { setCode(null); onClose(); }} title={t('Inviter un membre')}>
       {code ? (<div className="center"><p>{t('Code d’invitation')}</p><div style={{ fontSize: 34, fontWeight: 800, letterSpacing: 6 }} className="red-t">{code}</div><p className="small muted">{msg}</p>
-        <div className="btns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}><a className="btn ghost" href={`sms:?&body=${encodeURIComponent(msg)}`}>{t('SMS')}</a><a className="btn ghost" href={`mailto:?subject=${encodeURIComponent(t('Invitation Artizy'))}&body=${encodeURIComponent(msg)}`}>{t('E-mail')}</a></div></div>) : (<>
+        <div className="btns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}><a className="btn ghost" href={`sms:?&body=${encodeURIComponent(msg)}`}>{t('SMS')}</a><a className="btn ghost" href={`mailto:?subject=${encodeURIComponent(t('Invitation Artis & You'))}&body=${encodeURIComponent(msg)}`}>{t('E-mail')}</a></div></div>) : (<>
         <Field label={t('Nom du membre')}><input value={v.label} onChange={(e) => setV({ ...v, label: e.target.value })} /></Field>
         <Chips options={Object.entries(ROLE).filter(([k]) => k !== 'gerant').map(([k, l]) => [k, t(l)])} value={v.member_role} onChange={(member_role) => setV({ ...v, member_role })} />
         <Field label={t('Équipe')}><select value={v.team_id} onChange={(e) => setV({ ...v, team_id: e.target.value })}>{teams.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></Field>
@@ -345,7 +345,7 @@ export function PdfSettings() {
           <Sec title={t('Personnalisation')} />
           <Field label={t('Couleur')}><input type="color" value={p.color} onChange={(e) => setP({ ...p, color: e.target.value })} style={{ height: 48 }} /></Field>
           <div className="row mb"><button className="btn ghost sm" onClick={() => navigate('/pro/compte/entreprise')}><LuImage /> {company.logo_path ? t('Changer le logo') : t('Ajouter mon logo')}</button><button className="btn ghost sm" onClick={sig}>{t('Signature (image)')}</button></div>
-          <p className="small faint">{t('Votre logo apparaît en haut à gauche ; la mention « Document réalisé avec Artizy » en bas de page.')}</p>
+          <p className="small faint">{t('Votre logo apparaît en haut à gauche ; la mention « Document réalisé avec Artis & You » en bas de page.')}</p>
           <Field label={t('Pied de page')}><input value={p.footer} onChange={(e) => setP({ ...p, footer: e.target.value })} placeholder={t('ex. Membre d’une association agréée')} /></Field>
           <button className="btn block" onClick={() => run(async () => { const settings = { ...company.settings, pdf: p }; await api.update('companies', { id: company.id }, { settings }); setCompany({ ...company, settings }); }, t('Modèle enregistré'))}>{t('Enregistrer')}</button>
         </div>
@@ -393,7 +393,7 @@ export function Integrations() {
       <div className="form-grid two"><Field label={t('Nom')}><input value={a.name} onChange={(e) => setA({ ...a, name: e.target.value })} /></Field><Field label={t('E-mail')}><input type="email" value={a.email} onChange={(e) => setA({ ...a, email: e.target.value })} /></Field></div>
       <button className="btn sm" onClick={() => run(async () => { await api.update('companies', { id: company.id }, { accountant: a }); setCompany({ ...company, accountant: a }); }, t('Comptable enregistré'))}>{t('Enregistrer')}</button>
       <Sec title={t('Paiement et facturation')} />
-      <div className="list"><MenuRow onClick={() => wip(t('Le paiement en ligne'))} icon={LuCreditCard} label={t('Paiement en ligne')} sub={t('Carte et prélèvement SEPA')} /><MenuRow onClick={() => wip(t('La facture électronique via Artizy'))} icon={LuFileText} label={t('Facture électronique')} sub={t('Plateforme agréée')} /></div>
+      <div className="list"><MenuRow onClick={() => wip(t('Le paiement en ligne'))} icon={LuCreditCard} label={t('Paiement en ligne')} sub={t('Carte et prélèvement SEPA')} /><MenuRow onClick={() => wip(t('La facture électronique via Artis & You'))} icon={LuFileText} label={t('Facture électronique')} sub={t('Plateforme agréée')} /></div>
     </div>
   );
 }
@@ -408,7 +408,7 @@ export function Reviews() {
   return (
     <div className="content narrow">
       <TopBar title={t('Mes avis clients')} sub={pub.length ? `${avg.toFixed(1).replace('.', ',')} / 5 · ${t('{n} avis', { n: pub.length })}` : ''} />
-      <p className="small muted">{t('Les avis sont vérifiés (seulement après un vrai RDV) et relus par Artizy avant publication.')}</p>
+      <p className="small muted">{t('Les avis sont vérifiés (seulement après un vrai RDV) et relus par Artis & You avant publication.')}</p>
       {!list.length ? <Empty icon={LuStar} text={t('Pas encore d’avis.')} /> : list.map((r) => (
         <div key={r.id} className="card soft mb">
           <div className="row between"><Stars n={r.rating} /><Pill c={r.status === 'publie' ? 'green' : r.status === 'refuse' ? 'grey' : 'yellow'}>{t({ publie: 'Publié', en_attente: 'En relecture', refuse: 'Refusé' }[r.status])}</Pill></div>

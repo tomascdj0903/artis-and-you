@@ -1,6 +1,6 @@
 {
-  "name": "Artizy",
-  "short_name": "Artizy",
+  "name": "Artis & You",
+  "short_name": "Artis & You",
   "description": "L'application des artisans et de leurs clients",
   "start_url": "/",
   "display": "standalone",

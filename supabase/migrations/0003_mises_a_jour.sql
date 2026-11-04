@@ -1,4 +1,4 @@
--- Artizy — mises à jour de novembre 2026 (inscription, validation des comptes, filtres, relances…)
+-- Artis & You — mises à jour de novembre 2026 (inscription, validation des comptes, filtres, relances…)
 
 -- ───────────────── Inscription : coordonnées complètes ─────────────────
 alter table public.profiles add column if not exists civility text default '';
@@ -20,7 +20,7 @@ begin
   return new;
 end $$;
 
--- ───────────────── Validation des entreprises par l'équipe Artizy ─────────────────
+-- ───────────────── Validation des entreprises par l'équipe Artis & You ─────────────────
 alter table public.companies add column if not exists verification_status text default 'pending' check (verification_status in ('pending','approved','rejected'));
 alter table public.companies add column if not exists verification_note text default '';
 alter table public.companies add column if not exists verified_at timestamptz;
@@ -35,7 +35,7 @@ begin
     return new;
   end if;
   if not public.is_admin() and (new.verified is distinct from old.verified or new.verification_status is distinct from old.verification_status) then
-    raise exception 'Seule l''équipe Artizy peut valider une entreprise.';
+    raise exception 'Seule l''équipe Artis & You peut valider une entreprise.';
   end if;
   return new;
 end $$;
@@ -46,7 +46,7 @@ create or replace function public.admin_review_company(p_id uuid, p_status text,
 language plpgsql security definer set search_path = public as $$
 declare c public.companies;
 begin
-  if not public.is_admin() then raise exception 'Réservé à l''équipe Artizy.'; end if;
+  if not public.is_admin() then raise exception 'Réservé à l''équipe Artis & You.'; end if;
   update public.companies set verification_status = p_status, verified = (p_status = 'approved'), verification_note = coalesce(p_note,''), verified_at = now()
   where id = p_id returning * into c;
   perform public.notify_company(p_id, 'systeme',

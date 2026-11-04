@@ -137,7 +137,7 @@ export function DocSections({ d, company, client, payments = [], source, forClie
             <KV rows={[
               [t('Reste à payer'), money(Math.max(0, tot.net - Number(d.paid_amount || 0))), { red: true }],
               [t('IBAN'), company.iban], company.bic && [t('BIC'), company.bic],
-              company.settings?.docs?.onlinePayment !== false && [t('En ligne'), t('Carte ou prélèvement via Artizy')],
+              company.settings?.docs?.onlinePayment !== false && [t('En ligne'), t('Carte ou prélèvement via Artis & You')],
               ...payments.map((p) => [`${date(p.paid_on)} · ${t(p.method)}`, money(p.amount)]),
             ]} />
           </>
@@ -230,11 +230,11 @@ export function A4({ d, company, client, source, logoUrl }) {
       ) : d.kind !== 'avoir' && (
         <div className="pay">
           <div className="box"><div className="lab">{t('Paiement par virement')}</div>IBAN {company.iban || '—'}<br />{company.bic && <>BIC {company.bic}<br /></>}{t('Référence à indiquer')} : {d.number}</div>
-          {company.settings?.docs?.onlinePayment !== false && <div className="box"><div className="lab">{t('Paiement en ligne')}</div>{t('Carte ou prélèvement via le lien Artizy')}</div>}
+          {company.settings?.docs?.onlinePayment !== false && <div className="box"><div className="lab">{t('Paiement en ligne')}</div>{t('Carte ou prélèvement via le lien Artis & You')}</div>}
         </div>
       )}
       <div className="foot">{[company.name, company.legal_form && company.capital ? `${company.legal_form} au capital de ${company.capital}` : company.legal_form, company.siret && 'SIRET ' + company.siret, company.rm && 'RM ' + company.rm, !franchise && company.vat_number && 'TVA ' + company.vat_number].filter(Boolean).join(' · ')}{company.settings?.pdf?.footer ? ' · ' + company.settings.pdf.footer : ''} · {t('Page 1/1')}
-        <div className="brand"><img src="/logo.svg" alt="" />{t('Document réalisé avec')} <b>Artizy</b></div></div>
+        <div className="brand"><img src="/logo.svg" alt="" />{t('Document réalisé avec')} <b>Artis &amp; You</b></div></div>
     </div>
   );
 }

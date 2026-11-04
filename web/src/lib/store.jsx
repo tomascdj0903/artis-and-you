@@ -124,7 +124,7 @@ function Dialog({ d, close }) {
       <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
         <div className="big-ico" style={{ background: 'var(--navy)' }}>🛠️</div>
         <h3>{t('En cours de création')}</h3>
-        <p className="muted">{d.what ? t('{x} arrive très bientôt dans Artizy.', { x: d.what }) : t('Cette fonctionnalité arrive très bientôt dans Artizy.')}</p>
+        <p className="muted">{d.what ? t('{x} arrive très bientôt dans Artis & You.', { x: d.what }) : t('Cette fonctionnalité arrive très bientôt dans Artis & You.')}</p>
         <button className="btn block mt" onClick={close}>{t('Compris')}</button>
       </div>
     </div>

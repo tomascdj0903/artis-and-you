@@ -162,7 +162,7 @@ export function mockBackend({ saveSession, getSession }) {
   const rpcs = {
     is_admin() { return isAdmin(); },
     admin_review_company({ p_id, p_status, p_note = '' }) {
-      if (!isAdmin()) throw new Error('Réservé à l’équipe Artizy.');
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
       const c = db.companies.find((x) => x.id === p_id); if (!c) throw new Error('Entreprise introuvable');
       Object.assign(c, { verification_status: p_status, verified: p_status === 'approved', verification_note: p_note, verified_at: now() });
       notifyCompany(c.id, 'systeme', p_status === 'approved' ? 'Votre entreprise est validée' : 'Votre inscription est à compléter', p_status === 'approved' ? 'Votre profil est maintenant visible des clients.' : p_note, '/pro/compte/entreprise');
@@ -306,7 +306,7 @@ export function mockBackend({ saveSession, getSession }) {
     async update(table, filters, patch) { await ready;
       let last = null;
       for (const r of db[table].filter((x) => match(x, filters))) {
-        if (table === 'companies' && !isAdmin() && ('verified' in patch || 'verification_status' in patch)) return fail('Seule l’équipe Artizy peut valider une entreprise.');
+        if (table === 'companies' && !isAdmin() && ('verified' in patch || 'verification_status' in patch)) return fail('Seule l’équipe Artis & You peut valider une entreprise.');
         if (table === 'documents' && r.locked && ('lines' in patch || 'totals' in patch || 'client_id' in patch)) return fail('Cette facture est émise : elle ne peut plus être modifiée. Créez un avoir.');
         const old = { ...r }; Object.assign(r, patch); afterUpdate(table, old, r); last = r;
       }

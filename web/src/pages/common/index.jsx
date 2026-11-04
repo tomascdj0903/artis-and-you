@@ -156,11 +156,11 @@ export function DataPrivacy() {
     const convs = await api.select('conversations', {});
     for (const c of convs) zip.file(`messages/${c.id}.json`, JSON.stringify(await api.select('messages', { conversation_id: c.id }), null, 2));
     zip.file('notifications.json', JSON.stringify(await api.select('notifications', { user_id: profile.id }), null, 2));
-    download(await zip.generateAsync({ type: 'blob' }), `artizy-mes-donnees-${new Date().toISOString().slice(0, 10)}.zip`);
+    download(await zip.generateAsync({ type: 'blob' }), `artis-and-you-mes-donnees-${new Date().toISOString().slice(0, 10)}.zip`);
   }, t('Export téléchargé'));
   const del = async () => {
     if (!(await confirm({ title: t('Supprimer mon compte ?'), text: t('Votre demande sera traitée sous 30 jours. Les factures émises restent conservées 10 ans (obligation légale).'), ok: t('Demander la suppression'), danger: true }))) return;
-    window.location.href = `mailto:support@artizy.fr?subject=${encodeURIComponent(t('Suppression de mon compte'))}&body=${encodeURIComponent(t('Bonjour, je souhaite supprimer mon compte Artizy ({e}).', { e: profile.email }))}`;
+    window.location.href = `mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Suppression de mon compte'))}&body=${encodeURIComponent(t('Bonjour, je souhaite supprimer mon compte Artis & You ({e}).', { e: profile.email }))}`;
   };
   return (
     <div className="content narrow">
@@ -169,7 +169,7 @@ export function DataPrivacy() {
       {isPro && <><Sec title={t('Visibilité')} /><div className="kv"><Link className="r" to="/pro/compte/entreprise"><span className="k">{t('Profil public et visibilité')}</span><span className="v">›</span></Link></div></>}
       <Sec title={t('Vos choix')} />
       <div className="kv">
-        <SettingToggle label={t('Aider à améliorer Artizy')} hint={t('Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.')} checked={pv.audience} onChange={(v) => set('audience', v)} />
+        <SettingToggle label={t('Aider à améliorer Artis & You')} hint={t('Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.')} checked={pv.audience} onChange={(v) => set('audience', v)} />
         <SettingToggle label={t('Recevoir les nouveautés')} hint={t('Un e-mail de temps en temps sur les nouvelles fonctionnalités')} checked={pv.news} onChange={(v) => set('news', v)} />
       </div>
       <Sec title={t('Vos données')} />
@@ -183,7 +183,7 @@ export function DataPrivacy() {
         <Sec title={t('Sauvegarde de la base locale')} />
         <p className="small muted">{t('En mode local, toutes les données sont dans ce navigateur. Faites des sauvegardes régulières.')}</p>
         <div className="btns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
-          <button className="btn ghost sm" onClick={() => run(async () => download(new Blob([await api.dump()], { type: 'application/json' }), `artizy-sauvegarde-${new Date().toISOString().slice(0, 10)}.json`), t('Sauvegarde téléchargée'))}><LuDownload /> {t('Sauvegarder')}</button>
+          <button className="btn ghost sm" onClick={() => run(async () => download(new Blob([await api.dump()], { type: 'application/json' }), `artis-and-you-sauvegarde-${new Date().toISOString().slice(0, 10)}.json`), t('Sauvegarde téléchargée'))}><LuDownload /> {t('Sauvegarder')}</button>
           <button className="btn ghost sm" onClick={async () => { const [f] = await pickFiles({ accept: 'application/json', multiple: false }); if (!f) return; if (!(await confirm({ title: t('Restaurer cette sauvegarde ?'), text: t('Les données actuelles de ce navigateur seront remplacées.'), ok: t('Restaurer'), danger: true }))) return; await run(async () => { await api.restore(await f.text()); location.reload(); }); }}>{t('Restaurer')}</button>
         </div>
       </>}
@@ -217,7 +217,7 @@ export function Help() {
       {a.to && <button className="btn block" onClick={() => navigate(a.to)}>{t('Y aller')} ›</button>}
       <div className="card soft center mt">
         {vote[who + a.i] ? <span className="small">{t('Merci pour votre retour !')}</span> : <><div className="small bold mb">{t('Cet article vous a-t-il aidé ?')}</div><div className="row" style={{ gap: 8, justifyContent: 'center' }}><button className="btn xs ghost" onClick={() => setV(a.i, 'oui')}>👍 {t('Oui')}</button><button className="btn xs ghost" onClick={() => setV(a.i, 'non')}>👎 {t('Non')}</button></div></>}
-        {vote[who + a.i] === 'non' && <a className="small bold red-t" style={{ display: 'block', marginTop: 6 }} href={`mailto:support@artizy.fr?subject=${encodeURIComponent(t('Aide : {a}', { a: a.title }))}`}>{t('Écrire au support')}</a>}
+        {vote[who + a.i] === 'non' && <a className="small bold red-t" style={{ display: 'block', marginTop: 6 }} href={`mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Aide : {a}', { a: a.title }))}`}>{t('Écrire au support')}</a>}
       </div>
       {(() => { const rel = all.filter((x) => x.cat === a.cat && x.i !== a.i).slice(0, 3); return rel.length > 0 && <><Sec title={t('Articles liés')} /><div className="list">{rel.map((x) => <button key={x.i} className="li click" onClick={() => setArt(x.i)}><div className="grow"><div className="t1">{x.title}</div></div><span>›</span></button>)}</div></>; })()}
     </div>
@@ -232,10 +232,10 @@ export function Help() {
         : <Empty text={t('Aucun article ne correspond. Écrivez-nous, on vous répond rapidement.')} />}
       <Sec title={t('Nous contacter')} />
       <div className="list">
-        <a className="li click" href="mailto:support@artizy.fr"><span className="ficon navy"><LuMail /></span><div className="grow"><div className="t1">{t('Écrire au support')}</div><div className="t2">support@artizy.fr · {t('réponse sous 24 h ouvrées')}</div></div></a>
+        <a className="li click" href="mailto:support@artisandyou.fr"><span className="ficon navy"><LuMail /></span><div className="grow"><div className="t1">{t('Écrire au support')}</div><div className="t2">support@artisandyou.fr · {t('réponse sous 24 h ouvrées')}</div></div></a>
         <button className="li click" onClick={() => wip(t('Le chat avec le support'))}><span className="ficon navy"><LuMessageSquare /></span><div className="grow t1">{t('Chat avec le support')}</div></button>
         <button className="li click" onClick={() => wip(t('La ligne téléphonique'))}><span className="ficon navy"><LuPhone /></span><div className="grow t1">{t('Appeler')}</div></button>
-        <a className="li click" href={`mailto:support@artizy.fr?subject=${encodeURIComponent(t('Signaler un problème'))}&body=${encodeURIComponent('\n\n---\nVersion ' + APP_VERSION + ' · ' + navigator.userAgent)}`}><span className="ficon"><LuBug /></span><div className="grow t1">{t('Signaler un problème')}</div></a>
+        <a className="li click" href={`mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Signaler un problème'))}&body=${encodeURIComponent('\n\n---\nVersion ' + APP_VERSION + ' · ' + navigator.userAgent)}`}><span className="ficon"><LuBug /></span><div className="grow t1">{t('Signaler un problème')}</div></a>
       </div>
       <Sec title={t('Informations')} />
       <div className="kv"><Link className="r" to="/mentions-legales"><span className="k">{t('Mentions légales')}</span><span className="v">›</span></Link><Link className="r" to="/cgu"><span className="k">{t('CGU')}</span><span className="v">›</span></Link><div className="r"><span className="k">{t('Version')}</span><span className="v">{APP_VERSION}</span></div></div>
@@ -247,7 +247,7 @@ export function NotFound() {
   return <div className="content"><TopBar title={t('Page introuvable')} /><Empty text={t('Cette page n’existe pas.')}><button className="btn sm" onClick={() => navigate('/')}>{t("Retour à l'accueil")}</button></Empty></div>;
 }
 
-// ─────────────── Administration Artizy (vérification SIRET, avis) ───────────────
+// ─────────────── Administration Artis & You (vérification SIRET, avis) ───────────────
 export function Admin() {
   const { run, profile } = useApp();
   const [tab, setTab] = useState('siret');
@@ -257,7 +257,7 @@ export function Admin() {
     const [cos, revs] = await Promise.all([api.select('companies', {}, { order: 'created_at.desc', limit: 300 }), api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' })]);
     return { cos, revs, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
   }, []);
-  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artizy.')} /></div>;
+  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artis & You.')} /></div>;
   if (!b) return <div className="content"><TopBar title={t('Administration')} /><Loader /></div>;
   const st = (c) => c.verification_status || (c.verified ? 'approved' : 'pending');
   const pending = b.cos.filter((c) => st(c) === 'pending');
@@ -265,7 +265,7 @@ export function Admin() {
   const missing = (c) => companyMissing(c).map(([, l]) => t(l));
   return (
     <div className="content">
-      <TopBar title={t('Administration')} sub="Artizy" />
+      <TopBar title={t('Administration')} sub="Artis & You" />
       <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })]]} value={tab} onChange={setTab} />
       {tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
         <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>

@@ -77,7 +77,7 @@ export function fillTemplate(text, d, client, company) {
   return Object.entries(v).reduce((s, [k, x]) => s.split(k).join(x), t(text));
 }
 
-// Envoi : message dans la messagerie Artizy (si le client a un compte) et/ou e-mail
+// Envoi : message dans la messagerie Artis & You (si le client a un compte) et/ou e-mail
 export async function sendReminder({ d, step, client, company, profile, text, channel }) {
   const body = text || fillTemplate(step.text, d, client, company);
   if (channel === 'app') {

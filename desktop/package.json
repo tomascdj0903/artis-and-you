@@ -1,9 +1,9 @@
 {
   "name": "artis-and-you-desktop",
-  "productName": "Artizy",
-  "version": "1.1.0",
-  "description": "Artizy — logiciel PC et Mac",
-  "author": "Artizy",
+  "productName": "Artis & You",
+  "version": "1.0.0",
+  "description": "Artis & You — logiciel PC et Mac",
+  "author": "Artis & You",
   "main": "main.js",
   "private": true,
   "scripts": {
@@ -20,15 +20,15 @@
   },
   "build": {
     "appId": "fr.artisandyou.app",
-    "productName": "Artizy",
-    "copyright": "© Artizy",
+    "productName": "Artis & You",
+    "copyright": "© Artis & You",
     "directories": { "output": "release", "buildResources": "build" },
     "files": ["main.js", "preload.js", "config.json", "offline.html", "build/icon.png"],
     "publish": [{ "provider": "github", "owner": "tomascdj0903", "repo": "artis-and-you", "releaseType": "release" }],
     "win": {
       "target": [{ "target": "nsis", "arch": ["x64"] }],
       "icon": "build/icon.ico",
-      "artifactName": "Artizy-Setup.${ext}"
+      "artifactName": "Artis-and-You-Setup.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -36,7 +36,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Artizy",
+      "shortcutName": "Artis & You",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
@@ -46,9 +46,9 @@
       "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }],
       "icon": "build/icon.png",
       "category": "public.app-category.business",
-      "artifactName": "Artizy.${ext}",
+      "artifactName": "Artis-and-You.${ext}",
       "identity": null
     },
-    "dmg": { "title": "Artizy" }
+    "dmg": { "title": "Artis & You" }
   }
 }

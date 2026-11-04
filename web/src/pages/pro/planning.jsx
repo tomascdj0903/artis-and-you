@@ -488,7 +488,7 @@ export function PlanningSettings() {
         <button className="r" style={{ width: '100%', border: 0, background: 'transparent', color: 'inherit' }} onClick={() => wip(t('La synchronisation Google Agenda / Outlook'))}><span className="k">{t('Agenda externe')}</span><span className="v">Google, Outlook ›</span></button>
         <button className="r" style={{ width: '100%', border: 0, background: 'transparent', color: 'inherit' }} onClick={async () => {
           const ap = await api.select('appointments', { company_id: company.id, status: ['valide', 'a_valider'] });
-          icsFile(ap.map((x) => ({ id: x.id, start: x.start_at, end: x.end_at, title: x.title, location: x.address, rrule: rrule(x.recurrence) })), 'planning-artizy.ics');
+          icsFile(ap.map((x) => ({ id: x.id, start: x.start_at, end: x.end_at, title: x.title, location: x.address, rrule: rrule(x.recurrence) })), 'planning-artis-and-you.ics');
         }}><span className="k">{t('Exporter mon planning (.ics)')}</span><span className="v">›</span></button>
       </div>
     </div>

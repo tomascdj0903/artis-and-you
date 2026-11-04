@@ -157,7 +157,7 @@ export const PLANS = [
   { id: 'entreprise', name: 'Entreprise', price: 69, users: 0, desc: 'Utilisateurs illimités', features: ['Tout Équipe', 'Utilisateurs illimités', 'Chantiers partagés avec le réseau', 'Bibliothèque d’ouvrages avancée', 'Support prioritaire'] },
 ];
 
-// Informations obligatoires pour que l'équipe Artizy valide une entreprise
+// Informations obligatoires pour que l'équipe Artis & You valide une entreprise
 export const SOCIETIES = ['EURL', 'SARL', 'SASU', 'SAS', 'SA', 'SNC', 'SCI', 'SCOP'];
 export function companyMissing(c) {
   const out = [];

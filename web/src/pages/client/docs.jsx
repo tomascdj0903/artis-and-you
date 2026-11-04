@@ -257,7 +257,7 @@ export function Account() {
       <Sec title={t('Compte')} />
       <div className="list"><MenuRow to="/client/compte/profil" icon={LuUser} label={t('Mon profil')} /><MenuRow to="/client/compte/logement" icon={LuHouse} label={t('Mon logement')} sub={[profile.home?.address, profile.home?.city].filter(Boolean).join(', ')} /><MenuRow to="/client/compte/artisans" icon={LuUsers} label={t('Mes artisans')} /></div>
       <Sec title={t('Application')} />
-      <div className="list"><MenuRow to="/client/compte/notifications" icon={LuBell} label={t('Notifications')} /><MenuRow to="/client/compte/apparence" icon={LuPalette} label={t('Langue et apparence')} /><MenuRow to="/client/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />{profile.is_admin && <MenuRow to="/client/admin" icon={LuShield} label={t('Administration Artizy')} />}</div>
+      <div className="list"><MenuRow to="/client/compte/notifications" icon={LuBell} label={t('Notifications')} /><MenuRow to="/client/compte/apparence" icon={LuPalette} label={t('Langue et apparence')} /><MenuRow to="/client/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />{profile.is_admin && <MenuRow to="/client/admin" icon={LuShield} label={t('Administration Artis & You')} />}</div>
       <Sec title={t('Aide')} />
       <div className="list"><MenuRow to="/client/compte/aide" icon={LuCircleHelp} label={t('Aide et support')} /><MenuRow to="/mentions-legales" icon={LuScale} label={t('Mentions légales')} /><MenuRow onClick={logout} icon={LuLogOut} label={t('Se déconnecter')} red /></div>
     </div>

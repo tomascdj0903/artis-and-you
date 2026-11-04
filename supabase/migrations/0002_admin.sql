@@ -1,4 +1,4 @@
--- Administration Artizy : vérification des SIRET, relecture des avis
+-- Administration Artis & You : vérification des SIRET, relecture des avis
 create table if not exists public.admins (
   user_id uuid primary key references auth.users(id) on delete cascade,
   created_at timestamptz default now()
