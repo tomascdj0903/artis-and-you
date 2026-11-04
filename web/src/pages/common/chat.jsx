@@ -156,5 +156,5 @@ export function convMeta(c, { mine, clients, teams, companies, members }) {
   }
   if (c.kind === 'team') { const tm = teams[c.team_id]; const ms = (members || []).filter((m) => m.team_id === c.team_id).map((m) => m.first_name); return { name: tm?.name || t('Équipe'), sub: t('Équipe') + (ms.length ? ' · ' + ms.join(', ') + ' ' + t('et vous') : ''), tag: t('Équipe'), color: tm?.color, initials: tm?.name }; }
   if (c.kind === 'pro') { const oid = c.company_id === mine ? c.other_company_id : c.company_id; const co = companies[oid]; return { name: co?.trade_name || co?.name || t('Artisan'), sub: t('Artisan') + ' · ' + (co?.name || ''), tag: (co?.trades || [])[0] || t('Artisan'), initials: co?.name, otherId: oid }; }
-  return { name: 'Artis & You', sub: t('Support'), tag: t('Support') };
+  return { name: 'Artizy', sub: t('Support'), tag: t('Support') };
 }

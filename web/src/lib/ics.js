@@ -2,7 +2,7 @@
 const f = (d) => new Date(d).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 const esc = (s = '') => String(s).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\;');
 export function icsFile(events, name = 'rendez-vous.ics') {
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Artis & You//FR', 'CALSCALE:GREGORIAN'];
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Artizy//FR', 'CALSCALE:GREGORIAN'];
   for (const e of events) {
     lines.push('BEGIN:VEVENT', 'UID:' + e.id + '@artisandyou', 'DTSTAMP:' + f(new Date()), 'DTSTART:' + f(e.start), 'DTEND:' + f(e.end), 'SUMMARY:' + esc(e.title));
     if (e.location) lines.push('LOCATION:' + esc(e.location));

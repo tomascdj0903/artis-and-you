@@ -15,7 +15,7 @@ function AuthLayout({ children, art = true }) {
     <div className={'auth' + (art ? ' split' : '')}>
       {art && (
         <div className="auth-art">
-          <img src="/logo.svg" alt="" style={{ width: 84 }} />
+          <img src="/logo.svg" alt="" style={{ width: 84, borderRadius: 20, boxShadow: "0 0 0 2px rgba(255,255,255,.28)" }} />
           <h2>{t('Les artisans')} <b>&amp;</b> {t('leurs clients, enfin au même endroit.')}</h2>
           <p>{t('Clients, planning, devis, factures, messages et réseau de pros pour l’artisan. Recherche d’artisans, rendez-vous, suivi de chantier et documents pour le particulier.')}</p>
           <ul><li>{t('Devis et factures conformes')}</li><li>{t('Prise de rendez-vous en ligne')}</li><li>{t('Messagerie client et équipe')}</li><li>{t('Coffre-fort de documents')}</li></ul>
@@ -58,21 +58,21 @@ export function Login() {
   if (mfa) return (
     <AuthLayout>
       <form onSubmit={submitCode} style={{ display: 'grid', gap: 14 }}>
-        <img className="auth-logo" src="/logo.svg" alt="Artis & You" />
+        <img className="auth-logo" src="/logo.svg" alt="Artizy" />
         <h1 className="center" style={{ fontSize: 24, margin: 0 }}>{t('Double authentification')}</h1>
         <p className="center muted" style={{ margin: 0 }}>{t('Saisissez le code à 6 chiffres affiché dans votre application d’authentification.')}</p>
         <input className="pillinput center" style={{ fontSize: 26, letterSpacing: 8, fontWeight: 800 }} inputMode="numeric" autoComplete="one-time-code" maxLength={7} autoFocus value={code} onChange={(e) => setCode(e.target.value.replace(/[^\d ]/g, ''))} aria-label={t('Code')} placeholder="000000" />
         {err && <div className="error">{err}</div>}
         <button className="btn" style={{ height: 58, fontSize: 19 }} disabled={busy || code.replace(/\D/g, '').length !== 6}>{busy ? '…' : t('Valider')}</button>
         <button type="button" className="link center bold" onClick={() => { setMfa(false); setCode(''); setErr(''); }}>{t('Retour')}</button>
-        <p className="small faint center">{t('Plus accès à votre application ? Écrivez à support@artisandyou.fr depuis votre adresse e-mail.')}</p>
+        <p className="small faint center">{t('Plus accès à votre application ? Écrivez à support@artizy.fr depuis votre adresse e-mail.')}</p>
       </form>
     </AuthLayout>
   );
   return (
     <AuthLayout>
       <form onSubmit={submit} style={{ display: 'grid', gap: 14 }}>
-        <img className="auth-logo" src="/logo.svg" alt="Artis & You" />
+        <img className="auth-logo" src="/logo.svg" alt="Artizy" />
         <input className="pillinput" type="email" autoComplete="email" placeholder={t('E-mail')} value={email} onChange={(e) => setEmail(e.target.value)} required aria-label={t('E-mail')} />
         <input className="pillinput" type="password" autoComplete="current-password" placeholder={t('Mot de passe')} value={pw} onChange={(e) => setPw(e.target.value)} required aria-label={t('Mot de passe')} />
         <Link to="/mot-de-passe-oublie" className="center bold">{t('Mot de passe oublié')}</Link>
@@ -285,7 +285,7 @@ export function SignupPro() {
                   <Chips multi options={list.map((x) => [x, t(x)])} value={c.trades} onChange={(trades) => setC({ ...c, trades })} /></div>
               ))}
               <Field label={t('Code de parrainage')} hint={t('facultatif — 1 mois offert')}><input value={c.referral} onChange={(e) => setC({ ...c, referral: e.target.value.toUpperCase() })} /></Field>
-              <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artis & You (SIRET, informations légales) avant d’être visible des clients.')}</p>
+              <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artizy (SIRET, informations légales) avant d’être visible des clients.')}</p>
             </>
           )}
           {err && <div className="error">{err}</div>}

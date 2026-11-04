@@ -72,7 +72,7 @@ Applications|Apps|Aplicações|App
 Saisissez le code à 6 chiffres affiché dans votre application d’authentification.|Enter the 6-digit code shown in your authenticator app.|Introduza o código de 6 dígitos apresentado na sua aplicação de autenticação.|Inserisci il codice a 6 cifre mostrato nella tua app di autenticazione.
 Code|Code|Código|Codice
 Valider|Confirm|Validar|Conferma
-Plus accès à votre application ? Écrivez à support@artisandyou.fr depuis votre adresse e-mail.|Lost access to your app? Email support@artisandyou.fr from your email address.|Perdeu o acesso à aplicação? Escreva para support@artisandyou.fr a partir do seu e-mail.|Non hai più accesso all'app? Scrivi a support@artisandyou.fr dal tuo indirizzo e-mail.
+Plus accès à votre application ? Écrivez à support@artizy.fr depuis votre adresse e-mail.|Lost access to your app? Email support@artizy.fr from your email address.|Perdeu o acesso à aplicação? Escreva para support@artizy.fr a partir do seu e-mail.|Non hai più accesso all'app? Scrivi a support@artizy.fr dal tuo indirizzo e-mail.
 M.|Mr|Sr.|Sig.
 Mme|Ms|Sra.|Sig.ra
 8 caractères minimum, dont un chiffre|At least 8 characters, including a digit|Mínimo 8 caracteres, incluindo um algarismo|Almeno 8 caratteri, di cui una cifra
@@ -94,7 +94,7 @@ vérifié par notre équipe|checked by our team|verificado pela nossa equipa|ver
 Adresse du siège|Registered office address|Morada da sede|Indirizzo della sede
 Téléphone de l’entreprise|Company phone|Telefone da empresa|Telefono dell'azienda
 E-mail de l’entreprise|Company email|E-mail da empresa|E-mail dell'azienda
-Votre compte sera vérifié par l’équipe Artis & You (SIRET, informations légales) avant d’être visible des clients.|Your account will be checked by the Artis & You team (SIRET, legal information) before being visible to clients.|A sua conta será verificada pela equipa Artis & You (SIRET, informações legais) antes de ficar visível para os clientes.|Il tuo account sarà verificato dal team Artis & You (SIRET, informazioni legali) prima di essere visibile ai clienti.
+Votre compte sera vérifié par l’équipe Artizy (SIRET, informations légales) avant d’être visible des clients.|Your account will be checked by the Artizy team (SIRET, legal information) before being visible to clients.|A sua conta será verificada pela equipa Artizy (SIRET, informações legais) antes de ficar visível para os clientes.|Il tuo account sarà verificato dal team Artizy (SIRET, informazioni legali) prima di essere visibile ai clienti.
 Se déconnecter ?|Log out?|Terminar sessão?|Disconnettersi?
 Vos données restent dans ce navigateur. Vous devrez saisir à nouveau votre e-mail et votre mot de passe.|Your data stays in this browser. You will need to enter your email and password again.|Os seus dados ficam neste navegador. Terá de introduzir novamente o e-mail e a palavra-passe.|I tuoi dati restano in questo browser. Dovrai inserire di nuovo e-mail e password.
 Vous devrez saisir à nouveau votre e-mail et votre mot de passe (et votre code de double authentification si elle est activée).|You will need to enter your email and password again (and your two-factor code if it is enabled).|Terá de introduzir novamente o e-mail e a palavra-passe (e o código de dupla autenticação, se estiver ativa).|Dovrai inserire di nuovo e-mail e password (e il codice di autenticazione a due fattori, se attiva).
@@ -136,7 +136,7 @@ Copier la clé|Copy the key|Copiar a chave|Copia la chiave
 Ouvrir dans l’application|Open in the app|Abrir na aplicação|Apri nell'app
 Saisissez le code à 6 chiffres affiché :|Enter the 6-digit code shown:|Introduza o código de 6 dígitos apresentado:|Inserisci il codice a 6 cifre mostrato:
 Activer|Turn on|Ativar|Attiva
-Aider à améliorer Artis & You|Help improve Artis & You|Ajudar a melhorar o Artis & You|Aiuta a migliorare Artis & You
+Aider à améliorer Artizy|Help improve Artizy|Ajudar a melhorar o Artizy|Aiuta a migliorare Artizy
 Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.|Share anonymous usage statistics (pages viewed, errors). No client, quote or invoice data is sent.|Partilhar estatísticas de utilização anónimas (páginas consultadas, erros). Nenhum dado de clientes, orçamentos ou faturas é transmitido.|Condividi statistiche d'uso anonime (pagine visitate, errori). Nessun dato di clienti, preventivi o fatture viene trasmesso.
 Un e-mail de temps en temps sur les nouvelles fonctionnalités|An occasional email about new features|Um e-mail de vez em quando sobre as novidades|Un'e-mail ogni tanto sulle novità
 Retour aux articles|Back to articles|Voltar aos artigos|Torna agli articoli
@@ -152,7 +152,7 @@ Comment faire… (ex. relancer une facture, dimanche, logo)|How do I… (e.g. ch
 Tous les articles|All articles|Todos os artigos|Tutti gli articoli
 Aucun article ne correspond. Écrivez-nous, on vous répond rapidement.|No matching article. Write to us, we'll answer quickly.|Nenhum artigo corresponde. Escreva-nos, respondemos rapidamente.|Nessun articolo corrisponde. Scrivici, ti rispondiamo rapidamente.
 réponse sous 24 h ouvrées|reply within 1 business day|resposta em 24 h úteis|risposta entro 24 h lavorative
-Réservé à l’équipe Artis & You.|Reserved for the Artis & You team.|Reservado à equipa Artis & You.|Riservato al team Artis & You.
+Réservé à l’équipe Artizy.|Reserved for the Artizy team.|Reservado à equipa Artizy.|Riservato al team Artizy.
 Entreprise validée|Company approved|Empresa validada|Azienda convalidata
 Demande de compléments envoyée|Request for more information sent|Pedido de informações adicionais enviado|Richiesta di integrazioni inviata
 Aucune entreprise en attente|No company waiting|Nenhuma empresa em espera|Nessuna azienda in attesa
@@ -163,13 +163,13 @@ Merci de compléter : {l}.|Please complete: {l}.|Por favor complete: {l}.|Comple
 Demander des compléments|Ask for more information|Pedir informações adicionais|Chiedi integrazioni
 Message à l’entreprise|Message to the company|Mensagem para a empresa|Messaggio all'azienda
 serveurs situés dans l’Union européenne, région Paris|servers located in the European Union, Paris region|servidores situados na União Europeia, região de Paris|server situati nell'Unione europea, regione di Parigi
-Installer Artis & You|Install Artis & You|Instalar o Artis & You|Installa Artis & You
+Installer Artizy|Install Artizy|Instalar o Artizy|Installa Artizy
 Ordinateur|Computer|Computador|Computer
 Téléphone et tablette|Phone and tablet|Telemóvel e tablet|Telefono e tablet
 Ou installer la version web|Or install the web version|Ou instalar a versão web|Oppure installa la versione web
 Sans téléchargement, depuis ce navigateur (Chrome, Edge)|No download, from this browser (Chrome, Edge)|Sem download, a partir deste navegador (Chrome, Edge)|Senza download, da questo browser (Chrome, Edge)
-Ajoutez Artis & You sur l’écran d’accueil : l’application s’ouvre en plein écran avec son icône, comme une vraie application, et elle est toujours à jour.|Add Artis & You to your home screen: the app opens full screen with its icon, like a real app, and is always up to date.|Adicione o Artis & You ao ecrã principal: a aplicação abre em ecrã inteiro com o seu ícone, como uma aplicação a sério, e está sempre atualizada.|Aggiungi Artis & You alla schermata Home: l'app si apre a schermo intero con la sua icona, come una vera app, ed è sempre aggiornata.
-Artis & You est installée sur cet appareil.|Artis & You is installed on this device.|O Artis & You está instalado neste dispositivo.|Artis & You è installata su questo dispositivo.
+Ajoutez Artizy sur l’écran d’accueil : l’application s’ouvre en plein écran avec son icône, comme une vraie application, et elle est toujours à jour.|Add Artizy to your home screen: the app opens full screen with its icon, like a real app, and is always up to date.|Adicione o Artizy ao ecrã principal: a aplicação abre em ecrã inteiro com o seu ícone, como uma aplicação a sério, e está sempre atualizada.|Aggiungi Artizy alla schermata Home: l'app si apre a schermo intero con la sua icona, come una vera app, ed è sempre aggiornata.
+Artizy est installée sur cet appareil.|Artizy is installed on this device.|O Artizy está instalado neste dispositivo.|Artizy è installata su questo dispositivo.
 Installer l’application|Install the app|Instalar a aplicação|Installa l'app
 Ouvrez {u} dans Chrome|Open {u} in Chrome|Abra {u} no Chrome|Apri {u} in Chrome
 Touchez le menu ⋮ en haut à droite|Tap the ⋮ menu at the top right|Toque no menu ⋮ no canto superior direito|Tocca il menu ⋮ in alto a destra
@@ -182,12 +182,12 @@ Sur votre téléphone, ouvrez {u} puis suivez les étapes ci-dessus.|On your pho
 Copier le lien|Copy the link|Copiar a ligação|Copia il link
 Logiciel PC / Mac et application mobile|PC / Mac software and mobile app|Software PC / Mac e aplicação móvel|Software PC / Mac e app mobile
 Complétez les champs obligatoires : {l}|Fill in the required fields: {l}|Preencha os campos obrigatórios: {l}|Compila i campi obbligatori: {l}
-Merci ! Votre dossier est renvoyé à l’équipe Artis & You.|Thank you! Your file has been sent back to the Artis & You team.|Obrigado! O seu processo foi reenviado à equipa Artis & You.|Grazie! La tua pratica è stata rinviata al team Artis & You.
+Merci ! Votre dossier est renvoyé à l’équipe Artizy.|Thank you! Your file has been sent back to the Artizy team.|Obrigado! O seu processo foi reenviado à equipa Artizy.|Grazie! La tua pratica è stata rinviata al team Artizy.
 Changer le logo|Change the logo|Alterar o logótipo|Cambia il logo
 Ajouter le logo|Add the logo|Adicionar o logótipo|Aggiungi il logo
 Vous pourrez le recadrer avant de l’enregistrer.|You can crop it before saving.|Poderá recortá-lo antes de guardar.|Potrai ritagliarlo prima di salvarlo.
 Informations à compléter|Information to complete|Informações a completar|Informazioni da completare
-Validation en cours par l’équipe Artis & You|Being checked by the Artis & You team|Validação em curso pela equipa Artis & You|Verifica in corso da parte del team Artis & You
+Validation en cours par l’équipe Artizy|Being checked by the Artizy team|Validação em curso pela equipa Artizy|Verifica in corso da parte del team Artizy
 Toutes les informations obligatoires sont renseignées|All required information has been filled in|Todas as informações obrigatórias estão preenchidas|Tutte le informazioni obbligatorie sono compilate
 obligatoire pour la validation du compte|required for account approval|obrigatório para a validação da conta|obbligatorio per la convalida dell'account
 Choisir…|Choose…|Escolher…|Scegli…
@@ -225,8 +225,8 @@ Validées une par une · scénario personnalisable|Approved one by one · custom
 Relances à faire|Reminders to send|Lembretes a enviar|Solleciti da inviare
 CA|Revenue|Faturação|Fatturato
 Avec un montant dû|With an amount due|Com montante em dívida|Con importo dovuto
-Avec compte Artis & You|With an Artis & You account|Com conta Artis & You|Con account Artis & You
-Sans compte Artis & You|Without an Artis & You account|Sem conta Artis & You|Senza account Artis & You
+Avec compte Artizy|With an Artizy account|Com conta Artizy|Con account Artizy
+Sans compte Artizy|Without an Artizy account|Sem conta Artizy|Senza account Artizy
 Tout effacer|Clear all|Limpar tudo|Cancella tutto
 {n} sur {m}|{n} of {m}|{n} de {m}|{n} su {m}
 Trier|Sort|Ordenar|Ordina
@@ -292,9 +292,9 @@ Pas encore relancé.|Not reminded yet.|Ainda sem lembretes.|Non ancora sollecita
 Relances suspendues.|Reminders paused.|Lembretes suspensos.|Solleciti sospesi.
 Relances|Reminders|Lembretes|Solleciti
 Message (modifiable)|Message (editable)|Mensagem (editável)|Messaggio (modificabile)
-Ce client n’a pas de compte Artis & You|This client has no Artis & You account|Este cliente não tem conta Artis & You|Questo cliente non ha un account Artis & You
+Ce client n’a pas de compte Artizy|This client has no Artizy account|Este cliente não tem conta Artizy|Questo cliente non ha un account Artizy
 Messagerie|Messaging|Mensagens|Messaggi
-Visible dans son espace Artis & You|Visible in their Artis & You space|Visível no seu espaço Artis & You|Visibile nel suo spazio Artis & You
+Visible dans son espace Artizy|Visible in their Artizy space|Visível no seu espaço Artizy|Visibile nel suo spazio Artizy
 Document expiré : {n}|Expired document: {n}|Documento expirado: {n}|Documento scaduto: {n}
 Document à renouveler : {n}|Document to renew: {n}|Documento a renovar: {n}|Documento da rinnovare: {n}
 Expiré depuis le {d}|Expired since {d}|Expirado desde {d}|Scaduto dal {d}
@@ -304,11 +304,11 @@ Notification {n} jours avant la date de fin de validité|Notification {n} days b
 Aucun rappel pour ce type de document|No reminder for this type of document|Nenhum lembrete para este tipo de documento|Nessun promemoria per questo tipo di documento
 Délai du rappel|Reminder delay|Antecedência do lembrete|Anticipo del promemoria
 Partager avec mes clients|Share with my clients|Partilhar com os meus clientes|Condividi con i miei clienti
-Visible dans l’espace Artis & You de vos clients (ex. attestation décennale)|Visible in your clients' Artis & You space (e.g. ten-year insurance certificate)|Visível no espaço Artis & You dos seus clientes (ex.: certificado de seguro decenal)|Visibile nello spazio Artis & You dei tuoi clienti (es. attestato di assicurazione decennale)
+Visible dans l’espace Artizy de vos clients (ex. attestation décennale)|Visible in your clients' Artizy space (e.g. ten-year insurance certificate)|Visível no espaço Artizy dos seus clientes (ex.: certificado de seguro decenal)|Visibile nello spazio Artizy dei tuoi clienti (es. attestato di assicurazione decennale)
 Visible uniquement par votre entreprise|Visible only to your company|Visível apenas para a sua empresa|Visibile solo alla tua azienda
 Ces réglages s’appliqueront aux documents que vous ajouterez.|These settings will apply to the documents you add.|Estas definições aplicam-se aos documentos que adicionar.|Queste impostazioni si applicheranno ai documenti che aggiungerai.
 Votre inscription est à compléter|Your registration needs completing|A sua inscrição está por completar|La tua iscrizione è da completare
-L’équipe Artis & You a besoin d’informations supplémentaires.|The Artis & You team needs more information.|A equipa Artis & You precisa de mais informações.|Il team Artis & You ha bisogno di altre informazioni.
+L’équipe Artizy a besoin d’informations supplémentaires.|The Artizy team needs more information.|A equipa Artizy precisa de mais informações.|Il team Artizy ha bisogno di altre informazioni.
 Compte en cours de validation|Account being approved|Conta em validação|Account in fase di convalida
 {n} demandes de rendez-vous à traiter|{n} appointment requests to handle|{n} pedidos de marcação a tratar|{n} richieste di appuntamento da gestire
 1 demande de rendez-vous à traiter|1 appointment request to handle|1 pedido de marcação a tratar|1 richiesta di appuntamento da gestire
@@ -366,10 +366,10 @@ Suspendre|Pause|Suspender|Sospendi
 Aucune relance programmée.|No reminder scheduled.|Nenhum lembrete programado.|Nessun sollecito programmato.
 Relances suspendues|Paused reminders|Lembretes suspensos|Solleciti sospesi
 Réactiver|Resume|Reativar|Riattiva
-Messagerie Artis & You|Artis & You messaging|Mensagens Artis & You|Messaggi Artis & You
+Messagerie Artizy|Artizy messaging|Mensagens Artizy|Messaggi Artizy
 Aucune relance envoyée pour l’instant.|No reminder sent yet.|Nenhum lembrete enviado por enquanto.|Nessun sollecito inviato per ora.
 À|To|Para|A
-messagerie Artis & You|Artis & You messaging|mensagens Artis & You|messaggi Artis & You
+messagerie Artizy|Artizy messaging|mensagens Artizy|messaggi Artizy
 aucune adresse e-mail|no email address|nenhum e-mail|nessun indirizzo e-mail
 Ouvrir l’e-mail|Open the email|Abrir o e-mail|Apri l'e-mail
 Envoi automatique|Automatic sending|Envio automático|Invio automatico
@@ -424,7 +424,7 @@ CRM, KPI et export|CRM, KPIs and export|CRM, KPI e exportação|CRM, KPI ed espo
 Compte et sécurité|Account and security|Conta e segurança|Account e sicurezza
 Devis, factures et chantiers|Quotes, invoices and jobs|Orçamentos, faturas e obras|Preventivi, fatture e cantieri
 Valider mon compte entreprise|Get my company account approved|Validar a minha conta de empresa|Far convalidare il mio account aziendale
-L’équipe Artis & You vérifie chaque entreprise avant qu’elle soit visible des particuliers.|The Artis & You team checks each company before it becomes visible to clients.|A equipa Artis & You verifica cada empresa antes de ficar visível para os particulares.|Il team Artis & You verifica ogni azienda prima che sia visibile ai privati.
+L’équipe Artizy vérifie chaque entreprise avant qu’elle soit visible des particuliers.|The Artizy team checks each company before it becomes visible to clients.|A equipa Artizy verifica cada empresa antes de ficar visível para os particulares.|Il team Artizy verifica ogni azienda prima che sia visibile ai privati.
 Ouvrez Paramètres › Mon entreprise.|Open Settings › My company.|Abra Definições › A minha empresa.|Apri Impostazioni › La mia azienda.
 Remplissez tous les champs marqués d’une étoile : forme juridique, SIRET, adresse, téléphone, e-mail, métier et assurance décennale.|Fill in all fields marked with an asterisk: legal form, SIRET, address, phone, email, trade and ten-year insurance.|Preencha todos os campos marcados com asterisco: forma jurídica, SIRET, morada, telefone, e-mail, profissão e seguro decenal.|Compila tutti i campi con l'asterisco: forma giuridica, SIRET, indirizzo, telefono, e-mail, mestiere e assicurazione decennale.
 Enregistrez. Si l’équipe vous a demandé des compléments, votre dossier repart automatiquement en vérification.|Save. If the team asked for more information, your file is automatically sent back for checking.|Guarde. Se a equipa pediu informações adicionais, o seu processo volta automaticamente à verificação.|Salva. Se il team ha chiesto integrazioni, la tua pratica torna automaticamente in verifica.
@@ -454,7 +454,7 @@ Par type, statut, ville, pays, date, chiffre d’affaires ou montant dû.|By typ
 Clients › bouton filtres à droite de la recherche.|Clients › filters button next to the search.|Clientes › botão de filtros ao lado da pesquisa.|Clienti › pulsante filtri accanto alla ricerca.
 Retirez un filtre en touchant son étiquette, ou « Tout effacer ».|Remove a filter by tapping its label, or “Clear all”.|Retire um filtro tocando na etiqueta, ou “Limpar tudo”.|Rimuovi un filtro toccandone l'etichetta, o “Cancella tutto”.
 Changez le tri avec la liste au-dessus du tableau.|Change the sorting with the list above the table.|Altere a ordenação com a lista por cima da tabela.|Cambia l'ordinamento con l'elenco sopra la tabella.
-Inviter un client sur Artis & You|Invite a client to Artis & You|Convidar um cliente para o Artis & You|Invitare un cliente su Artis & You
+Inviter un client sur Artizy|Invite a client to Artizy|Convidar um cliente para o Artizy|Invitare un cliente su Artizy
 Avec un compte, le client voit ses devis, signe en ligne et échange avec vous.|With an account, the client sees their quotes, signs online and chats with you.|Com uma conta, o cliente vê os orçamentos, assina online e fala consigo.|Con un account, il cliente vede i preventivi, firma online e ti scrive.
 Ouvrez la fiche du client › Chatbox.|Open the client card › Chatbox.|Abra a ficha do cliente › Chatbox.|Apri la scheda del cliente › Chatbox.
 Touchez « L’inviter par e-mail ».|Tap “Invite by email”.|Toque em “Convidar por e-mail”.|Tocca “Invitalo via e-mail”.
@@ -524,7 +524,7 @@ Classique, Moderne ou Épuré, avec votre couleur et votre logo.|Classic, Modern
 Paramètres › Devis et factures › Modèle du PDF.|Settings › Quotes and invoices › PDF template.|Definições › Orçamentos e faturas › Modelo do PDF.|Impostazioni › Preventivi e fatture › Modello PDF.
 Ajoutez un pied de page ou une signature si besoin, puis Enregistrer.|Add a footer or a signature if needed, then Save.|Adicione um rodapé ou uma assinatura se necessário e depois Guardar.|Aggiungi un piè di pagina o una firma se serve, poi Salva.
 Mentions obligatoires sur mes factures|Mandatory information on my invoices|Menções obrigatórias nas minhas faturas|Diciture obbligatorie sulle mie fatture
-Artis & You les ajoute automatiquement à partir de vos réglages.|Artis & You adds them automatically from your settings.|O Artis & You adiciona-as automaticamente a partir das suas definições.|Artis & You le aggiunge automaticamente dalle tue impostazioni.
+Artizy les ajoute automatiquement à partir de vos réglages.|Artizy adds them automatically from your settings.|O Artizy adiciona-as automaticamente a partir das suas definições.|Artizy le aggiunge automaticamente dalle tue impostazioni.
 Identité complète (SIRET, forme juridique, capital, RM, TVA) : Mon entreprise.|Full identity (SIRET, legal form, capital, RM, VAT): My company.|Identidade completa (SIRET, forma jurídica, capital, RM, IVA): A minha empresa.|Identità completa (SIRET, forma giuridica, capitale, RM, IVA): La mia azienda.
 Conditions de paiement, pénalités de retard, escompte : Devis et factures.|Payment terms, late penalties, discount: Quotes and invoices.|Condições de pagamento, penalidades de atraso, desconto: Orçamentos e faturas.|Condizioni di pagamento, penali di ritardo, sconto: Preventivi e fatture.
 Assurance décennale et médiateur de la consommation (obligatoire pour les particuliers) : à renseigner une fois.|Ten-year insurance and consumer mediator (mandatory for private clients): fill in once.|Seguro decenal e mediador do consumo (obrigatório para particulares): a preencher uma vez.|Assicurazione decennale e mediatore del consumo (obbligatorio per i privati): da compilare una volta.

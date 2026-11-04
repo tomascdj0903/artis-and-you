@@ -83,7 +83,7 @@ function Shell({ tabs, children, path }) {
   return (
     <div className="app">
       <aside className="side">
-        <Link to={tabs[0][0]} className="brand"><img src="/logo.svg" alt="" /><span>ARTIS <b>&amp;</b> YOU</span></Link>
+        <Link to={tabs[0][0]} className="brand"><img src="/logo.svg" alt="" /><span className="wordmark">artizy</span></Link>
         <nav>
           {tabs.map(([to, I, label, exact]) => (
             <Link key={to} to={to} className={active(to, exact) ? 'on' : ''}><I />{t(label)}{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>
@@ -117,7 +117,7 @@ function LockScreen({ onUnlock }) {
   return (
     <div className="auth" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24 }}>
       <div style={{ display: 'grid', gap: 14, maxWidth: 360, width: '100%', textAlign: 'center' }}>
-        <img src="/logo.svg" alt="Artis & You" style={{ width: 90, height: 90, margin: '0 auto' }} />
+        <img src="/logo.svg" alt="Artizy" style={{ width: 90, height: 90, margin: '0 auto' }} />
         <h1 style={{ fontSize: 22, margin: 0 }}>{t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
         <p className="muted" style={{ margin: 0 }}>{t('Application verrouillée. Utilisez Face ID, Touch ID, votre empreinte ou Windows Hello.')}</p>
         {err && <div className="error">{err}</div>}

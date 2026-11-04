@@ -195,7 +195,7 @@ function EditFile({ f, onClose, onDone, types }) {
     <Sheet open onClose={onClose} title={f.name}>
       <div className="kv">
         <div className="r"><span className="k">{t('Type')}</span><span className="v">{docTypeLabel(f.doc_type, types)}</span></div>
-        <SettingToggle label={t('Partagé avec le client')} hint={t('Visible dans son espace Artis & You')} checked={f.shared_with_client} onChange={(v) => run(() => api.update('files', { id: f.id }, { shared_with_client: v })).then(onDone)} />
+        <SettingToggle label={t('Partagé avec le client')} hint={t('Visible dans son espace Artizy')} checked={f.shared_with_client} onChange={(v) => run(() => api.update('files', { id: f.id }, { shared_with_client: v })).then(onDone)} />
       </div>
       <div className="btns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
         <button className="btn ghost" onClick={() => openFile(f.path, f.name)}><LuDownload /> {t('Télécharger')}</button>
@@ -307,7 +307,7 @@ export function VaultType({ params }) {
       <div className="kv">
         <SettingToggle label={t('Me prévenir avant expiration')} hint={remind > 0 ? t('Notification {n} jours avant la date de fin de validité', { n: remind }) : t('Aucun rappel pour ce type de document')} checked={remind > 0} onChange={(v) => setAll({ remind_days: v ? 15 : 0 })} />
         {remind > 0 && <div className="r"><span className="k">{t('Délai du rappel')}</span><select value={remind} onChange={(e) => setAll({ remind_days: +e.target.value })}>{[7, 15, 30, 60, 90].map((n) => <option key={n} value={n}>{t('{n} jours avant', { n })}</option>)}</select></div>}
-        <SettingToggle label={t('Partager avec mes clients')} hint={shared ? t('Visible dans l’espace Artis & You de vos clients (ex. attestation décennale)') : t('Visible uniquement par votre entreprise')} checked={shared} onChange={(v) => setAll({ shared_with_client: v })} />
+        <SettingToggle label={t('Partager avec mes clients')} hint={shared ? t('Visible dans l’espace Artizy de vos clients (ex. attestation décennale)') : t('Visible uniquement par votre entreprise')} checked={shared} onChange={(v) => setAll({ shared_with_client: v })} />
       </div>
       {!files.length && <p className="small faint">{t('Ces réglages s’appliqueront aux documents que vous ajouterez.')}</p>}
       <button className="fab" onClick={() => setAdd(true)} aria-label={t('Ajouter')}><LuPlus /></button>

@@ -1,4 +1,4 @@
--- Artis & You — schéma initial
+-- Artizy — schéma initial
 -- Deux espaces dans une seule base : les artisans (entreprises + membres) et les particuliers.
 
 create extension if not exists pgcrypto;

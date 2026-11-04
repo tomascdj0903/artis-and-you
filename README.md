@@ -1,4 +1,4 @@
-# Artis & You
+# Artizy
 
 L'application des artisans et de leurs clients : une seule webapp avec deux espaces (artisan et particulier), un logiciel PC / Mac qui se met à jour tout seul, et bientôt les apps Android et iPhone.
 
@@ -7,7 +7,7 @@ L'application des artisans et de leurs clients : une seule webapp avec deux espa
 | Dossier | Contenu |
 |---|---|
 | `web/` | La webapp (React, sans framework lourd). Construite par Vercel à chaque `git push`. |
-| `desktop/` | Le logiciel Windows (.exe) et Mac (.dmg) : une fenêtre Artis & You qui ouvre la webapp, avec mises à jour automatiques. |
+| `desktop/` | Le logiciel Windows (.exe) et Mac (.dmg) : une fenêtre Artizy qui ouvre la webapp, avec mises à jour automatiques. |
 | `supabase/migrations/` | Le schéma de la base de données en ligne (pour quand on quittera le mode local). |
 | `.github/workflows/desktop.yml` | Construit et publie le .exe et le .dmg sur GitHub à chaque nouvelle version. |
 
@@ -23,8 +23,8 @@ Pour passer en ligne plus tard : créer le projet Supabase, exécuter `supabase/
 - **Le logiciel lui-même** (icône, fenêtre, menus) : depuis votre ordinateur, lancez `./release.sh 1.0.1` (Mac / Linux) ou `.\release.ps1 1.0.1` (Windows). GitHub construit le .exe et le .dmg en ~10 minutes ; les logiciels installés téléchargent la mise à jour en arrière-plan et l'installent au redémarrage (sur Mac, une fenêtre propose de télécharger la nouvelle version tant que l'app n'est pas signée par Apple).
 
 Liens de téléchargement (toujours la dernière version) :
-- Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artis-and-You-Setup.exe`
-- Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artis-and-You.dmg`
+- Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artizy-Setup.exe`
+- Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artizy.dmg`
 
 La page `/telecharger` de la webapp propose ces deux boutons.
 

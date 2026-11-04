@@ -36,7 +36,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home }) {
     <header className={'topbar' + (home ? ' home-top' : '')}>
       <div>
         {back ? <button className="iconbtn" onClick={onBack || (() => (history.length > 1 ? navigate(-1) : navigate(base)))} aria-label={t('Retour')}><LuChevronLeft /></button>
-          : <Link to={base} className="logo-btn hide-desk" aria-label="Artis & You"><img src="/logo.svg" alt="" /></Link>}
+          : <Link to={base} className="logo-btn hide-desk" aria-label="Artizy"><img src="/logo.svg" alt="" /></Link>}
       </div>
       <div className="title">{title && <h1>{title}</h1>}{sub && <div className="sub">{sub}</div>}</div>
       <div className="right">

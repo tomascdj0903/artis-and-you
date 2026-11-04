@@ -13,7 +13,7 @@
 12|Accettato
 13|Home
 14|Accesso (codice, piano…)
-15|Accesso, rettifica, cancellazione, portabilità (export zip dall'app), opposizione. Contatto: support@artisandyou.fr. Puoi rivolgerti alla CNIL.
+15|Accesso, rettifica, cancellazione, portabilità (export zip dall'app), opposizione. Contatto: support@artizy.fr. Puoi rivolgerti alla CNIL.
 16|Acquisto aggiunto
 17|Acconto
 18|Acconto (%)
@@ -24,7 +24,7 @@
 23|Attività
 24|Attuale
 25|Amministrazione
-26|Amministrazione Artis & You
+26|Amministrazione Artizy
 27|Indirizzo
 28|Indirizzo dell'intervento
 29|Indirizzo di fatturazione
@@ -83,8 +83,8 @@
 82|Arrivo previsto verso le {h} per: {o}.
 83|Articolo
 84|Articoli · {n}
-85|Artis & You mette in contatto artigiani e privati, e offre agli artigiani strumenti di gestione (clienti, agenda, preventivi, fatture, messaggi).
-86|Artis & You sul tuo computer
+85|Artizy mette in contatto artigiani e privati, e offre agli artigiani strumenti di gestione (clienti, agenda, preventivi, fatture, messaggi).
+86|Artizy sul tuo computer
 87|Artigiano
 88|Artigiano o impresa
 89|Artigiani
@@ -162,12 +162,12 @@
 161|Per accettazione
 162|Ciao {n}
 163|Buongiorno {n},\n\nIn allegato l'export contabile di {p} (vendite, incassi, acquisti, IVA).\n\nCordiali saluti,\n{c}
-164|Buongiorno,\n\nPer scriverci, ricevere preventivi e fatture e seguire il tuo cantiere, crea il tuo account gratuito su Artis & You con questo indirizzo e-mail:\n{url}\n\nA presto,\n{c}
-165|Buongiorno,\n\nIn allegato il nostro preventivo {n} per: {o}.\n\nPuoi anche consultarlo e firmarlo nel tuo spazio Artis & You: {u}\n\nCordiali saluti,\n{c}
-166|Buongiorno,\n\nIn allegato la nostra fattura {n} per: {o}.\n\nPuoi pagarla con bonifico (IBAN in fattura) o online dal tuo spazio Artis & You: {u}\n\nCordiali saluti,\n{c}
+164|Buongiorno,\n\nPer scriverci, ricevere preventivi e fatture e seguire il tuo cantiere, crea il tuo account gratuito su Artizy con questo indirizzo e-mail:\n{url}\n\nA presto,\n{c}
+165|Buongiorno,\n\nIn allegato il nostro preventivo {n} per: {o}.\n\nPuoi anche consultarlo e firmarlo nel tuo spazio Artizy: {u}\n\nCordiali saluti,\n{c}
+166|Buongiorno,\n\nIn allegato la nostra fattura {n} per: {o}.\n\nPuoi pagarla con bonifico (IBAN in fattura) o online dal tuo spazio Artizy: {u}\n\nCordiali saluti,\n{c}
 167|Buongiorno, le ricordo il preventivo {n} ({m}). Non esiti a contattarmi per qualsiasi domanda.
-168|Buongiorno, desidero eliminare il mio account Artis & You ({e}).
-169|Ciao, ti invito su Artis & You per collaborare sui nostri cantieri. Con il mio codice {c} hai 1 mese gratis: {u}
+168|Buongiorno, desidero eliminare il mio account Artizy ({e}).
+169|Ciao, ti invito su Artizy per collaborare sui nostri cantieri. Con il mio codice {c} hai 1 mese gratis: {u}
 170|Buongiorno, salvo errore, la fattura {n} ({m}) risulta ancora da saldare. Grazie in anticipo.
 171|Bozza
 172|Bozza salvata
@@ -181,11 +181,11 @@
 180|Capitale sociale
 181|Carta di credito
 182|Carta e addebito SEPA
-183|Carta o addebito tramite Artis & You
-184|Carta o addebito tramite il link Artis & You
+183|Carta o addebito tramite Artizy
+184|Carta o addebito tramite il link Artizy
 185|Tessere edili
 186|Questo cliente ha documenti emessi: impostalo su « Inattivo » invece di eliminarlo.
-187|Questo cliente non ha ancora un account Artis & You: non vedrà questi messaggi.
+187|Questo cliente non ha ancora un account Artizy: non vedrà questi messaggi.
 188|Cosa ricevo
 189|Cosa vedono gli artigiani
 190|Certificazione
@@ -195,7 +195,7 @@
 194|Queste informazioni aiutano l'artigiano a preparare l'intervento (IVA agevolata se l'abitazione ha più di 2 anni).
 195|Questa azione è definitiva.
 196|Questa fattura è stata emessa: non può più essere modificata. Crea una nota di credito.
-197|Questa funzionalità arriva prestissimo su Artis & You.
+197|Questa funzionalità arriva prestissimo su Artizy.
 198|Questa pagina non esiste.
 199|Cambia foto
 200|Cantiere
@@ -244,7 +244,7 @@
 243|Ho capito
 244|Commercialista salvato
 245|Account
-246|Account Artis & You
+246|Account Artizy
 247|Account
 248|Condizioni
 249|Condizioni di pagamento
@@ -388,9 +388,9 @@
 387|Invia per e-mail
 388|Invia per firma elettronica
 389|Invia un messaggio
-390|Invia tramite Artis & You
+390|Invia tramite Artizy
 391|Invia al mio commercialista
-392|Inviato nello spazio Artis & You del cliente
+392|Inviato nello spazio Artizy del cliente
 393|Inviate dal cliente
 394|Sconto pagamento anticipato
 395|Contanti
@@ -460,7 +460,7 @@
 459|IBAN
 460|Identità
 461|Identità, recapiti, indirizzo dell'abitazione, messaggi, foto e documenti scambiati, appuntamenti, preventivi e fatture.
-462|Non è ancora su Artis & You?
+462|Non è ancora su Artizy?
 463|Ti avvisa quando è in viaggio
 464|Stampa
 465|Inattivo
@@ -476,7 +476,7 @@
 475|Interventi
 476|Titolo
 477|Integrazioni
-478|Invito Artis & You
+478|Invito Artizy
 479|Inviti in attesa
 480|Invita su un cantiere
 481|Invita un membro
@@ -496,9 +496,9 @@
 495|L'ora di fine deve essere dopo l'ora di inizio.
 496|Il colore è usato in agenda
 497|L'autenticazione a due fattori
-498|La fattura elettronica tramite Artis & You
+498|La fattura elettronica tramite Artizy
 499|La linea telefonica
-500|Il marchio, il logo e l'interfaccia Artis & You sono protetti. È vietata ogni riproduzione senza autorizzazione.
+500|Il marchio, il logo e l'interfaccia Artizy sono protetti. È vietata ogni riproduzione senza autorizzazione.
 501|La firma elettronica
 502|La sincronizzazione Google Calendar / Outlook
 503|Avvia l'itinerario
@@ -508,7 +508,7 @@
 507|Il SIRET deve contenere 14 cifre valide.
 508|La chat con l'assistenza
 509|Il cliente sarà avvisato.
-510|L'account privato è gratuito. L'account artigiano è a pagamento dopo 30 giorni di prova. L'artigiano dichiara un SIRET valido, verificato da Artis & You.
+510|L'account privato è gratuito. L'account artigiano è a pagamento dopo 30 giorni di prova. L'artigiano dichiara un SIRET valido, verificato da Artizy.
 511|Il preventivo riceve il numero definitivo all'invio.
 512|L'abitazione
 513|Il software si apre nella sua finestra, con la sua icona, e si aggiorna da solo. Serve una connessione internet.
@@ -518,10 +518,10 @@
 517|Gli artigiani
 518|Gli artigiani con cui lavori compariranno qui.
 519|Gli attestati e le garanzie condivisi dai tuoi artigiani compariranno qui.
-520|Le recensioni sono verificate (solo dopo un vero appuntamento) e controllate da Artis & You prima della pubblicazione.
+520|Le recensioni sono verificate (solo dopo un vero appuntamento) e controllate da Artizy prima della pubblicazione.
 521|Gli invii automatici via e-mail e SMS arriveranno a breve.
 522|Le fatture dell'abbonamento
-523|I pagamenti delle fatture vanno direttamente all'artigiano. Artis & You non trattiene commissioni.
+523|I pagamenti delle fatture vanno direttamente all'artigiano. Artizy non trattiene commissioni.
 524|I video tutorial
 525|Descrizione
 526|Link WhatsApp inviato al cliente
@@ -537,7 +537,7 @@
 536|Logo dell'impresa
 537|Logo salvato
 538|Lun
-539|L'artigiano resta l'unico responsabile di preventivi, fatture, prestazioni e del rispetto degli obblighi legali e fiscali. Artis & You non è parte dei contratti tra artigiani e privati.
+539|L'artigiano resta l'unico responsabile di preventivi, fatture, prestazioni e del rispetto degli obblighi legali e fiscali. Artizy non è parte dei contratti tra artigiani e privati.
 540|L'artigiano sarà avvisato.
 541|Invitalo via e-mail
 542|La mia libreria
@@ -574,7 +574,7 @@
 573|I miei preventivi
 574|I miei documenti
 575|Le mie fatture
-576|Le mie fatture Artis & You
+576|Le mie fatture Artizy
 577|I miei invitati
 578|I miei messaggi
 579|Le mie notifiche
@@ -838,8 +838,8 @@
 837|Rifiutato
 838|Rifiutato il {d}
 839|Rifiutati
-840|Unisciti a {c} su Artis & You: crea il tuo account su {u} poi scegli « Unisciti a una squadra » con il codice {k}.
-841|Raggiungimi su Artis & You
+840|Unisciti a {c} su Artizy: crea il tuo account su {u} poi scegli « Unisciti a una squadra » con il codice {k}.
+841|Raggiungimi su Artizy
 842|Partecipa alla videochiamata WhatsApp
 843|Unisciti alla squadra
 844|Unisciti a una squadra
@@ -916,7 +916,7 @@
 915|Stato progetti
 916|Stato del progetto aggiornato
 917|Successivo
-918|Segui il tuo cantiere su Artis & You
+918|Segui il tuo cantiere su Artizy
 919|Avanzamento del cantiere
 920|Assistenza
 921|Cancellazione del mio account
@@ -1013,7 +1013,7 @@
 1012|Ven
 1013|Versione
 1014|Versione web
-1015|Tramite Artis & You
+1015|Tramite Artizy
 1016|Tramite l'app, con codice SMS
 1017|Città
 1018|Città e raggio
@@ -1021,7 +1021,7 @@
 1020|Bonifico
 1021|Bonifico SEPA
 1022|Visibilità
-1023|Visibile nel loro spazio Artis & You
+1023|Visibile nel loro spazio Artizy
 1024|Visibile nel mio profilo pubblico (lavori)
 1025|Visibile appena crea il suo account
 1026|Visibile ai privati
@@ -1041,7 +1041,7 @@
 1040|I tuoi dati sono condivisi solo con gli artigiani che contatti e con i nostri fornitori tecnici (hosting). Non vengono mai venduti.
 1041|I tuoi diritti
 1042|I tuoi mestieri
-1043|Il tuo SIRET è in fase di verifica da parte del team Artis & You.
+1043|Il tuo SIRET è in fase di verifica da parte del team Artizy.
 1044|Il tuo artigiano
 1045|La tua esigenza
 1046|La tua libreria è vuota. Aggiungi prodotti in CRM → La mia libreria.
@@ -1136,11 +1136,11 @@
 1147|{n} foto aggiunte
 1148|{n} progetti in corso
 1149|{n} professionisti
-1150|{n} professionisti trovati su Artis & You
+1150|{n} professionisti trovati su Artizy
 1151|{n} sarà avvisato del tuo arrivo.
 1152|{n} selezionati
 1153|{n} in programma
-1154|{x} arriva prestissimo su Artis & You.
+1154|{x} arriva prestissimo su Artizy.
 1155|« {n} » aggiunto
 1156|Da aggiungere
 1157|In regola

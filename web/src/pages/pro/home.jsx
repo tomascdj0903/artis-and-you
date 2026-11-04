@@ -48,8 +48,8 @@ export function Home() {
         <Link to="/pro/compte/entreprise" className="alert" style={{ color: 'inherit' }}>
           <LuShieldAlert className="red-t" size={28} style={{ flexShrink: 0 }} />
           <div>{company.verification_status === 'rejected'
-            ? <><b>{t('Votre inscription est à compléter')}</b><div className="small">{company.verification_note || t('L’équipe Artis & You a besoin d’informations supplémentaires.')}</div></>
-            : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artis & You vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
+            ? <><b>{t('Votre inscription est à compléter')}</b><div className="small">{company.verification_note || t('L’équipe Artizy a besoin d’informations supplémentaires.')}</div></>
+            : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artizy vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
         </Link>
       )}
  {reqs?.length > 0 && (

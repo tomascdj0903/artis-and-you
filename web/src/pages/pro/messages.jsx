@@ -147,12 +147,12 @@ export function NetworkAdd() {
   const [res, setRes] = useState(null);
   const [mine, reload] = useData(async () => new Set((await api.select('network', { company_id: company.id })).map((x) => x.pro_id)), []);
   const search = async (v) => { setQ(v); if (v.trim().length < 2) return setRes(null); const r = await api.rpc('directory_search', { p_query: v.trim(), p_trade: '', p_city: '' }); setRes(r.filter((x) => x.id !== company.id)); };
-  const inviteMsg = t('Bonjour, je vous invite à me rejoindre sur Artis & You pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert : {u}', { c: company.referral_code, u: location.origin + '/inscription/artisan' });
+  const inviteMsg = t('Bonjour, je vous invite à me rejoindre sur Artizy pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert : {u}', { c: company.referral_code, u: location.origin + '/inscription/artisan' });
   return (
     <div className="content narrow">
       <TopBar title={t('Ajouter un pro')} sub={t('Rechercher un professionnel')} />
       <label className="input row" style={{ borderRadius: 999, borderColor: 'var(--text)', padding: '6px 18px' }}><input autoFocus value={q} onChange={(e) => search(e.target.value)} placeholder={t('Nom, entreprise ou métier')} style={{ border: 0, outline: 0, flex: 1, padding: 8, background: 'transparent' }} /></label>
-      {res && <p className="muted">{t('{n} pros trouvés sur Artis & You', { n: res.length })}</p>}
+      {res && <p className="muted">{t('{n} pros trouvés sur Artizy', { n: res.length })}</p>}
       {res && <div className="list">{res.map((co) => (
         <div key={co.id} className="li">
           <span className="avatar sm" style={{ background: 'var(--petrole)' }}>{initials(...co.name.split(' '))}</span>
@@ -161,10 +161,10 @@ export function NetworkAdd() {
         </div>
       ))}</div>}
       <div className="alert mt" style={{ alignItems: 'flex-start' }}>
-        <div className="grow"><b>{t('Il n’est pas encore sur Artis & You ?')}</b><div className="small">{t('Invitez-le par SMS ou e-mail : 1 mois offert pour lui.')}</div></div>
+        <div className="grow"><b>{t('Il n’est pas encore sur Artizy ?')}</b><div className="small">{t('Invitez-le par SMS ou e-mail : 1 mois offert pour lui.')}</div></div>
         <div className="row" style={{ flexDirection: 'column', gap: 6 }}>
           <a className="btn xs ghost-red" href={`sms:?&body=${encodeURIComponent(inviteMsg)}`}>{t('SMS')}</a>
-          <a className="btn xs ghost-red" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artis & You'))}&body=${encodeURIComponent(inviteMsg)}`}><LuMail /> {t('E-mail')}</a>
+          <a className="btn xs ghost-red" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artizy'))}&body=${encodeURIComponent(inviteMsg)}`}><LuMail /> {t('E-mail')}</a>
         </div>
       </div>
     </div>
