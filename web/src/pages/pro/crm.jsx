@@ -1,6 +1,6 @@
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
-import { LuFileSpreadsheet, LuPlus, LuChevronRight, LuDownload, LuMail, LuPencil, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
+import { LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuBellRing, LuPlus, LuChevronRight, LuDownload, LuMail, LuPencil, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
@@ -19,11 +19,11 @@ export function CrmHome() {
       <TopBar title={t('CRM')} back={false} />
       <SmartSearch scope="crm" placeholder={t('Recherchez un client, un devis, un produit')} />
       <div className="tiles home" style={{ marginTop: 10 }}>
-        <button className="tile" onClick={() => navigate('/pro/crm/statut')}>{t('Statut projet')}</button>
-        {can('kpi') && <button className="tile" onClick={() => navigate('/pro/crm/kpi')}>{t('KPI')}</button>}
-        {can('prix') && <button className="tile" onClick={() => navigate('/pro/crm/bibliotheque')}>{t('Ma bibliothèque')}</button>}
-        {can('devis') && <button className="tile" onClick={() => navigate('/pro/relances')}>{t('Relances')}</button>}
-        {can('kpi') && <button className="tile wide" onClick={() => navigate('/pro/crm/export')}><LuFileSpreadsheet /> {t('Export comptable')}</button>}
+        <button className="tile" onClick={() => navigate('/pro/crm/statut')}><LuListChecks />{t('Statut projet')}</button>
+        {can('kpi') && <button className="tile" onClick={() => navigate('/pro/crm/kpi')}><LuChartColumn />{t('KPI')}</button>}
+        {can('prix') && <button className="tile" onClick={() => navigate('/pro/crm/bibliotheque')}><LuLibrary />{t('Ma bibliothèque')}</button>}
+        {can('devis') && <button className="tile" onClick={() => navigate('/pro/relances')}><LuBellRing />{t('Relances')}</button>}
+        {can('kpi') && <button className="tile wide" onClick={() => navigate('/pro/crm/export')}><LuFileSpreadsheet />{t('Export comptable')}</button>}
       </div>
     </div>
   );

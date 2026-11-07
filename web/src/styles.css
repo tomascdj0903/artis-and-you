@@ -150,17 +150,23 @@ h1, h2, h3 { margin: 0; }
 .tile:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .tile svg { font-size: 28px; }
 .tile small { font-weight: 600; font-size: 11px; opacity: .9; }
-.tile.wide { grid-column: 1 / -1; flex-direction: row; }
+.tile.wide { grid-column: 1 / -1; }
 .tiles.home { gap: 18px 14px; margin-top: 28px; }
+/* Tuiles en flex : la dernière ligne incomplète s'étire pour remplir la largeur (pas de trou) */
+.tiles.home, .tiles.three { display: flex; flex-wrap: wrap; }
+.tiles.home > .tile { flex: 1 1 calc(50% - 14px); }
+.tiles.three > .tile { flex: 1 1 calc(33.33% - 10px); }
+.tiles > .tile.wide { flex-basis: 100%; }
 .tiles.home .tile { min-height: 104px; }
 .tiles.small .tile { min-height: 58px; border-radius: 16px; font-size: 16px; gap: 0; }
 .tiles.three { grid-template-columns: repeat(3, 1fr); gap: 10px; }
 @media (min-width: 1024px) {
-  .tiles.home { grid-template-columns: repeat(3, 1fr); max-width: 900px; }
+  .tiles.home { max-width: 900px; }
+  .tiles.home > .tile { flex-basis: calc(33.33% - 14px); }
   .tiles.home .tile { min-height: 150px; font-size: 22px; }
   .tiles.home .tile svg { font-size: 34px; }
   .tiles.four-desk { grid-template-columns: repeat(4, 1fr); }
-  .tiles.three { grid-template-columns: repeat(6, 1fr); }
+  .tiles.three > .tile { flex-basis: calc(16.66% - 10px); }
 }
 
 /* ─────────────── Cartes ─────────────── */
