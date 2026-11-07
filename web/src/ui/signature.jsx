@@ -52,7 +52,7 @@ export function SignatureEditor({ p, setP, defaultName }) {
   return (
     <div className="sig-editor">
       <div className="small bold mb"><LuType /> {t('Signature avec votre nom')} <span className="faint">({t('obligatoire')})</span></div>
-      <input value={name} onChange={(e) => update({ sig_name: e.target.value })} placeholder={t('Prénom Nom')} />
+      <div className="field"><input value={name} onChange={(e) => update({ sig_name: e.target.value })} placeholder={t('Prénom Nom')} aria-label={t('Prénom Nom')} /></div>
       <div className="sig-fonts">{SIG_FONTS.map((f) => (
         <button key={f} type="button" className={font === f ? 'on' : ''} onClick={() => update({ sig_font: f })} style={{ fontFamily: `"${f}", cursive` }}>{name || t('Prénom Nom')}</button>
       ))}</div>
