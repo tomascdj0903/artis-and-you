@@ -186,8 +186,8 @@ export function VerifyEmailBox({ email, devCode: dc, onDone }) {
     <form onSubmit={submit} className="center">
       <div className="big-ico" style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'grid', placeItems: 'center', margin: '0 auto', fontSize: 32 }}><LuMail /></div>
       <h2 className="mt">{t('Vérifiez votre adresse e-mail')}</h2>
-      <p className="muted">{t('Nous avons envoyé un code à 6 chiffres à {e}. Saisissez-le pour activer votre compte.', { e: email })}</p>
-      {!OFFLINE && <p className="muted small">{t('Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.')}</p>}
+      <p className="muted">{OFFLINE ? t('Nous avons envoyé un code à 6 chiffres à {e}. Saisissez-le pour activer votre compte.', { e: email }) : t('Nous avons envoyé un e-mail à {e}. Cliquez sur le lien qu’il contient pour activer votre compte : vous serez connecté automatiquement.', { e: email })}</p>
+      {!OFFLINE && <p className="muted small">{t('Pensez à regarder dans vos spams. Si l’e-mail contient un code à 6 chiffres, saisissez-le ci-dessous.')}</p>}
       {OFFLINE && devCode && <div className="notice" style={{ textAlign: 'left' }}>{t('Mode local : aucun e-mail n’est envoyé. Votre code est {c}.', { c: devCode })}</div>}
       <input className="pillinput mt" value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="••••••" required minLength={6} style={{ letterSpacing: 10 }} aria-label={t('Code de vérification')} />
       {err && <div className="error">{err}</div>}

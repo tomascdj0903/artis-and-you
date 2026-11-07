@@ -1885,4 +1885,6 @@ export default {"(copie)":"(copy)",
 "Conditions de paiement, pénalités de retard, escompte : Paramètres › Factures.":"Payment terms, late penalties, discount: Settings › Invoices.",
 "RDV modifié":"Appointment changed",
 "RDV confirmé (modifié)":"Appointment confirmed (changed)",
-"Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.":"Got a link instead of a code? Just click it: your account will be activated and you'll be signed in."};
+"Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.":"Got a link instead of a code? Just click it: your account will be activated and you'll be signed in.",
+"Nous avons envoyé un e-mail à {e}. Cliquez sur le lien qu’il contient pour activer votre compte : vous serez connecté automatiquement.":"We sent an email to {e}. Click the link inside to activate your account: you'll be signed in automatically.",
+"Pensez à regarder dans vos spams. Si l’e-mail contient un code à 6 chiffres, saisissez-le ci-dessous.":"Check your spam folder. If the email contains a 6-digit code, enter it below."};

@@ -1885,4 +1885,6 @@ export default {"(copie)":"(copia)",
 "Conditions de paiement, pénalités de retard, escompte : Paramètres › Factures.":"Condizioni di pagamento, penali, sconto: Impostazioni › Fatture.",
 "RDV modifié":"Appuntamento modificato",
 "RDV confirmé (modifié)":"Appuntamento confermato (modificato)",
-"Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.":"Hai ricevuto un link invece di un codice? Cliccalo: il tuo account sarà attivato e sarai connesso."};
+"Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.":"Hai ricevuto un link invece di un codice? Cliccalo: il tuo account sarà attivato e sarai connesso.",
+"Nous avons envoyé un e-mail à {e}. Cliquez sur le lien qu’il contient pour activer votre compte : vous serez connecté automatiquement.":"Abbiamo inviato un'e-mail a {e}. Clicca sul link per attivare il tuo account: sarai connesso automaticamente.",
+"Pensez à regarder dans vos spams. Si l’e-mail contient un code à 6 chiffres, saisissez-le ci-dessous.":"Controlla lo spam. Se l'e-mail contiene un codice a 6 cifre, inseriscilo qui sotto."};
