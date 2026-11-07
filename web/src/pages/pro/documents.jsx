@@ -9,6 +9,7 @@ import { money, iso, clientName, date, fullName } from '../../lib/format.js';
 import { computeTotals, newLine, defaultLines, VAT_RATES, kindLabel, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
 import { TopBar, Sec, Field, Seg, Chips, Sheet, Modal, useData, Loader, Empty, Toggle, SearchBar } from '../../ui/index.jsx';
 import { DocList } from './doclist.jsx';
+import { LuBellRing } from 'react-icons/lu';
 import { dueReminders, nextReminder, scenarios, fillTemplate, sendReminder } from '../../lib/relances.js';
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
 
@@ -24,7 +25,8 @@ export function DocumentsHome() {
         {can('devis') && <button className="tile" onClick={() => navigate('/pro/documents/factures')}><LuFileText />{t('Factures')}</button>}
         <button className="tile" onClick={() => navigate('/pro/photos')}><LuCamera />{t('Photos')}</button>
         <button className="tile" onClick={() => navigate('/pro/autres-docs')}><LuFolderOpen />{t('Autres docs')}</button>
-        <button className="tile wide" onClick={() => navigate('/pro/coffre-fort')}><LuLock />{t('Mon coffre-fort')}</button>
+        <button className="tile" onClick={() => navigate('/pro/coffre-fort')}><LuLock />{t('Mon coffre-fort')}</button>
+        {can('devis') && <button className="tile" onClick={() => navigate('/pro/relances')}><LuBellRing />{t('Relances')}</button>}
       </div>
     </div>
   );
@@ -58,6 +60,29 @@ export function dueFrom(issue, terms = '') {
 const TERMS = ['À réception', '15 jours', '30 jours', '30 jours fin de mois', '45 jours fin de mois', '60 jours'];
 
 // ─────────────── Éditeur ───────────────
+// Nouvelle facture : choisir le type (facture, acompte, avoir). Acompte et avoir se rattachent à un devis / une facture du client.
+function KindPicker({ d, upd }) {
+  const { company } = useApp();
+  const [docs] = useData(() => (d.client_id ? api.select('documents', { company_id: company.id, client_id: d.client_id }) : Promise.resolve([])), [d.client_id]);
+  const src = d.kind === 'acompte' ? (docs || []).filter((x) => x.kind === 'devis' && x.number && ['accepte', 'envoye'].includes(x.status))
+    : d.kind === 'avoir' ? (docs || []).filter((x) => ['facture', 'acompte'].includes(x.kind) && x.number && x.status !== 'annulee') : [];
+  return (
+    <div className="card soft" style={{ marginBottom: 14 }}>
+      <div className="small bold mb">{t('Type de facture')}</div>
+      <Seg options={[['facture', t('Facture')], ['acompte', t("Facture d'acompte")], ['avoir', t('Avoir')]]} value={d.kind} onChange={(kind) => upd({ kind })} />
+      {d.kind !== 'facture' && <div style={{ marginTop: 10 }}>
+        {!d.client_id ? <p className="small muted" style={{ margin: 0 }}>{t('Choisissez d’abord le client.')}</p>
+          : <Field label={d.kind === 'acompte' ? t('Devis concerné') : t('Facture à corriger (obligatoire pour un avoir)')}>
+            <select value="" onChange={(e) => e.target.value && navigate(`/pro/documents/nouveau?kind=${d.kind}&from=${e.target.value}&client=${d.client_id}`, { replace: true })}>
+              <option value="">{src.length ? t('Choisir…') : d.kind === 'acompte' ? t('Aucun devis envoyé pour ce client') : t('Aucune facture émise pour ce client')}</option>
+              {src.map((x) => <option key={x.id} value={x.id}>{x.number} · {x.object || kindLabel(x.kind)} · {money(x.totals?.ttc)}</option>)}
+            </select></Field>}
+        {d.kind === 'acompte' && <p className="small faint" style={{ margin: 0 }}>{t('Sans devis, saisissez librement les lignes de l’acompte ci-dessous.')}</p>}
+      </div>}
+    </div>
+  );
+}
+
 export function DocEdit({ params }) {
   const { company, run, toast } = useApp();
   const { query } = useLocation();
@@ -78,7 +103,7 @@ export function DocEdit({ params }) {
       const cl = clients.find((c) => c.id === (query.get('client') || from?.client_id));
       const terms = cl?.payment_terms || ds.paymentTerms || '30 jours fin de mois';
       doc = { kind, client_id: cl?.id || '', project_id: query.get('project') || from?.project_id || '', object: from?.object || '', intervention_type: from?.intervention_type || 'Chantier', issue_date: issue, service_date: issue, due_date: dueFrom(issue, terms),
-        validity_days: ds.validity || 30, start_date: '', duration: '', deposit_pct: 0, reverse_charge: false, vat_on_debits: false, operations_nature: 'Biens et services',
+        validity_days: ds.validity || 30, start_date: '', duration: '', deposit_pct: kind === 'devis' ? Number(ds.depositPct ?? 0) : 0, reverse_charge: false, vat_on_debits: false, operations_nature: 'Biens et services',
         work_address: cl ? [cl.site_name, [cl.site_address, cl.site_zip, cl.site_city].filter(Boolean).join(' ')].filter(Boolean).join(' · ') : '', delivery_address: '',
         lines: from ? structuredClone(from.lines) : defaultLines().map((l) => ({ ...l, vat: franchise ? 0 : ds.vat ?? 20 })), conditions: { paymentTerms: terms }, source_id: from?.id || null, totals: {} };
       if (from && kind === 'acompte') {
@@ -96,7 +121,7 @@ export function DocEdit({ params }) {
     }
     setD(doc);
     return { clients, projects, items };
-  }, [params.id]);
+  }, [params.id, query.toString()]);
   if (!d || !b) return <div className="content"><TopBar title={t('Document')} /><Loader /></div>;
   if (d.locked) return <div className="content"><TopBar title={kindLabel(d.kind)} /><Empty text={t('Cette facture est émise : elle ne peut plus être modifiée. Créez un avoir.')} /></div>;
   const tot = computeTotals(d.lines, { franchise, reverse: d.reverse_charge, deductions: d.totals?.deductions || [] });
@@ -152,6 +177,7 @@ export function DocEdit({ params }) {
       <TopBar title={params.id ? t('Modifier') + ' · ' + kindLabel(d.kind) : t('Nouveau') + ' · ' + kindLabel(d.kind)} sub={d.number || t('Brouillon')} />
       <div style={{ maxWidth: 820 }}>
         <div>
+          {!params.id && !d.source_id && d.kind !== 'devis' && <KindPicker d={d} upd={upd} />}
           <Field label={t('Client')}><select value={d.client_id} onChange={(e) => pickClient(e.target.value)} disabled={!!d.source_id && d.kind !== 'devis'}><option value="">{t('Choisir un client')}</option>{b.clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)}{c.billing_city ? ' · ' + c.billing_city : ''}</option>)}</select></Field>
           {!b.clients.length && <p className="small">{t('Aucun client : ')}{' '}<a className="red-t bold" href="/pro/clients/nouveau">{t('créer un client')}</a></p>}
           <Field label={t('Objet')}><input value={d.object} onChange={(e) => upd({ object: e.target.value })} placeholder={t('ex. Changement d’un chauffe-eau')} /></Field>
@@ -348,6 +374,7 @@ export function SendModal({ open, b, onClose, onSent, pdfNode }) {
       const due = shift != null ? iso(new Date(Date.now() + shift * 864e5)) : d.due_date;
       await api.update('documents', { id: d.id }, { issue_date: today, due_date: due }); d.issue_date = today; d.due_date = due;
     }
+    if (!d.number && d.kind === 'avoir' && !d.source_id) throw new Error(t('Un avoir doit être rattaché à la facture qu’il corrige.'));
     const x = d.number ? d : await api.rpc('finalize_document', { p_id: d.id });
     if (d.kind === 'avoir' && d.source_id) {
       const src = await api.one('documents', { id: d.source_id });

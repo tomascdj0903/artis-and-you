@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LuUser, LuCreditCard, LuBuilding2, LuUsers, LuFileText, LuBell, LuPlug, LuShield, LuCircleHelp, LuLogOut, LuChevronRight, LuPalette, LuStar, LuCopy, LuPlus, LuImage, LuCheck, LuShieldCheck, LuDownload, LuLock } from 'react-icons/lu';
+import { LuUser, LuCreditCard, LuBuilding2, LuUsers, LuFileText, LuBell, LuPlug, LuShield, LuCircleHelp, LuLogOut, LuChevronRight, LuPalette, LuStar, LuCopy, LuPlus, LuImage, LuCheck, LuShieldCheck, LuDownload, LuLock, LuFilePen } from 'react-icons/lu';
 import { api, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
@@ -42,7 +42,8 @@ export function Account() {
       <div className="list">
         {ger && <MenuRow to="/pro/compte/entreprise" icon={LuBuilding2} label={t('Mon entreprise')} sub={company.name} />}
         <MenuRow to="/pro/compte/equipe" icon={LuUsers} label={t('Mon équipe')} />
-        {ger && <MenuRow to="/pro/compte/documents" icon={LuFileText} label={t('Devis et factures')} sub={t('Numérotation, TVA, paiement')} />}
+        {ger && <MenuRow to="/pro/compte/devis" icon={LuFilePen} label={t('Devis')} sub={t('Numérotation, TVA, validité, acompte')} />}
+        {ger && <MenuRow to="/pro/compte/factures" icon={LuFileText} label={t('Factures')} sub={t('Numérotation, paiement, mentions')} />}
         {ger && <MenuRow to="/pro/compte/avis" icon={LuStar} label={t('Mes avis clients')} />}
       </div>
       <Sec title={t('Application')} />
@@ -284,36 +285,54 @@ function PrefixField({ label, k, value, onChange, counters, kindLabel: kl }) {
   );
 }
 
-export function DocSettings() {
+// Réglages séparés : « Devis » et « Factures » (chacun avec ses valeurs par défaut et l'accès au modèle PDF)
+export const QuoteSettings = () => <DocSettings scope="devis" />;
+export const InvoiceSettings = () => <DocSettings scope="factures" />;
+export function DocSettings({ scope = 'factures' }) {
   const { company, setCompany, run, toast } = useApp();
-  const [s, setS] = useState({ quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', mediator: '', labourRate: 45, onlinePayment: true, einvoice: true, ...(company.settings?.docs || {}) });
+  const [s, setS] = useState({ quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, depositPct: 30, quoteTerms: '', paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', mediator: '', labourRate: 45, onlinePayment: true, einvoice: true, ...(company.settings?.docs || {}) });
   const [iban, setIban] = useState({ iban: company.iban || '', bic: company.bic || '' });
+  const isQ = scope === 'devis';
   const F = (k, label, props = {}) => <Field label={label}><input value={s[k] ?? ''} onChange={(e) => setS({ ...s, [k]: e.target.value })} {...props} /></Field>;
   const save = () => {
     const ps = [s.quotePrefix, s.invoicePrefix, s.creditPrefix];
     if (ps.some((x) => !PREFIX_RE.test(x || ''))) return toast(t('Préfixes : lettres et chiffres uniquement (6 max.)'), true);
     if (new Set(ps).size < 3) return toast(t('Les trois préfixes doivent être différents.'), true);
-    return run(async () => { const settings = { ...company.settings, docs: { ...s, vat: Number(s.vat), validity: Number(s.validity), labourRate: Number(s.labourRate) } }; await api.update('companies', { id: company.id }, { settings, ...iban }); setCompany({ ...company, settings, ...iban }); }, t('Réglages enregistrés'));
+    return run(async () => { const settings = { ...company.settings, docs: { ...s, vat: Number(s.vat), validity: Number(s.validity), labourRate: Number(s.labourRate), depositPct: Number(s.depositPct) } }; await api.update('companies', { id: company.id }, { settings, ...(isQ ? {} : iban) }); setCompany({ ...company, settings, ...(isQ ? {} : iban) }); }, t('Réglages enregistrés'));
   };
   const P = (k, label, kl) => <PrefixField k={k} label={label} kindLabel={kl} value={s[k] || ''} counters={company.counters} onChange={(v) => setS({ ...s, [k]: v })} />;
+  const pdfRow = <Link className="r" to="/pro/compte/pdf"><span className="k">{t('Modèle du PDF')}<small style={{ display: 'block', fontWeight: 400, color: 'var(--text-2)', fontSize: 12.5 }}>{t({ classique: 'Classique', moderne: 'Moderne', epure: 'Épuré' }[company.settings?.pdf?.template || 'classique'])} · {t('commun aux devis et factures')}</small></span><span className="v">›</span></Link>;
   return (
     <div className="content narrow">
-      <TopBar title={t('Devis et factures')} />
+      <TopBar title={isQ ? t('Devis') : t('Factures')} sub={t('Paramètres')} />
       <Sec title={t('Numérotation')} />
-      <div className="form-grid three">{P('quotePrefix', t('Préfixe devis'), t('devis'))}{P('invoicePrefix', t('Préfixe factures'), t('factures'))}{P('creditPrefix', t('Préfixe avoirs'), t('avoirs'))}</div>
-      <div className="notice small num-lock"><LuLock style={{ flexShrink: 0, marginTop: 2 }} /><div>{t('Les numéros sont attribués automatiquement à l’envoi, à la suite, sans trou, par année. Une facture envoyée ne peut plus être modifiée ni supprimée : pour la corriger, faites un avoir. La date d’une facture est celle de son émission.')}</div></div>
+      {isQ ? <div className="form-grid two">{P('quotePrefix', t('Préfixe devis'), t('devis'))}</div>
+        : <div className="form-grid two">{P('invoicePrefix', t('Préfixe factures'), t('factures'))}{P('creditPrefix', t('Préfixe avoirs'), t('avoirs'))}</div>}
+      {!isQ && <div className="notice small num-lock"><LuLock style={{ flexShrink: 0, marginTop: 2 }} /><div>{t('Les numéros sont attribués automatiquement à l’envoi, à la suite, sans trou, par année. Une facture envoyée ne peut plus être modifiée ni supprimée : pour la corriger, faites un avoir. La date d’une facture est celle de son émission.')}</div></div>}
       <Sec title={t('Valeurs par défaut')} />
-      <div className="form-grid two">
-        <Field label={t('TVA par défaut')}><select value={s.vat} onChange={(e) => setS({ ...s, vat: e.target.value })}>{[20, 10, 5.5, 2.1, 0].map((r) => <option key={r} value={r}>{r} %</option>)}</select></Field>
-        {F('validity', t('Validité des devis (jours)'), { type: 'number' })}{F('paymentTerms', t('Conditions de paiement'))}{F('penalties', t('Pénalités de retard'))}{F('discount', t('Escompte'))}{F('labourRate', t('Taux horaire main-d’œuvre (€ HT)'), { type: 'number' })}
-      </div>
+      {isQ ? <>
+        <div className="form-grid two">
+          <Field label={t('TVA par défaut')}><select value={s.vat} onChange={(e) => setS({ ...s, vat: e.target.value })}>{[20, 10, 5.5, 2.1, 0].map((r) => <option key={r} value={r}>{r} %</option>)}</select></Field>
+          {F('validity', t('Validité des devis (jours)'), { type: 'number', min: 1 })}
+          {F('labourRate', t('Taux horaire main-d’œuvre (€ HT)'), { type: 'number' })}
+          <Field label={t('Acompte demandé à la signature')}><select value={s.depositPct} onChange={(e) => setS({ ...s, depositPct: e.target.value })}>{[0, 10, 20, 30, 40, 50].map((r) => <option key={r} value={r}>{r ? r + ' %' : t('Aucun')}</option>)}</select></Field>
+        </div>
+        {F('quoteTerms', t('Mention en bas des devis'), { placeholder: t('ex. Devis gratuit. Bon pour accord : date et signature.') })}
+      </> : <>
+        <div className="form-grid two">
+          {F('paymentTerms', t('Conditions de paiement'))}{F('penalties', t('Pénalités de retard'))}{F('discount', t('Escompte'))}
+        </div>
+      </>}
       {F('mediator', t('Médiateur de la consommation (obligatoire pour les particuliers)'), { placeholder: t('Nom et site du médiateur') })}
-      <Sec title={t('Paiement')} />
-      <div className="form-grid two"><Field label="IBAN"><input value={iban.iban} onChange={(e) => setIban({ ...iban, iban: e.target.value.toUpperCase() })} /></Field><Field label="BIC"><input value={iban.bic} onChange={(e) => setIban({ ...iban, bic: e.target.value.toUpperCase() })} /></Field></div>
-      <div className="kv">
-        <SettingToggle label={t('Paiement en ligne (carte, prélèvement)')} hint={t('Ajoute un encart « Payer en ligne » sur vos factures (paiement en ligne bientôt disponible)')} checked={s.onlinePayment} onChange={(v) => setS({ ...s, onlinePayment: v })} />
-        <SettingToggle label={t('Facture électronique')} hint={t('Format exigé entre entreprises à partir de 2026–2027 (transmission via plateforme agréée bientôt disponible)')} checked={s.einvoice} onChange={(v) => setS({ ...s, einvoice: v })} />
-        <Link className="r" to="/pro/compte/pdf"><span className="k">{t('Modèle du PDF')}<small style={{ display: 'block', fontWeight: 400, color: 'var(--text-2)', fontSize: 12.5 }}>{t({ classique: 'Classique', moderne: 'Moderne', epure: 'Épuré' }[company.settings?.pdf?.template || 'classique'])}</small></span><span className="v">›</span></Link>
+      {!isQ && <>
+        <Sec title={t('Paiement')} />
+        <div className="form-grid two"><Field label="IBAN"><input value={iban.iban} onChange={(e) => setIban({ ...iban, iban: e.target.value.toUpperCase() })} /></Field><Field label="BIC"><input value={iban.bic} onChange={(e) => setIban({ ...iban, bic: e.target.value.toUpperCase() })} /></Field></div>
+      </>}
+      <div className="kv mt">
+        {!isQ && <SettingToggle label={t('Paiement en ligne (carte, prélèvement)')} hint={t('Ajoute un encart « Payer en ligne » sur vos factures (paiement en ligne bientôt disponible)')} checked={s.onlinePayment} onChange={(v) => setS({ ...s, onlinePayment: v })} />}
+        {!isQ && <SettingToggle label={t('Facture électronique')} hint={t('Format exigé entre entreprises à partir de 2026–2027 (transmission via plateforme agréée bientôt disponible)')} checked={s.einvoice} onChange={(v) => setS({ ...s, einvoice: v })} />}
+        {pdfRow}
+        <Link className="r" to={isQ ? '/pro/compte/factures' : '/pro/compte/devis'}><span className="k">{isQ ? t('Paramètres des factures') : t('Paramètres des devis')}</span><span className="v">›</span></Link>
       </div>
       <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
     </div>
@@ -374,8 +393,6 @@ export function NotifSettings() {
       <Sec title={t('Envois automatiques aux clients')} />
       <div className="kv">
         {R(['rappel_rdv', 'Rappel de RDV', 'La veille du rendez-vous'])}
-        <Link className="r" to="/pro/relances?tab=settings"><span className="k">{t('Relances factures et devis')}<small style={{ display: 'block', fontWeight: 400, color: 'var(--text-2)', fontSize: 12.5 }}>{rel?.auto ? t('Automatiques · scénario personnalisé') : t('Validées une par une · scénario personnalisable')}</small></span><span className="v">›</span></Link>
-        <Link className="r" to="/pro/relances"><span className="k">{t('Relances à faire')}</span><span className="v">›</span></Link>
       </div>
     </div>
   );

@@ -21,7 +21,8 @@ export function CrmHome() {
       <div className="tiles home" style={{ marginTop: 10 }}>
         <button className="tile" onClick={() => navigate('/pro/crm/statut')}>{t('Statut projet')}</button>
         {can('kpi') && <button className="tile" onClick={() => navigate('/pro/crm/kpi')}>{t('KPI')}</button>}
-        {can('prix') && <button className="tile wide" onClick={() => navigate('/pro/crm/bibliotheque')}>{t('Ma bibliothèque')}</button>}
+        {can('prix') && <button className="tile" onClick={() => navigate('/pro/crm/bibliotheque')}>{t('Ma bibliothèque')}</button>}
+        {can('devis') && <button className="tile" onClick={() => navigate('/pro/relances')}>{t('Relances')}</button>}
         {can('kpi') && <button className="tile wide" onClick={() => navigate('/pro/crm/export')}><LuFileSpreadsheet /> {t('Export comptable')}</button>}
       </div>
     </div>
@@ -89,10 +90,10 @@ export function ProjectStatus() {
       <TopBar title={t('Statut projet')} sub={t('{n} projets en cours', { n: enCours.length })} />
       <SearchBar placeholder={t('Recherchez un projet, un client, une adresse')} value={q} onChange={setQ} />
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
-        <div className="kpi"><div className="l">{t('Montant des projets en cours')}</div><div className="n">{money0(enCours.reduce((s, r) => s + r.info.amount, 0))} <small>{t('HT')}</small></div></div>
-        <div className="kpi"><div className="l">{t('Devis en attente de réponse')}</div><div className="n">{all.filter((r) => r.info.waiting).length}</div></div>
-        <div className="kpi"><div className="l">{t('À facturer')}</div><div className="n">{count('facturer')}</div></div>
-        <div className="kpi"><div className="l">{t('Reste à encaisser')}</div><div className="n">{money0(all.reduce((s, r) => s + r.info.due, 0))}</div></div>
+        <div className="kpi"><div className="l">{t('Projets en cours')}</div><div className="n">{enCours.length}</div><div className="small muted">{money0(enCours.reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
+        <div className="kpi"><div className="l">{t('Devis en attente de réponse')}</div><div className="n">{all.filter((r) => r.info.waiting).length}</div><div className="small muted">{money0(all.filter((r) => r.info.waiting).reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
+        <div className="kpi"><div className="l">{t('À facturer')}</div><div className="n">{count('facturer')}</div><div className="small muted">{money0(all.filter((r) => r.info.phase === 'facturer').reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
+        <div className="kpi red"><div className="l">{t('Facturé, à encaisser')}</div><div className="n">{count('encaisser')}</div><div className="small" style={{ opacity: .85 }}>{money0(all.reduce((s, r) => s + r.info.due, 0))} {t('TTC')}</div></div>
       </div>
       <div className="row wrap" style={{ gap: 8, margin: '6px 0 10px' }}>
         <Chips scroll options={[['', t('En cours ({n})', { n: enCours.length })], ...PHASES.map(([k, l]) => [k, `${t(l)} (${count(k)})`])]} value={phase} onChange={setPhase} />

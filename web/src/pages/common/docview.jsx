@@ -221,6 +221,7 @@ export function A4({ d, company, client, source, logoUrl }) {
         {company.insurer && <div><b>{t('Assurance décennale')} :</b> {company.insurer}{company.insurance_contract ? ', ' + t('contrat {n}', { n: company.insurance_contract }) : ''}, {t('couverture')} {company.insurance_coverage}.</div>}
         {client.type !== 'pro' && cond.mediator && <div><b>{t('Médiateur de la consommation')} :</b> {cond.mediator}</div>}
         {cond.notes && <div className="wsb">{cond.notes}</div>}
+        {isQuote && company.settings?.docs?.quoteTerms && <div className="wsb">{company.settings.docs.quoteTerms}</div>}
       </div>
       {isQuote ? (
         <div className="sig">
