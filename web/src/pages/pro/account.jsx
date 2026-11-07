@@ -12,6 +12,7 @@ import { siretValid } from '../auth/index.jsx';
 import { TopBar, Sec, KV, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img } from '../../ui/index.jsx';
 import { A4, useLogo } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
+import { SignatureEditor } from '../../ui/signature.jsx';
 
 export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
   const C = to ? Link : 'button';
@@ -345,12 +346,11 @@ const TEMPLATES = [
   ['epure', 'Épuré', 'Sobre, filets fins, sans aplat'],
 ];
 export function PdfSettings() {
-  const { company, setCompany, run } = useApp();
+  const { company, setCompany, run, profile } = useApp();
   const [p, setP] = useState({ color: '#7F1111', footer: '', signature: '', template: 'classique', ...(company.settings?.pdf || {}) });
   const [kind, setKind] = useState('facture');
   const logoUrl = useLogo(company);
   const sample = { kind, number: kind === 'devis' ? 'DE-2027-0001' : 'FA-2027-0001', issue_date: new Date().toISOString().slice(0, 10), due_date: new Date().toISOString().slice(0, 10), validity_days: 30, object: kind === 'devis' ? t('Exemple de devis') : t('Exemple de facture'), lines: [{ id: 'a', kind: 'section', label: t('Détail fournitures') }, { id: 'b', kind: 'item', label: t('Fourniture'), qty: 1, unit: 'u', price: 100, vat: 20 }, { id: 'c', kind: 'section', label: t('Détail prestations') }, { id: 'd', kind: 'item', label: t('Main-d’œuvre'), qty: 2, unit: 'h', price: 45, vat: 20 }], conditions: {}, totals: {}, operations_nature: 'Biens et services', paid_amount: 0 };
-  const sig = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (!f) return; const r = new FileReader(); r.onload = () => setP({ ...p, signature: r.result }); r.readAsDataURL(f); };
   const mini = (k) => k === 'moderne' ? <><i style={{ left: 0, right: 0, top: 0, height: 18, background: p.color }} /><i style={{ left: 8, top: 4, width: 14, height: 10, background: '#fff', borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 32, height: 6, background: '#00123B' }} /><i style={{ left: 8, right: 8, top: 42, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 48, height: 3, background: '#E5E7EE' }} /></>
     : k === 'epure' ? <><i style={{ left: 8, top: 6, width: 14, height: 10, border: '1.5px solid ' + p.color, borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 22, height: 1.5, background: p.color }} /><i style={{ left: 8, right: 8, top: 32, height: 1.5, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>
     : <><i style={{ left: 8, top: 6, width: 14, height: 10, background: '#00123B', borderRadius: 2 }} /><i style={{ right: 8, top: 7, width: 22, height: 5, background: p.color }} /><i style={{ left: 8, right: 8, top: 30, height: 6, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>;
@@ -363,10 +363,12 @@ export function PdfSettings() {
           <div className="tpl-pick">{TEMPLATES.map(([k, l, d]) => <button key={k} type="button" className={p.template === k ? 'on' : ''} onClick={() => setP({ ...p, template: k })}><div className="mini">{mini(k)}</div><b>{t(l)}</b><div className="small muted">{t(d)}</div></button>)}</div>
           <Sec title={t('Personnalisation')} />
           <Field label={t('Couleur')}><input type="color" value={p.color} onChange={(e) => setP({ ...p, color: e.target.value })} style={{ height: 48 }} /></Field>
-          <div className="row mb"><button className="btn ghost sm" onClick={() => navigate('/pro/compte/entreprise')}><LuImage /> {company.logo_path ? t('Changer le logo') : t('Ajouter mon logo')}</button><button className="btn ghost sm" onClick={sig}>{t('Signature (image)')}</button></div>
+          <div className="row mb"><button className="btn ghost sm" onClick={() => navigate('/pro/compte/entreprise')}><LuImage /> {company.logo_path ? t('Changer le logo') : t('Ajouter mon logo')}</button></div>
           <p className="small faint">{t('Votre logo apparaît en haut à gauche ; la mention « Document réalisé avec Artis & You » en bas de page.')}</p>
+          <Sec title={t('Signature')} />
+          <SignatureEditor p={p} setP={setP} defaultName={fullName(profile)} />
           <Field label={t('Pied de page')}><input value={p.footer} onChange={(e) => setP({ ...p, footer: e.target.value })} placeholder={t('ex. Membre d’une association agréée')} /></Field>
-          <button className="btn block" onClick={() => run(async () => { const settings = { ...company.settings, pdf: p }; await api.update('companies', { id: company.id }, { settings }); setCompany({ ...company, settings }); }, t('Modèle enregistré'))}>{t('Enregistrer')}</button>
+          <button className="btn block" onClick={() => { if (!p.sig_text) return alert(t('Saisissez votre nom pour créer votre signature.')); run(async () => { const settings = { ...company.settings, pdf: p }; await api.update('companies', { id: company.id }, { settings }); setCompany({ ...company, settings }); }, t('Modèle enregistré')); }}>{t('Enregistrer')}</button>
         </div>
         <div>
           <Sec title={t('Aperçu')}><div style={{ minWidth: 180 }}><Seg options={[['facture', t('Facture')], ['devis', t('Devis')]]} value={kind} onChange={setKind} /></div></Sec>

@@ -618,3 +618,11 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
 .req-card.r { align-self: flex-end; }
 .req-card svg { color: var(--bordeaux); }
 .req-card .req-text { font-style: italic; font-size: 14px; }
+/* Signature */
+.sigpad { width: 100%; height: 150px; border: 1.5px dashed var(--line); border-radius: 14px; background: #fff; touch-action: none; cursor: crosshair; display: block; }
+.sig-fonts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.sig-fonts button, .sig-use button { background: #fff; color: #00123B; border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 10px; font-size: 24px; min-height: 56px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sig-fonts button.on, .sig-use button.on { border-color: var(--bordeaux); box-shadow: 0 0 0 2px var(--bordeaux) inset; }
+.sig-use { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sig-use img { max-height: 48px; max-width: 100%; }
+.sig-use button:disabled { opacity: .6; }

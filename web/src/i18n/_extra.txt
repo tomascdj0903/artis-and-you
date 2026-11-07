@@ -713,3 +713,16 @@ RDV confirmé (modifié)|Appointment confirmed (changed)|Marcação confirmada (
 Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.|Got a link instead of a code? Just click it: your account will be activated and you'll be signed in.|Recebeu um link em vez de um código? Basta clicar nele: a sua conta será ativada e ficará ligado.|Hai ricevuto un link invece di un codice? Cliccalo: il tuo account sarà attivato e sarai connesso.
 Nous avons envoyé un e-mail à {e}. Cliquez sur le lien qu’il contient pour activer votre compte : vous serez connecté automatiquement.|We sent an email to {e}. Click the link inside to activate your account: you'll be signed in automatically.|Enviámos um e-mail para {e}. Clique no link para ativar a sua conta: ficará ligado automaticamente.|Abbiamo inviato un'e-mail a {e}. Clicca sul link per attivare il tuo account: sarai connesso automaticamente.
 Pensez à regarder dans vos spams. Si l’e-mail contient un code à 6 chiffres, saisissez-le ci-dessous.|Check your spam folder. If the email contains a 6-digit code, enter it below.|Verifique a pasta de spam. Se o e-mail tiver um código de 6 dígitos, introduza-o abaixo.|Controlla lo spam. Se l'e-mail contiene un codice a 6 cifre, inseriscilo qui sotto.
+Signez avec la souris, le doigt ou un stylet.|Sign with your mouse, finger or a stylus.|Assine com o rato, o dedo ou uma caneta.|Firma con il mouse, il dito o un pennino.
+Zone de signature|Signature area|Área de assinatura|Area della firma
+Effacer|Clear|Apagar|Cancella
+Signature avec votre nom|Signature with your name|Assinatura com o seu nome|Firma con il tuo nome
+obligatoire|required|obrigatório|obbligatorio
+facultatif|optional|opcional|facoltativo
+Prénom Nom|First Last|Nome Apelido|Nome Cognome
+Signature manuscrite|Handwritten signature|Assinatura manuscrita|Firma autografa
+Signature affichée sur vos devis et factures|Signature shown on your quotes and invoices|Assinatura apresentada nos orçamentos e faturas|Firma mostrata su preventivi e fatture
+Saisissez votre nom|Enter your name|Introduza o seu nome|Inserisci il tuo nome
+Aucune signature dessinée|No drawn signature|Nenhuma assinatura desenhada|Nessuna firma disegnata
+Saisissez votre nom pour créer votre signature.|Enter your name to create your signature.|Introduza o seu nome para criar a sua assinatura.|Inserisci il tuo nome per creare la firma.
+Signature|Signature|Assinatura|Firma
