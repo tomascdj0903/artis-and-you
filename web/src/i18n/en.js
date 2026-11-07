@@ -1884,4 +1884,5 @@ export default {"(copie)":"(copy)",
 "Paramètres › Devis (ou Factures) › Modèle du PDF.":"Settings › Quotes (or Invoices) › PDF template.",
 "Conditions de paiement, pénalités de retard, escompte : Paramètres › Factures.":"Payment terms, late penalties, discount: Settings › Invoices.",
 "RDV modifié":"Appointment changed",
-"RDV confirmé (modifié)":"Appointment confirmed (changed)"};
+"RDV confirmé (modifié)":"Appointment confirmed (changed)",
+"Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.":"Got a link instead of a code? Just click it: your account will be activated and you'll be signed in."};

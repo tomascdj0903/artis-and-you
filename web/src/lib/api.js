@@ -136,7 +136,7 @@ const remote = {
 
   // Authentification
   async signUp(email, password, data) {
-    const d = await http('/auth/v1/signup', { method: 'POST', body: { email, password, data }, auth: false });
+    const d = await http('/auth/v1/signup?redirect_to=' + encodeURIComponent(location.origin + '/'), { method: 'POST', body: { email, password, data }, auth: false });
     if (d.access_token) saveSession({ ...d, expires_at: Date.now() / 1000 + d.expires_in });
     return { needsConfirm: !d.access_token };
   },
@@ -190,7 +190,7 @@ const remote = {
 // Retour d'un lien e-mail (confirmation ou mot de passe oublié)
 if (!OFFLINE && location.hash.includes('access_token=')) {
   const h = new URLSearchParams(location.hash.slice(1));
-  saveSession({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token'), expires_in: +h.get('expires_in'), user: null, recovery: h.get('type') === 'recovery' });
+  saveSession({ access_token: h.get('access_token'), refresh_token: h.get('refresh_token'), expires_in: +h.get('expires_in'), expires_at: Date.now() / 1000 + (+h.get('expires_in') || 3600), user: null, recovery: h.get('type') === 'recovery' });
   history.replaceState(null, '', location.pathname);
   http('/auth/v1/user').then((u) => saveSession({ ...session, user: u })).catch(() => {});
 }

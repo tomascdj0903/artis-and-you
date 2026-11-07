@@ -710,3 +710,4 @@ Paramètres › Devis (ou Factures) › Modèle du PDF.|Settings › Quotes (or 
 Conditions de paiement, pénalités de retard, escompte : Paramètres › Factures.|Payment terms, late penalties, discount: Settings › Invoices.|Condições de pagamento, penalidades, desconto: Definições › Faturas.|Condizioni di pagamento, penali, sconto: Impostazioni › Fatture.
 RDV modifié|Appointment changed|Marcação alterada|Appuntamento modificato
 RDV confirmé (modifié)|Appointment confirmed (changed)|Marcação confirmada (alterada)|Appuntamento confermato (modificato)
+Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.|Got a link instead of a code? Just click it: your account will be activated and you'll be signed in.|Recebeu um link em vez de um código? Basta clicar nele: a sua conta será ativada e ficará ligado.|Hai ricevuto un link invece di un codice? Cliccalo: il tuo account sarà attivato e sarai connesso.

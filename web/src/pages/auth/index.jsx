@@ -187,6 +187,7 @@ export function VerifyEmailBox({ email, devCode: dc, onDone }) {
       <div className="big-ico" style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'grid', placeItems: 'center', margin: '0 auto', fontSize: 32 }}><LuMail /></div>
       <h2 className="mt">{t('Vérifiez votre adresse e-mail')}</h2>
       <p className="muted">{t('Nous avons envoyé un code à 6 chiffres à {e}. Saisissez-le pour activer votre compte.', { e: email })}</p>
+      {!OFFLINE && <p className="muted small">{t('Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.')}</p>}
       {OFFLINE && devCode && <div className="notice" style={{ textAlign: 'left' }}>{t('Mode local : aucun e-mail n’est envoyé. Votre code est {c}.', { c: devCode })}</div>}
       <input className="pillinput mt" value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="••••••" required minLength={6} style={{ letterSpacing: 10 }} aria-label={t('Code de vérification')} />
       {err && <div className="error">{err}</div>}

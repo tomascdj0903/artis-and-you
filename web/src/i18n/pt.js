@@ -1884,4 +1884,5 @@ export default {"(copie)":"(cópia)",
 "Paramètres › Devis (ou Factures) › Modèle du PDF.":"Definições › Orçamentos (ou Faturas) › Modelo do PDF.",
 "Conditions de paiement, pénalités de retard, escompte : Paramètres › Factures.":"Condições de pagamento, penalidades, desconto: Definições › Faturas.",
 "RDV modifié":"Marcação alterada",
-"RDV confirmé (modifié)":"Marcação confirmada (alterada)"};
+"RDV confirmé (modifié)":"Marcação confirmada (alterada)",
+"Vous avez reçu un lien plutôt qu’un code ? Cliquez simplement dessus : votre compte sera activé et vous serez connecté.":"Recebeu um link em vez de um código? Basta clicar nele: a sua conta será ativada e ficará ligado."};
