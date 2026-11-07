@@ -31,7 +31,7 @@ export function Messages() {
   const unreadN = list.filter(({ c }) => c.last_message && (!reads[c.id] || reads[c.id] < c.last_at)).length;
   return (
     <div className="content">
-      <TopBar title={t('Messages')} back={false} />
+      <TopBar title={t('Messages')} back={false} settings="/pro/compte/notifications" />
       <SearchBar placeholder={t('Recherchez un contact')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={kinds.length > 0} />
       <Sec title={t('Conversations')} meta={t('{n} non lues', { n: unreadN })} />
       {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation. Écrivez à un client, à une équipe ou à un pro avec le bouton en bas.')} /> : (
@@ -119,7 +119,7 @@ export function Network() {
   const startChat = async (co) => { const id = await api.rpc('start_conversation', { p_company: co.id }); navigate('/pro/messages/' + id); };
   return (
     <div className="content">
-      <TopBar title={t('Mon réseau')} sub={t('Mes pros')} back={false} />
+      <TopBar title={t('Mon réseau')} sub={t('Mes pros')} back={false} settings="/pro/compte/entreprise" />
       <SearchBar placeholder={t('Recherchez un pro')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={trades.length > 0} />
       <div className="sec"><h2>{t('Mes contacts')} <span className="small muted" style={{ fontWeight: 400 }}>· {t('{n} pros', { n: b.length })}</span></h2><button className="plus" onClick={() => navigate('/pro/reseau/ajouter')} aria-label={t('Ajouter un pro')}><LuPlus /></button></div>
       {!list.length ? <Empty icon={LuUserPlus} text={t('Ajoutez les artisans avec qui vous travaillez pour échanger et partager des chantiers.')}><button className="btn sm" onClick={() => navigate('/pro/reseau/ajouter')}>{t('Ajouter un pro')}</button></Empty> : (

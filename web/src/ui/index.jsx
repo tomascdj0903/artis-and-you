@@ -1,6 +1,6 @@
 // Composants d'interface partagés
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { LuChevronLeft, LuChevronRight, LuSlidersHorizontal, LuSearch, LuBell, LuX, LuCamera, LuInbox } from 'react-icons/lu';
+import { LuSettings, LuChevronLeft, LuChevronRight, LuSlidersHorizontal, LuSearch, LuBell, LuX, LuCamera, LuInbox } from 'react-icons/lu';
 import { navigate, Link } from '../lib/router.jsx';
 import { useApp } from '../lib/store.jsx';
 import { fileUrls, cachedUrl } from '../lib/api.js';
@@ -29,7 +29,7 @@ export function Avatar({ name = '', last = '', path, ring, size = '', onClick, c
   );
 }
 
-export function TopBar({ title, sub, back = true, right, onBack, home }) {
+export function TopBar({ title, sub, back = true, right, onBack, home, settings }) {
   const { profile, isPro, unread } = useApp();
   const base = isPro ? '/pro' : '/client';
   return (
@@ -41,6 +41,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home }) {
       <div className="title">{title && <h1>{title}</h1>}{sub && <div className="sub">{sub}</div>}</div>
       <div className="right">
         {right}
+        {settings && <Link to={settings} className="iconbtn" aria-label={t('Réglages')} title={t('Réglages')}><LuSettings /></Link>}
         <Link to={base + '/notifications'} className="iconbtn hide-mob" aria-label={t('Notifications')}><LuBell />{unread.notifs > 0 && <span className="dot" />}</Link>
         {profile && <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} ring={!isPro} onClick={() => navigate(base + '/compte')} />}
       </div>

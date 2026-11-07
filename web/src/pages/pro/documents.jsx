@@ -18,7 +18,7 @@ export function DocumentsHome() {
   const [q, setQ] = useState('');
   return (
     <div className="content">
-      <TopBar title={t('Documents')} back={false} />
+      <TopBar title={t('Documents')} back={false} settings="/pro/compte/factures" />
       <SmartSearch scope="documents" placeholder={t('Recherchez un devis, une facture, un document')} />
       <div className="tiles home" style={{ marginTop: 10 }}>
         {can('devis') && <button className="tile" onClick={() => navigate('/pro/documents/devis')}><LuFilePen />{t('Devis')}</button>}
@@ -40,7 +40,7 @@ function AllDocs({ kind }) {
   }, [kind]);
   return (
     <div className="content">
-      <TopBar title={kind === 'devis' ? t('Devis') : t('Factures')} sub={t('Tous les clients')} />
+      <TopBar title={kind === 'devis' ? t('Devis') : t('Factures')} sub={t('Tous les clients')} settings={kind === 'devis' ? '/pro/compte/devis' : '/pro/compte/factures'} />
       {b ? <DocList docs={b.docs} clients={b.cm} kind={kind} newHref={`/pro/documents/nouveau?kind=${kind}`} /> : <Loader />}
     </div>
   );
@@ -415,7 +415,7 @@ export function DocPdf({ params }) {
   if (!b) return <div className="content"><TopBar title={t('Aperçu PDF')} /><Loader /></div>;
   return (
     <div className="content">
-      <TopBar title={t('Aperçu PDF')} sub={pdfName(b.d)} />
+      <TopBar title={t('Aperçu PDF')} sub={pdfName(b.d)} settings="/pro/compte/pdf" />
       <A4Preview bundle={b} innerRef={ref} />
       <div className="center small faint mt"><span className="pill navy">{t('Page 1 / 1')}</span></div>
       <div className="btns inline">
