@@ -247,7 +247,7 @@ begin
   if public.my_company() is null then raise exception 'Réservé aux entreprises'; end if;
   select calendar_token into tok from public.companies where id = public.my_company();
   if tok is null or p_reset then
-    tok := encode(gen_random_bytes(24), 'hex');
+    tok := encode(extensions.gen_random_bytes(24), 'hex');
     perform set_config('ay.trusted','1',true);
     update public.companies set calendar_token = tok where id = public.my_company();
   end if;

@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
   const { data: co } = await db.from('companies').select('id,name,trade_name').eq('calendar_token', token).maybeSingle();
   if (!co) return new Response('Lien invalide ou révoqué', { status: 404 });
   const since = new Date(Date.now() - 90 * 864e5).toISOString();
-  let q = db.from('appointments').select('id,title,type,start_at,end_at,address,mode,status,recurrence,team_id,client_id,contact_name,contact_phone,updated_at')
+  let q = db.from('appointments').select('id,title,type,start_at,end_at,address,mode,status,recurrence,team_id,client_id,contact_name,contact_phone,created_at')
     .eq('company_id', co.id).in('status', ['valide', 'a_valider', 'termine']).gte('end_at', since).order('start_at').limit(2000);
   const team = url.searchParams.get('team'); if (team) q = q.eq('team_id', team);
   const { data: ap } = await q;
@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     'X-WR-CALNAME:' + esc('Artis & You · ' + (co.trade_name || co.name)), 'X-WR-TIMEZONE:Europe/Paris', 'REFRESH-INTERVAL;VALUE=DURATION:PT15M', 'X-PUBLISHED-TTL:PT15M'];
   for (const a of ap || []) {
     const who = name(cm[a.client_id]);
-    L.push('BEGIN:VEVENT', 'UID:' + a.id + '@artisandyou', 'DTSTAMP:' + f(a.updated_at || new Date()), 'DTSTART:' + f(a.start_at), 'DTEND:' + f(a.end_at),
+    L.push('BEGIN:VEVENT', 'UID:' + a.id + '@artisandyou', 'DTSTAMP:' + f(new Date()), 'DTSTART:' + f(a.start_at), 'DTEND:' + f(a.end_at),
       'SUMMARY:' + esc((a.status === 'a_valider' ? '[À valider] ' : '') + (a.title || a.type) + (who ? ' · ' + who : '')),
       'STATUS:' + (a.status === 'a_valider' ? 'TENTATIVE' : 'CONFIRMED'));
     if (a.mode === 'visio') L.push('LOCATION:Visio WhatsApp'); else if (a.address) L.push('LOCATION:' + esc(a.address));
