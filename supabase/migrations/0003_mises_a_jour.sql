@@ -207,3 +207,49 @@ begin
   end if;
   return new;
 end $$;
+
+-- ───────────────── RDV : une notification au client à chaque modification (date, heure, équipe, visio/site, adresse) ─────────────────
+create or replace function public.on_appointment() returns trigger
+language plpgsql security definer set search_path = public as $$
+declare uid uuid; ch text := '';
+begin
+  select user_id into uid from public.clients where id = new.client_id;
+  if uid is null or uid = auth.uid() then return new; end if;
+  if tg_op = 'UPDATE' then
+    if (new.start_at at time zone 'Europe/Paris')::date is distinct from (old.start_at at time zone 'Europe/Paris')::date then ch := ch || ' · date : ' || to_char(new.start_at at time zone 'Europe/Paris','DD/MM'); end if;
+    if to_char(new.start_at at time zone 'Europe/Paris','HH24:MI') is distinct from to_char(old.start_at at time zone 'Europe/Paris','HH24:MI') or new.end_at is distinct from old.end_at then
+      ch := ch || ' · heure : ' || to_char(new.start_at at time zone 'Europe/Paris','HH24:MI') || '–' || to_char(new.end_at at time zone 'Europe/Paris','HH24:MI'); end if;
+    if new.team_id is distinct from old.team_id then ch := ch || ' · équipe : ' || coalesce((select name from public.teams where id = new.team_id), '—'); end if;
+    if new.mode is distinct from old.mode then ch := ch || case when new.mode = 'visio' then ' · en visio (WhatsApp)' else ' · sur site' end; end if;
+    if coalesce(new.address,'') is distinct from coalesce(old.address,'') and new.mode <> 'visio' then ch := ch || ' · adresse : ' || new.address; end if;
+  end if;
+  if tg_op = 'UPDATE' and new.status is distinct from old.status then
+    insert into public.notifications(user_id, category, title, body, link) values (uid, 'rdv',
+      case new.status when 'valide' then case when ch <> '' then 'RDV confirmé (modifié)' else 'RDV confirmé' end when 'refuse' then 'RDV refusé' when 'annule' then 'RDV annulé' when 'termine' then 'Intervention terminée' else 'RDV mis à jour' end,
+      new.title || ' · ' || to_char(new.start_at at time zone 'Europe/Paris','DD/MM HH24:MI') || case when new.status = 'valide' then ch else '' end, '/client/rdv/'||new.id);
+  elsif tg_op = 'UPDATE' and ch <> '' then
+    insert into public.notifications(user_id, category, title, body, link) values (uid,'rdv','RDV modifié', new.title || ch, '/client/rdv/'||new.id);
+  elsif tg_op = 'UPDATE' and new.enroute_at is distinct from old.enroute_at and new.enroute_at is not null then
+    insert into public.notifications(user_id, category, title, body, link) values (uid,'rdv','Votre artisan est en route',
+      coalesce('Arrivée prévue vers ' || to_char(new.eta_at at time zone 'Europe/Paris','HH24"h"MI'), ''), '/client/rdv/'||new.id||'?enroute=1');
+  elsif tg_op = 'INSERT' then
+    insert into public.notifications(user_id, category, title, body, link) values (uid,'rdv','Nouveau RDV', new.title || ' · ' || to_char(new.start_at at time zone 'Europe/Paris','DD/MM HH24:MI'), '/client/rdv/'||new.id);
+  end if;
+  return new;
+end $$;
+
+-- ───────────────── Agenda par abonnement (lien secret lu par Google Agenda / Outlook / iPhone) ─────────────────
+alter table public.companies add column if not exists calendar_token text unique;
+create or replace function public.calendar_token(p_reset boolean default false) returns text
+language plpgsql security definer set search_path = public as $$
+declare tok text;
+begin
+  if public.my_company() is null then raise exception 'Réservé aux entreprises'; end if;
+  select calendar_token into tok from public.companies where id = public.my_company();
+  if tok is null or p_reset then
+    tok := encode(gen_random_bytes(24), 'hex');
+    perform set_config('ay.trusted','1',true);
+    update public.companies set calendar_token = tok where id = public.my_company();
+  end if;
+  return tok;
+end $$;

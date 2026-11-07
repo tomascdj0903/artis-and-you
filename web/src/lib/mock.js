@@ -110,8 +110,17 @@ export function mockBackend({ saveSession, getSession }) {
       const cl = db.clients.find((c) => c.id === row.client_id);
       const u = cl?.user_id;
       if (u && u !== me()) {
-        if (row.status !== oldRow.status) notify(u, 'rdv', { valide: 'RDV confirmé', refuse: 'RDV refusé', annule: 'RDV annulé', termine: 'Intervention terminée' }[row.status] || 'RDV mis à jour', `${row.title} · ${fmtDT(row.start_at)}`, '/client/rdv/' + row.id);
-        else if (row.start_at !== oldRow.start_at) notify(u, 'rdv', 'RDV déplacé', `${row.title} · ${fmtDT(row.start_at)}`, '/client/rdv/' + row.id);
+        // Ce qui a changé (date, heure, équipe, visio / sur site, adresse) : une seule notification qui liste tout
+        const d0 = new Date(oldRow.start_at), d1 = new Date(row.start_at);
+        const ch = [];
+        if (d0.toDateString() !== d1.toDateString()) ch.push('date : ' + d1.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }));
+        if (d0.toTimeString().slice(0, 5) !== d1.toTimeString().slice(0, 5) || oldRow.end_at !== row.end_at) ch.push('heure : ' + d1.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + '–' + new Date(row.end_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
+        if ((oldRow.team_id || null) !== (row.team_id || null)) ch.push('équipe : ' + (db.teams.find((x) => x.id === row.team_id)?.name || '—'));
+        if (oldRow.mode !== row.mode) ch.push(row.mode === 'visio' ? 'en visio (WhatsApp)' : 'sur site');
+        if ((oldRow.address || '') !== (row.address || '') && row.mode !== 'visio') ch.push('adresse : ' + row.address);
+        const detail = ch.length ? ' · ' + ch.join(' · ') : '';
+        if (row.status !== oldRow.status) notify(u, 'rdv', { valide: ch.length ? 'RDV confirmé (modifié)' : 'RDV confirmé', refuse: 'RDV refusé', annule: 'RDV annulé', termine: 'Intervention terminée' }[row.status] || 'RDV mis à jour', `${row.title} · ${fmtDT(row.start_at)}${row.status === 'valide' ? detail : ''}`, '/client/rdv/' + row.id);
+        else if (ch.length) notify(u, 'rdv', 'RDV modifié', `${row.title}${detail}`, '/client/rdv/' + row.id);
         else if (row.enroute_at && row.enroute_at !== oldRow.enroute_at) notify(u, 'rdv', 'Votre artisan est en route', row.eta_at ? 'Arrivée prévue vers ' + new Date(row.eta_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '', '/client/rdv/' + row.id + '?enroute=1');
       }
     }
@@ -169,6 +178,11 @@ export function mockBackend({ saveSession, getSession }) {
       return c;
     },
     // Après une demande de compléments : le gérant renvoie son dossier à l'équipe
+    calendar_token({ p_reset } = {}) {
+      const c = db.companies.find((x) => x.id === myCompany()); if (!c) throw new Error('Réservé aux entreprises');
+      if (!c.calendar_token || p_reset) c.calendar_token = Array.from(crypto.getRandomValues(new Uint8Array(24)), (b) => b.toString(16).padStart(2, '0')).join('');
+      return c.calendar_token;
+    },
     resubmit_company() {
       const c = db.companies.find((x) => x.id === myCompany()); if (!c) throw new Error('Entreprise introuvable');
       if (c.verification_status !== 'rejected') return c;

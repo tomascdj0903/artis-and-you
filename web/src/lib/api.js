@@ -5,6 +5,7 @@ const ENV = typeof __ENV__ !== 'undefined' ? __ENV__ : {};
 const URL_ = (ENV.SUPABASE_URL || '').replace(/\/$/, '');
 const KEY = ENV.SUPABASE_KEY || '';
 export const OFFLINE = !URL_ || !KEY || new URLSearchParams(location.search).has('local');
+export const SUPABASE_URL = URL_;
 export const APP_VERSION = ENV.APP_VERSION || '1.0.0';
 export const GITHUB_REPO = ENV.GITHUB_REPO || '';
 export const ADMIN_EMAILS = String(ENV.ADMIN_EMAILS || '').toLowerCase().split(',').map((x) => x.trim()).filter(Boolean);

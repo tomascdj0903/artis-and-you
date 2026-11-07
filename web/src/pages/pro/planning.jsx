@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { LuChevronLeft, LuChevronRight, LuSettings, LuPlus, LuVideo, LuMapPin, LuSend, LuImage, LuCalendarPlus, LuNavigation, LuCheck } from 'react-icons/lu';
-import { api } from '../../lib/api.js';
+import { api, OFFLINE, SUPABASE_URL } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
@@ -12,7 +12,7 @@ import { TopBar, SearchBar, KV, Sec, Sheet, Field, Chips, Seg, Toggle, SettingTo
 export const DEFAULT_DURATIONS = { Diagnostic: 60, 'Dépannage': 90, Devis: 60, Entretien: 60, Chantier: 240 };
 const PALETTE = ['#00123B', '#7F1111', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
 const hashColor = (s = '') => PALETTE[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % PALETTE.length];
-export const planSettings = (company) => ({ view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true, ...(company?.settings?.planning || {}), durations: { ...DEFAULT_DURATIONS, ...(company?.settings?.planning?.durations || {}) } });
+export const planSettings = (company) => ({ view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true, ...(company?.settings?.planning || {}), durations: { ...DEFAULT_DURATIONS, ...(company?.settings?.planning?.durations || {}) }, offered: company?.settings?.planning?.offered || APPT_TYPES.filter((x) => x !== 'Diagnostic') });
 // Nombre de colonnes de la semaine : jusqu'au dernier jour travaillé (le dimanche s'affiche s'il est coché)
 export const weekLength = (s) => (s.weekend || s.days.includes(0) ? 7 : s.days.includes(6) ? 6 : 5);
 
@@ -32,7 +32,7 @@ export function freeWindows(day, busy, s, minLen = 30) {
 }
 
 export function Planning() {
-  const { company, teams, profile, can, run } = useApp();
+  const { company, teams, profile, can, run, confirm } = useApp();
   const s = planSettings(company);
   const { query } = useLocation();
   const [view, setView] = useState(query.get('vue') || s.view);
@@ -60,6 +60,9 @@ export function Planning() {
   const moveAppt = async (a, start) => {
     const dur = new Date(a.end_at) - new Date(a.start_at);
     if (+start === +new Date(a.start_at)) return;
+    const c = data?.cm[a.client_id];
+    const ok = await confirm({ title: t('Déplacer ce rendez-vous ?'), text: t('{t} : du {a} au {b}.', { t: a.title || t(a.type), a: `${dateShort(a.start_at)} ${hm(a.start_at)}`, b: `${dateShort(start)} ${hm(start)}` }) + (c?.user_id ? ' ' + t('{n} sera prévenu par notification.', { n: clientName(c) }) : ''), ok: t('Déplacer') });
+    if (!ok) return;
     const prev = { start_at: a.start_at, end_at: a.end_at };
     await run(() => api.update('appointments', { id: a.id }, { start_at: start.toISOString(), end_at: new Date(+start + dur).toISOString() }));
     setUndo({ a, prev, label: `${dateShort(start)} ${hm(start)}` }); reload();
@@ -300,22 +303,19 @@ export function ApptDetail({ params }) {
             {a.status === 'valide' && <>
               {a.mode === 'visio' ? phone && <a className="btn" href={wa} target="_blank" rel="noreferrer"><LuVideo /> {t('Lancer la visio sur WhatsApp')} ↗</a>
                 : a.address && <button className="btn" onClick={() => setEnroute(true)}><LuNavigation /> {t("Lancer l'itinéraire")}</button>}
-              <div className="two"><button className="btn ghost sm" onClick={() => setMoveOpen(true)}>{t('Déplacer le rendez-vous')}</button><button className="btn light sm" onClick={() => setStatus('annule', { title: t('Annuler ce rendez-vous ?'), text: t('Le client sera prévenu.'), ok: t('Annuler le RDV'), danger: true })}>{t('Annuler')}</button></div>
+              <div className="two"><button className="btn ghost sm" onClick={() => setMoveOpen(true)}>{t('Déplacer le rendez-vous')}</button><button className="btn ghost-red sm" onClick={() => setStatus('annule', { title: t('Annuler ce rendez-vous ?'), text: t('Le client sera prévenu.'), ok: t('Annuler le RDV'), danger: true })}>{t('Annuler')}</button></div>
               <button className="btn ghost sm" onClick={() => setStatus('termine')}><LuCheck /> {t('Marquer comme terminé')}</button>
             </>}
             {!a.personal && a.client_id && <div className="two">
               <button className="btn ghost sm" onClick={() => navigate(`/pro/documents/nouveau?kind=devis&client=${a.client_id}&project=${a.project_id || ''}&appt=${a.id}`)}>{t('Créer un devis')}</button>
               <button className="btn ghost sm" onClick={() => navigate(`/pro/clients/${a.client_id}/chat`)}>{t('Écrire au client')}</button>
             </div>}
-            <div className="two">
-              <button className="btn light sm" onClick={() => icsFile([{ id: a.id, start: a.start_at, end: a.end_at, title: (a.title || a.type) + (c ? ' · ' + clientName(c) : ''), location: a.address, rrule: rrule(a.recurrence) }])}><LuCalendarPlus /> {t('Mon agenda')}</button>
-              <button className="btn light sm" onClick={() => navigate(`/pro/planning/rdv/${a.id}/modifier`)}>{t('Modifier')}</button>
-            </div>
+            <button className="btn ghost-red sm" onClick={() => navigate(`/pro/planning/rdv/${a.id}/modifier`)}>{t('Modifier')}</button>
           </div>
         </div>
       </div>
       <EnRoute open={enroute} a={a} c={c} onClose={() => setEnroute(false)} done={() => { setEnroute(false); reload(); goRoute(); }} skip={() => { setEnroute(false); goRoute(); }} />
-      <MoveSheet open={moveOpen} a={a} onClose={() => setMoveOpen(false)} onDone={async (start, end) => {
+      <MoveSheet open={moveOpen} a={a} settings={planSettings(company)} onClose={() => setMoveOpen(false)} onDone={async (start, end) => {
         await run(async () => {
           await api.update('appointments', { id: a.id }, { start_at: start.toISOString(), end_at: end.toISOString(), status: 'valide', validated_at: new Date().toISOString() });
           await notifyChat({ type: 'cal', title: t('Nouveau créneau proposé') + ' · ' + dateShort(start) + ' ' + hm(start), sub: t('Vous pouvez le déplacer depuis vos RDV si besoin.') });
@@ -364,28 +364,40 @@ function EnRoute({ open, a, c, onClose, done, skip }) {
   );
 }
 
-export function MoveSheet({ open, a, onClose, onDone }) {
+export function MoveSheet({ open, a, onClose, onDone, settings }) {
   const [d, setD] = useState(a ? iso(new Date(a.start_at)) : '');
   const [h, setH] = useState(a ? hm(a.start_at) : '09:00');
+  const [busy] = useData(async () => (open && a?.company_id ? api.select('appointments', { company_id: a.company_id, status: ['valide', 'a_valider'] }).catch(() => []) : []), [open, d]);
   if (!open) return null;
   const dur = new Date(a.end_at) - new Date(a.start_at);
+  // Heures proposées : toutes les 15 min sur la plage de travail ; celles qui chevauchent un autre RDV sont signalées
+  const [h0, h1] = settings?.slot || [7, 20];
+  const opts = [];
+  for (let m = h0 * 60; m + dur / 6e4 <= h1 * 60; m += 15) opts.push(String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'));
+  if (!opts.includes(h)) opts.unshift(h);
+  const taken = (hh) => { const st = new Date(d + 'T' + hh), en = new Date(+st + dur); return (busy || []).some((x) => x.id !== a.id && new Date(x.start_at) < en && new Date(x.end_at) > st); };
   return (
     <Sheet open onClose={onClose} title={t('Nouveau créneau')}>
-      <div className="form-grid two"><Field label={t('Date')}><input type="date" value={d} onChange={(e) => setD(e.target.value)} /></Field><Field label={t('Heure')}><input type="time" value={h} onChange={(e) => setH(e.target.value)} step={900} /></Field></div>
-      <button className="btn block" onClick={() => { const s = new Date(d + 'T' + h); onDone(s, new Date(+s + dur)); }}>{t('Confirmer')}</button>
+      <div className="form-grid two">
+        <Field label={t('Date')}><input type="date" value={d} onChange={(e) => setD(e.target.value)} /></Field>
+        <Field label={t('Heure')}><select value={h} onChange={(e) => setH(e.target.value)}>{opts.map((x) => <option key={x} value={x}>{x}{taken(x) ? ' · ' + t('déjà occupé') : ''}</option>)}</select></Field>
+      </div>
+      <p className="small muted">{t('Durée conservée : {d}', { d: fmtDur(Math.round(dur / 6e4)) })} · {t('fin à {h}', { h: hm(new Date(+new Date(d + 'T' + h) + dur)) })}</p>
+      <button className="btn block" onClick={() => { const st = new Date(d + 'T' + h); onDone(st, new Date(+st + dur)); }}>{t('Confirmer')}</button>
     </Sheet>
   );
 }
 
 // ─────────────── Création / modification ───────────────
 export function ApptEdit({ params }) {
-  const { company, teams, run, profile } = useApp();
+  const { company, teams, run, profile, toast } = useApp();
+  const [orig, setOrig] = useState(null);
   const s = planSettings(company);
   const { query } = useLocation();
   const [a, setA] = useState(null);
   const [clients] = useData(() => api.select('clients', { company_id: company.id }, { order: 'last_name.asc' }), []);
   useData(async () => {
-    if (params.id) { setA(await api.one('appointments', { id: params.id })); return; }
+    if (params.id) { const x = await api.one('appointments', { id: params.id }); setA(x); setOrig(x); return; }
     const st = query.get('start') ? new Date(query.get('start')) : (() => { const x = new Date(); x.setDate(x.getDate() + 1); x.setHours(9, 0, 0, 0); return x; })();
     const cl = query.get('client') ? await api.one('clients', { id: query.get('client') }) : null;
     setA({ client_id: cl?.id || '', type: 'Chantier', title: '', start_at: st.toISOString(), end_at: new Date(+st + (s.durations.Chantier || s.duration) * 6e4).toISOString(), mode: 'site', status: 'valide', team_id: profile.team_id || teams[0]?.id || '', address: cl ? [cl.site_address, [cl.site_zip, cl.site_city].filter(Boolean).join(' ')].filter(Boolean).join(', ') : '', contact_name: cl ? clientName(cl) : '', contact_phone: cl?.mobile || cl?.phone || '', recurrence: 'none', personal: false, notes: '', ...(query.get('project') ? { project_id: query.get('project') } : {}), ...(query.get('type') ? { type: query.get('type'), end_at: new Date(+st + (s.durations[query.get('type')] || s.duration) * 6e4).toISOString() } : {}) });
@@ -403,7 +415,11 @@ export function ApptEdit({ params }) {
     const row = { ...a, client_id: a.personal ? null : a.client_id || null, team_id: a.team_id || null, title: a.title || t(a.type) };
     delete row.id; delete row.created_at;
     await run(async () => {
-      if (params.id) { await api.update('appointments', { id: params.id }, row); navigate(-1); }
+      if (params.id) {
+        await api.update('appointments', { id: params.id }, row);
+        if (row.client_id && orig && ['start_at', 'end_at', 'team_id', 'mode', 'address'].some((k) => (orig[k] || '') !== (row[k] || ''))) toast(t('Rendez-vous modifié, le client est prévenu'));
+        navigate(-1);
+      }
       else {
         if (row.client_id && !row.project_id) { const p = await api.insert('projects', { company_id: company.id, client_id: row.client_id, title: row.title, address: row.address }); row.project_id = p.id; }
         const x = await api.insert('appointments', { ...row, company_id: company.id, validated_at: new Date().toISOString() });
@@ -425,7 +441,8 @@ export function ApptEdit({ params }) {
           <Field label={t('Début')}><input type="time" value={h1} step={900} onChange={(e) => setTime(d, e.target.value, h2)} required /></Field>
           <Field label={t('Fin')}><input type="time" value={h2} step={900} onChange={(e) => setTime(d, h1, e.target.value)} required /></Field>
         </div>
-        <Seg options={[['site', t('Sur site')], ['visio', t('En visio')]]} value={a.mode} onChange={(mode) => setA({ ...a, mode })} />
+        <div className="small bold" style={{ margin: '4px 0 6px' }}>{t('Lieu du rendez-vous')}</div>
+        <Seg options={[['site', t('Sur site')], ['visio', t('En visio (WhatsApp)')]]} value={a.mode} onChange={(mode) => setA({ ...a, mode })} />
         <div className="form-grid two">
           <Field label={t('Équipe')}><select value={a.team_id || ''} onChange={(e) => setA({ ...a, team_id: e.target.value })}><option value="">—</option>{teams.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></Field>
           <Field label={t('Récurrence')}><select value={a.recurrence} onChange={(e) => setA({ ...a, recurrence: e.target.value })}><option value="none">{t('Aucune')}</option><option value="weekly">{t('Chaque semaine')}</option><option value="monthly">{t('Chaque mois')}</option><option value="yearly">{t('Chaque année (entretien)')}</option></select></Field>
@@ -452,6 +469,7 @@ export function PlanningSettings() {
     setCompany({ ...company, settings });
   };
   const hours = Array.from({ length: 24 }, (_, i) => i);
+  const [sync, setSync] = useState(false);
   const DAYS = [[1, 'Lun'], [2, 'Mar'], [3, 'Mer'], [4, 'Jeu'], [5, 'Ven'], [6, 'Sam'], [0, 'Dim']];
   return (
     <div className="content narrow">
@@ -477,20 +495,56 @@ export function PlanningSettings() {
         <div className="r"><span className="k">{t('Rappel au client')}</span><select value={s.reminder} onChange={(e) => save({ reminder: +e.target.value })}>{[0, 2, 24, 48].map((h) => <option key={h} value={h}>{h ? t('{n} h avant', { n: h }) : t('Aucun')}</option>)}</select></div>
         <SettingToggle label={t('Rendez-vous en visio (WhatsApp)')} hint={s.visio ? t('Vos clients peuvent demander une visio WhatsApp') : t('Vos clients ne peuvent demander que des rendez-vous sur place')} checked={s.visio} onChange={(v) => save({ visio: v })} />
       </div>
-      <Sec title={t('Durée par type de rendez-vous')} />
-      <p className="small muted" style={{ marginTop: -4 }}>{t('Utilisée pour proposer les créneaux aux clients et pré-remplir l’heure de fin.')}</p>
+      <Sec title={t('Types de rendez-vous proposés')} />
+      <p className="small muted" style={{ marginTop: -4 }}>{t('Cochez ce que vos clients peuvent réserver en ligne, et la durée de chacun (comme sur Doctolib). Vous pouvez toujours créer tous les types vous-même.')}</p>
       <div className="kv">
-        {APPT_TYPES.map((ty) => <div className="r" key={ty}><span className="k">{t(ty)}</span><select value={s.durations[ty] || s.duration} onChange={(e) => save({ durations: { ...s.durations, [ty]: +e.target.value } })}>{DUR_OPTS.map((m) => <option key={m} value={m}>{fmtDur(m)}</option>)}</select></div>)}
+        {APPT_TYPES.map((ty) => { const on = s.offered.includes(ty); return (
+          <div className="r set-row" key={ty}>
+            <label className="row" style={{ gap: 10, flex: 1, cursor: 'pointer' }}><input type="checkbox" role="switch" className="toggle" checked={on} onChange={(e) => { const offered = e.target.checked ? [...s.offered, ty] : s.offered.filter((x) => x !== ty); if (!offered.length) return; save({ offered }); }} /><span className={'k' + (on ? '' : ' faint')}>{t(ty)}</span></label>
+            <select value={s.durations[ty] || s.duration} disabled={!on} onChange={(e) => save({ durations: { ...s.durations, [ty]: +e.target.value } })} aria-label={t('Durée')}>{DUR_OPTS.map((m) => <option key={m} value={m}>{fmtDur(m)}</option>)}</select>
+          </div>); })}
         <div className="r"><span className="k">{t('Autre rendez-vous')}</span><select value={s.duration} onChange={(e) => save({ duration: +e.target.value })}>{DUR_OPTS.map((m) => <option key={m} value={m}>{fmtDur(m)}</option>)}</select></div>
       </div>
       <Sec title={t('Synchronisation')} />
       <div className="kv">
-        <button className="r" style={{ width: '100%', border: 0, background: 'transparent', color: 'inherit' }} onClick={() => wip(t('La synchronisation Google Agenda / Outlook'))}><span className="k">{t('Agenda externe')}</span><span className="v">Google, Outlook ›</span></button>
+        <button className="r" style={{ width: '100%', border: 0, background: 'transparent', color: 'inherit' }} onClick={() => setSync(true)}><span className="k">{t('Relier mon agenda')}<small style={{ display: 'block', fontWeight: 400, color: 'var(--text-2)', fontSize: 12.5 }}>{t('Tout le planning dans Google Agenda, Outlook ou l’iPhone, mis à jour automatiquement')}</small></span><span className="v">›</span></button>
         <button className="r" style={{ width: '100%', border: 0, background: 'transparent', color: 'inherit' }} onClick={async () => {
           const ap = await api.select('appointments', { company_id: company.id, status: ['valide', 'a_valider'] });
           icsFile(ap.map((x) => ({ id: x.id, start: x.start_at, end: x.end_at, title: x.title, location: x.address, rrule: rrule(x.recurrence) })), 'planning-artis-and-you.ics');
         }}><span className="k">{t('Exporter mon planning (.ics)')}</span><span className="v">›</span></button>
       </div>
+      <AgendaSync open={sync} onClose={() => setSync(false)} />
     </div>
+  );
+}
+
+// Relier tout l'agenda par abonnement (comme un emploi du temps universitaire) : un lien secret à coller une seule fois
+function AgendaSync({ open, onClose }) {
+  const { run, toast, confirm } = useApp();
+  const [tok, setTok] = useState(null);
+  useEffect(() => { if (open && !tok) api.rpc('calendar_token', {}).then(setTok).catch(() => setTok('')); }, [open]);
+  if (!open) return null;
+  const feed = OFFLINE ? '' : `${SUPABASE_URL}/functions/v1/agenda?token=${tok}`;
+  const webcal = feed.replace(/^https:/, 'webcal:');
+  const copy = () => { navigator.clipboard?.writeText(feed); toast(t('Lien copié')); };
+  return (
+    <Sheet open onClose={onClose} title={t('Relier mon agenda')}>
+      <p className="small">{t('Votre planning Artis & You apparaît dans votre agenda habituel et se met à jour tout seul (toutes les 15 min à quelques heures selon l’application). Les modifications se font dans Artis & You.')}</p>
+      {OFFLINE ? <div className="notice small">{t('Disponible quand l’application sera en ligne (serveur Supabase). En attendant, utilisez « Exporter mon planning (.ics) ».')}</div> : !tok ? <Loader /> : <>
+        <div className="card soft small" style={{ wordBreak: 'break-all', fontFamily: 'ui-monospace, monospace' }}>{feed}</div>
+        <div className="row" style={{ gap: 8, margin: '8px 0 14px', flexWrap: 'wrap' }}>
+          <button className="btn sm" onClick={copy}>{t('Copier le lien')}</button>
+          <a className="btn sm ghost" href={'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(webcal)} target="_blank" rel="noreferrer">Google Agenda ↗</a>
+          <a className="btn sm ghost" href={'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(feed) + '&name=Artis%20%26%20You'} target="_blank" rel="noreferrer">Outlook ↗</a>
+          <a className="btn sm ghost" href={webcal}>{t('iPhone / Mac')}</a>
+        </div>
+        <ol className="small" style={{ paddingLeft: 18, margin: 0 }}>
+          <li>{t('Google Agenda : « Autres agendas » › + › « À partir de l’URL », collez le lien.')}</li>
+          <li>{t('Outlook : « Ajouter un calendrier » › « S’abonner à partir du web ».')}</li>
+          <li>{t('iPhone : Réglages › Calendrier › Comptes › Ajouter un compte › Autre › « Ajouter un calendrier avec abonnement ».')}</li>
+        </ol>
+        <p className="small faint mt">{t('Ce lien est personnel : toute personne qui l’a peut voir votre planning.')} <button className="link bold" onClick={async () => { if (await confirm({ title: t('Créer un nouveau lien ?'), text: t('L’ancien lien cessera de fonctionner : il faudra relier à nouveau vos agendas.'), ok: t('Nouveau lien') })) run(async () => setTok(await api.rpc('calendar_token', { p_reset: true })), t('Nouveau lien créé')); }}>{t('Changer le lien')}</button></p>
+      </>}
+    </Sheet>
   );
 }

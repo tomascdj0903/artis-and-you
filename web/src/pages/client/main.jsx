@@ -167,6 +167,7 @@ export function NewRequest({ params }) {
   }, [params.id]);
   if (!b) return <div className="content"><TopBar title={t('Nouvelle demande')} /><Loader /></div>;
   const s = planSettings({ settings: { planning: b.p.planning || {} } });
+  if (s.offered.length && !s.offered.includes(type)) setTimeout(() => setType(s.offered[0]), 0);
   const days = Array.from({ length: 21 }, (_, i) => addDays(from, i)).filter((d) => s.days.includes(d.getDay()) && freeWindows(d, b.busySlots, s, 30).length);
   const curDay = day || days[0];
   const slots = [];
@@ -200,7 +201,7 @@ export function NewRequest({ params }) {
   return (
     <div className="content narrow">
       <TopBar title={t('Nouvelle demande')} sub={coName(b.p)} />
-      <Chips options={['Dépannage', 'Devis', 'Entretien', 'Chantier'].map((x) => [x, t(x)])} value={type} onChange={setType} />
+      <Chips options={s.offered.map((x) => [x, t(x)])} value={s.offered.includes(type) ? type : s.offered[0]} onChange={setType} />
       <Sec title={t('Votre besoin')} />
       <textarea className="input" style={{ minHeight: 130, borderColor: 'var(--bordeaux)' }} value={text} onChange={(e) => setText(e.target.value)} placeholder={t('Décrivez le problème : depuis quand, où, ce que vous avez déjà fait…')} />
       <Sec title={t('Photos ou vidéo')} meta={t('{n} photos', { n: photos.length })} />
