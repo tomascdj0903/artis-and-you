@@ -718,5 +718,5 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
   .kv .r { flex-wrap: wrap; }
 }
 @media (max-width: 700px) {
-  .notifpop { position: fixed; left: 12px; right: 12px; top: 78px; width: auto; }
+  .notifpop { position: fixed; left: 12px; right: 12px; top: calc(env(safe-area-inset-top, 0px) + 96px); width: auto; }
 }
