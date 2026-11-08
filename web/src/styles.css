@@ -826,3 +826,10 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
   .lp-cmp td { padding: 10px; }
   .cm { width: 26px; height: 26px; }
 }
+@media (min-width: 641px) {
+  .lp-cmp-wrap { max-width: none; }
+  .lp-cmp th:first-child { width: 34%; }
+  .lp-cmp th { font-size: 15px; }
+  .lp-cmp td { padding: 13px 16px; }
+  .lp-cmp td:first-child { padding-left: 22px; }
+}
