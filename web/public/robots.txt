@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /pro
+Disallow: /client
+Sitemap: https://artis-and-you.vercel.app/sitemap.xml

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
+import { Landing } from './pages/auth/landing.jsx';
 import { useLocation, matchRoute, navigate, Link } from './lib/router.jsx';
 import { t, loadLang, getLang } from './lib/i18n.js';
 import { Loader, Avatar } from './ui/index.jsx';
@@ -18,7 +19,7 @@ import * as Cli from './pages/client/index.js';
 import * as Common from './pages/common/index.jsx';
 
 const PUBLIC = [
-  ['/connexion', Auth.Login], ['/inscription', Auth.SignupChoice], ['/inscription/artisan', Auth.SignupPro], ['/inscription/particulier', Auth.SignupClient],
+  ['/', Landing], ['/connexion', Auth.Login], ['/inscription', Auth.SignupChoice], ['/inscription/artisan', Auth.SignupPro], ['/inscription/particulier', Auth.SignupClient],
   ['/mot-de-passe-oublie', Auth.Forgot], ['/verification', Auth.Verify], ['/nouveau-mot-de-passe', Auth.NewPassword], ['/telecharger', Legal.Download],
   ['/mentions-legales', Legal.Mentions], ['/cgu', Legal.CGU], ['/confidentialite', Legal.Privacy],
 ];
@@ -148,7 +149,7 @@ function App() {
     if (!ready) return;
     if (session?.recovery && path !== '/nouveau-mot-de-passe') { navigate('/nouveau-mot-de-passe', { replace: true }); return; }
     const isPublic = !!find(PUBLIC, path);
-    if (path === '/' || (!logged && !isPublic)) { navigate(logged ? (isPro ? '/pro' : '/client') : '/connexion', { replace: true }); return; }
+    if ((path === '/' && (logged || navigator.userAgent.includes('Electron'))) || (!logged && !isPublic)) { navigate(logged ? (isPro ? '/pro' : '/client') : '/connexion', { replace: true }); return; }
     if (logged && ['/connexion', '/inscription', '/inscription/particulier'].includes(path)) { navigate(isPro ? '/pro' : '/client', { replace: true }); return; }
     if (logged && profile.kind === 'artisan' && !profile.company_id && path !== '/inscription/artisan') { navigate('/inscription/artisan', { replace: true }); return; }
     if (logged && path.startsWith('/pro') && !isPro) navigate('/client', { replace: true });
