@@ -817,3 +817,12 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
 }
 .only-mob { display: none !important; }
 @media (max-width: 640px) { .only-mob { display: block !important; } .lp-switch.only-mob { display: grid !important; } .only-desk { display: none !important; } }
+/* Comparatif : colonnes égales et plus serrées sur ordinateur */
+@media (min-width: 641px) {
+  .lp-cmp-wrap { max-width: 1000px; }
+  .lp-cmp table { table-layout: fixed; }
+  .lp-cmp th:first-child { width: 40%; }
+  .lp-cmp th { padding: 14px 10px; font-size: 13.5px; line-height: 1.25; }
+  .lp-cmp td { padding: 10px; }
+  .cm { width: 26px; height: 26px; }
+}
