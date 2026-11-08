@@ -1918,4 +1918,12 @@ export default {"(copie)":"(cópia)",
 "Signature électronique":"Assinatura eletrónica",
 "Aucune notification pour le moment":"Ainda sem notificações",
 "Voir toutes les notifications":"Ver todas as notificações",
-"Non lue":"Não lida"};
+"Non lue":"Não lida",
+"Situation n°{n} · avancement {p} %":"Fatura de situação n.º {n} · {p} % concluído",
+"Facture de situation (avancement)":"Fatura de situação (avanço)",
+"Facture de situation":"Fatura de situação",
+"Facturez le chantier au fur et à mesure de l’avancement. Indiquez l’avancement total atteint : seule la part depuis la dernière situation est facturée.":"Fature a obra à medida que avança. Indique o avanço total: só é faturada a parte desde a última situação.",
+"Avancement total du chantier (%)":"Avanço total da obra (%)",
+"Déjà facturé : {p} %":"Já faturado: {p} %",
+"Chantier entièrement facturé":"Obra totalmente faturada",
+"Créer la situation ({p} % à facturer)":"Criar a situação ({p} % a faturar)"};

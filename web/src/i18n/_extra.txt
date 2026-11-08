@@ -746,3 +746,11 @@ Signature électronique|Electronic signature|Assinatura eletrónica|Firma elettr
 Aucune notification pour le moment|No notifications yet|Ainda sem notificações|Nessuna notifica per ora
 Voir toutes les notifications|See all notifications|Ver todas as notificações|Vedi tutte le notifiche
 Non lue|Unread|Não lida|Non letta
+Situation n°{n} · avancement {p} %|Progress invoice no. {n} · {p}% complete|Fatura de situação n.º {n} · {p} % concluído|SAL n. {n} · avanzamento {p} %
+Facture de situation (avancement)|Progress invoice|Fatura de situação (avanço)|Fattura SAL (avanzamento)
+Facture de situation|Progress invoice|Fatura de situação|Fattura SAL
+Facturez le chantier au fur et à mesure de l’avancement. Indiquez l’avancement total atteint : seule la part depuis la dernière situation est facturée.|Invoice the job as it progresses. Enter the total progress reached: only the share since the last progress invoice is billed.|Fature a obra à medida que avança. Indique o avanço total: só é faturada a parte desde a última situação.|Fattura il cantiere man mano che avanza. Indica l'avanzamento totale: si fattura solo la parte dall'ultimo SAL.
+Avancement total du chantier (%)|Total job progress (%)|Avanço total da obra (%)|Avanzamento totale del cantiere (%)
+Déjà facturé : {p} %|Already invoiced: {p}%|Já faturado: {p} %|Già fatturato: {p} %
+Chantier entièrement facturé|Job fully invoiced|Obra totalmente faturada|Cantiere interamente fatturato
+Créer la situation ({p} % à facturer)|Create progress invoice ({p}% to bill)|Criar a situação ({p} % a faturar)|Crea il SAL ({p} % da fatturare)

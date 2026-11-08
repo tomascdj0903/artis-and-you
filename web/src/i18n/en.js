@@ -1918,4 +1918,12 @@ export default {"(copie)":"(copy)",
 "Signature électronique":"Electronic signature",
 "Aucune notification pour le moment":"No notifications yet",
 "Voir toutes les notifications":"See all notifications",
-"Non lue":"Unread"};
+"Non lue":"Unread",
+"Situation n°{n} · avancement {p} %":"Progress invoice no. {n} · {p}% complete",
+"Facture de situation (avancement)":"Progress invoice",
+"Facture de situation":"Progress invoice",
+"Facturez le chantier au fur et à mesure de l’avancement. Indiquez l’avancement total atteint : seule la part depuis la dernière situation est facturée.":"Invoice the job as it progresses. Enter the total progress reached: only the share since the last progress invoice is billed.",
+"Avancement total du chantier (%)":"Total job progress (%)",
+"Déjà facturé : {p} %":"Already invoiced: {p}%",
+"Chantier entièrement facturé":"Job fully invoiced",
+"Créer la situation ({p} % à facturer)":"Create progress invoice ({p}% to bill)"};

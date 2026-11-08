@@ -117,6 +117,18 @@ export function DocEdit({ params }) {
         doc.totals = { deductions: deps.filter((x) => x.number).map((x) => ({ id: x.id, number: x.number, ttc: x.totals?.ttc || 0 })) };
         doc.work_address = from.work_address; doc.delivery_address = from.work_address;
       }
+      if (from && kind === 'facture' && from.kind === 'devis' && query.get('situation')) {
+        // Facture de situation : on facture l'avancement depuis la situation précédente
+        const pct = Math.min(100, Math.max(1, Number(query.get('situation'))));
+        const prev = (await api.select('documents', { source_id: from.id, kind: 'facture' })).filter((x) => x.number && x.conditions?.situation && x.status !== 'annulee');
+        const prevPct = prev.reduce((m, x) => Math.max(m, Number(x.conditions.situation.pct || 0)), 0);
+        const delta = Math.max(0, pct - prevPct);
+        const n = prev.length + 1;
+        doc.lines = from.lines.map((l) => (l.kind === 'item' ? { ...l, id: l.id + '-s' + n, qty: Math.round(Number(l.qty || 0) * delta * 100) / 10000 } : { ...l }));
+        doc.object = t('Situation n°{n} · avancement {p} %', { n, p: pct }) + (from.object ? ' · ' + from.object : '');
+        doc.conditions = { ...doc.conditions, situation: { n, pct, prev: prevPct, devis: from.number, devis_ht: Number(from.totals?.ht || 0) } };
+        doc.totals = {};
+      }
       if (from && kind === 'avoir') { doc.object = t('Avoir sur la facture {n}', { n: from.number }); doc.work_address = from.work_address; }
     }
     setD(doc);
@@ -262,6 +274,7 @@ export function DocDetail({ params }) {
   const [pay, setPay] = useState(false);
   const [sign, setSign] = useState(false);
   const [acompte, setAcompte] = useState(false);
+  const [situation, setSituation] = useState(false);
   const [rel, setRel] = useState(null);
   if (!b) return <div className="content"><TopBar title={t('Document')} /><Loader /></div>;
   const { d, client } = b;
@@ -297,6 +310,7 @@ export function DocDetail({ params }) {
         </>}
         {isQ && st === 'accepte' && <>
           <button className="btn" onClick={() => navigate(`/pro/documents/nouveau?kind=facture&from=${d.id}`)}>{t('Transformer en facture')}</button>
+          <button className="btn ghost sm" onClick={() => setSituation(true)}>{t('Facture de situation (avancement)')}</button>
           <div className="two"><button className="btn ghost sm" onClick={() => setAcompte(true)}>{t("Facture d'acompte")}</button><button className="btn ghost sm" onClick={() => navigate(`/pro/planning/nouveau?client=${d.client_id}`)}>{t('Planifier le chantier')}</button></div>
         </>}
         {!isQ && d.number && d.kind !== 'avoir' && <>
@@ -327,6 +341,9 @@ export function DocDetail({ params }) {
       <Sheet open={sign} onClose={() => setSign(false)} title={t('Devis signé')}>
         <SignForm onSave={async (name) => { await run(() => api.update('documents', { id: d.id }, { status: 'accepte', accepted_at: new Date().toISOString(), signed_name: name }), t('Devis marqué comme signé')); setSign(false); reload(); }} defaultName={clientName(client)} />
       </Sheet>
+      <Sheet open={situation} onClose={() => setSituation(false)} title={t('Facture de situation')}>
+        <SituationForm d={d} onGo={(pct) => navigate(`/pro/documents/nouveau?kind=facture&from=${d.id}&situation=${pct}`)} />
+      </Sheet>
       <Sheet open={acompte} onClose={() => setAcompte(false)} title={t("Facture d'acompte")}>
         <AcompteForm d={d} onGo={(pct) => navigate(`/pro/documents/nouveau?kind=acompte&from=${d.id}&pct=${pct}`)} />
       </Sheet>
@@ -336,6 +353,19 @@ export function DocDetail({ params }) {
 function SignForm({ onSave, defaultName }) {
   const [n, setN] = useState(defaultName);
   return <><p className="muted">{t('Pour un devis signé sur papier ou par un autre moyen.')}</p><Field label={t('Signé par')}><input value={n} onChange={(e) => setN(e.target.value)} /></Field><button className="btn block" onClick={() => onSave(n)}>{t('Enregistrer')}</button></>;
+}
+function SituationForm({ d, onGo }) {
+  const { company } = useApp();
+  const [prev] = useData(async () => (await api.select('documents', { company_id: company.id, source_id: d.id, kind: 'facture' })).filter((x) => x.number && x.conditions?.situation && x.status !== 'annulee'), [d.id]);
+  const done = (prev || []).reduce((m, x) => Math.max(m, Number(x.conditions.situation.pct || 0)), 0);
+  const [p, setP] = useState('');
+  const v = Number(p);
+  return <>
+    <p className="muted">{t('Facturez le chantier au fur et à mesure de l’avancement. Indiquez l’avancement total atteint : seule la part depuis la dernière situation est facturée.')}</p>
+    {prev && prev.length > 0 && <div className="card soft mb">{prev.map((x) => <div key={x.id} className="small">{x.number} · {t('Situation n°{n} · avancement {p} %', { n: x.conditions.situation.n, p: x.conditions.situation.pct })}</div>)}</div>}
+    <Field label={t('Avancement total du chantier (%)')} hint={t('Déjà facturé : {p} %', { p: done })}><input type="number" min={done + 1} max="100" value={p} onChange={(e) => setP(e.target.value)} placeholder={String(Math.min(100, done + 30))} /></Field>
+    <button className="btn block" disabled={!(v > done && v <= 100)} onClick={() => onGo(v)}>{done >= 100 ? t('Chantier entièrement facturé') : t('Créer la situation ({p} % à facturer)', { p: v > done ? v - done : 0 })}</button>
+  </>;
 }
 function AcompteForm({ d, onGo }) {
   const [p, setP] = useState(d.deposit_pct || 30);

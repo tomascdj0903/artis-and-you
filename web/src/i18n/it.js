@@ -1918,4 +1918,12 @@ export default {"(copie)":"(copia)",
 "Signature électronique":"Firma elettronica",
 "Aucune notification pour le moment":"Nessuna notifica per ora",
 "Voir toutes les notifications":"Vedi tutte le notifiche",
-"Non lue":"Non letta"};
+"Non lue":"Non letta",
+"Situation n°{n} · avancement {p} %":"SAL n. {n} · avanzamento {p} %",
+"Facture de situation (avancement)":"Fattura SAL (avanzamento)",
+"Facture de situation":"Fattura SAL",
+"Facturez le chantier au fur et à mesure de l’avancement. Indiquez l’avancement total atteint : seule la part depuis la dernière situation est facturée.":"Fattura il cantiere man mano che avanza. Indica l'avanzamento totale: si fattura solo la parte dall'ultimo SAL.",
+"Avancement total du chantier (%)":"Avanzamento totale del cantiere (%)",
+"Déjà facturé : {p} %":"Già fatturato: {p} %",
+"Chantier entièrement facturé":"Cantiere interamente fatturato",
+"Créer la situation ({p} % à facturer)":"Crea il SAL ({p} % da fatturare)"};
