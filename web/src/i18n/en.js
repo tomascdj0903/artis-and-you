@@ -1926,4 +1926,8 @@ export default {"(copie)":"(copy)",
 "Avancement total du chantier (%)":"Total job progress (%)",
 "Déjà facturé : {p} %":"Already invoiced: {p}%",
 "Chantier entièrement facturé":"Job fully invoiced",
-"Créer la situation ({p} % à facturer)":"Create progress invoice ({p}% to bill)"};
+"Créer la situation ({p} % à facturer)":"Create progress invoice ({p}% to bill)",
+"{n} produits ajoutés":"{n} products added",
+"Démarrez plus vite":"Get started faster",
+"Ajoutez {n} ouvrages et articles courants de votre métier, avec des prix indicatifs à ajuster.":"Add {n} common jobs and items for your trade, with indicative prices to adjust.",
+"Ajouter la bibliothèque de démarrage":"Add the starter library"};

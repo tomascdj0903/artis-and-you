@@ -1926,4 +1926,8 @@ export default {"(copie)":"(cópia)",
 "Avancement total du chantier (%)":"Avanço total da obra (%)",
 "Déjà facturé : {p} %":"Já faturado: {p} %",
 "Chantier entièrement facturé":"Obra totalmente faturada",
-"Créer la situation ({p} % à facturer)":"Criar a situação ({p} % a faturar)"};
+"Créer la situation ({p} % à facturer)":"Criar a situação ({p} % a faturar)",
+"{n} produits ajoutés":"{n} produtos adicionados",
+"Démarrez plus vite":"Comece mais depressa",
+"Ajoutez {n} ouvrages et articles courants de votre métier, avec des prix indicatifs à ajuster.":"Adicione {n} trabalhos e artigos comuns da sua profissão, com preços indicativos a ajustar.",
+"Ajouter la bibliothèque de démarrage":"Adicionar a biblioteca inicial"};

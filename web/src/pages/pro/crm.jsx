@@ -5,6 +5,7 @@ import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
+import { starterFor } from '../../lib/starter.js';
 import { money, money0, date, dateShort, clientName, iso, num } from '../../lib/format.js';
 import { STEPS, autoSteps, stepState, ALL_TRADES, VAT_RATES, kindLabel } from '../../lib/docs.js';
 import { makeXlsx, download } from '../../lib/xlsx.js';
@@ -337,8 +338,11 @@ export function Library() {
   const [tab, setTab] = useState('article');
   const [fam, setFam] = useState('');
   const [q, setQ] = useState('');
-  const [items] = useData(() => api.select('items', { company_id: company.id }, { order: 'name.asc' }), []);
+  const { run } = useApp();
+  const [items, reload] = useData(() => api.select('items', { company_id: company.id }, { order: 'name.asc' }), []);
   if (!items) return <div className="content"><TopBar title={t('Ma bibliothèque')} /><Loader /></div>;
+  const starter = starterFor(company.trades || []).filter((x) => !items.some((i) => i.name === x.name));
+  const addStarter = () => run(async () => { for (const x of starter) await api.insert('items', { ...x, company_id: company.id }); reload(); }, t('{n} produits ajoutés', { n: starter.length }));
   const families = [...new Set(items.filter((i) => i.kind === tab).map((i) => i.family).filter(Boolean))];
   const list = items.filter((i) => i.kind === tab && (!fam || i.family === fam) && (!q || (i.name + ' ' + i.ref + ' ' + i.family).toLowerCase().includes(q.toLowerCase())));
   return (
@@ -346,6 +350,7 @@ export function Library() {
       <TopBar title={t('Ma bibliothèque')} sub={(company.trades || []).slice(0, 2).map(t).join(' · ')} />
       <SearchBar placeholder={t('Recherchez un produit')} value={q} onChange={setQ} />
       <Seg options={[['article', t('Articles · {n}', { n: items.filter((i) => i.kind === 'article').length })], ['ouvrage', t('Ouvrages · {n}', { n: items.filter((i) => i.kind === 'ouvrage').length })]]} value={tab} onChange={(v) => { setTab(v); setFam(''); }} />
+      {items.length < 8 && starter.length > 0 && <div className="card soft mb"><b>{t('Démarrez plus vite')}</b><div className="small muted" style={{ margin: '4px 0 10px' }}>{t('Ajoutez {n} ouvrages et articles courants de votre métier, avec des prix indicatifs à ajuster.', { n: starter.length })}</div><button className="btn sm" onClick={addStarter}>{t('Ajouter la bibliothèque de démarrage')}</button></div>}
       {families.length > 0 && <Chips scroll options={[['', t('Tout')], ...families.map((f) => [f, f])]} value={fam} onChange={setFam} />}
       {!list.length ? <Empty text={tab === 'article' ? t('Ajoutez vos produits (fournitures) avec leur prix d’achat et de vente.') : t('Un ouvrage regroupe des articles et de la main-d’œuvre (ex. « Pose d’un chauffe-eau »).')} /> : (
         <div className="list">{list.map((i) => (

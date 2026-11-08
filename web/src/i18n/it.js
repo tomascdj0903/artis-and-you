@@ -1926,4 +1926,8 @@ export default {"(copie)":"(copia)",
 "Avancement total du chantier (%)":"Avanzamento totale del cantiere (%)",
 "Déjà facturé : {p} %":"Già fatturato: {p} %",
 "Chantier entièrement facturé":"Cantiere interamente fatturato",
-"Créer la situation ({p} % à facturer)":"Crea il SAL ({p} % da fatturare)"};
+"Créer la situation ({p} % à facturer)":"Crea il SAL ({p} % da fatturare)",
+"{n} produits ajoutés":"{n} prodotti aggiunti",
+"Démarrez plus vite":"Parti più in fretta",
+"Ajoutez {n} ouvrages et articles courants de votre métier, avec des prix indicatifs à ajuster.":"Aggiungi {n} lavorazioni e articoli comuni del tuo mestiere, con prezzi indicativi da adattare.",
+"Ajouter la bibliothèque de démarrage":"Aggiungi la libreria iniziale"};
