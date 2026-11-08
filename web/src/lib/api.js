@@ -181,7 +181,10 @@ const remote = {
     if (v?.access_token) saveSession({ ...v, expires_at: Date.now() / 1000 + v.expires_in }, !!localStorage.getItem(SKEY));
   },
   async mfaDisable(factorId) { await http('/auth/v1/factors/' + factorId, { method: 'DELETE' }); },
-  async signOut() { try { await http('/auth/v1/logout', { method: 'POST' }); } catch {} saveSession(null); },
+  async signOut() {
+    try { const reg = await navigator.serviceWorker?.getRegistration(); const sub = await reg?.pushManager?.getSubscription(); if (sub) { await http('/rest/v1/push_subscriptions?endpoint=eq.' + encodeURIComponent(sub.endpoint), { method: 'DELETE' }).catch(() => {}); await sub.unsubscribe(); } reg?.active?.postMessage('ay-clear-data'); } catch {}
+    try { await http('/auth/v1/logout', { method: 'POST' }); } catch {} saveSession(null);
+  },
   async recover(email) { await http('/auth/v1/recover?redirect_to=' + encodeURIComponent(location.origin + '/nouveau-mot-de-passe'), { method: 'POST', body: { email }, auth: false }); },
   async updatePassword(password) { await http('/auth/v1/user', { method: 'PUT', body: { password } }); },
   async updateEmail(email) { await http('/auth/v1/user', { method: 'PUT', body: { email } }); },

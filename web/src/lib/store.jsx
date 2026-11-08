@@ -1,6 +1,7 @@
 // État global : session, profil, entreprise, langue, thème, notifications, fenêtres.
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { api, onAuth, getSession, uid } from './api.js';
+import { subscribePush } from './push.js';
 import { setLang as setI18nLang, getLang, t, loadLang } from './i18n.js';
 import { navigate } from './router.jsx';
 
@@ -77,6 +78,7 @@ export function AppProvider({ children }) {
       seen.current = new Set(ns.map((n) => n.id));
     } catch {}
   }, [profile?.id, profile?.company_id, profile?.notif_prefs]);
+  useEffect(() => { if (profile) subscribePush(); }, [profile?.id]);
   useEffect(() => { if (!profile) return; seen.current = null; refreshUnread(); const i = setInterval(refreshUnread, 10000); return () => clearInterval(i); }, [profile?.id, refreshUnread]);
 
   function applyTheme(th) {

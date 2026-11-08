@@ -4,6 +4,7 @@ import { LuSettings, LuChevronLeft, LuChevronRight, LuSlidersHorizontal, LuSearc
 import { navigate, Link } from '../lib/router.jsx';
 import { useApp } from '../lib/store.jsx';
 import { fileUrls, cachedUrl } from '../lib/api.js';
+import { subscribePush } from '../lib/push.js';
 import { t } from '../lib/i18n.js';
 import { initials } from '../lib/format.js';
 import { NotifBell } from './notifbell.jsx';
@@ -245,7 +246,7 @@ export const isTouch = () => typeof window !== 'undefined' && window.matchMedia?
 // Autoriser les notifications sur cet appareil (navigateur, logiciel PC/Mac, application installée)
 export function DeviceNotif() {
   const [perm, setPerm] = useState(typeof Notification !== 'undefined' ? Notification.permission : 'unsupported');
-  const ask = async () => { try { const p = await Notification.requestPermission(); setPerm(p); if (p === 'granted') new Notification(t('Notifications activées'), { body: t('Vous serez prévenu ici des nouvelles demandes, messages et documents.'), icon: '/icon-192.png' }); } catch {} };
+  const ask = async () => { try { const p = await Notification.requestPermission(); setPerm(p); if (p === 'granted') { await subscribePush(); new Notification(t('Notifications activées'), { body: t('Vous serez prévenu ici des nouvelles demandes, messages et documents.'), icon: '/icon-192.png' }); } } catch {} };
   const hint = perm === 'granted' ? t('Activées : vous êtes prévenu même quand l’application est en arrière-plan') : perm === 'denied' ? t('Bloquées dans le navigateur : autorisez-les dans les réglages du site (cadenas à gauche de l’adresse)') : perm === 'unsupported' ? t('Non disponibles ici. Sur iPhone, installez d’abord l’application sur l’écran d’accueil.') : t('Pour être prévenu même quand l’application est en arrière-plan');
   return <div className="r set-row"><span className="k">{t('Notifications sur cet appareil')}<small>{hint}</small></span>{perm === 'default' ? <button className="btn xs" onClick={ask}>{t('Activer')}</button> : <span className={'toggle-wrap' + (perm === 'granted' ? ' on' : '')} style={{ fontSize: 12.5 }}>{perm === 'granted' ? '✓ ' + t('Activées') : '—'}</span>}</div>;
 }
