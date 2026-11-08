@@ -7,6 +7,7 @@ import JSZip from 'jszip';
 import { api, uid, APP_VERSION, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
+import { resetTours } from '../../ui/tour.jsx';
 import { t, LANGS } from '../../lib/i18n.js';
 import { rel, dateMed, fullName, date } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
@@ -193,7 +194,7 @@ export function DataPrivacy() {
 }
 
 export function Help() {
-  const { isPro, wip } = useApp();
+  const { isPro, wip, profile, setProfile } = useApp();
   const who = isPro ? 'pro' : 'client';
   const [q, setQ] = useState('');
   const [cat, setCat] = useState('');
@@ -225,6 +226,7 @@ export function Help() {
   return (
     <div className="content narrow">
       <TopBar title={t('Aide et support')} />
+      <button className="btn ghost sm mb" onClick={async () => { await resetTours(profile, setProfile); navigate(isPro ? '/pro' : '/client'); }}>🎓 {t('Revoir le tutoriel')}</button>
       <SearchBar placeholder={t('Comment faire… (ex. relancer une facture, dimanche, logo)')} value={q} onChange={setQ} />
       {!words.length && <div className="help-cats">{cats.map(([k, l, e]) => <button key={k} className={'help-cat' + (cat === k ? ' on' : '')} onClick={() => setCat(cat === k ? '' : k)}><span>{e}</span>{t(l)}<small>{t('{n} articles', { n: all.filter((x) => x.cat === k).length })}</small></button>)}</div>}
       <Sec title={words.length ? (list.length > 1 ? t('{n} résultats', { n: list.length }) : t('{n} résultat', { n: list.length })) : cat ? t(cats.find((c) => c[0] === cat)[1]) : t('Tous les articles')} />

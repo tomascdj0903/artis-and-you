@@ -642,3 +642,13 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
 .np-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--bordeaux); margin-top: 6px; }
 .np-empty { padding: 20px 16px; color: var(--text-3); border-top: 1px solid var(--line); }
 .np-all { width: 100%; border: 0; border-top: 1px solid var(--line); background: none; padding: 13px; font-weight: 700; color: var(--bordeaux); cursor: pointer; }
+/* Tutoriel */
+.tour { position: fixed; inset: 0; z-index: 200; }
+.tour-dim { position: absolute; inset: 0; background: rgba(0,18,59,.55); }
+.tour-spot { position: absolute; border-radius: 16px; box-shadow: 0 0 0 9999px rgba(0,18,59,.55); outline: 3px solid #fff; transition: all .25s ease; pointer-events: none; }
+.tour-card { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(360px, calc(100vw - 32px)); background: var(--surface); color: var(--text); border-radius: 20px; padding: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.tour-card.at { transform: none; }
+.tour-card h3 { margin: 6px 0 6px; font-size: 19px; }
+.tour-card p { margin: 0 0 16px; color: var(--text-2); line-height: 1.45; }
+.tour-x { position: absolute; right: 12px; top: 12px; background: none; border: 0; color: var(--text-3); cursor: pointer; font-size: 18px; }
+@media (prefers-reduced-motion: reduce) { .tour-spot { transition: none; } }

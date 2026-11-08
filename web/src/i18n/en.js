@@ -1930,4 +1930,11 @@ export default {"(copie)":"(copy)",
 "{n} produits ajoutés":"{n} products added",
 "Démarrez plus vite":"Get started faster",
 "Ajoutez {n} ouvrages et articles courants de votre métier, avec des prix indicatifs à ajuster.":"Add {n} common jobs and items for your trade, with indicative prices to adjust.",
-"Ajouter la bibliothèque de démarrage":"Add the starter library"};
+"Ajouter la bibliothèque de démarrage":"Add the starter library",
+"Revoir le tutoriel":"Replay the tutorial",
+"Passer le tutoriel":"Skip the tutorial",
+"Étape {a} sur {b}":"Step {a} of {b}",
+"Passer":"Skip",
+"Terminer":"Finish",
+"Bienvenue sur Artis & You 👋":"Welcome to Artis & You 👋",
+"C’est parti !":"Let's go!"};

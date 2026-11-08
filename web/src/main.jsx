@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { useEffect, useState } from 'react';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
+import { Tour, useTours } from './ui/tour.jsx';
 import { useLocation, matchRoute, navigate, Link } from './lib/router.jsx';
 import { t, loadLang, getLang } from './lib/i18n.js';
 import { Loader, Avatar } from './ui/index.jsx';
@@ -79,7 +80,8 @@ function Shell({ tabs, children, path }) {
   if (/^\/pro\/documents\/[^/]+/.test(path) && history.state?.from === 'client') p = '/pro/clients';
   const active = (to, exact) => (exact ? p === to : p === to || p.startsWith(to + '/'));
   const badge = (to) => (to.endsWith('/messages') ? unread.messages : to.endsWith('/notifications') ? unread.notifs : to === '/pro/planning' ? unread.rdv || 0 : 0);
-  const hideTabs = path === '/pro'; // Accueil artisan : pas de barre d'onglets (maquette 02)
+  const hideTabs = path === '/pro';
+  const [tour, finishTour] = useTours(path); // Accueil artisan : pas de barre d'onglets (maquette 02)
   return (
     <div className="app">
       <aside className="side">
@@ -100,6 +102,7 @@ function Shell({ tabs, children, path }) {
         {OFFLINE && <div style={{ background: '#FFF1B8', color: '#5C4A00', textAlign: 'center', fontSize: 12, padding: 4 }}>{t('Mode local : les données restent dans ce navigateur.')}</div>}
         {children}
       </div>
+      {tour && <Tour id={tour} onDone={finishTour} />}
       {!hideTabs && (
         <nav className="tabbar" aria-label={t('Navigation')}>
           {tabs.map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I />{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
