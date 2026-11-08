@@ -2,6 +2,7 @@
 import { useEffect } from 'react';
 import { LuCheck, LuCalendarCheck, LuFilePen, LuMessageSquare, LuShieldCheck } from 'react-icons/lu';
 import { Link } from '../../lib/router.jsx';
+import { PLANS } from '../../lib/docs.js';
 import { t } from '../../lib/i18n.js';
 
 const TRADES = ['Plombier', 'Électricien', 'Peintre', 'Carreleur', 'Menuisier', 'Maçon', 'Couvreur', 'Chauffagiste', 'Serrurier', 'Paysagiste', 'Climaticien', 'Plaquiste'];
@@ -15,7 +16,7 @@ export function Landing() {
     <div className="lp">
       <header className="lp-top">
         <Link to="/" className="lp-brand"><img src="/logo.svg" alt="" width="34" height="34" /><span>Artis &amp; You</span></Link>
-        <nav className="lp-nav"><Link to="/connexion">{t('Se connecter')}</Link><Link to="/inscription" className="btn sm">{t('Créer un compte')}</Link></nav>
+        <nav className="lp-nav"><a href="#tarifs" className="hide-mob">{t('Tarifs')}</a><Link to="/connexion">{t('Se connecter')}</Link><Link to="/inscription" className="btn sm">{t('Créer un compte')}</Link></nav>
       </header>
 
       <section className="lp-hero">
@@ -50,6 +51,8 @@ export function Landing() {
         </div>
       </section>
 
+      <Pricing />
+
       <section className="lp-seo">
         <h2>{t('Des artisans de tous les métiers du bâtiment')}</h2>
         <p className="muted">{TRADES.map(t).join(', ')}.</p>
@@ -62,5 +65,39 @@ export function Landing() {
         <nav><Link to="/mentions-legales">{t('Mentions légales')}</Link><Link to="/cgu">{t('CGU')}</Link><Link to="/confidentialite">{t('Confidentialité')}</Link><Link to="/telecharger">{t('Applications')}</Link></nav>
       </footer>
     </div>
+  );
+}
+
+function Pricing() {
+  const price = (p) => p;
+  const fmt = (n) => n.toLocaleString('fr-FR', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 });
+  return (
+    <section className="lp-price" id="tarifs">
+      <div className="lp-price-head">
+        <h2>{t('Des tarifs simples, sans engagement')}</h2>
+        <p className="muted">{t('30 jours d’essai gratuit pour toutes les formules, sans carte bancaire. Toujours gratuit pour les particuliers.')}</p>
+      </div>
+      <div className="lp-plans">
+        {PLANS.map((p) => (
+          <article key={p.id} className={'lp-plan' + (p.id === 'equipe' ? ' best' : '')}>
+            {p.id === 'equipe' && <span className="lp-best">{t('Le plus choisi')}</span>}
+            <h3>{t(p.name)}</h3>
+            <p className="lp-plan-desc">{t(p.desc)}</p>
+            <div className="lp-amount"><b>{fmt(price(p.price))} €</b><span>{t('HT / mois')}</span></div>
+            <p className="lp-plan-note">{t('sans engagement, résiliable à tout moment')}</p>
+            <ul>{p.features.map((f) => <li key={f}><LuCheck />{t(f)}</li>)}</ul>
+            <Link to="/inscription/artisan" className={'btn' + (p.id === 'equipe' ? '' : ' ghost')}>{t('Essayer 30 jours gratuits')}</Link>
+          </article>
+        ))}
+        <article className="lp-plan free">
+          <h3>{t('Particulier')}</h3>
+          <p className="lp-plan-desc">{t('Pour vos travaux à la maison')}</p>
+          <div className="lp-amount"><b>{t('Gratuit')}</b></div>
+          <p className="lp-plan-note">{t('pour toujours')}</p>
+          <ul>{['Recherche d’artisans vérifiés', 'Rendez-vous en ligne', 'Devis signés en ligne', 'Documents du logement'].map((f) => <li key={f}><LuCheck />{t(f)}</li>)}</ul>
+          <Link to="/inscription/particulier" className="btn navy">{t('Créer mon compte')}</Link>
+        </article>
+      </div>
+    </section>
   );
 }

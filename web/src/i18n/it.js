@@ -1951,4 +1951,11 @@ export default {"(copie)":"(copia)",
 "Activer mon compte":"Attiva il mio account",
 "Approuver":"Approva",
 "Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"La tua libreria è vuota. Aggiungi i prodotti in CRM › La mia libreria.",
-"Tout marquer comme lu":"Segna tutto come letto"};
+"Tout marquer comme lu":"Segna tutto come letto",
+"Tarifs":"Prezzi",
+"Des tarifs simples, sans engagement":"Prezzi semplici, senza vincoli",
+"Le plus choisi":"Il più scelto",
+"sans engagement, résiliable à tout moment":"senza vincoli, disdici quando vuoi",
+"Essayer 30 jours gratuits":"Prova gratis 30 giorni",
+"Pour vos travaux à la maison":"Per i lavori in casa",
+"pour toujours":"per sempre"};

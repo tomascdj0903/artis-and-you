@@ -1951,4 +1951,11 @@ export default {"(copie)":"(copy)",
 "Activer mon compte":"Activate my account",
 "Approuver":"Approve",
 "Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"Your library is empty. Add your products in CRM › My library.",
-"Tout marquer comme lu":"Mark all as read"};
+"Tout marquer comme lu":"Mark all as read",
+"Tarifs":"Pricing",
+"Des tarifs simples, sans engagement":"Simple pricing, no commitment",
+"Le plus choisi":"Most popular",
+"sans engagement, résiliable à tout moment":"no commitment, cancel anytime",
+"Essayer 30 jours gratuits":"Try free for 30 days",
+"Pour vos travaux à la maison":"For work on your home",
+"pour toujours":"forever"};

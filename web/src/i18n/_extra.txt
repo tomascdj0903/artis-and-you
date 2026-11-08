@@ -781,3 +781,11 @@ Activer mon compte|Activate my account|Ativar a minha conta|Attiva il mio accoun
 Approuver|Approve|Aprovar|Approva
 Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.|Your library is empty. Add your products in CRM › My library.|A sua biblioteca está vazia. Adicione produtos em CRM › A minha biblioteca.|La tua libreria è vuota. Aggiungi i prodotti in CRM › La mia libreria.
 Tout marquer comme lu|Mark all as read|Marcar tudo como lido|Segna tutto come letto
+Tarifs|Pricing|Preços|Prezzi
+Des tarifs simples, sans engagement|Simple pricing, no commitment|Preços simples, sem compromisso|Prezzi semplici, senza vincoli
+Le plus choisi|Most popular|O mais escolhido|Il più scelto
+HT / mois|excl. VAT / month|s/ IVA / mês|IVA escl. / mese
+sans engagement, résiliable à tout moment|no commitment, cancel anytime|sem compromisso, cancele quando quiser|senza vincoli, disdici quando vuoi
+Essayer 30 jours gratuits|Try free for 30 days|Experimentar 30 dias grátis|Prova gratis 30 giorni
+Pour vos travaux à la maison|For work on your home|Para as obras em casa|Per i lavori in casa
+pour toujours|forever|para sempre|per sempre

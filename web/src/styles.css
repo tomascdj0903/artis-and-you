@@ -720,3 +720,44 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
 @media (max-width: 700px) {
   .notifpop { position: fixed; left: 12px; right: 12px; top: calc(env(safe-area-inset-top, 0px) + 96px); width: auto; }
 }
+/* Tarifs (page d'accueil) */
+.lp-price { max-width: 1280px; margin: 0 auto; padding: clamp(48px, 7vw, 96px) clamp(16px, 5vw, 64px) 0; scroll-margin-top: 20px; }
+.lp-price-head { max-width: 640px; margin-bottom: 28px; }
+.lp-price-head h2 { font-size: clamp(28px, 3.4vw, 42px); letter-spacing: -.02em; margin: 0 0 10px; line-height: 1.1; }
+.lp-price-head p { margin: 0; line-height: 1.5; }
+.lp-plans { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.lp-plan { position: relative; display: flex; flex-direction: column; border: 1.5px solid var(--line); border-radius: 24px; padding: 26px 22px 22px; background: var(--surface); }
+.lp-plan.best { border: 2px solid var(--bordeaux); box-shadow: 0 18px 50px rgba(127,17,17,.14); }
+.lp-plan.free { background: var(--bg-soft); border-color: transparent; }
+.lp-best { position: absolute; top: -13px; left: 22px; background: var(--bordeaux); color: #fff; font-size: 12.5px; font-weight: 700; padding: 4px 12px; border-radius: 999px; }
+.lp-plan h3 { margin: 0; font-size: 22px; }
+.lp-plan-desc { margin: 4px 0 18px; color: var(--text-2); font-size: 14.5px; }
+.lp-amount { display: flex; align-items: baseline; gap: 6px; } .lp-amount b { font-size: 40px; letter-spacing: -.03em; line-height: 1; } .lp-amount span { color: var(--text-2); font-size: 14px; }
+.lp-plan-note { font-size: 13px; color: var(--text-3); margin: 6px 0 18px; }
+.lp-plan ul { list-style: none; padding: 0; margin: 0 0 22px; display: grid; gap: 10px; font-size: 14.5px; flex: 1; }
+.lp-plan li { display: flex; gap: 8px; line-height: 1.35; } .lp-plan li svg { flex: none; margin-top: 2px; color: var(--bordeaux); }
+.lp-plan .btn { width: 100%; }
+@media (max-width: 1100px) { .lp-plans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Page d'accueil : finitions mobile */
+@media (max-width: 640px) {
+  .lp-top { padding: 14px 16px; }
+  .lp-hero { padding: 16px 16px 32px; gap: 28px; }
+  .lp-hero h1 { font-size: 34px; margin-bottom: 14px; }
+  .lp-lead { font-size: 16px; margin-bottom: 20px; }
+  .lp-feed { padding: 12px; border-radius: 22px; gap: 8px; }
+  .lp-ev { grid-template-columns: 32px 1fr; padding: 11px 12px; gap: 10px; }
+  .lp-ev > svg { width: 32px; height: 32px; padding: 7px; }
+  .lp-ev b { font-size: 14.5px; }
+  .lp-ev small { font-size: 12.5px; }
+  .lp-tag { grid-column: 2; justify-self: start; font-size: 11.5px; padding: 2px 8px; }
+  .lp-ev:nth-child(3) { display: none; }
+  .lp-two { padding: 0 16px; gap: 12px; }
+  .lp-col.pro, .lp-col.cli { border-radius: 24px; padding: 24px 20px; }
+  .lp-col h2 { font-size: 24px; }
+  .lp-col .btn { width: 100%; }
+  .lp-price { padding: 48px 16px 0; }
+  .lp-plans { grid-template-columns: 1fr; gap: 22px; }
+  .lp-seo { padding: 44px 16px 12px; }
+  .lp-foot { padding: 20px 16px 28px; flex-direction: column; }
+  .lp-foot nav { gap: 6px 16px; }
+}
