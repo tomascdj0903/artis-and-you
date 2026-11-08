@@ -47,7 +47,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
       <div className="right">
         {right}
         {settings && <Link to={settings} className="iconbtn" aria-label={t('Réglages')} title={t('Réglages')}><LuSettings /></Link>}
-        <div className="hide-mob"><NotifBell base={base} /></div>
+        <NotifBell base={base} />
         {profile && <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} ring={!isPro} onClick={() => navigate(base + '/compte')} />}
       </div>
     </header>
