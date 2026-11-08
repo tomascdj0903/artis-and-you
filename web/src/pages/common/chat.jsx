@@ -3,6 +3,7 @@ import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuI
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
+import { DictateButton } from '../../ui/dictate.jsx';
 import { t } from '../../lib/i18n.js';
 import { hm, dateMed, fullName, clientName } from '../../lib/format.js';
 import { Img, Sheet, pickFiles, openFile, Loader, Lightbox, CameraSheet, isTouch } from '../../ui/index.jsx';
@@ -130,6 +131,7 @@ export function Chat({ convId, projects = [], banner }) {
         <button type="button" className="att" onClick={() => setMenu(true)} aria-label={t('Joindre')}><LuPlus /></button>
         <button type="button" className="att" onClick={takePhoto} aria-label={t('Prendre une photo')}><LuCamera /></button>
         <input type="text" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('Écrire un message…')} aria-label={t('Message')} />
+        <DictateButton className="iconbtn" onText={(s) => setText((x) => (x ? x + ' ' : '') + s)} />
         <button className="send" aria-label={t('Envoyer')}><LuArrowRight /></button>
       </form>
       <Sheet open={menu} onClose={() => setMenu(false)} title={t('Joindre')}>

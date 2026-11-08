@@ -1,6 +1,7 @@
 // Recherche globale de l'artisan avec propositions en direct (clients, devis, factures, RDV, produits, documents, actions)
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { LuSearch, LuX, LuUser, LuFileText, LuFilePen, LuCalendar, LuPackage, LuFolder, LuZap, LuClock } from 'react-icons/lu';
+import { LuSearch, LuX, LuUser, LuFileText, LuFilePen, LuCalendar, LuPackage, LuFolder, LuZap, LuClock, LuHardHat, LuMessageSquare } from 'react-icons/lu';
+import { DictateButton } from './dictate.jsx';
 import { api } from '../lib/api.js';
 import { useApp } from '../lib/store.jsx';
 import { navigate } from '../lib/router.jsx';
@@ -33,12 +34,14 @@ export function SmartSearch({ placeholder, scope }) {
     if (!open || data) return;
     (async () => {
       const cid = company.id;
-      const [clients, docs, appts, items, files] = await Promise.all([
+      const [clients, docs, appts, items, files, projects, convs] = await Promise.all([
         api.select('clients', { company_id: cid }), api.select('documents', { company_id: cid }), api.select('appointments', { company_id: cid }, { order: 'start_at.desc', limit: 400 }),
         api.select('items', { company_id: cid }), api.select('files', { company_id: cid, kind: ['doc', 'vault'] }),
+        api.select('projects', { company_id: cid }).catch(() => []), api.select('conversations', {}).catch(() => []),
       ]);
-      setData({ clients, docs, appts, items, files, cm: Object.fromEntries(clients.map((c) => [c.id, c])) });
-    })().catch(() => setData({ clients: [], docs: [], appts: [], items: [], files: [], cm: {} }));
+      const msgs = convs.length ? await api.select('messages', { conversation_id: convs.map((c) => c.id) }, { order: 'created_at.desc', limit: 500 }).catch(() => []) : [];
+      setData({ clients, docs, appts, items, files, projects, msgs, cm: Object.fromEntries(clients.map((c) => [c.id, c])) });
+    })().catch(() => setData({ clients: [], docs: [], appts: [], items: [], files: [], projects: [], msgs: [], cm: {} }));
   }, [open]);
   useEffect(() => {
     const f = (e) => { if (box.current && !box.current.contains(e.target)) setOpen(false); };
@@ -67,6 +70,10 @@ export function SmartSearch({ placeholder, scope }) {
       out.push([t('Rendez-vous'), ap.map((a) => ({ icon: LuCalendar, main: a.title || t(a.type), sub: `${dateShort(a.start_at)} ${hm(a.start_at)} · ${clientName(data.cm[a.client_id])}`, to: '/pro/planning/rdv/' + a.id }))]);
       if (can('prix')) out.push([t('Bibliothèque'), data.items.filter((i) => has(i.name, i.ref, i.family, i.supplier)).slice(0, 4).map((i) => ({ icon: LuPackage, main: i.name, sub: `${i.family || ''} · ${money(i.sale_price)} ${t('HT')}`, to: '/pro/crm/bibliotheque/' + i.id }))]);
     }
+    if (scope !== 'documents') {
+      out.push([t('Chantiers'), (data.projects || []).filter((x) => has(x.title, x.address, cw(data.cm[x.client_id]))).slice(0, 4).map((x) => ({ icon: LuHardHat, main: x.title, sub: [clientName(data.cm[x.client_id]), x.address].filter(Boolean).join(' · '), to: x.client_id ? '/pro/clients/' + x.client_id : '/pro/crm/statut' }))]);
+      out.push([t('Messages'), (data.msgs || []).filter((m) => has(m.body, m.sender_name)).slice(0, 4).map((m) => ({ icon: LuMessageSquare, main: (m.body || '').slice(0, 80), sub: `${m.sender_name || ''} · ${dateShort(m.created_at)}`, to: '/pro/messages/' + m.conversation_id }))]);
+    }
     out.push([t('Documents'), data.files.filter((f) => has(f.name, f.doc_type, cw(data.cm[f.client_id]))).slice(0, 4).map((f) => ({ icon: LuFolder, main: f.name, sub: f.kind === 'vault' ? t('Mon coffre-fort') : clientName(data.cm[f.client_id]), to: f.kind === 'vault' ? '/pro/coffre-fort/' + f.doc_type : '/pro/autres-docs/' + f.client_id }))]);
     out.push([t('Actions'), acts.slice(0, 4).map(([l, to]) => ({ icon: LuZap, main: t(l), to }))]);
     return out.filter((g) => g[1].length);
@@ -89,6 +96,7 @@ export function SmartSearch({ placeholder, scope }) {
     <div className="searchrow" ref={box} style={{ position: 'relative' }}>
       <label className="search">
         <input value={q} placeholder={placeholder || t('Que recherchez-vous ?')} onFocus={() => setOpen(true)} onChange={(e) => { setQ(e.target.value); setSel(0); setOpen(true); }} onKeyDown={key} aria-label={placeholder || t('Que recherchez-vous ?')} role="combobox" aria-expanded={open} />
+        <DictateButton className="link" style={{ color: '#fff' }} onText={(s) => { setQ(s); setSel(0); setOpen(true); }} />
         {q ? <button className="link" style={{ color: '#fff' }} onClick={() => setQ('')} aria-label={t('Effacer')}><LuX /></button> : <LuSearch />}
       </label>
       {open && groups.length > 0 && (

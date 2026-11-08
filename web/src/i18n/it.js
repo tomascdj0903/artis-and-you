@@ -1899,4 +1899,11 @@ export default {"(copie)":"(copia)",
 "Saisissez votre nom":"Inserisci il tuo nome",
 "Aucune signature dessinée":"Nessuna firma disegnata",
 "Saisissez votre nom pour créer votre signature.":"Inserisci il tuo nome per creare la firma.",
-"Signature":"Firma"};
+"Signature":"Firma",
+"Impossible de charger cette page":"Impossibile caricare questa pagina",
+"Vous êtes hors ligne. Vérifiez votre connexion.":"Sei offline. Controlla la connessione.",
+"Un problème est survenu. Réessayez dans un instant.":"Si è verificato un problema. Riprova tra poco.",
+"Réessayer":"Riprova",
+"Chargement…":"Caricamento…",
+"Dicter":"Detta",
+"Arrêter la dictée":"Interrompi la dettatura"};

@@ -7,14 +7,17 @@ import { fileUrls, cachedUrl } from '../lib/api.js';
 import { t } from '../lib/i18n.js';
 import { initials } from '../lib/format.js';
 
+// Chargements en échec : le Loader affiche un message et un bouton « Réessayer » au lieu de tourner sans fin
+const failed = new Set(); const errSubs = new Set();
+const emitErr = () => errSubs.forEach((f) => f(failed.size));
 export function useData(fn, deps = []) {
   const [state, set] = useState({ data: null, loading: true, error: null });
   const alive = useRef(true);
   const load = useCallback(async () => {
     try { const d = await fn(); if (alive.current) set({ data: d, loading: false, error: null }); }
-    catch (e) { console.error(e); if (alive.current) set({ data: null, loading: false, error: e.message }); }
+    catch (e) { console.error(e); if (alive.current) set({ data: null, loading: false, error: e.message }); failed.add(load); emitErr(); }
   }, deps);
-  useEffect(() => { alive.current = true; set((s) => ({ ...s, loading: true })); load(); return () => { alive.current = false; }; }, [load]);
+  useEffect(() => { alive.current = true; set((s) => ({ ...s, loading: true })); load(); return () => { alive.current = false; failed.delete(load); }; }, [load]);
   return [state.data, load, state.loading, state.error];
 }
 
@@ -129,7 +132,18 @@ export function Modal({ open, onClose, children }) {
 }
 
 export const Empty = ({ text, icon: I = LuInbox, children }) => <div className="empty"><I />{text}{children && <div className="mt">{children}</div>}</div>;
-export const Loader = () => <div className="loader"><div className="spin" /></div>;
+export function Loader() {
+  const [n, setN] = useState(failed.size);
+  useEffect(() => { errSubs.add(setN); return () => errSubs.delete(setN); }, []);
+  if (n > 0) return (
+    <div className="empty" role="alert">
+      <b>{t('Impossible de charger cette page')}</b>
+      <div className="small muted">{navigator.onLine === false ? t('Vous êtes hors ligne. Vérifiez votre connexion.') : t('Un problème est survenu. Réessayez dans un instant.')}</div>
+      <button className="btn sm" style={{ marginTop: 12 }} onClick={() => { const fs = [...failed]; failed.clear(); emitErr(); fs.forEach((f) => f()); }}>{t('Réessayer')}</button>
+    </div>
+  );
+  return <div className="loader" aria-label={t('Chargement…')}><div className="spin" /></div>;
+}
 
 export function Chips({ options, value, onChange, multi, red, scroll }) {
   const on = (v) => (multi ? value.includes(v) : value === v);

@@ -1899,4 +1899,11 @@ export default {"(copie)":"(cópia)",
 "Saisissez votre nom":"Introduza o seu nome",
 "Aucune signature dessinée":"Nenhuma assinatura desenhada",
 "Saisissez votre nom pour créer votre signature.":"Introduza o seu nome para criar a sua assinatura.",
-"Signature":"Assinatura"};
+"Signature":"Assinatura",
+"Impossible de charger cette page":"Não foi possível carregar esta página",
+"Vous êtes hors ligne. Vérifiez votre connexion.":"Está offline. Verifique a ligação.",
+"Un problème est survenu. Réessayez dans un instant.":"Ocorreu um problema. Tente novamente daqui a pouco.",
+"Réessayer":"Tentar novamente",
+"Chargement…":"A carregar…",
+"Dicter":"Ditar",
+"Arrêter la dictée":"Parar o ditado"};
