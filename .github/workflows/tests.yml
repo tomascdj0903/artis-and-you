@@ -1,0 +1,19 @@
+name: Tests
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', '.github/workflows/tests.yml']
+  pull_request:
+    paths: ['web/**']
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install
+      - run: npm install --no-save playwright@1.49.1 && npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: node tests/e2e.mjs
