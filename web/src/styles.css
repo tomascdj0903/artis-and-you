@@ -717,3 +717,6 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
   .notice.ref { font-size: 13.5px; }
   .kv .r { flex-wrap: wrap; }
 }
+@media (max-width: 700px) {
+  .notifpop { position: fixed; left: 12px; right: 12px; top: 78px; width: auto; }
+}
