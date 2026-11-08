@@ -285,6 +285,17 @@ export function mockBackend({ saveSession, getSession }) {
       if (!d) throw new Error('Devis introuvable');
       if (p_action === 'refuse') { Object.assign(d, { status: 'refuse', refused_at: now() }); d.conditions = { ...d.conditions, refusal_reason: p_reason }; notifyCompany(d.company_id, 'documents', 'Devis refusé', d.number, '/pro/documents/' + d.id); }
     },
+    async client_quote_sign({ p_id, p_name, p_image = '', p_agent = '' }) {
+      const d = db.documents.find((x) => x.id === p_id && x.kind === 'devis' && x.number && myClientIds().includes(x.client_id));
+      if (!d) throw new Error('Devis introuvable');
+      if (d.status !== 'envoye') throw new Error('Ce devis ne peut plus être signé.');
+      if (!String(p_name || '').trim()) throw new Error('Indiquez votre nom.');
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode((d.number || '') + JSON.stringify(d.lines) + JSON.stringify(d.totals)));
+      const hash = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+      Object.assign(d, { status: 'accepte', accepted_at: now(), signed_name: p_name.trim() });
+      d.conditions = { ...d.conditions, signature: { image: p_image, at: now(), by: me(), hash, agent: p_agent, mention: 'Bon pour accord' } };
+      notifyCompany(d.company_id, 'documents', 'Devis signé', d.number + ' · ' + p_name.trim(), '/pro/documents/' + d.id);
+    },
     post_review({ p_company, p_rating, p_comment }) {
       const a = db.appointments.filter((x) => x.company_id === p_company && myClientIds().includes(x.client_id) && ['valide', 'termine'].includes(x.status) && x.start_at < now()).sort((x, y) => (x.start_at < y.start_at ? 1 : -1))[0];
       if (!a) throw new Error("Un avis ne peut être donné qu'après un vrai rendez-vous.");

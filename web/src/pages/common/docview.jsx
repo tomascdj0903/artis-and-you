@@ -226,7 +226,7 @@ export function A4({ d, company, client, source, logoUrl }) {
       {isQuote ? (
         <div className="sig">
           <div className="box"><div className="lab">{t("L'entreprise")}</div>{company.settings?.pdf?.signature && <img src={company.settings.pdf.signature} alt="" style={{ maxHeight: 60 }} />}</div>
-          <div className="box"><div className="lab">{t('Bon pour accord')}</div><div className="small">{t('Date, signature et mention « Bon pour accord »')}</div>{d.status === 'accepte' && <div style={{ marginTop: 8 }}><b>{t('Signé par {n} le {d}', { n: d.signed_name || '', d: dateTime(d.accepted_at) })}</b></div>}</div>
+          <div className="box"><div className="lab">{t('Bon pour accord')}</div><div className="small">{t('Date, signature et mention « Bon pour accord »')}</div>{d.status === 'accepte' && <div style={{ marginTop: 8 }}>{d.conditions?.signature?.image && <img src={d.conditions.signature.image} alt="" style={{ maxHeight: 54, display: 'block' }} />}<b>{t('Bon pour accord')} · {t('Signé par {n} le {d}', { n: d.signed_name || '', d: dateTime(d.accepted_at) })}</b>{d.conditions?.signature?.hash && <div style={{ fontSize: 8, color: '#888', wordBreak: 'break-all' }}>{t('Signature électronique')} · {d.conditions.signature.hash.slice(0, 32)}</div>}</div>}</div>
         </div>
       ) : d.kind !== 'avoir' && (
         <div className="pay">

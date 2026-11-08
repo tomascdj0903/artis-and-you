@@ -734,3 +734,15 @@ Chargement…|Loading…|A carregar…|Caricamento…
 Dicter|Dictate|Ditar|Detta
 Arrêter la dictée|Stop dictation|Parar o ditado|Interrompi la dettatura
 Chantiers|Job sites|Obras|Cantieri
+Devis signé, l’artisan est prévenu|Quote signed, the tradesperson has been notified|Orçamento assinado, o profissional foi avisado|Preventivo firmato, l'artigiano è stato avvisato
+Signer le devis {n}|Sign quote {n}|Assinar o orçamento {n}|Firma il preventivo {n}
+Montant : {m} TTC. En signant, vous acceptez le devis et ses conditions.|Amount: {m} incl. VAT. By signing, you accept the quote and its terms.|Montante: {m} com IVA. Ao assinar, aceita o orçamento e as condições.|Importo: {m} IVA incl. Firmando accetti il preventivo e le condizioni.
+Votre nom et prénom|Your full name|O seu nome completo|Nome e cognome
+Votre signature|Your signature|A sua assinatura|La tua firma
+Bon pour accord. J’ai lu le devis et j’accepte les travaux, le prix et les conditions.|Approved. I have read the quote and accept the work, price and terms.|Aprovado. Li o orçamento e aceito os trabalhos, o preço e as condições.|Per accettazione. Ho letto il preventivo e accetto lavori, prezzo e condizioni.
+Signer|Sign|Assinar|Firma
+Nous enregistrons la date, l’heure et une empreinte du devis pour prouver la signature.|We record the date, time and a fingerprint of the quote to prove the signature.|Registamos a data, a hora e uma impressão digital do orçamento para provar a assinatura.|Registriamo data, ora e un'impronta del preventivo per provare la firma.
+Signature électronique|Electronic signature|Assinatura eletrónica|Firma elettronica
+Aucune notification pour le moment|No notifications yet|Ainda sem notificações|Nessuna notifica per ora
+Voir toutes les notifications|See all notifications|Ver todas as notificações|Vedi tutte le notifiche
+Non lue|Unread|Não lida|Non letta

@@ -4,7 +4,8 @@ import { api, uid, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { money, date, dateMed, rel, dateShort, hm } from '../../lib/format.js';
+import { money, date, dateMed, rel, dateShort, hm, fullName } from '../../lib/format.js';
+import { DrawPad, textSignature } from '../../ui/signature.jsx';
 import { statusPill, effectiveStatus, kindLabel, clientProgress, DOC_TYPES, VAULT_TYPES, docTypeLabel } from '../../lib/docs.js';
 import { TopBar, SearchBar, Sec, Chips, Field, Toggle, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet, KV } from '../../ui/index.jsx';
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
@@ -111,17 +112,19 @@ export function DocDetail({ params }) {
 }
 
 export function DocPdf({ params }) {
-  const { run, wip } = useApp();
-  const [b] = useData(() => loadDoc(params.id), [params.id]);
+  const { run } = useApp();
+  const [signing, setSigning] = useState(false);
+  const [b, reload] = useData(() => loadDoc(params.id), [params.id]);
   const ref = useRef();
   if (!b) return <div className="content"><TopBar title={t('Aperçu PDF')} /><Loader /></div>;
   const { d } = b; const isQ = d.kind === 'devis';
   return (
     <div className="content">
       <TopBar title={t('Aperçu PDF')} sub={pdfName(d)} />
+      <QuoteSignSheet open={signing} d={d} onClose={() => setSigning(false)} onDone={() => { setSigning(false); reload(); }} />
       <A4Preview bundle={b} innerRef={ref} />
       <div className="btns inline">
-        {isQ && effectiveStatus(d) === 'envoye' && <button className="btn" onClick={() => wip(t('La signature électronique'))}><LuFilePen /> {t('Signer le devis électroniquement')}</button>}
+        {isQ && effectiveStatus(d) === 'envoye' && <button className="btn" onClick={() => setSigning(true)}><LuFilePen /> {t('Signer le devis électroniquement')}</button>}
         {!isQ && d.kind !== 'avoir' && ['envoyee', 'partielle', 'retard'].includes(effectiveStatus(d)) && <button className="btn" onClick={() => navigate(`/client/factures/${d.id}/payer`)}>{t('Payer en ligne')}</button>}
         <div className="two">
           <button className="btn ghost" onClick={() => run(() => exportPdf(ref.current, pdfName(d)), t('PDF téléchargé'))}><LuDownload /> {t('Télécharger')}</button>
@@ -328,5 +331,30 @@ export function NotifSettings() {
       <Sec title={t('Rappels')} />
       <div className="kv"><div className="r"><span className="k">{t('Rappel avant un RDV')}</span><select value={n.rappel} onChange={(e) => set('rappel', +e.target.value)}>{[0, 1, 2, 24, 48].map((h) => <option key={h} value={h}>{h ? t('{n} h avant', { n: h }) : t('Aucun')}</option>)}</select></div>{R(['dnd', 'Ne pas déranger (21 h – 8 h)'])}</div>
     </div>
+  );
+}
+
+// Signature électronique du devis : nom (obligatoire), signature dessinée (facultative), mention « Bon pour accord »
+function QuoteSignSheet({ open, d, onClose, onDone }) {
+  const { profile, run } = useApp();
+  const [name, setName] = useState(fullName(profile));
+  const [img, setImg] = useState('');
+  const [ok, setOk] = useState(false);
+  if (!open) return null;
+  const sign = () => run(async () => {
+    const image = img || await textSignature(name.trim(), 'Dancing Script');
+    await api.rpc('client_quote_sign', { p_id: d.id, p_name: name.trim(), p_image: image, p_agent: navigator.userAgent.slice(0, 300) });
+    onDone();
+  }, t('Devis signé, l’artisan est prévenu'));
+  return (
+    <Sheet open onClose={onClose} title={t('Signer le devis {n}', { n: d.number })}>
+      <p className="small muted">{t('Montant : {m} TTC. En signant, vous acceptez le devis et ses conditions.', { m: money(d.totals?.ttc) })}</p>
+      <Field label={t('Votre nom et prénom')}><input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" /></Field>
+      <div className="small bold mb">{t('Votre signature')} <span className="faint">({t('facultatif')})</span></div>
+      <DrawPad value={img} onChange={setImg} />
+      <label className="check" style={{ marginTop: 14 }}><input type="checkbox" checked={ok} onChange={(e) => setOk(e.target.checked)} /><span>{t('Bon pour accord. J’ai lu le devis et j’accepte les travaux, le prix et les conditions.')}</span></label>
+      <button className="btn block" style={{ marginTop: 14 }} disabled={!ok || !name.trim()} onClick={sign}><LuFilePen /> {t('Signer')}</button>
+      <p className="small faint" style={{ marginTop: 8 }}>{t('Nous enregistrons la date, l’heure et une empreinte du devis pour prouver la signature.')}</p>
+    </Sheet>
   );
 }

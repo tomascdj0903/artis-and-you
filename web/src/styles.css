@@ -629,3 +629,16 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
 .rec { color: #E5484D !important; animation: recpulse 1s infinite; }
 @keyframes recpulse { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .rec { animation: none; } }
+/* Bulle de notifications */
+.notifbell { position: relative; }
+.notifpop { position: absolute; right: 0; top: calc(100% + 8px); width: min(380px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 18px 50px rgba(0,18,59,.18); z-index: 60; overflow: hidden; }
+.np-head { padding: 14px 16px 8px; }
+.np-list { max-height: 60vh; overflow-y: auto; }
+.np-item { display: flex; gap: 10px; align-items: flex-start; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); padding: 12px 16px; color: inherit; cursor: pointer; }
+.np-item:hover, .np-item:focus-visible { background: var(--surface-2, rgba(0,18,59,.04)); }
+.np-item.unread { background: rgba(127,17,17,.05); }
+.np-item small { display: block; font-size: 13px; color: var(--text-2); margin-top: 2px; }
+.np-ic { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--navy, #00123B); color: #fff; }
+.np-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--bordeaux); margin-top: 6px; }
+.np-empty { padding: 20px 16px; color: var(--text-3); border-top: 1px solid var(--line); }
+.np-all { width: 100%; border: 0; border-top: 1px solid var(--line); background: none; padding: 13px; font-weight: 700; color: var(--bordeaux); cursor: pointer; }

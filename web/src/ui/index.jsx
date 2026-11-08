@@ -6,6 +6,7 @@ import { useApp } from '../lib/store.jsx';
 import { fileUrls, cachedUrl } from '../lib/api.js';
 import { t } from '../lib/i18n.js';
 import { initials } from '../lib/format.js';
+import { NotifBell } from './notifbell.jsx';
 
 // Chargements en échec : le Loader affiche un message et un bouton « Réessayer » au lieu de tourner sans fin
 const failed = new Set(); const errSubs = new Set();
@@ -45,7 +46,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
       <div className="right">
         {right}
         {settings && <Link to={settings} className="iconbtn" aria-label={t('Réglages')} title={t('Réglages')}><LuSettings /></Link>}
-        <Link to={base + '/notifications'} className="iconbtn hide-mob" aria-label={t('Notifications')}><LuBell />{unread.notifs > 0 && <span className="dot" />}</Link>
+        <div className="hide-mob"><NotifBell base={base} /></div>
         {profile && <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} ring={!isPro} onClick={() => navigate(base + '/compte')} />}
       </div>
     </header>
