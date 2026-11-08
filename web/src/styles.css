@@ -833,3 +833,4 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
   .lp-cmp td { padding: 13px 16px; }
   .lp-cmp td:first-child { padding-left: 22px; }
 }
+.link-row { background: none; border: 0; text-align: left; color: inherit; padding: 0; cursor: pointer; min-width: 0; }

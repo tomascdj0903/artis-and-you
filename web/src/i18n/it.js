@@ -1973,4 +1973,7 @@ export default {"(copie)":"(copia)",
 "Pourquoi Artis & You ?":"Perché Artis & You?",
 "Logiciel de devis classique":"Software di preventivi classico",
 "Plateforme de mise en relation":"Piattaforma di intermediazione",
-"Selon l’offre":"Secondo l'offerta"};
+"Selon l’offre":"Secondo l'offerta",
+"Derniers documents":"Ultimi documenti",
+"Payer":"Paga",
+"À traiter":"Da fare"};

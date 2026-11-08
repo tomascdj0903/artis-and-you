@@ -6,8 +6,8 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, iso, clientName, date, fullName } from '../../lib/format.js';
-import { computeTotals, newLine, defaultLines, VAT_RATES, kindLabel, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
-import { TopBar, Sec, Field, Seg, Chips, Sheet, Modal, useData, Loader, Empty, Toggle, SearchBar } from '../../ui/index.jsx';
+import { computeTotals, newLine, defaultLines, VAT_RATES, kindLabel, statusPill, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
+import { TopBar, Sec, Field, Seg, Chips, Sheet, Modal, useData, Loader, Empty, Toggle, SearchBar, StatusPill } from '../../ui/index.jsx';
 import { DocList } from './doclist.jsx';
 import { LuBellRing } from 'react-icons/lu';
 import { dueReminders, nextReminder, scenarios, fillTemplate, sendReminder } from '../../lib/relances.js';
@@ -28,7 +28,40 @@ export function DocumentsHome() {
         <button className="tile" onClick={() => navigate('/pro/coffre-fort')}><LuLock />{t('Mon coffre-fort')}</button>
         {can('devis') && <button className="tile" onClick={() => navigate('/pro/relances')}><LuBellRing />{t('Relances')}</button>}
       </div>
+      {can('devis') && <RecentDocs />}
     </div>
+  );
+}
+
+// Accès rapide (règle des 3 clics) : créer un document, ouvrir / modifier / voir le PDF des derniers documents
+function RecentDocs() {
+  const { company } = useApp();
+  const [b] = useData(async () => {
+    const [docs, clients] = await Promise.all([api.select('documents', { company_id: company.id }, { order: 'created_at.desc', limit: 6 }), api.select('clients', { company_id: company.id }, { columns: 'id,type,first_name,last_name,company_name,trade_name' })]);
+    return { docs, cm: Object.fromEntries(clients.map((c) => [c.id, c])) };
+  }, []);
+  return (
+    <>
+      <div className="two" style={{ marginTop: 18 }}>
+        <button className="btn sm" onClick={() => navigate('/pro/documents/nouveau?kind=devis')}><LuPlus /> {t('Nouveau devis')}</button>
+        <button className="btn sm navy" onClick={() => navigate('/pro/documents/nouveau?kind=facture')}><LuPlus /> {t('Nouvelle facture')}</button>
+      </div>
+      {b && b.docs.length > 0 && <>
+        <Sec title={t('Derniers documents')} />
+        <div className="list">{b.docs.map((d) => (
+          <div key={d.id} className="li">
+            <button className="grow link-row" onClick={() => navigate('/pro/documents/' + d.id)}>
+              <div className="t1">{d.number || t('Brouillon')} <StatusPill s={statusPill(d)} /></div>
+              <div className="t2">{kindLabel(d.kind)} · {clientName(b.cm[d.client_id])} · {money(d.totals?.ttc)}</div>
+            </button>
+            <div className="row" style={{ gap: 6, flex: 'none' }}>
+              {!d.locked && <button className="btn xs ghost" onClick={() => navigate(`/pro/documents/${d.id}/modifier`)}>{t('Modifier')}</button>}
+              <button className="btn xs ghost" onClick={() => navigate(`/pro/documents/${d.id}/pdf`)}>PDF</button>
+            </div>
+          </div>
+        ))}</div>
+      </>}
+    </>
   );
 }
 

@@ -24,7 +24,30 @@ export function DocumentsHome() {
         <button className="tile" onClick={() => navigate('/client/chantiers')}><LuHardHat />{t('Mes chantiers')}</button>
         <button className="tile" onClick={() => navigate('/client/autres-docs')}><LuFolderOpen />{t('Autres docs')}</button>
       </div>
+      <ToDo />
     </div>
+  );
+}
+
+// Accès direct (règle des 3 clics) : devis à signer et factures à payer
+function ToDo() {
+  const [b] = useMyDocs();
+  if (!b) return null;
+  const todo = b.docs.filter((d) => (d.kind === 'devis' && effectiveStatus(d) === 'envoye') || (['facture', 'acompte'].includes(d.kind) && ['envoyee', 'partielle', 'retard'].includes(effectiveStatus(d))));
+  if (!todo.length) return null;
+  return (
+    <>
+      <Sec title={t('À traiter')} meta={todo.length} />
+      <div className="list">{todo.map((d) => { const q = d.kind === 'devis'; return (
+        <div key={d.id} className="li">
+          <button className="grow link-row" onClick={() => navigate((q ? '/client/devis/' : '/client/factures/') + d.id)}>
+            <div className="t1">{d.number} <StatusPill s={q ? ['red', t('À signer')] : ['red', t('À payer')]} /></div>
+            <div className="t2">{d.object || kindLabel(d.kind)} · {money(d.totals?.ttc)}</div>
+          </button>
+          <button className="btn xs" style={{ flex: 'none' }} onClick={() => navigate(q ? `/client/devis/${d.id}/pdf` : `/client/factures/${d.id}/payer`)}>{q ? t('Signer') : t('Payer')}</button>
+        </div>
+      ); })}</div>
+    </>
   );
 }
 

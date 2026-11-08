@@ -806,3 +806,6 @@ Pourquoi Artis & You ?|Why Artis & You?|Porquê a Artis & You?|Perché Artis & Y
 Logiciel de devis classique|Typical quoting software|Software de orçamentos clássico|Software di preventivi classico
 Plateforme de mise en relation|Lead-generation platform|Plataforma de contactos|Piattaforma di intermediazione
 Selon l’offre|Depends on plan|Conforme o plano|Secondo l'offerta
+Derniers documents|Latest documents|Últimos documentos|Ultimi documenti
+Payer|Pay|Pagar|Paga
+À traiter|To do|A tratar|Da fare

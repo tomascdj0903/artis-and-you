@@ -1973,4 +1973,7 @@ export default {"(copie)":"(copy)",
 "Pourquoi Artis & You ?":"Why Artis & You?",
 "Logiciel de devis classique":"Typical quoting software",
 "Plateforme de mise en relation":"Lead-generation platform",
-"Selon l’offre":"Depends on plan"};
+"Selon l’offre":"Depends on plan",
+"Derniers documents":"Latest documents",
+"Payer":"Pay",
+"À traiter":"To do"};
