@@ -39,7 +39,19 @@ export function Landing() {
         </div>
       </section>
 
-      <Audience />
+      <section className="lp-two only-desk">
+        <div className="lp-col pro">
+          <h2>{t('Pour les artisans')}</h2>
+          <ul>{PRO_PTS.map((x) => <li key={x}><LuCheck />{t(x)}</li>)}</ul>
+          <Link to="/inscription/artisan" className="btn light">{t('Essayer gratuitement')}</Link>
+        </div>
+        <div className="lp-col cli">
+          <h2>{t('Pour les particuliers')}</h2>
+          <ul>{CLI_PTS.map((x) => <li key={x}><LuCheck />{t(x)}</li>)}</ul>
+          <Link to="/inscription/particulier" className="btn">{t('Créer mon compte gratuit')}</Link>
+        </div>
+      </section>
+      <div className="only-mob"><Audience /></div>
 
       <Pricing />
 
@@ -106,11 +118,33 @@ function Pricing() {
     <section className="lp-price" id="tarifs">
       <div className="lp-price-head">
         <h2>{t('Des tarifs simples, sans engagement')}</h2>
-        <div className="lp-switch sm" role="tablist" aria-label={t('Tarifs pour')}>
+        <p className="muted only-desk">{t('30 jours d’essai gratuit pour toutes les formules, sans carte bancaire. Toujours gratuit pour les particuliers.')}</p>
+        <div className="lp-switch sm only-mob" role="tablist" aria-label={t('Tarifs pour')}>
           <button role="tab" aria-selected={who === 'pro'} className={who === 'pro' ? 'on' : ''} onClick={() => setWho('pro')}>{t('Professionnels')}</button>
           <button role="tab" aria-selected={who === 'cli'} className={who === 'cli' ? 'on' : ''} onClick={() => setWho('cli')}>{t('Particuliers')}</button>
         </div>
       </div>
+      <div className="lp-plans only-desk">
+        {PLANS.map((x) => (
+          <article key={x.id} className={'lp-plan' + (x.id === 'equipe' ? ' best' : '')}>
+            <h3>{t(x.name)}</h3>
+            <p className="lp-plan-desc">{t(x.desc)}</p>
+            <div className="lp-amount"><b>{fmt(x.price)} €</b><span>{t('HT / mois')}</span></div>
+            <p className="lp-plan-note">{t('sans engagement, résiliable à tout moment')}</p>
+            <ul>{x.features.map((f) => <li key={f}><LuCheck />{t(f)}</li>)}</ul>
+            <Link to="/inscription/artisan" className={'btn' + (x.id === 'equipe' ? '' : ' ghost')}>{t('Essayer 30 jours gratuits')}</Link>
+          </article>
+        ))}
+        <article className="lp-plan free">
+          <h3>{t('Particulier')}</h3>
+          <p className="lp-plan-desc">{t('Pour vos travaux à la maison')}</p>
+          <div className="lp-amount"><b>{t('Gratuit')}</b></div>
+          <p className="lp-plan-note">{t('pour toujours')}</p>
+          <ul>{CLI_PTS.slice(0, 4).map((f) => <li key={f}><LuCheck />{t(f)}</li>)}</ul>
+          <Link to="/inscription/particulier" className="btn navy">{t('Créer mon compte')}</Link>
+        </article>
+      </div>
+      <div className="only-mob">
       {who === 'pro' ? (
         <>
           <div className="lp-plan-tabs" role="tablist" aria-label={t('Formule')}>
@@ -139,6 +173,7 @@ function Pricing() {
           <ul>{CLI_PTS.map((f) => <li key={f}><LuCheck />{t(f)}</li>)}</ul>
         </article>
       )}
+      </div>
 
       <div className="lp-cmp">
         <h2>{t('Pourquoi Artis & You ?')}</h2>

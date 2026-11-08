@@ -815,3 +815,5 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
   .lp-cmp td:first-child { padding-left: 12px; }
   .cm { width: 24px; height: 24px; font-size: 13px; }
 }
+.only-mob { display: none !important; }
+@media (max-width: 640px) { .only-mob { display: block !important; } .lp-switch.only-mob { display: grid !important; } .only-desk { display: none !important; } }
