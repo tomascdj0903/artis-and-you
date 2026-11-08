@@ -761,3 +761,57 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
   .lp-foot { padding: 20px 16px 28px; flex-direction: column; }
   .lp-foot nav { gap: 6px 16px; }
 }
+/* Page d'accueil v2 : onglets artisan / particulier, formules à onglets, comparatif */
+.lp-aud { max-width: 980px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 64px); }
+.lp-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: var(--bg-soft); padding: 6px; border-radius: 22px; margin-bottom: 14px; }
+.lp-switch button { display: flex; align-items: center; gap: 12px; justify-content: center; border: 0; background: transparent; color: var(--text); padding: 14px 12px; border-radius: 17px; cursor: pointer; font: inherit; text-align: left; }
+.lp-switch button svg { font-size: 26px; flex: none; }
+.lp-switch button b { display: block; font-size: 17px; } .lp-switch button small { display: block; font-size: 13px; color: var(--text-2); }
+.lp-switch button.on { background: var(--surface); box-shadow: 0 6px 20px rgba(0,18,59,.12); }
+.lp-switch button.on svg { color: var(--bordeaux); }
+.lp-switch.sm { display: inline-grid; margin: 18px 0 0; } .lp-switch.sm button { padding: 10px 20px; font-weight: 700; }
+.lp-panel { border-radius: 28px; padding: clamp(24px, 4vw, 44px); }
+.lp-panel.pro { background: var(--bordeaux); color: #fff; } .lp-panel.cli { background: var(--text); color: #fff; }
+.lp-panel h2 { margin: 0 0 18px; font-size: clamp(24px, 3vw, 34px); letter-spacing: -.02em; }
+.lp-panel ul { list-style: none; padding: 0; margin: 0 0 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; }
+.lp-panel li { display: flex; gap: 10px; line-height: 1.4; } .lp-panel li svg { flex: none; margin-top: 3px; }
+.lp-panel.cli .btn { background: #fff; color: var(--text); }
+.lp-plan-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; max-width: 640px; }
+.lp-plan-tabs button { border: 2px solid var(--line); background: var(--surface); color: var(--text); border-radius: 18px; padding: 12px 8px; cursor: pointer; font: inherit; }
+.lp-plan-tabs button b { display: block; font-size: 17px; } .lp-plan-tabs button small { color: var(--text-2); font-size: 13.5px; }
+.lp-plan-tabs button.on { border-color: var(--bordeaux); background: var(--bordeaux); color: #fff; } .lp-plan-tabs button.on small { color: #fff; opacity: .85; }
+.lp-plan.one { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; max-width: 980px; border: 2px solid var(--bordeaux); }
+.lp-plan.one.free { border-color: transparent; }
+.lp-plan.one ul { margin: 0; align-content: start; }
+.lp-plan-l .btn { width: auto; }
+.lp-cmp { margin-top: clamp(48px, 6vw, 80px); }
+.lp-cmp h2 { font-size: clamp(26px, 3vw, 36px); letter-spacing: -.02em; margin: 0 0 18px; }
+.lp-cmp-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 22px; }
+.lp-cmp table { width: 100%; border-collapse: collapse; min-width: 560px; }
+.lp-cmp th { font-size: 14px; padding: 16px 12px; text-align: center; vertical-align: bottom; color: var(--text-2); font-weight: 700; }
+.lp-cmp th.us { color: #fff; background: var(--bordeaux); border-radius: 14px 14px 0 0; font-size: 16px; }
+.lp-cmp td { padding: 13px 12px; border-top: 1px solid var(--line); text-align: center; font-size: 15px; }
+.lp-cmp td:first-child { text-align: left; font-weight: 600; }
+.lp-cmp td.us { background: var(--bordeaux-50); }
+.cm { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; }
+.cm.yes { background: #E3F4EA; color: #1E7A4C; } .cm.no { background: #F2F3F6; color: #9AA0B0; } .cm.part { background: #FFF4D6; color: #8A6200; }
+.lp-cmp > p { margin-top: 10px; }
+@media (max-width: 640px) {
+  .lp-aud { padding: 0 16px; }
+  .lp-switch button { flex-direction: column; gap: 4px; text-align: center; padding: 12px 6px; }
+  .lp-switch button small { font-size: 12px; }
+  .lp-panel { border-radius: 24px; padding: 22px 18px; }
+  .lp-panel h2 { font-size: 23px; }
+  .lp-panel ul { grid-template-columns: 1fr; gap: 10px; font-size: 15px; }
+  .lp-panel .btn { width: 100%; }
+  .lp-switch.sm { display: grid; width: 100%; }
+  .lp-plan.one { grid-template-columns: 1fr; gap: 16px; padding: 22px 18px; }
+  .lp-plan-l .btn { width: 100%; }
+  .lp-cmp table { min-width: 0; table-layout: fixed; }
+  .lp-cmp th { font-size: 11.5px; padding: 12px 4px; }
+  .lp-cmp th:first-child { width: 44%; }
+  .lp-cmp th.us { font-size: 13px; }
+  .lp-cmp td { padding: 10px 4px; font-size: 13px; }
+  .lp-cmp td:first-child { padding-left: 12px; }
+  .cm { width: 24px; height: 24px; font-size: 13px; }
+}

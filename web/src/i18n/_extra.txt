@@ -789,3 +789,20 @@ sans engagement, résiliable à tout moment|no commitment, cancel anytime|sem co
 Essayer 30 jours gratuits|Try free for 30 days|Experimentar 30 dias grátis|Prova gratis 30 giorni
 Pour vos travaux à la maison|For work on your home|Para as obras em casa|Per i lavori in casa
 pour toujours|forever|para sempre|per sempre
+Vous êtes|You are|Você é|Sei
+Artisan|Tradesperson|Profissional|Artigiano
+Gérer mon activité|Run my business|Gerir a minha atividade|Gestire la mia attività
+Trouver un artisan|Find a tradesperson|Encontrar um profissional|Trovare un artigiano
+Tout votre bureau dans la poche|Your whole office in your pocket|Todo o seu escritório no bolso|Tutto il tuo ufficio in tasca
+Vos travaux, enfin simples à suivre|Your home works, finally easy to follow|As suas obras, finalmente fáceis de acompanhar|I tuoi lavori, finalmente facili da seguire
+Essayer gratuitement 30 jours|Try free for 30 days|Experimentar grátis 30 dias|Prova gratis 30 giorni
+Professionnels|Professionals|Profissionais|Professionisti
+Particuliers|Individuals|Particulares|Privati
+Formule|Plan|Plano|Piano
+Essayer {p} gratuitement|Try {p} for free|Experimentar {p} grátis|Prova {p} gratis
+30 jours d’essai gratuit, sans carte bancaire · sans engagement|30-day free trial, no card · no commitment|30 dias grátis, sem cartão · sem compromisso|30 giorni gratis, senza carta · senza vincoli
+Aucune carte bancaire, aucun abonnement.|No card, no subscription.|Sem cartão, sem assinatura.|Nessuna carta, nessun abbonamento.
+Pourquoi Artis & You ?|Why Artis & You?|Porquê a Artis & You?|Perché Artis & You?
+Logiciel de devis classique|Typical quoting software|Software de orçamentos clássico|Software di preventivi classico
+Plateforme de mise en relation|Lead-generation platform|Plataforma de contactos|Piattaforma di intermediazione
+Selon l’offre|Depends on plan|Conforme o plano|Secondo l'offerta
