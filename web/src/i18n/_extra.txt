@@ -772,3 +772,11 @@ Lien de parrainage copié|Referral link copied|Link de recomendação copiado|Li
 Parrainez un artisan : 1 mois offert pour vous deux|Refer a tradesperson: 1 month free for both of you|Recomende um profissional: 1 mês grátis para os dois|Invita un artigiano: 1 mese gratis per entrambi
 Votre code : {c}|Your code: {c}|O seu código: {c}|Il tuo codice: {c}
 Masquer|Hide|Ocultar|Nascondi
+Aucun client pour le moment. Ajoutez-en un avec le bouton +.|No clients yet. Add one with the + button.|Ainda sem clientes. Adicione um com o botão +.|Nessun cliente per ora. Aggiungine uno con il pulsante +.
+Aucun chantier pour ce client. Il est créé avec le premier devis ou rendez-vous.|No job for this client yet. It's created with the first quote or appointment.|Ainda sem obra para este cliente. É criada com o primeiro orçamento ou marcação.|Nessun cantiere per questo cliente. Viene creato con il primo preventivo o appuntamento.
+Pas encore de photo. Ajoutez-en depuis un chantier ou un rendez-vous.|No photos yet. Add some from a job or an appointment.|Ainda sem fotos. Adicione a partir de uma obra ou marcação.|Nessuna foto per ora. Aggiungile da un cantiere o da un appuntamento.
+Action impossible pour le moment. Vérifiez votre connexion et réessayez.|This didn't work. Check your connection and try again.|Ação impossível de momento. Verifique a ligação e tente novamente.|Azione non riuscita. Controlla la connessione e riprova.
+Utiliser cette image|Use this image|Usar esta imagem|Usa questa immagine
+Activer mon compte|Activate my account|Ativar a minha conta|Attiva il mio account
+Approuver|Approve|Aprovar|Approva
+Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.|Your library is empty. Add your products in CRM › My library.|A sua biblioteca está vazia. Adicione produtos em CRM › A minha biblioteca.|La tua libreria è vuota. Aggiungi i prodotti in CRM › La mia libreria.

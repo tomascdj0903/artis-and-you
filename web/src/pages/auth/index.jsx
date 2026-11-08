@@ -63,7 +63,7 @@ export function Login() {
         <p className="center muted" style={{ margin: 0 }}>{t('Saisissez le code à 6 chiffres affiché dans votre application d’authentification.')}</p>
         <input className="pillinput center" style={{ fontSize: 26, letterSpacing: 8, fontWeight: 800 }} inputMode="numeric" autoComplete="one-time-code" maxLength={7} autoFocus value={code} onChange={(e) => setCode(e.target.value.replace(/[^\d ]/g, ''))} aria-label={t('Code')} placeholder="000000" />
         {err && <div className="error">{err}</div>}
-        <button className="btn" style={{ height: 58, fontSize: 19 }} disabled={busy || code.replace(/\D/g, '').length !== 6}>{busy ? '…' : t('Valider')}</button>
+        <button className="btn" style={{ height: 58, fontSize: 19 }} disabled={busy || code.replace(/\D/g, '').length !== 6}>{busy ? '…' : t('Activer mon compte')}</button>
         <button type="button" className="link center bold" onClick={() => { setMfa(false); setCode(''); setErr(''); }}>{t('Retour')}</button>
         <p className="small faint center">{t('Plus accès à votre application ? Écrivez à support@artisandyou.fr depuis votre adresse e-mail.')}</p>
       </form>

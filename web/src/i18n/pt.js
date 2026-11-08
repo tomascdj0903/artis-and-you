@@ -1942,4 +1942,12 @@ export default {"(copie)":"(cópia)",
 "Lien de parrainage copié":"Link de recomendação copiado",
 "Parrainez un artisan : 1 mois offert pour vous deux":"Recomende um profissional: 1 mês grátis para os dois",
 "Votre code : {c}":"O seu código: {c}",
-"Masquer":"Ocultar"};
+"Masquer":"Ocultar",
+"Aucun client pour le moment. Ajoutez-en un avec le bouton +.":"Ainda sem clientes. Adicione um com o botão +.",
+"Aucun chantier pour ce client. Il est créé avec le premier devis ou rendez-vous.":"Ainda sem obra para este cliente. É criada com o primeiro orçamento ou marcação.",
+"Pas encore de photo. Ajoutez-en depuis un chantier ou un rendez-vous.":"Ainda sem fotos. Adicione a partir de uma obra ou marcação.",
+"Action impossible pour le moment. Vérifiez votre connexion et réessayez.":"Ação impossível de momento. Verifique a ligação e tente novamente.",
+"Utiliser cette image":"Usar esta imagem",
+"Activer mon compte":"Ativar a minha conta",
+"Approuver":"Aprovar",
+"Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"A sua biblioteca está vazia. Adicione produtos em CRM › A minha biblioteca."};

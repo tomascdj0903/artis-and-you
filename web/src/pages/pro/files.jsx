@@ -31,7 +31,7 @@ function ClientFileList({ kind, title, to }) {
       <TopBar title={title} sub={t('Tous les clients')} />
       <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={onlyWith} />
       <Sec title={t('Mes clients')} meta={t('{n} clients · {m} {k}', { n: b.clients.length, m: b.total, k: kind === 'photo' ? t('photos') : t('documents') })} />
-      {!list.length ? <Empty text={t('Aucun client')} /> : (
+      {!list.length ? <Empty text={t('Aucun client pour le moment. Ajoutez-en un avec le bouton +.')} /> : (
         <div className="list">{list.map((c) => (
           <button key={c.id} className="li click" onClick={() => navigate(to + c.id)}>
             <div className="ficon"><I /></div>

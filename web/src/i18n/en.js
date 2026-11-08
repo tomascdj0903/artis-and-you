@@ -1942,4 +1942,12 @@ export default {"(copie)":"(copy)",
 "Lien de parrainage copié":"Referral link copied",
 "Parrainez un artisan : 1 mois offert pour vous deux":"Refer a tradesperson: 1 month free for both of you",
 "Votre code : {c}":"Your code: {c}",
-"Masquer":"Hide"};
+"Masquer":"Hide",
+"Aucun client pour le moment. Ajoutez-en un avec le bouton +.":"No clients yet. Add one with the + button.",
+"Aucun chantier pour ce client. Il est créé avec le premier devis ou rendez-vous.":"No job for this client yet. It's created with the first quote or appointment.",
+"Pas encore de photo. Ajoutez-en depuis un chantier ou un rendez-vous.":"No photos yet. Add some from a job or an appointment.",
+"Action impossible pour le moment. Vérifiez votre connexion et réessayez.":"This didn't work. Check your connection and try again.",
+"Utiliser cette image":"Use this image",
+"Activer mon compte":"Activate my account",
+"Approuver":"Approve",
+"Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"Your library is empty. Add your products in CRM › My library."};

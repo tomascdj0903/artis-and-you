@@ -284,7 +284,7 @@ export function Admin() {
               {c.verification_note && <div className="small mt">{t('Note')} : {c.verification_note}</div>}
               <div className="row wrap mt">
                 <a className="btn xs ghost" href={'https://annuaire-entreprises.data.gouv.fr/etablissement/' + (c.siret || '').replace(/\D/g, '')} target="_blank" rel="noreferrer">{t('Vérifier le SIRET')} ↗</a>
-                {st(c) !== 'approved' && <button className="btn xs" onClick={() => review(c, 'approved')}><LuCheck /> {t('Valider')}</button>}
+                {st(c) !== 'approved' && <button className="btn xs" onClick={() => review(c, 'approved')}><LuCheck /> {t('Approuver')}</button>}
                 {st(c) !== 'rejected' && <button className="btn xs ghost" onClick={() => setRefuse({ c, note: m.length ? t('Merci de compléter : {l}.', { l: m.join(', ') }) : '' })}><LuX /> {t('Demander des compléments')}</button>}
               </div>
             </div>

@@ -54,14 +54,14 @@ export function SignatureEditor({ p, setP, defaultName }) {
       <div className="small bold mb"><LuType /> {t('Signature avec votre nom')} <span className="faint">({t('obligatoire')})</span></div>
       <div className="field"><input value={name} onChange={(e) => update({ sig_name: e.target.value })} placeholder={t('Prénom Nom')} aria-label={t('Prénom Nom')} /></div>
       <div className="sig-fonts">{SIG_FONTS.map((f) => (
-        <button key={f} type="button" className={font === f ? 'on' : ''} onClick={() => update({ sig_font: f })} style={{ fontFamily: `"${f}", cursive` }}>{name || t('Prénom Nom')}</button>
+        <button key={f} type="button" aria-label={f} aria-pressed={font === f} className={font === f ? 'on' : ''} onClick={() => update({ sig_font: f })} style={{ fontFamily: `"${f}", cursive` }}>{name || t('Prénom Nom')}</button>
       ))}</div>
       <div className="small bold mb" style={{ marginTop: 16 }}><LuPenLine /> {t('Signature manuscrite')} <span className="faint">({t('facultatif')})</span></div>
       <DrawPad value={p.sig_drawn} onChange={(v) => update({ sig_drawn: v })} />
       <div className="small bold mb" style={{ marginTop: 16 }}>{t('Signature affichée sur vos devis et factures')}</div>
       <div className="sig-use">
-        <button type="button" className={use === 'text' ? 'on' : ''} onClick={() => update({ sig_use: 'text' })}>{p.sig_text ? <img src={p.sig_text} alt="" /> : <span className="faint">{t('Saisissez votre nom')}</span>}</button>
-        <button type="button" className={use === 'drawn' ? 'on' : ''} disabled={!p.sig_drawn} onClick={() => update({ sig_use: 'drawn' })}>{p.sig_drawn ? <img src={p.sig_drawn} alt="" /> : <span className="faint">{t('Aucune signature dessinée')}</span>}</button>
+        <button type="button" aria-label={t('Signature avec votre nom')} aria-pressed={use === 'text'} className={use === 'text' ? 'on' : ''} onClick={() => update({ sig_use: 'text' })}>{p.sig_text ? <img src={p.sig_text} alt="" /> : <span className="faint">{t('Saisissez votre nom')}</span>}</button>
+        <button type="button" aria-label={t('Signature manuscrite')} aria-pressed={use === 'drawn'} className={use === 'drawn' ? 'on' : ''} disabled={!p.sig_drawn} onClick={() => update({ sig_use: 'drawn' })}>{p.sig_drawn ? <img src={p.sig_drawn} alt="" /> : <span className="faint">{t('Aucune signature dessinée')}</span>}</button>
       </div>
     </div>
   );

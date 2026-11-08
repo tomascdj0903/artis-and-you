@@ -259,7 +259,7 @@ function LibraryPicker({ open, items, onClose, onPick }) {
   return (
     <Sheet open={open} onClose={onClose} title={t('Ma bibliothèque')}>
       <input className="input mb" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('Rechercher un produit ou un ouvrage')} autoFocus />
-      {!items.length ? <Empty text={t('Votre bibliothèque est vide. Ajoutez des produits dans CRM → Ma bibliothèque.')} /> : (
+      {!items.length ? <Empty text={t('Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.')} /> : (
         <div className="list">{list.map((i) => <button key={i.id} className="li click" onClick={() => onPick(i)}><div className="grow"><div className="t1">{i.name}</div><div className="t2">{i.family} · {i.kind === 'ouvrage' ? t('Ouvrage') : t('Article')}</div></div><div className="side-r"><b>{money(i.sale_price)}</b>{t('HT / {u}', { u: i.unit })}</div></button>)}</div>
       )}
     </Sheet>

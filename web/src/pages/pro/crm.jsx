@@ -202,7 +202,7 @@ export function CompanyKpi() {
       {rows.length ? (
         <div className="table-wrap"><table className="t"><thead><tr><th>{t('Client')}</th><th>{t('Statut')}</th><th className="num">{t('CA HT')}</th><th className="num">{t('Dû')}</th><th className="num">{t('Dernier document')}</th></tr></thead>
           <tbody>{rows.slice(0, 50).map((r) => <tr key={r.c.id} style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/clients/' + r.c.id)}><td className="strong">{clientName(r.c)}</td><td><Pill c={r.status[0]}>{t(r.status[1])}</Pill></td><td className="num">{money0(r.ca)}</td><td className={'num' + (r.due > 0.005 ? ' red-t' : '')}>{money0(r.due)}</td><td className="num" style={{ fontWeight: 400 }}>{r.last ? date(r.last) : '—'}</td></tr>)}</tbody></table></div>
-      ) : <Empty text={t('Aucun client')} />}
+      ) : <Empty text={t('Aucun client pour le moment. Ajoutez-en un avec le bouton +.')} />}
     </div>
   );
 }

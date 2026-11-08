@@ -219,7 +219,7 @@ export function ProjectDetail({ params }) {
       <Sec title={t('Étapes')} />
       <div className="steps">{pr.list.map(([l], i) => <div key={l} className={'step ' + (i < pr.cur ? 'done' : i === pr.cur ? 'cur' : '')}><span className="b">{i < pr.cur ? '✓' : i + 1}</span><div><b>{t(l)}</b></div></div>)}</div>
       <Sec title={t('Photos du chantier')} meta={photos ? t('{n} photos', { n: photos.length }) : ''} />
-      {photos?.length ? <div className="photos-grid">{photos.map((f) => <Img key={f.id} path={f.path} onClick={() => setBig(f.path)} />)}</div> : <Empty icon={LuCamera} text={t('Pas encore de photo.')} />}
+      {photos?.length ? <div className="photos-grid">{photos.map((f) => <Img key={f.id} path={f.path} onClick={() => setBig(f.path)} />)}</div> : <Empty icon={LuCamera} text={t('Pas encore de photo. Ajoutez-en depuis un chantier ou un rendez-vous.')} />}
       <div className="btns"><button className="btn" onClick={async () => { const id = await api.rpc('start_conversation', { p_company: p.company_id }); navigate('/client/messages/' + id); }}>{t("Écrire à l'artisan")}</button></div>
       <Lightbox path={big} onClose={() => setBig(null)} />
     </div>

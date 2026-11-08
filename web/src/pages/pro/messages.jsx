@@ -217,7 +217,7 @@ export function ProProfile({ params }) {
       <Sheet open={share} onClose={() => setShare(false)} title={t('Inviter sur un chantier')}>
         <p className="small muted">{t('Le pro verra le nom et l’adresse du chantier, et pourra échanger avec vous. Il ne voit ni vos prix ni l’historique du client.')}</p>
         <div className="list">{b.projects.map((pr) => <button key={pr.id} className="li click" onClick={() => invite(pr)}><div className="grow"><div className="t1">{pr.title}</div><div className="t2">{pr.address}</div></div><LuChevronRight /></button>)}</div>
-        {!b.projects.length && <Empty text={t('Aucun chantier.')} />}
+        {!b.projects.length && <Empty text={t('Aucun chantier pour ce client. Il est créé avec le premier devis ou rendez-vous.')} />}
       </Sheet>
     </div>
   );

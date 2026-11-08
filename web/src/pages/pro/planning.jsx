@@ -89,7 +89,7 @@ export function Planning() {
         <button className="round" onClick={() => move(1)} aria-label={t('Suivant')}><LuChevronRight /></button>
         <button className="btn xs ghost" onClick={() => setAnchor(new Date())}>{t("Aujourd'hui")}</button>
         <div style={{ flex: 1 }} />
-        <div className="seg" style={{ margin: 0, minWidth: 210 }}>{[['day', t('Jour')], ['week', t('Semaine')], ['month', t('Mois')]].map(([v, l]) => <button key={v} className={view === v ? 'on' : ''} onClick={() => setView(v)} style={{ padding: '6px 8px', fontSize: 13 }}>{l}</button>)}</div>
+        <div className="seg" style={{ margin: 0, minWidth: 210 }}>{[['day', t('Jour')], ['week', t('Semaine')], ['month', t('Mois')]].map(([v, l]) => <button key={v} className={view === v ? 'on' : ''} onClick={() => setView(v)} style={{ padding: '6px 8px', fontSize: 13, minHeight: 40 }}>{l}</button>)}</div>
         {profile.member_role !== 'ouvrier' && <Link to="/pro/planning/reglages" className="btn xs ghost"><LuSettings /> {t('Réglages')}</Link>}
       </div>
       <div className="cal-legend">

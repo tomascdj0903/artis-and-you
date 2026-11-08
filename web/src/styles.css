@@ -22,7 +22,7 @@
   --row: #FFF6F6;
   --text: #00123B;
   --text-2: #4A5470;
-  --text-3: #8A90A0;
+  --text-3: #646C84;
   --line: #EEDCDC;
   --line-2: #E6E8EF;
   --primary: var(--bordeaux);
@@ -686,3 +686,9 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
   .lp-nav .btn { display: none; }
 }
 .notice.ref { display: flex; align-items: center; gap: 10px; } .notice.ref > span { flex: 1; } .block { display: block; }
+/* Accessibilité : cibles tactiles d'au moins 40 px, logo cliquable, focus clavier visible partout */
+.iconbtn { flex: none; min-width: 44px; }
+a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
+.notice.ref .link { min-width: 40px; min-height: 40px; }
+:focus-visible { outline: 3px solid var(--bordeaux); outline-offset: 2px; }
+.btn:focus-visible, .tile:focus-visible { outline: 3px solid #E5484D; outline-offset: 3px; }

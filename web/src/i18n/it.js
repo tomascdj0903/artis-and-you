@@ -1942,4 +1942,12 @@ export default {"(copie)":"(copia)",
 "Lien de parrainage copié":"Link di invito copiato",
 "Parrainez un artisan : 1 mois offert pour vous deux":"Invita un artigiano: 1 mese gratis per entrambi",
 "Votre code : {c}":"Il tuo codice: {c}",
-"Masquer":"Nascondi"};
+"Masquer":"Nascondi",
+"Aucun client pour le moment. Ajoutez-en un avec le bouton +.":"Nessun cliente per ora. Aggiungine uno con il pulsante +.",
+"Aucun chantier pour ce client. Il est créé avec le premier devis ou rendez-vous.":"Nessun cantiere per questo cliente. Viene creato con il primo preventivo o appuntamento.",
+"Pas encore de photo. Ajoutez-en depuis un chantier ou un rendez-vous.":"Nessuna foto per ora. Aggiungile da un cantiere o da un appuntamento.",
+"Action impossible pour le moment. Vérifiez votre connexion et réessayez.":"Azione non riuscita. Controlla la connessione e riprova.",
+"Utiliser cette image":"Usa questa immagine",
+"Activer mon compte":"Attiva il mio account",
+"Approuver":"Approva",
+"Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"La tua libreria è vuota. Aggiungi i prodotti in CRM › La mia libreria."};
