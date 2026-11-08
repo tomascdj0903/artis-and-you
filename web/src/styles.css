@@ -692,3 +692,28 @@ a.logo-btn { display: inline-flex; align-items: center; min-height: 44px; }
 .notice.ref .link { min-width: 40px; min-height: 40px; }
 :focus-visible { outline: 3px solid var(--bordeaux); outline-offset: 2px; }
 .btn:focus-visible, .tile:focus-visible { outline: 3px solid #E5484D; outline-offset: 3px; }
+/* ── Ajustements mobile ── */
+.topbar { grid-template-columns: minmax(44px, auto) minmax(0, 1fr) minmax(44px, auto); }
+.topbar .title { min-width: 0; }
+.topbar h1, .topbar .sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar .right .btn { white-space: nowrap; flex: none; }
+.search input { text-overflow: ellipsis; }
+.grid2 > * { min-width: 0; }
+.kv .r .k { min-width: 0; }
+.sec h2 { white-space: nowrap; }
+.sec > :not(h2) { min-width: 0; }
+@media (max-width: 700px) {
+  .search { padding: 0 18px; height: 54px; }
+  .search input { font-size: 15.5px; }
+  .tpl-pick { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; overflow: hidden; }
+  .tpl-pick .small { display: none; }
+  .sig-fonts { grid-template-columns: 1fr 1fr; }
+  .sig-fonts button { font-size: 20px; }
+  .seg { overflow-x: auto; }
+  .seg { grid-auto-columns: minmax(max-content, 1fr); }
+  .seg button { white-space: nowrap; padding-left: 12px; padding-right: 12px; }
+  .content { padding-bottom: 110px; }
+  table.t td, table.t thead th { padding: 11px 8px; }
+  .notice.ref { font-size: 13.5px; }
+  .kv .r { flex-wrap: wrap; }
+}

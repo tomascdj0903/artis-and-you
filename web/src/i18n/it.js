@@ -1950,4 +1950,5 @@ export default {"(copie)":"(copia)",
 "Utiliser cette image":"Usa questa immagine",
 "Activer mon compte":"Attiva il mio account",
 "Approuver":"Approva",
-"Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"La tua libreria è vuota. Aggiungi i prodotti in CRM › La mia libreria."};
+"Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"La tua libreria è vuota. Aggiungi i prodotti in CRM › La mia libreria.",
+"Tout marquer comme lu":"Segna tutto come letto"};

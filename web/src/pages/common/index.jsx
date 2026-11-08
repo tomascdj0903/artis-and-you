@@ -28,7 +28,8 @@ export function Notifications() {
   let last = '';
   return (
     <div className="content narrow">
-      <TopBar title={t('Notifications')} back={isPro} settings={isPro ? '/pro/compte/notifications' : '/client/compte/notifications'} right={list.some((n) => !n.read) && <button className="btn xs ghost" onClick={readAll}>{t('Tout lire')}</button>} />
+      <TopBar title={t('Notifications')} back={isPro} settings={isPro ? '/pro/compte/notifications' : '/client/compte/notifications'}  />
+      {list.some((n) => !n.read) && <div className="row" style={{ justifyContent: 'flex-end', marginBottom: 8 }}><button className="btn xs ghost" onClick={readAll}>{t('Tout marquer comme lu')}</button></div>}
       <SearchBar placeholder={isPro ? t('Rechercher') : t('Recherchez un pro')} value={q} onChange={setQ} />
       <Chips options={[['', t('Toutes')], ['rdv', t('RDV et chantier')], ['documents', t('Documents')], ['paiement', t('Paiement')]]} value={f} onChange={setF} />
       {!shown.length ? <Empty icon={LuBell} text={t('Aucune notification')} /> : shown.map((n) => {

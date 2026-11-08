@@ -1950,4 +1950,5 @@ export default {"(copie)":"(copy)",
 "Utiliser cette image":"Use this image",
 "Activer mon compte":"Activate my account",
 "Approuver":"Approve",
-"Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"Your library is empty. Add your products in CRM › My library."};
+"Votre bibliothèque est vide. Ajoutez vos produits dans CRM › Ma bibliothèque.":"Your library is empty. Add your products in CRM › My library.",
+"Tout marquer comme lu":"Mark all as read"};
