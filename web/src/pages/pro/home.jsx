@@ -64,6 +64,7 @@ export function Home() {
       {days !== null && days >= 0 && days <= 30 && company?.plan && (
         <Link to="/pro/compte/abonnement" className="notice">⏳ <span>{t('Essai gratuit : encore {n} jours. Choisir ma formule', { n: days })} →</span></Link>
       )}
+      {company?.referral_code && <ReferralCard code={company.referral_code} />}
       <div className="tiles home">
         {tiles.map(([to, I, l]) => <button key={to} className="tile" style={{ position: 'relative' }} onClick={() => navigate(to)}><I />{t(l)}{to === '/pro/planning' && unread.rdv > 0 && <span className="dot" style={{ position: 'absolute', top: 10, right: 12 }}>{unread.rdv}</span>}{to === '/pro/messages' && unread.messages > 0 && <span className="dot" style={{ position: 'absolute', top: 10, right: 12 }}>{unread.messages}</span>}</button>)}
       </div>
@@ -105,6 +106,26 @@ export function GlobalSearch() {
           {res.items.length > 0 && <><Sec title={t('Bibliothèque')} meta={res.items.length} /><div className="list">{res.items.map((i) => <button key={i.id} className="li click" onClick={() => navigate('/pro/crm/bibliotheque/' + i.id)}><div className="grow"><div className="t1">{i.name}</div><div className="t2">{i.family}</div></div><div className="side-r"><b>{money(i.sale_price)}</b></div></button>)}</div></>}
         </>
       )}
+    </div>
+  );
+}
+
+// Parrainage mis en avant : lien d'inscription avec le code prérempli, partage natif ou copie
+export function ReferralCard({ code }) {
+  const { toast } = useApp();
+  const [hide, setHide] = useState(() => { try { return localStorage.getItem('ay-ref-hide') === code; } catch { return false; } });
+  if (hide) return null;
+  const url = `${location.origin}/inscription/artisan?parrain=${encodeURIComponent(code)}`;
+  const msg = t('Je gère mes devis, factures et rendez-vous avec Artis & You. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.', { c: code });
+  const share = async () => {
+    try { if (navigator.share) { await navigator.share({ title: 'Artis & You', text: msg, url }); return; } } catch { return; }
+    try { await navigator.clipboard.writeText(msg + ' ' + url); toast(t('Lien de parrainage copié')); } catch {}
+  };
+  return (
+    <div className="notice ref">
+      🎁 <span><b>{t('Parrainez un artisan : 1 mois offert pour vous deux')}</b><small className="block">{t('Votre code : {c}', { c: code })}</small></span>
+      <button className="btn xs" onClick={share}>{t('Partager')}</button>
+      <button className="link small" aria-label={t('Masquer')} onClick={() => { try { localStorage.setItem('ay-ref-hide', code); } catch {} setHide(true); }}>✕</button>
     </div>
   );
 }

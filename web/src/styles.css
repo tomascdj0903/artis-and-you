@@ -685,3 +685,4 @@ input.toggle:focus-visible { outline: 2px solid var(--bordeaux); outline-offset:
   .lp-ctas .btn { flex: 1 1 100%; }
   .lp-nav .btn { display: none; }
 }
+.notice.ref { display: flex; align-items: center; gap: 10px; } .notice.ref > span { flex: 1; } .block { display: block; }

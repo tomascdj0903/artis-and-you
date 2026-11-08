@@ -767,3 +767,8 @@ Suivant|Next|Seguinte|Avanti
 Terminer|Finish|Terminar|Fine
 Bienvenue sur Artis & You 👋|Welcome to Artis & You 👋|Bem-vindo à Artis & You 👋|Benvenuto su Artis & You 👋
 C’est parti !|Let's go!|Vamos lá!|Si parte!
+Je gère mes devis, factures et rendez-vous avec Artis & You. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.|I manage my quotes, invoices and appointments with Artis & You. Sign up with my code {c}: 1 month free for both of us.|Faço os meus orçamentos, faturas e marcações com a Artis & You. Inscreve-te com o meu código {c}: 1 mês grátis para os dois.|Gestisco preventivi, fatture e appuntamenti con Artis & You. Iscriviti con il mio codice {c}: 1 mese gratis per entrambi.
+Lien de parrainage copié|Referral link copied|Link de recomendação copiado|Link di invito copiato
+Parrainez un artisan : 1 mois offert pour vous deux|Refer a tradesperson: 1 month free for both of you|Recomende um profissional: 1 mês grátis para os dois|Invita un artigiano: 1 mese gratis per entrambi
+Votre code : {c}|Your code: {c}|O seu código: {c}|Il tuo codice: {c}
+Masquer|Hide|Ocultar|Nascondi

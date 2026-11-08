@@ -207,7 +207,7 @@ export function SignupPro() {
   const hasAccount = !!profile && !getSession()?.recovery;
   const [step, setStep] = useState(hasAccount ? 2 : 1);
   const [v, set] = useState({ civility: '', first_name: '', last_name: '', email: '', phone: '', password: '' });
-  const [c, setC] = useState({ name: '', legal_form: '', siret: '', trades: [], address: '', zip: '', city: '', country: 'France', phone: profile?.phone || '', email: profile?.email || '', referral: '' });
+  const [c, setC] = useState({ name: '', legal_form: '', siret: '', trades: [], address: '', zip: '', city: '', country: 'France', phone: profile?.phone || '', email: profile?.email || '', referral: (new URLSearchParams(location.search).get('parrain') || '').toUpperCase() });
   const [mode, setMode] = useState('create');
   const [code, setCode] = useState('');
   const [cgu, setCgu] = useState(false);

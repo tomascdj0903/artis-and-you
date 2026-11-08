@@ -1937,4 +1937,9 @@ export default {"(copie)":"(copy)",
 "Passer":"Skip",
 "Terminer":"Finish",
 "Bienvenue sur Artis & You 👋":"Welcome to Artis & You 👋",
-"C’est parti !":"Let's go!"};
+"C’est parti !":"Let's go!",
+"Je gère mes devis, factures et rendez-vous avec Artis & You. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.":"I manage my quotes, invoices and appointments with Artis & You. Sign up with my code {c}: 1 month free for both of us.",
+"Lien de parrainage copié":"Referral link copied",
+"Parrainez un artisan : 1 mois offert pour vous deux":"Refer a tradesperson: 1 month free for both of you",
+"Votre code : {c}":"Your code: {c}",
+"Masquer":"Hide"};
