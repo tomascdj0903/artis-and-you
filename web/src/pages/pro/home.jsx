@@ -76,9 +76,9 @@ export function Home() {
         <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{company?.trade_name || company?.name}</b></div>
         <SmartSearch />
         {st && <div className="hb-kpis">
-          {can('planning') && <Link to="/pro/planning" className="hb-kpi"><b>{st.today}</b><span>{t('RDV aujourd’hui')}</span></Link>}
-          {can('devis') && <Link to="/pro/documents/devis" className="hb-kpi"><b>{st.pending}</b><span>{t('devis en attente')}</span></Link>}
-          {can('kpi') && <Link to="/pro/crm/kpi" className="hb-kpi"><b>{money(st.ca).replace(/,00\s?€/, ' €')}</b><span>{t('CA HT du mois')}</span></Link>}
+          {can('planning') && <Link to="/pro/planning" className="hb-kpi"><span className="hk-ic"><LuCalendar /></span><b>{st.today}</b><span>{t('RDV aujourd’hui')}</span></Link>}
+          {can('devis') && <Link to="/pro/documents/devis" className="hb-kpi"><span className="hk-ic"><LuFileText /></span><b>{st.pending}</b><span>{t('devis en attente')}</span></Link>}
+          {can('kpi') && <Link to="/pro/crm/kpi" className="hb-kpi"><span className="hk-ic"><LuChartColumn /></span><b>{money(st.ca).replace(/,00\s?€/, ' €')}</b><span>{t('CA HT du mois')}</span></Link>}
         </div>}
         {((days !== null && days >= 0 && days <= 30 && company?.plan) || company?.referral_code) && <div className="hb-foot">
           {days !== null && days >= 0 && days <= 30 && company?.plan && <Link to="/pro/compte/abonnement">⏳ {t('Essai gratuit : {n} jours restants', { n: days })}<span className="hb-long"> ·</span> <u>{t('Choisir ma formule')}</u></Link>}
