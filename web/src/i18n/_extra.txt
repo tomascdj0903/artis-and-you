@@ -833,3 +833,5 @@ Réseau|Network|Rede|Rete
 Alertes|Alerts|Alertas|Avvisi
 Essai gratuit : {n} jours restants|Free trial: {n} days left|Teste grátis: faltam {n} dias|Prova gratuita: {n} giorni rimasti
 Choisir ma formule|Choose my plan|Escolher o meu plano|Scegli il mio piano
+1 mois offert|1 month free|1 mês grátis|1 mese gratis
+Parrainer|Refer|Recomendar|Invita

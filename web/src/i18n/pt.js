@@ -1998,4 +1998,6 @@ export default {"(copie)":"(cópia)",
 "Réseau":"Rede",
 "Alertes":"Alertas",
 "Essai gratuit : {n} jours restants":"Teste grátis: faltam {n} dias",
-"Choisir ma formule":"Escolher o meu plano"};
+"Choisir ma formule":"Escolher o meu plano",
+"1 mois offert":"1 mês grátis",
+"Parrainer":"Recomendar"};

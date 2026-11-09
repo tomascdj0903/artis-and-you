@@ -81,7 +81,7 @@ export function Home() {
           {can('kpi') && <Link to="/pro/crm/kpi" className="hb-kpi"><b>{money(st.ca).replace(/,00\s?€/, ' €')}</b><span>{t('CA HT du mois')}</span></Link>}
         </div>}
         {((days !== null && days >= 0 && days <= 30 && company?.plan) || company?.referral_code) && <div className="hb-foot">
-          {days !== null && days >= 0 && days <= 30 && company?.plan && <Link to="/pro/compte/abonnement">⏳ {t('Essai gratuit : {n} jours restants', { n: days })} · <u>{t('Choisir ma formule')}</u></Link>}
+          {days !== null && days >= 0 && days <= 30 && company?.plan && <Link to="/pro/compte/abonnement">⏳ {t('Essai gratuit : {n} jours restants', { n: days })}<span className="hb-long"> ·</span> <u>{t('Choisir ma formule')}</u></Link>}
           {company?.referral_code && <ReferralLink code={company.referral_code} />}
         </div>}
       </section>
@@ -184,5 +184,5 @@ function ReferralLink({ code }) {
     try { if (navigator.share) { await navigator.share({ title: 'Artesa', text: msg, url }); return; } } catch { return; }
     try { await navigator.clipboard.writeText(msg + ' ' + url); toast(t('Lien de parrainage copié')); } catch {}
   };
-  return <button type="button" onClick={share}>🎁 {t('Parrainez un artisan : 1 mois offert pour vous deux')} · <u>{t('Partager')}</u></button>;
+  return <button type="button" onClick={share}>🎁 <span className="hb-long">{t('Parrainez un artisan : 1 mois offert pour vous deux')} ·</span><span className="hb-short">{t('1 mois offert')}</span> <u>{t('Parrainer')}</u></button>;
 }
