@@ -27,18 +27,51 @@ export const TOURS = {
     S('Documents', 'Vos devis à signer en ligne, vos factures, et le carnet de votre logement.', 'a[href="/client/documents"]'),
     S('C’est parti !', 'Vous pouvez revoir ce tutoriel à tout moment dans Mon compte.'),
   ],
-  '/pro/clients': [S('Vos clients', 'Ajoutez un client avec le bouton +. Le filtre permet de trier par type, ville ou statut.', '.fab'), S('La fiche client', 'Ouvrez un client pour voir ses chantiers, devis, factures, photos et notes.')],
-  '/pro/planning': [S('Votre planning', 'Glissez un rendez-vous pour le déplacer (le client est prévenu). Les demandes à valider sont en pointillés.'), S('Réglages', 'Jours, horaires, types de rendez-vous proposés et lien avec votre agenda Google ou Outlook.')],
-  '/pro/documents': [S('Vos documents', 'Créez un devis ou une facture en quelques clics. Les numéros et mentions légales sont gérés pour vous.'), S('Relances', 'La tuile Relances liste les factures en retard et les devis sans réponse, avec des messages prêts à envoyer.')],
-  '/pro/crm': [S('Votre CRM', 'Statut projet : où en est chaque chantier. KPI : votre chiffre d’affaires et vos taux de signature.'), S('Ma bibliothèque', 'Enregistrez vos produits et ouvrages pour remplir vos devis plus vite.')],
-  '/pro/messages': [S('Messagerie', 'Vos conversations avec les clients, votre équipe et d’autres pros. Le micro permet de dicter un message.')],
-  '/pro/reseau': [S('Mon réseau', 'Ajoutez les pros avec qui vous travaillez pour partager des chantiers et échanger facilement.')],
+  '/pro/clients': [
+    S('Vos clients', 'Ici se trouvent toutes vos fiches : particuliers et professionnels. Chaque devis, facture ou rendez-vous est rattaché à une fiche.'),
+    S('Chercher et trier', 'Tapez un nom, une ville ou un numéro. Le bouton filtre trie par type (particulier / pro), ville ou statut (actif, prospect, inactif).', '.searchrow'),
+    S('Ajouter un client', 'Le bouton + crée une fiche en 30 secondes : nom, téléphone, adresse du chantier. Le reste peut attendre.', '.fab'),
+    S('Dans une fiche', 'Vous y trouvez le solde, les devis et factures, la messagerie, l’historique (RDV, déplacements, paiements), les photos et une note libre. Vous pouvez aussi noter la fiabilité du client.'),
+  ],
+  '/pro/planning': [
+    S('Votre planning', 'Vos rendez-vous par jour, semaine ou mois. Les créneaux « Dispo » sont libres : touchez-en un pour y créer un rendez-vous.', '.cal-head'),
+    S('Déplacer un rendez-vous', 'Faites glisser un rendez-vous (par pas de 15 min). Le client reçoit une notification et un message, et le déplacement apparaît dans son historique.'),
+    S('À valider / terminé', 'Les demandes des particuliers arrivent en pointillés « À valider ». Un rendez-vous passe automatiquement « Terminé » à son heure de fin.', '.cal-legend'),
+    S('Chantiers en commun', 'Si vous partagez des chantiers avec d’autres pros, la liste en haut affiche le planning du chantier : qui vient quel jour (plombier, menuisier…). Votre planning à vous ne montre que vos rendez-vous.'),
+    S('Nouveau rendez-vous', 'Le bouton + crée un rendez-vous : client, objet, horaires, équipe, adresse, et éventuellement le chantier en commun.', '.fab'),
+  ],
+  '/pro/documents': [
+    S('Vos documents', 'Devis, factures, photos, autres documents, coffre-fort et relances. Les numéros et mentions légales sont gérés pour vous.'),
+    S('Créer en un clic', 'Les boutons « Nouveau devis » et « Nouvelle facture » sont directement dans les tuiles. Toucher le reste de la tuile ouvre la liste.', '.tile-new'),
+    S('Relances', 'La tuile Relances liste les factures en retard et les devis sans réponse, avec des messages prêts à envoyer.'),
+    S('Derniers documents', 'En bas, vos derniers documents : ouvrez, modifiez ou affichez le PDF directement.'),
+  ],
+  '/pro/crm': [
+    S('Votre CRM', 'Le suivi de votre activité en un coup d’œil.'),
+    S('Statut projet', 'Chaque chantier passe par : Devis, À planifier, Chantier, Factures à émettre (travaux finis, facture pas encore envoyée), Encaissements en attente (facture envoyée, pas encore payée), Terminé.'),
+    S('KPI', 'Votre chiffre d’affaires, vos taux de signature et ce qu’il reste à encaisser.'),
+    S('Ma bibliothèque', 'Enregistrez vos produits et ouvrages pour remplir vos devis plus vite.'),
+  ],
+  '/pro/messages': [
+    S('Messagerie', 'Vos conversations avec les clients, votre équipe et les pros de votre réseau.'),
+    S('Messages automatiques', 'Quand vous déplacez un rendez-vous, un message « RDV déplacé » est envoyé au client dans sa conversation.'),
+    S('Dicter', 'Le micro permet de dicter un message, pratique sur le chantier.'),
+  ],
+  '/pro/reseau': [
+    S('Mon réseau', 'Les pros avec qui vous travaillez : échangez, partagez des chantiers, organisez-vous.'),
+    S('Ajouter un pro', 'Le bouton + cherche un pro sur Artesa et lui envoie une demande. Dès qu’il accepte, vous êtes connectés des deux côtés.', '.plus'),
+    S('Demandes reçues', 'Les demandes de connexion apparaissent en haut de cette page et dans vos notifications : Accepter ou Refuser.'),
+    S('Projets en commun', 'Depuis la fiche d’un pro, « Inviter sur un chantier » crée un projet en commun. Vous retrouvez ces projets ici et leur planning partagé dans Planning.'),
+    S('Notes entre pros', 'Après avoir travaillé ensemble, vous pouvez noter un pro une seule fois depuis sa fiche.'),
+  ],
   '/client/rdv': [S('Vos rendez-vous', 'Retrouvez vos demandes en attente et vos rendez-vous confirmés.')],
   '/client/documents': [S('Vos documents', 'Signez vos devis en ligne, payez vos factures et retrouvez vos documents de chantier.')],
   '/client/messages': [S('Messagerie', 'Écrivez à vos artisans, envoyez des photos. Le micro permet de dicter.')],
 };
 
-const done = (profile) => profile?.privacy?.tours || [];
+// Le suffixe de version fait réapparaître les tutos quand leur contenu est enrichi
+const V = '#2';
+const done = (profile) => (profile?.privacy?.tours || []).filter((k) => k.endsWith(V)).map((k) => k.slice(0, -V.length));
 
 export function useTours(path) {
   const { profile, setProfile, isPro } = useApp();
@@ -53,7 +86,7 @@ export function useTours(path) {
   }, [path, profile?.id]);
   const finish = async () => {
     const k = key; setKey(null);
-    const privacy = { ...(profile.privacy || {}), tours: [...new Set([...done(profile), k])] };
+    const privacy = { ...(profile.privacy || {}), tours: [...new Set([...done(profile), k].map((x) => x + V))] };
     setProfile({ ...profile, privacy });
     try { await api.update('profiles', { id: profile.id }, { privacy }); } catch {}
   };

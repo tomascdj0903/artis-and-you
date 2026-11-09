@@ -1,7 +1,7 @@
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'reviews', 'notifications', '_users'];
+const TABLES = ['profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
@@ -106,6 +106,17 @@ export function mockBackend({ saveSession, getSession }) {
     }
   }
   function afterUpdate(table, oldRow, row) {
+    if (table === 'appointments' && (oldRow.start_at !== row.start_at || oldRow.end_at !== row.end_at)) {
+      row.history = [...(row.history || []), { at: now(), kind: 'moved', from: oldRow.start_at, from_end: oldRow.end_at, to: row.start_at, to_end: row.end_at, by: me() }];
+      const cl = db.clients.find((c) => c.id === row.client_id);
+      if (cl && !row.personal) {
+        let c = db.conversations.find((x) => x.kind === 'client' && x.company_id === row.company_id && x.client_id === cl.id);
+        if (!c) { c = { id: id(), kind: 'client', company_id: row.company_id, client_id: cl.id, client_user_id: cl.user_id || null, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(c); }
+        const co = db.companies.find((x) => x.id === row.company_id);
+        const m = { id: id(), conversation_id: c.id, sender_id: me(), sender_name: co?.name || '', sender_company_id: row.company_id, body: `Votre rendez-vous « ${row.title} » a été déplacé du ${fmtDT(oldRow.start_at)} au ${fmtDT(row.start_at)}.`, card: { type: 'rdv_change', title: 'RDV déplacé', sub: fmtDT(row.start_at), appointment_id: row.id }, attachments: [], created_at: now() };
+        db.messages.push(m); c.last_message = ('📅 RDV déplacé · ' + fmtDT(row.start_at)); c.last_at = m.created_at;
+      }
+    }
     if (table === 'appointments') {
       const cl = db.clients.find((c) => c.id === row.client_id);
       const u = cl?.user_id;
@@ -164,6 +175,9 @@ export function mockBackend({ saveSession, getSession }) {
       case 'appointments': case 'projects': return r.company_id === mc || mine.includes(r.client_id);
       case 'files': return r.company_id === mc || (mine.includes(r.client_id) && (r.shared_with_client || r.kind === 'photo')) || (r.kind === 'vault' && r.shared_with_client && db.clients.some((c) => c.user_id === me() && c.company_id === r.company_id));
       case 'payments': case 'purchases': case 'items': case 'teams': case 'company_invites': case 'network': return r.company_id === mc;
+      case 'network_requests': return r.from_company === mc || r.to_company === mc;
+      case 'ratings': return r.author_company === mc;
+      case 'project_shares': return r.company_id === mc || db.projects.some((p) => p.id === r.project_id && p.company_id === mc);
       case 'profiles': return r.id === me() || (mc && r.company_id === mc);
       default: return true;
     }
@@ -296,7 +310,74 @@ export function mockBackend({ saveSession, getSession }) {
       d.conditions = { ...d.conditions, signature: { image: p_image, at: now(), by: me(), hash, agent: p_agent, mention: 'Bon pour accord' } };
       notifyCompany(d.company_id, 'documents', 'Devis signé', d.number + ' · ' + p_name.trim(), '/pro/documents/' + d.id);
     },
+    network_request({ p_to, p_message = '' }) {
+      const mc = myCompany(); if (!mc || p_to === mc) throw new Error('Demande impossible');
+      if (db.network.some((n) => n.company_id === mc && n.pro_id === p_to)) return 'connected';
+      const rev = db.network_requests.find((r) => r.from_company === p_to && r.to_company === mc && r.status === 'pending');
+      if (rev) { rpcs.network_answer({ p_id: rev.id, p_accept: true }); return 'connected'; }
+      let r = db.network_requests.find((x) => x.from_company === mc && x.to_company === p_to);
+      if (r) Object.assign(r, { status: 'pending', message: p_message, created_at: now() });
+      else db.network_requests.push({ id: id(), from_company: mc, to_company: p_to, status: 'pending', message: p_message, created_at: now() });
+      const co = db.companies.find((c) => c.id === mc);
+      notifyCompany(p_to, 'systeme', 'Demande de connexion', `${co?.trade_name || co?.name} veut rejoindre votre réseau`, '/pro/reseau?demandes=1');
+      return 'pending';
+    },
+    network_answer({ p_id, p_accept }) {
+      const mc = myCompany(); const r = db.network_requests.find((x) => x.id === p_id && x.to_company === mc && x.status === 'pending');
+      if (!r) throw new Error('Demande introuvable');
+      r.status = p_accept ? 'accepted' : 'declined'; r.answered_at = now();
+      if (p_accept) {
+        [[r.from_company, r.to_company], [r.to_company, r.from_company]].forEach(([a, b]) => { if (!db.network.some((n) => n.company_id === a && n.pro_id === b)) db.network.push({ id: id(), company_id: a, pro_id: b, created_at: now() }); });
+        const co = db.companies.find((c) => c.id === mc);
+        notifyCompany(r.from_company, 'systeme', 'Demande acceptée', `${co?.trade_name || co?.name} fait maintenant partie de votre réseau`, '/pro/reseau/' + mc);
+      }
+    },
+    network_remove({ p_pro }) { const mc = myCompany(); db.network = db.network.filter((n) => !((n.company_id === mc && n.pro_id === p_pro) || (n.company_id === p_pro && n.pro_id === mc))); },
+    network_requests_list() {
+      const mc = myCompany();
+      return db.network_requests.filter((r) => r.from_company === mc || r.to_company === mc).map((r) => { const o = db.companies.find((c) => c.id === (r.from_company === mc ? r.to_company : r.from_company)) || {}; return { id: r.id, status: r.status, created_at: r.created_at, message: r.message, incoming: r.to_company === mc, company: { id: o.id, name: o.name || '', trade_name: o.trade_name, city: o.city, trades: o.trades || [], logo_path: o.logo_path } }; });
+    },
+    shared_projects() {
+      const mc = myCompany();
+      const ids = new Set([...db.projects.filter((p) => p.company_id === mc).map((p) => p.id).filter((pid) => db.project_shares.some((s) => s.project_id === pid)), ...db.project_shares.filter((s) => s.company_id === mc).map((s) => s.project_id)]);
+      return [...ids].map((pid) => { const p = db.projects.find((x) => x.id === pid); if (!p) return null; const cids = [p.company_id, ...db.project_shares.filter((s) => s.project_id === pid).map((s) => s.company_id)]; return { id: p.id, title: p.title, address: p.address, owner: p.company_id, members: [...new Set(cids)].map((c) => { const co = db.companies.find((x) => x.id === c) || {}; return { id: c, name: co.trade_name || co.name || '', trades: co.trades || [] }; }) }; }).filter(Boolean);
+    },
+    shared_project_planning({ p_project, p_from, p_to }) {
+      const mc = myCompany(); const sp = rpcs.shared_projects().find((x) => x.id === p_project); if (!sp) return [];
+      return db.appointments.filter((a) => a.project_id === p_project && sp.members.some((m) => m.id === a.company_id) && a.end_at >= p_from && a.start_at <= p_to && !['annule', 'refuse'].includes(a.status)).map((a) => { const m = sp.members.find((x) => x.id === a.company_id); return { id: a.id, title: a.title, start_at: a.start_at, end_at: a.end_at, status: a.status, company: m.name, trades: m.trades, company_id: a.company_id, mine: a.company_id === mc }; });
+    },
+    rate_pro({ p_company, p_rating, p_comment = '' }) {
+      const mc = myCompany();
+      if (mc) {
+        const worked = rpcs.shared_projects().some((p) => p.members.some((m) => m.id === p_company)) && p_company !== mc;
+        if (!worked) throw new Error('Vous pourrez noter ce pro après avoir travaillé ensemble sur un chantier.');
+        if (db.ratings.some((r) => r.author_company === mc && r.target_company === p_company)) throw new Error('Vous avez déjà noté ce pro.');
+        db.ratings.push({ id: id(), kind: 'pro_pro', author_company: mc, author_user: me(), target_company: p_company, rating: p_rating, comment: p_comment, created_at: now() });
+        notifyCompany(p_company, 'systeme', 'Nouvelle note d’un pro', p_rating + '/5', '/pro/reglages/profil-public');
+      }
+    },
+    rate_client({ p_client, p_rating, p_comment = '' }) {
+      const mc = myCompany(); const cl = db.clients.find((c) => c.id === p_client && c.company_id === mc); if (!cl) throw new Error('Client introuvable');
+      if (!db.appointments.some((a) => a.client_id === p_client && a.start_at < now() && ['valide', 'termine'].includes(a.status)) && !db.documents.some((d) => d.client_id === p_client && d.number)) throw new Error('Vous pourrez noter ce client après un premier rendez-vous ou document.');
+      if (db.ratings.some((r) => r.author_company === mc && r.target_client === p_client)) throw new Error('Vous avez déjà noté ce client.');
+      db.ratings.push({ id: id(), kind: 'pro_client', author_company: mc, author_user: me(), target_client: p_client, target_user: cl.user_id, rating: p_rating, comment: p_comment, created_at: now() });
+    },
+    client_score({ p_client }) {
+      const mc = myCompany(); const cl = db.clients.find((c) => c.id === p_client);
+      const rs = db.ratings.filter((r) => r.kind === 'pro_client' && (r.target_client === p_client || (cl?.user_id && r.target_user === cl.user_id)));
+      return { avg: rs.length ? rs.reduce((s, r) => s + r.rating, 0) / rs.length : null, n: rs.length, mine: rs.find((r) => r.author_company === mc)?.rating || null };
+    },
+    pro_score({ p_company }) {
+      const mc = myCompany(); const rs = db.ratings.filter((r) => r.kind === 'pro_pro' && r.target_company === p_company);
+      return { avg: rs.length ? rs.reduce((s, r) => s + r.rating, 0) / rs.length : null, n: rs.length, mine: rs.find((r) => r.author_company === mc)?.rating || null };
+    },
+    finish_past_appointments() {
+      const mc = myCompany(); let n = 0;
+      db.appointments.filter((a) => a.company_id === mc && a.status === 'valide' && a.end_at < now()).forEach((a) => { a.status = 'termine'; n++; });
+      return n;
+    },
     post_review({ p_company, p_rating, p_comment }) {
+      if (db.reviews.some((r) => r.company_id === p_company && r.author_id === me())) throw new Error('Vous avez déjà donné votre avis sur ce pro.');
       const a = db.appointments.filter((x) => x.company_id === p_company && myClientIds().includes(x.client_id) && ['valide', 'termine'].includes(x.status) && x.start_at < now()).sort((x, y) => (x.start_at < y.start_at ? 1 : -1))[0];
       if (!a) throw new Error("Un avis ne peut être donné qu'après un vrai rendez-vous.");
       const p = profile();

@@ -45,13 +45,16 @@ export function Planning() {
     if (view === 'month') { const a = new Date(anchor.getFullYear(), anchor.getMonth(), 1); const st = startOfWeek(a); return [st, addDays(st, 42)]; }
     const st = startOfWeek(anchor); return [st, addDays(st, 7)];
   }, [view, anchor]);
+  const [proj, setProj] = useState(query.get('projet') || '');
+  const [shared] = useData(() => api.rpc('shared_projects').catch(() => []), []);
   const [data, refetch, loading] = useData(async () => {
+    await api.rpc('finish_past_appointments').catch(() => 0);
     const [appts, clients] = await Promise.all([
-      api.select('appointments', { company_id: company.id, 'start_at<': range[1].toISOString(), status: ['a_valider', 'valide', 'termine'] }, { order: 'start_at.asc' }),
+      proj ? api.rpc('shared_project_planning', { p_project: proj, p_from: range[0].toISOString(), p_to: range[1].toISOString() }).then((r) => r || []) : api.select('appointments', { company_id: company.id, 'start_at<': range[1].toISOString(), status: ['a_valider', 'valide', 'termine'] }, { order: 'start_at.asc' }),
       api.select('clients', { company_id: company.id }, { columns: 'id,type,last_name,first_name,company_name,trade_name,site_city,billing_city' }),
     ]);
     return { appts, cm: Object.fromEntries(clients.map((c) => [c.id, c])) };
-  }, [range[0].getTime(), view]);
+  }, [range[0].getTime(), view, proj]);
   // Recherche sur toutes les dates (pas seulement la semaine affichée)
   const [allData] = useData(async () => (q.trim() ? api.select('appointments', { company_id: company.id }, { order: 'start_at.desc', limit: 1000 }) : null), [!!q.trim()]);
   const tm = Object.fromEntries(teams.map((x) => [x.id, x]));
@@ -68,12 +71,13 @@ export function Planning() {
     setUndo({ a, prev, label: `${dateShort(start)} ${hm(start)}` }); reload();
     setTimeout(() => setUndo((u) => (u && u.a.id === a.id ? null : u)), 8000);
   };
-  const color = (a) => (a.personal ? '#8A90A0' : s.colorBy === 'client' ? hashColor(a.client_id || a.title) : tm[a.team_id]?.color || '#2B1F1C');
+  const color = (a) => (a.company_id && a.company ? hashColor(a.company_id) : a.personal ? '#8A90A0' : s.colorBy === 'client' ? hashColor(a.client_id || a.title) : tm[a.team_id]?.color || '#2B1F1C');
   const all = data ? expandAppointments(data.appts, range[0], range[1]) : [];
   const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const match = (a) => { const c = data?.cm[a.client_id]; const hay = nz([a.title, a.type, clientName(c), c?.company_name, c?.last_name, c?.first_name, a.address, a.contact_name, a.notes, dateShort(a.start_at)].join(' ')); return nz(q).trim().split(/\s+/).every((w) => hay.includes(w)); };
   const evs = all.filter((a) => !teamF.length || teamF.includes(a.team_id));
-  const dragOk = can('planning') && profile.member_role !== 'ouvrier';
+  const dragOk = !proj && can('planning') && profile.member_role !== 'ouvrier';
+  const sp = (shared || []).find((x) => x.id === proj);
   const move = (n) => { const a = new Date(anchor); if (view === 'day') a.setDate(a.getDate() + n); else if (view === 'month') a.setMonth(a.getMonth() + n); else a.setDate(a.getDate() + 7 * n); setAnchor(a); };
   const label = view === 'month' ? anchor.toLocaleDateString(locale(), { month: 'long', year: 'numeric' }) : view === 'day' ? dateShort(anchor) : t('Semaine {n}', { n: weekNumber(startOfWeek(anchor)) });
   const sub = view === 'week' ? `${range[0].toLocaleDateString(locale(), { day: 'numeric', month: 'short' })} – ${addDays(range[1], -1).toLocaleDateString(locale(), { day: 'numeric', month: 'short', year: 'numeric' })}` : '';
@@ -82,6 +86,13 @@ export function Planning() {
   return (
     <div className="content" style={{ maxWidth: 1400 }}>
       <TopBar title={t('Planning')} sub={sub} back={false} />
+      {(shared || []).length > 0 && <div className="row" style={{ gap: 8, marginBottom: 10 }}>
+        <select className="input" style={{ flex: 1, minHeight: 44 }} value={proj} onChange={(e) => setProj(e.target.value)} aria-label={t('Planning affiché')}>
+          <option value="">{t('Mon planning')}</option>
+          <optgroup label={t('Chantiers en commun')}>{shared.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}</optgroup>
+        </select>
+      </div>}
+      {sp && <div className="notice" style={{ marginBottom: 8 }}><b>{sp.title}</b>{sp.address ? ' · ' + sp.address : ''}<div className="cal-legend" style={{ margin: '6px 0 0' }}>{sp.members.map((m) => <span key={m.id}><i style={{ background: hashColor(m.id) }} />{m.name}{m.trades?.[0] ? ' (' + t(m.trades[0]) + ')' : ''}</span>)}</div><div className="small muted">{t('Qui intervient et quand sur ce chantier. Seuls vos propres rendez-vous sont modifiables.')}</div><button className="btn xs mt" onClick={() => navigate('/pro/planning/nouveau?project=' + sp.id)}><LuPlus /> {t('Ajouter mon intervention')}</button></div>}
       <SearchBar placeholder={t('Recherchez un rendez-vous (client, objet, adresse)')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={teamF.length > 0} />
       <div className="cal-head">
         <button className="round" onClick={() => move(-1)} aria-label={t('Précédent')}><LuChevronLeft /></button>
@@ -155,7 +166,7 @@ function WeekGrid({ days, s, evs, busy, color, cm, onNew, onMove }) {
         {days.map((d) => {
           const key = iso(d);
           const dayEv = evs.filter((a) => iso(new Date(a.start_at)) === key);
-          const free = freeWindows(d, busy.filter((a) => a.status !== 'termine'), s, 30);
+          const free = busy.some((a) => a.company) ? [] : freeWindows(d, busy, s, 30);
           return (
             <div key={key} data-day={key} className={'cal-col' + (s.days.includes(d.getDay()) ? '' : ' off') + (ghost?.day === key ? ' drop' : '')} style={{ height: (h1 - h0) * H }}
               onDoubleClick={(e) => { if (e.target !== e.currentTarget) return; const y = e.nativeEvent.offsetY; const x = new Date(d); x.setHours(h0, 0, 0, 0); x.setMinutes(Math.floor((y / H) * 2) * 30); onNew(x); }}>
@@ -166,8 +177,8 @@ function WeekGrid({ days, s, evs, busy, color, cm, onNew, onMove }) {
                 return (
                   <button key={a.id + (a.occurrence || '')} className={'ev' + (a.status === 'a_valider' ? ' pending' : '') + (a.status === 'termine' ? ' done' : '') + (fixed ? '' : ' draggable') + (ghost?.id === a.id ? ' dragging' : '')} style={{ top: Math.max(0, top(st)), height: Math.max(22, top(en) - top(st) - 2), background: color(a) }}
                     onPointerDown={fixed ? undefined : (e) => down(e, a)} onPointerMove={fixed ? undefined : moveEv} onPointerUp={fixed ? undefined : up} onPointerCancel={() => { drag.current = null; setGhost(null); }}
-                    onClick={fixed ? () => navigate('/pro/planning/rdv/' + a.id) : undefined} title={fixed ? undefined : t('Cliquez pour ouvrir, faites glisser pour déplacer')}>
-                    <b>{hm(st)}{a.mode === 'visio' && ' 🎥'}</b>{a.personal ? a.title : clientName(cm[a.client_id])}<br />{!a.personal && a.title}
+                    onClick={fixed ? () => (!a.company || a.mine) && navigate('/pro/planning/rdv/' + a.id) : undefined} title={fixed ? undefined : t('Cliquez pour ouvrir, faites glisser pour déplacer')}>
+                    <b>{hm(st)}{a.mode === 'visio' && ' 🎥'}</b>{a.company ? a.company : a.personal ? a.title : clientName(cm[a.client_id])}<br />{a.company ? (a.trades?.[0] ? t(a.trades[0]) : a.title) : !a.personal && a.title}
                   </button>
                 );
               })}
@@ -304,7 +315,6 @@ export function ApptDetail({ params }) {
               {a.mode === 'visio' ? phone && <a className="btn" href={wa} target="_blank" rel="noreferrer"><LuVideo /> {t('Lancer la visio sur WhatsApp')} ↗</a>
                 : a.address && <button className="btn" onClick={() => setEnroute(true)}><LuNavigation /> {t("Lancer l'itinéraire")}</button>}
               <div className="two"><button className="btn ghost sm" onClick={() => setMoveOpen(true)}>{t('Déplacer le rendez-vous')}</button><button className="btn ghost-red sm" onClick={() => setStatus('annule', { title: t('Annuler ce rendez-vous ?'), text: t('Le client sera prévenu.'), ok: t('Annuler le RDV'), danger: true })}>{t('Annuler')}</button></div>
-              <button className="btn ghost sm" onClick={() => setStatus('termine')}><LuCheck /> {t('Marquer comme terminé')}</button>
             </>}
             {!a.personal && a.client_id && <div className="two">
               <button className="btn ghost sm" onClick={() => navigate(`/pro/documents/nouveau?kind=devis&client=${a.client_id}&project=${a.project_id || ''}&appt=${a.id}`)}>{t('Créer un devis')}</button>
@@ -396,6 +406,7 @@ export function ApptEdit({ params }) {
   const { query } = useLocation();
   const [a, setA] = useState(null);
   const [clients] = useData(() => api.select('clients', { company_id: company.id }, { order: 'last_name.asc' }), []);
+  const [sharedP] = useData(() => api.rpc('shared_projects').catch(() => []), []);
   useData(async () => {
     if (params.id) { const x = await api.one('appointments', { id: params.id }); setA(x); setOrig(x); return; }
     const st = query.get('start') ? new Date(query.get('start')) : (() => { const x = new Date(); x.setDate(x.getDate() + 1); x.setHours(9, 0, 0, 0); return x; })();
@@ -432,7 +443,8 @@ export function ApptEdit({ params }) {
       <TopBar title={params.id ? t('Modifier le rendez-vous') : t('Nouveau rendez-vous')} />
       <form onSubmit={save}>
         <label className="check"><input type="checkbox" checked={a.personal} onChange={(e) => setA({ ...a, personal: e.target.checked })} />{t('RDV personnel (sans client)')}</label>
-        {!a.personal && <Field label={t('Client')}><select value={a.client_id || ''} onChange={(e) => pickClient(e.target.value)} required><option value="">{t('Choisir un client')}</option>{clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)} · {c.billing_city}</option>)}</select></Field>}
+        {(sharedP || []).length > 0 && <Field label={t('Chantier en commun (facultatif)')}><select value={(sharedP || []).some((x) => x.id === a.project_id) ? a.project_id : ''} onChange={(e) => { const sp = sharedP.find((x) => x.id === e.target.value); setA({ ...a, project_id: e.target.value || null, ...(sp && !a.address ? { address: sp.address || '' } : {}), ...(sp && !a.title ? { title: sp.title } : {}) }); }}><option value="">—</option>{sharedP.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}</select></Field>}
+        {!a.personal && <Field label={t('Client')}><select value={a.client_id || ''} onChange={(e) => pickClient(e.target.value)} required={!(sharedP || []).some((x) => x.id === a.project_id)}><option value="">{t('Choisir un client')}</option>{clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)} · {c.billing_city}</option>)}</select></Field>}
         {!a.personal && <Chips options={APPT_TYPES.map((x) => [x, t(x)])} value={a.type} onChange={(type) => setA({ ...a, type, ...(params.id ? {} : { end_at: new Date(+new Date(a.start_at) + (s.durations[type] || s.duration) * 6e4).toISOString() }) })} red />}
         {!a.personal && !params.id && <p className="small faint" style={{ marginTop: -6 }}>{t('Durée prévue pour « {t} » : {d} (modifiable dans les réglages du planning)', { t: t(a.type), d: fmtDur(s.durations[a.type] || s.duration) })}</p>}
         <Field label={t('Objet')}><input value={a.title} onChange={(e) => setA({ ...a, title: e.target.value })} placeholder={t('ex. Changement d’un chauffe-eau')} /></Field>

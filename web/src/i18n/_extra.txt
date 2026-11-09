@@ -835,3 +835,39 @@ Essai gratuit : {n} jours restants|Free trial: {n} days left|Teste grátis: falt
 Choisir ma formule|Choose my plan|Escolher o meu plano|Scegli il mio piano
 1 mois offert|1 month free|1 mês grátis|1 mese gratis
 Parrainer|Refer|Recomendar|Invita
+Demandes de connexion|Connection requests|Pedidos de ligação|Richieste di collegamento
+veut rejoindre votre réseau|wants to join your network|quer juntar-se à sua rede|vuole entrare nella tua rete
+En attente de sa réponse|Waiting for their reply|À espera da resposta|In attesa di risposta
+Refuser|Decline|Recusar|Rifiuta
+Accepter|Accept|Aceitar|Accetta
+Demande refusée|Request declined|Pedido recusado|Richiesta rifiutata
+Vous êtes maintenant connectés|You are now connected|Estão agora ligados|Ora siete collegati
+En attente|Pending|Pendente|In attesa
+Mes projets en commun|My shared projects|Os meus projetos em comum|I miei progetti in comune
+Demande envoyée|Request sent|Pedido enviado|Richiesta inviata
+Demande envoyée, en attente|Request sent, pending|Pedido enviado, pendente|Richiesta inviata, in attesa
+Accepter sa demande|Accept request|Aceitar o pedido|Accetta la richiesta
+Retirer de mon réseau|Remove from my network|Remover da minha rede|Rimuovi dalla mia rete
+Retiré de votre réseau|Removed from your network|Removido da sua rede|Rimosso dalla tua rete
+Note des pros|Rating from pros|Avaliação dos profissionais|Valutazione dei professionisti
+Vous avez travaillé ensemble ? Notez ce pro (une seule fois).|Worked together? Rate this pro (once only).|Trabalharam juntos? Avalie este profissional (uma única vez).|Avete lavorato insieme? Valuta questo professionista (una sola volta).
+Merci pour votre note|Thanks for your rating|Obrigado pela sua avaliação|Grazie per la valutazione
+{n} notes|{n} ratings|{n} avaliações|{n} valutazioni
+Vous avez déjà noté : {n}/5|You already rated: {n}/5|Já avaliou: {n}/5|Hai già valutato: {n}/5
+Commentaire (facultatif)|Comment (optional)|Comentário (opcional)|Commento (facoltativo)
+Envoyer ma note|Send my rating|Enviar avaliação|Invia valutazione
+Fiabilité du client|Client reliability|Fiabilidade do cliente|Affidabilità del cliente
+Client sérieux ? Ponctuel, paie à temps ? Notez-le (une seule fois, visible des autres pros).|Reliable client? On time, pays on time? Rate them (once, visible to other pros).|Cliente sério? Pontual, paga a tempo? Avalie-o (uma vez, visível para outros profissionais).|Cliente serio? Puntuale, paga in tempo? Valutalo (una volta, visibile agli altri professionisti).
+RDV déplacé|Appointment moved|Marcação alterada|Appuntamento spostato
+du {a} au {b}|from {a} to {b}|de {a} para {b}|dal {a} al {b}
+Client prévenu|Client notified|Cliente avisado|Cliente avvisato
+Factures à émettre|Invoices to issue|Faturas a emitir|Fatture da emettere
+Encaissements en attente|Payments pending|Recebimentos pendentes|Incassi in attesa
+Travaux finis, facture pas encore envoyée|Work done, invoice not sent yet|Obra concluída, fatura ainda não enviada|Lavori finiti, fattura non ancora inviata
+Facture envoyée, pas encore payée|Invoice sent, not paid yet|Fatura enviada, ainda não paga|Fattura inviata, non ancora pagata
+Planning affiché|Displayed schedule|Agenda apresentada|Planning visualizzato
+Mon planning|My schedule|A minha agenda|Il mio planning
+Chantiers en commun|Shared jobs|Obras em comum|Cantieri in comune
+Qui intervient et quand sur ce chantier. Seuls vos propres rendez-vous sont modifiables.|Who works on this job and when. Only your own appointments can be edited.|Quem intervém e quando nesta obra. Só as suas marcações podem ser alteradas.|Chi interviene e quando su questo cantiere. Solo i tuoi appuntamenti sono modificabili.
+Ajouter mon intervention|Add my visit|Adicionar a minha intervenção|Aggiungi il mio intervento
+Chantier en commun (facultatif)|Shared job (optional)|Obra em comum (opcional)|Cantiere in comune (facoltativo)

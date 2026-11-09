@@ -107,12 +107,16 @@ export function Network() {
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
   const [trades, setTrades] = useState([]);
-  const [b] = useData(async () => {
+  const { run } = useApp();
+  const [b, reload] = useData(async () => {
     const n = await api.select('network', { company_id: company.id }, { order: 'created_at.desc' });
     const cos = n.length ? await api.select('companies', { id: n.map((x) => x.pro_id) }) : [];
     const shares = await api.select('project_shares', {});
     const myProjects = new Set((await api.select('projects', { company_id: company.id }, { columns: 'id' })).map((p) => p.id));
-    return n.map((x) => ({ ...x, co: cos.find((c) => c.id === x.pro_id), common: shares.filter((s) => s.company_id === x.pro_id && myProjects.has(s.project_id)).length })).filter((x) => x.co);
+    const [reqs, shared] = await Promise.all([api.rpc('network_requests_list').catch(() => []), api.rpc('shared_projects').catch(() => [])]);
+    const list = n.map((x) => ({ ...x, co: cos.find((c) => c.id === x.pro_id), common: shares.filter((s) => s.company_id === x.pro_id && myProjects.has(s.project_id)).length })).filter((x) => x.co);
+    list.reqs = (reqs || []).filter((r) => r.status === 'pending'); list.shared = shared || [];
+    return list;
   }, []);
   if (!b) return <div className="content"><TopBar title={t('Mon réseau')} /><Loader /></div>;
   const list = b.filter((x) => (!trades.length || (x.co.trades || []).some((tr) => trades.includes(tr))) && (!q || (x.co.name + ' ' + x.co.trade_name + ' ' + x.co.city + ' ' + (x.co.trades || []).join(' ')).toLowerCase().includes(q.toLowerCase())));
@@ -121,6 +125,27 @@ export function Network() {
     <div className="content">
       <TopBar title={t('Mon réseau')} sub={t('Mes pros')} back={false} settings="/pro/compte/entreprise" />
       <SearchBar placeholder={t('Recherchez un pro')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={trades.length > 0} />
+      {b.reqs.length > 0 && <>
+        <Sec title={t('Demandes de connexion')} />
+        <div className="list">{b.reqs.map((r) => (
+          <div key={r.id} className="li">
+            <Avatar name={r.company.name.split(' ')[0]} last={r.company.name.split(' ')[1]} path={r.company.logo_path} color="var(--ardoise)" />
+            <div className="grow" style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/reseau/' + r.company.id)}><div className="t1">{r.company.trade_name || r.company.name}</div><div className="t2">{(r.company.trades || []).slice(0, 2).map(t).join(', ')} · {r.company.city} · {r.incoming ? t('veut rejoindre votre réseau') : t('En attente de sa réponse')}</div></div>
+            {r.incoming ? <div className="row" style={{ gap: 6 }}>
+              <button className="btn xs ghost" onClick={() => run(() => api.rpc('network_answer', { p_id: r.id, p_accept: false }), t('Demande refusée')).then(reload)}>{t('Refuser')}</button>
+              <button className="btn xs" onClick={() => run(() => api.rpc('network_answer', { p_id: r.id, p_accept: true }), t('Vous êtes maintenant connectés')).then(reload)}>{t('Accepter')}</button>
+            </div> : <Pill c="white">{t('En attente')}</Pill>}
+          </div>
+        ))}</div>
+      </>}
+      {b.shared.length > 0 && <>
+        <Sec title={t('Mes projets en commun')} />
+        <div className="list">{b.shared.map((pr) => (
+          <button key={pr.id} className="li click" onClick={() => navigate('/pro/planning?projet=' + pr.id)}>
+            <div className="grow"><div className="t1">{pr.title}</div><div className="t2">{pr.address} · {(pr.members || []).map((m) => m.name).join(', ')}</div></div><LuChevronRight />
+          </button>
+        ))}</div>
+      </>}
       <div className="sec"><h2>{t('Mes contacts')} <span className="small muted" style={{ fontWeight: 400 }}>· {t('{n} pros', { n: b.length })}</span></h2><button className="plus" onClick={() => navigate('/pro/reseau/ajouter')} aria-label={t('Ajouter un pro')}><LuPlus /></button></div>
       {!list.length ? <Empty icon={LuUserPlus} text={t('Ajoutez les artisans avec qui vous travaillez pour échanger et partager des chantiers.')}><button className="btn sm" onClick={() => navigate('/pro/reseau/ajouter')}>{t('Ajouter un pro')}</button></Empty> : (
         <div className="grid2">{list.map(({ co, common, created_at }) => (
@@ -145,7 +170,11 @@ export function NetworkAdd() {
   const { company, run } = useApp();
   const [q, setQ] = useState('');
   const [res, setRes] = useState(null);
-  const [mine, reload] = useData(async () => new Set((await api.select('network', { company_id: company.id })).map((x) => x.pro_id)), []);
+  const [mine, reload] = useData(async () => {
+    const m = new Map((await api.select('network', { company_id: company.id })).map((x) => [x.pro_id, 'connected']));
+    ((await api.rpc('network_requests_list').catch(() => [])) || []).filter((r) => r.status === 'pending').forEach((r) => m.set(r.company.id, r.incoming ? 'incoming' : 'pending'));
+    return m;
+  }, []);
   const search = async (v) => { setQ(v); if (v.trim().length < 2) return setRes(null); const r = await api.rpc('directory_search', { p_query: v.trim(), p_trade: '', p_city: '' }); setRes(r.filter((x) => x.id !== company.id)); };
   const inviteMsg = t('Bonjour, je vous invite à me rejoindre sur Artesa pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert : {u}', { c: company.referral_code, u: location.origin + '/inscription/artisan' });
   return (
@@ -157,7 +186,7 @@ export function NetworkAdd() {
         <div key={co.id} className="li">
           <span className="avatar sm" style={{ background: 'var(--petrole)' }}>{initials(...co.name.split(' '))}</span>
           <div className="grow"><div className="t1 red-t">{co.trade_name || co.name}</div><div className="t2">{(co.trades || []).slice(0, 2).map(t).join(', ')} · {co.name} · {co.city}</div></div>
-          {mine?.has(co.id) ? <span className="small muted">{t('Déjà dans vos pros')}</span> : <button className="btn xs" onClick={() => run(() => api.upsert('network', { company_id: company.id, pro_id: co.id }), t('Pro ajouté à votre réseau')).then(reload)}>{t('Ajouter')}</button>}
+          {mine?.get(co.id) === 'connected' ? <span className="small muted">{t('Déjà dans vos pros')}</span> : mine?.get(co.id) === 'pending' ? <span className="small muted">{t('Demande envoyée')}</span> : <button className="btn xs" onClick={() => run(() => api.rpc('network_request', { p_to: co.id, p_message: '' }), mine?.get(co.id) === 'incoming' ? t('Vous êtes maintenant connectés') : t('Demande envoyée')).then(reload)}>{mine?.get(co.id) === 'incoming' ? t('Accepter') : t('Ajouter')}</button>}
         </div>
       ))}</div>}
       <div className="alert mt" style={{ alignItems: 'flex-start' }}>
@@ -175,8 +204,9 @@ export function ProProfile({ params }) {
   const { company, run } = useApp();
   const [share, setShare] = useState(false);
   const [b, reload] = useData(async () => {
-    const [p, inNet, projects] = await Promise.all([api.rpc('directory_get', { p_id: params.id }), api.one('network', { company_id: company.id, pro_id: params.id }), api.select('projects', { company_id: company.id }, { order: 'created_at.desc', limit: 50 })]);
-    return { p, inNet, projects };
+    const [p, inNet, projects, reqs, score] = await Promise.all([api.rpc('directory_get', { p_id: params.id }), api.one('network', { company_id: company.id, pro_id: params.id }), api.select('projects', { company_id: company.id }, { order: 'created_at.desc', limit: 50 }), api.rpc('network_requests_list').catch(() => []), api.rpc('pro_score', { p_company: params.id }).catch(() => null)]);
+    const req = (reqs || []).find((r) => r.status === 'pending' && r.company.id === params.id);
+    return { p, inNet, projects, req, score };
   }, [params.id]);
   if (!b) return <div className="content"><TopBar title={t('Profil')} /><Loader /></div>;
   const { p } = b;
@@ -184,7 +214,7 @@ export function ProProfile({ params }) {
   const startChat = async () => { const id = await api.rpc('start_conversation', { p_company: p.id }); navigate('/pro/messages/' + id); };
   const invite = async (pr) => {
     await run(async () => {
-      await api.upsert('project_shares', { project_id: pr.id, company_id: p.id });
+      await api.insert('project_shares', { project_id: pr.id, company_id: p.id }).catch(() => {});
       const convId = await api.rpc('start_conversation', { p_company: p.id });
       await api.update('conversations', { id: convId }, { project_id: pr.id });
       await api.insert('messages', { conversation_id: convId, sender_name: company.name, sender_company_id: company.id, card: { type: 'cal', title: t('Chantier partagé') + ' · ' + pr.title, sub: pr.address }, body: '' });
@@ -206,12 +236,17 @@ export function ProProfile({ params }) {
         <div className="grow">{[5, 4, 3, 2, 1].map((s) => <div key={s} className="row small" style={{ gap: 8 }}><span>{s}</span><div className="progress grow"><i style={{ width: total ? (p.distribution[s] / total) * 100 + '%' : 0, background: 'var(--bordeaux)' }} /></div><span>{p.distribution?.[s] || 0}</span></div>)}</div>
       </div>
       {p.reviews?.[0] && <div className="card soft mt" style={{ background: 'var(--bordeaux-50)' }}>« {p.reviews[0].comment} »<div className="small red-t bold mt">{p.reviews[0].author} · {date(p.reviews[0].created_at)}</div></div>}
+      <Sec title={t('Note des pros')} />
+      <RateBox score={b.score} label={t('Vous avez travaillé ensemble ? Notez ce pro (une seule fois).')} onRate={(r, c) => run(() => api.rpc('rate_pro', { p_company: p.id, p_rating: r, p_comment: c }), t('Merci pour votre note')).then(reload)} />
       <Sec title={t('Détails')} />
       <KV rows={[['SIREN', p.siren], [t("Zone d'intervention"), p.zone || p.city], [t('Certification'), p.certifications], [t('Téléphone'), p.phone, { href: p.phone && 'tel:' + p.phone }]]} />
       {p.description && <p className="wsb">{p.description}</p>}
       <div className="btns">
-        {!b.inNet && <button className="btn ghost" onClick={() => run(() => api.upsert('network', { company_id: company.id, pro_id: p.id }), t('Pro ajouté à votre réseau')).then(reload)}><LuUserPlus /> {t('Ajouter à mon réseau')}</button>}
+        {!b.inNet && !b.req && <button className="btn ghost" onClick={() => run(() => api.rpc('network_request', { p_to: p.id, p_message: '' }), t('Demande envoyée')).then(reload)}><LuUserPlus /> {t('Ajouter à mon réseau')}</button>}
+        {!b.inNet && b.req && !b.req.incoming && <button className="btn ghost" disabled>{t('Demande envoyée, en attente')}</button>}
+        {!b.inNet && b.req?.incoming && <button className="btn" onClick={() => run(() => api.rpc('network_answer', { p_id: b.req.id, p_accept: true }), t('Vous êtes maintenant connectés')).then(reload)}><LuUserPlus /> {t('Accepter sa demande')}</button>}
         <button className="btn" onClick={startChat}>{t('Envoyer un message')}</button>
+        {b.inNet && <button className="btn ghost sm" onClick={() => run(() => api.rpc('network_remove', { p_pro: p.id }), t('Retiré de votre réseau')).then(reload)}>{t('Retirer de mon réseau')}</button>}
         <div className="two">{p.phone ? <a className="btn ghost" href={'tel:' + p.phone}><LuPhone /> {t('Appeler')}</a> : <span />}<button className="btn ghost" onClick={() => setShare(true)}>{t('Inviter sur un chantier')}</button></div>
       </div>
       <Sheet open={share} onClose={() => setShare(false)} title={t('Inviter sur un chantier')}>
@@ -219,6 +254,22 @@ export function ProProfile({ params }) {
         <div className="list">{b.projects.map((pr) => <button key={pr.id} className="li click" onClick={() => invite(pr)}><div className="grow"><div className="t1">{pr.title}</div><div className="t2">{pr.address}</div></div><LuChevronRight /></button>)}</div>
         {!b.projects.length && <Empty text={t('Aucun chantier pour ce client. Il est créé avec le premier devis ou rendez-vous.')} />}
       </Sheet>
+    </div>
+  );
+}
+
+export function RateBox({ score, label, onRate }) {
+  const [r, setR] = useState(0);
+  const [c, setC] = useState('');
+  const avg = score?.avg ? String(Math.round(score.avg * 10) / 10).replace('.', ',') : '—';
+  return (
+    <div className="card soft">
+      <div className="row" style={{ gap: 10 }}><b style={{ fontSize: 22 }}>{avg}</b><Stars n={score?.avg || 0} /><span className="small muted">{t('{n} notes', { n: score?.n || 0 })}</span></div>
+      {score?.mine ? <div className="small muted mt">{t('Vous avez déjà noté : {n}/5', { n: score.mine })}</div> : <>
+        <div className="small mt">{label}</div>
+        <div className="row mt" style={{ gap: 4 }}>{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" className="btn xs ghost" aria-label={n + '/5'} onClick={() => setR(n)} style={{ minWidth: 36, color: n <= r ? 'var(--bordeaux)' : undefined }}>{n <= r ? '★' : '☆'}</button>)}</div>
+        {r > 0 && <><textarea className="input mt" rows={2} placeholder={t('Commentaire (facultatif)')} value={c} onChange={(e) => setC(e.target.value)} /><button className="btn sm mt" onClick={() => onRate(r, c)}>{t('Envoyer ma note')}</button></>}
+      </>}
     </div>
   );
 }

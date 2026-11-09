@@ -30,7 +30,7 @@ export function CrmHome() {
 }
 
 // Étape actuelle d'un projet et prochaine action conseillée
-const PHASES = [['devis', 'Devis'], ['planifier', 'À planifier'], ['chantier', 'Chantier'], ['facturer', 'À facturer'], ['encaisser', 'À encaisser'], ['termine', 'Terminé']];
+const PHASES = [['devis', 'Devis'], ['planifier', 'À planifier'], ['chantier', 'Chantier'], ['facturer', 'Factures à émettre'], ['encaisser', 'Encaissements en attente'], ['termine', 'Terminé']];
 function projectInfo(p, auto, ctx) {
   const on = (k) => stepState(p, auto, k) !== 'off';
   const pd = ctx.docs.filter((d) => d.project_id === p.id);
@@ -92,8 +92,8 @@ export function ProjectStatus() {
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
         <div className="kpi"><div className="l">{t('Projets en cours')}</div><div className="n">{enCours.length}</div><div className="small muted">{money0(enCours.reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
         <div className="kpi"><div className="l">{t('Devis en attente de réponse')}</div><div className="n">{all.filter((r) => r.info.waiting).length}</div><div className="small muted">{money0(all.filter((r) => r.info.waiting).reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
-        <div className="kpi"><div className="l">{t('À facturer')}</div><div className="n">{count('facturer')}</div><div className="small muted">{money0(all.filter((r) => r.info.phase === 'facturer').reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
-        <div className="kpi red"><div className="l">{t('Facturé, à encaisser')}</div><div className="n">{count('encaisser')}</div><div className="small" style={{ opacity: .85 }}>{money0(all.reduce((s, r) => s + r.info.due, 0))} {t('TTC')}</div></div>
+        <div className="kpi"><div className="l">{t('Factures à émettre')}</div><div className="n">{count('facturer')}</div><div className="small muted">{t('Travaux finis, facture pas encore envoyée')} · {money0(all.filter((r) => r.info.phase === 'facturer').reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
+        <div className="kpi red"><div className="l">{t('Encaissements en attente')}</div><div className="n">{count('encaisser')}</div><div className="small" style={{ opacity: .85 }}>{t('Facture envoyée, pas encore payée')} · {money0(all.reduce((s, r) => s + r.info.due, 0))} {t('TTC')}</div></div>
       </div>
       <div className="row wrap" style={{ gap: 8, margin: '6px 0 10px' }}>
         <Chips scroll options={[['', t('En cours ({n})', { n: enCours.length })], ...PHASES.map(([k, l]) => [k, `${t(l)} (${count(k)})`])]} value={phase} onChange={setPhase} />

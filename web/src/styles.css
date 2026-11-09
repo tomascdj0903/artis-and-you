@@ -982,3 +982,9 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .home-band { margin: 0 -16px 18px; padding: 4px 16px 18px; border-radius: 0 0 28px 28px; }
 @media (min-width: 701px) { .home-band { margin: 0 -32px 22px; padding: 2px 32px 18px; border-radius: 0 0 32px 32px; } .home-band .topbar { padding: 12px 0 0; margin-bottom: -34px; } }
 .hb-kpi { background: var(--surface); }
+
+.ev.done { opacity: 1; }
+.tile.has-new { cursor: pointer; gap: 8px; }
+.tile .tile-new { margin-top: 4px; white-space: nowrap; max-width: 100%; display: inline-flex; align-items: center; gap: 4px; padding: 7px 10px; border-radius: 999px; border: 0; background: #2B1F1C; color: #fff; font: 600 12.5px Inter, sans-serif; cursor: pointer; min-height: 34px; }
+.tile .tile-new svg { width: 14px; height: 14px; color: #fff; }
+.tile .tile-new:hover { background: #4a3732; }

@@ -21,8 +21,8 @@ export function DocumentsHome() {
       <TopBar title={t('Documents')} back={false} settings="/pro/compte/factures" />
       <SmartSearch scope="documents" placeholder={t('Recherchez un devis, une facture, un document')} />
       <div className="tiles home" style={{ marginTop: 10 }}>
-        {can('devis') && <button className="tile" onClick={() => navigate('/pro/documents/devis')}><LuFilePen />{t('Devis')}</button>}
-        {can('devis') && <button className="tile" onClick={() => navigate('/pro/documents/factures')}><LuFileText />{t('Factures')}</button>}
+        {can('devis') && <div className="tile has-new" role="link" tabIndex={0} onClick={() => navigate('/pro/documents/devis')} onKeyDown={(e) => e.key === 'Enter' && navigate('/pro/documents/devis')}><LuFilePen />{t('Devis')}<button className="tile-new" onClick={(e) => { e.stopPropagation(); navigate('/pro/documents/nouveau?kind=devis'); }}><LuPlus /> {t('Nouveau devis')}</button></div>}
+        {can('devis') && <div className="tile has-new" role="link" tabIndex={0} onClick={() => navigate('/pro/documents/factures')} onKeyDown={(e) => e.key === 'Enter' && navigate('/pro/documents/factures')}><LuFileText />{t('Factures')}<button className="tile-new" onClick={(e) => { e.stopPropagation(); navigate('/pro/documents/nouveau?kind=facture'); }}><LuPlus /> {t('Nouvelle facture')}</button></div>}
         <button className="tile" onClick={() => navigate('/pro/photos')}><LuCamera />{t('Photos')}</button>
         <button className="tile" onClick={() => navigate('/pro/autres-docs')}><LuFolderOpen />{t('Autres docs')}</button>
         <button className="tile" onClick={() => navigate('/pro/coffre-fort')}><LuLock />{t('Mon coffre-fort')}</button>
@@ -42,10 +42,6 @@ function RecentDocs() {
   }, []);
   return (
     <>
-      <div className="two" style={{ marginTop: 18 }}>
-        <button className="btn sm" onClick={() => navigate('/pro/documents/nouveau?kind=devis')}><LuPlus /> {t('Nouveau devis')}</button>
-        <button className="btn sm navy" onClick={() => navigate('/pro/documents/nouveau?kind=facture')}><LuPlus /> {t('Nouvelle facture')}</button>
-      </div>
       {b && b.docs.length > 0 && <>
         <Sec title={t('Derniers documents')} />
         <div className="list">{b.docs.map((d) => (

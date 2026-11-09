@@ -1,3 +1,4 @@
+import { RateBox } from './messages.jsx';
 import { useState } from 'react';
 import { LuPlus, LuPencil, LuEuro, LuFileText, LuFilePen, LuX, LuCamera, LuCalendarCheck, LuHardHat, LuFolderOpen, LuMail } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
@@ -234,6 +235,8 @@ export function ClientCard({ params }) {
           {c.type === 'pro' && <><Sec title={t('Informations légales')} /><KV rows={[['SIRET', c.siret], ['SIREN', c.siren], [t('N° TVA'), c.vat_number], ['RCS', c.rcs]]} /></>}
           <Sec title={t('Paiement')} />
           <KV rows={[[t('Conditions de paiement'), c.payment_terms], [t('Mode de paiement'), t(c.payment_mode)], [t('Encours max'), money(c.max_outstanding)], [t('Solde'), money(solde), { red: solde > 0 }]]} />
+          <Sec title={t('Fiabilité du client')} />
+          <ClientRating id={c.id} />
           <div className="sec"><h2>{t('Note libre')}</h2><button className="plus" onClick={() => setNote(c.note || '')} aria-label={t('Modifier la note')}><LuPlus /></button></div>
           {note !== null ? (
             <div><textarea className="input" style={{ minHeight: 140 }} value={note} onChange={(e) => setNote(e.target.value)} autoFocus /><div className="btns"><div className="two"><button className="btn ghost" onClick={() => setNote(null)}>{t('Annuler')}</button><button className="btn" onClick={saveNote}>{t('Enregistrer')}</button></div></div></div>
@@ -306,6 +309,7 @@ export function ClientHistory({ params }) {
     b.appts.forEach((a) => {
       ev.push({ at: a.created_at, icon: LuCalendarCheck, color: 'navy', title: a.requested_by ? t('Demande reçue') : t('RDV planifié'), sub: `${a.title} · ${dateMed(a.start_at)} ${hm(a.start_at)}`, link: '/pro/planning/rdv/' + a.id });
       if (a.validated_at) ev.push({ at: a.validated_at, icon: LuCalendarCheck, color: '', title: t('RDV validé'), sub: `${a.title} · ${dateMed(a.start_at)}`, link: '/pro/planning/rdv/' + a.id });
+      (a.history || []).filter((h) => h.kind === 'moved').forEach((h) => ev.push({ at: h.at, icon: LuCalendarCheck, color: 'navy', title: t('RDV déplacé'), sub: `${a.title} · ${t('du {a} au {b}', { a: dateMed(h.from) + ' ' + hm(h.from), b: dateMed(h.to) + ' ' + hm(h.to) })}`, tag: t('Client prévenu'), link: '/pro/planning/rdv/' + a.id }));
       if (a.status === 'termine') ev.push({ at: a.end_at, icon: LuHardHat, color: '', title: t('Chantier terminé'), sub: a.title });
     });
     b.projects.filter((p) => p.finished_at).forEach((p) => ev.push({ at: p.finished_at, icon: LuHardHat, color: '', title: t('Chantier terminé'), sub: p.title }));
@@ -348,4 +352,10 @@ export function ClientHistory({ params }) {
       )}
     </div>
   );
+}
+
+function ClientRating({ id }) {
+  const { run } = useApp();
+  const [score, reload] = useData(() => api.rpc('client_score', { p_client: id }).catch(() => null), [id]);
+  return <RateBox score={score} label={t('Client sérieux ? Ponctuel, paie à temps ? Notez-le (une seule fois, visible des autres pros).')} onRate={(r, cm) => run(() => api.rpc('rate_client', { p_client: id, p_rating: r, p_comment: cm }), t('Merci pour votre note')).then(reload)} />;
 }

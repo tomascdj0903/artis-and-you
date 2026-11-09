@@ -1,7 +1,7 @@
 {
   "name": "artis-and-you-desktop",
   "productName": "Artesa",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Artesa — logiciel PC et Mac",
   "author": "Artesa",
   "main": "main.js",
