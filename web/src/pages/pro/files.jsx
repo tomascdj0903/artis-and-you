@@ -233,7 +233,7 @@ export function Vault() {
         {shown.map((x) => (
           <button key={x.k} className="li click" onClick={() => navigate('/pro/coffre-fort/' + x.k)}>
             <div className="ficon navy"><LuFolder /></div>
-            <div className="grow"><div className="t1">{t(x.l)}{VAULT_REQUIRED.includes(x.k) && <b className="req-star" title={t('Obligatoire')}> *</b>}</div>
+            <div className="grow"><div className="t1"><span>{t(x.l)}{VAULT_REQUIRED.includes(x.k) && <b className="req-star" title={t('Obligatoire')}>{'\u00a0*'}</b>}</span></div>
               <div className="row small">{t('{n} doc', { n: x.fs.length })}{x.cur ? <StatusPill s={validity(x.cur)} /> : <Pill c="grey">{t('À ajouter')}</Pill>}</div>
               {x.cur?.valid_until && <div className="t2">{t('Valide jusqu’au {d}', { d: date(x.cur.valid_until) })}</div>}</div>
             <LuChevronRight />

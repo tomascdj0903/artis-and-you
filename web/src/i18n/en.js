@@ -2051,4 +2051,5 @@ export default {"(copie)":"(copy)",
 "Copier le message":"Copy message",
 "Invité le {d}":"Invited on {d}",
 "Espace client Artesa":"Artesa client space",
-"Copié !":"Copied!"};
+"Copié !":"Copied!",
+"Mon intervention":"My visit"};

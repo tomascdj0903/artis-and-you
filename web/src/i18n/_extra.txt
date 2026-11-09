@@ -892,3 +892,4 @@ Invité le {d}|Invited on {d}|Convidado em {d}|Invitato il {d}
 Espace client Artesa|Artesa client space|Espaço cliente Artesa|Area clienti Artesa
 Partager|Share|Partilhar|Condividi
 Copié !|Copied!|Copiado!|Copiato!
+Mon intervention|My visit|A minha intervenção|Il mio intervento

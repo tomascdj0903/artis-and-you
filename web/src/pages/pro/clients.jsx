@@ -73,6 +73,7 @@ export function Clients() {
       <TopBar title={t('Clients')} back={false} />
       <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={active.length > 0} />
       {active.length > 0 && <div className="chips">{active.map(([l, patch], i) => <button key={i} className="chip on" onClick={() => setFilter({ ...f, ...patch })}>{l} ✕</button>)}<button className="link red small" onClick={() => setFilter({ ...EMPTY_F, sort: f.sort })}>{t('Tout effacer')}</button></div>}
+      {data.some((c) => !c.user_id && c.type !== 'pro') && <button className="invite-strip" onClick={() => navigate('/pro/reseau/inviter-clients')}>📣 <span className="grow"><b>{t('Inviter mes clients sur Artesa')}</b><small>{t('Gratuit pour eux : ils retrouvent leurs documents et vous écrivent directement.')}</small></span><span className="red-t bold">›</span></button>}
       <Sec title={t('Mes clients')} meta={<span className="row" style={{ gap: 8 }}>{list.length !== data.length ? t('{n} sur {m}', { n: list.length, m: data.length }) : t('{n} clients', { n: data.length })}
         <select className="mini-select" value={f.sort} onChange={(e) => setFilter({ ...f, sort: e.target.value })} aria-label={t('Trier')}>{SORTS.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></span>} />
       <Table rows={list} onRow={(c) => navigate('/pro/clients/' + c.id)} empty={data.length ? t('Aucun client ne correspond à ces filtres.') : t('Aucun client. Ajoutez votre premier client avec le bouton +.')}

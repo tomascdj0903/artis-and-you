@@ -172,7 +172,7 @@ export function Picker({ options, value, onChange, placeholder, required, disabl
   return (
     <div className="picker" onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) { setOpen(false); setQ(null); } }}>
       <div className="picker-in">
-        <input value={q ?? (cur ? cur[1] : '')} placeholder={placeholder || t('Tapez un nom ou choisissez')} disabled={disabled} required={required && !value}
+        <input className="input" value={q ?? (cur ? cur[1] : '')} placeholder={placeholder || t('Tapez un nom ou choisissez')} disabled={disabled} required={required && !value}
           onFocus={(e) => { setOpen(true); e.target.select(); }} onChange={(e) => { setQ(e.target.value); setOpen(true); }}
           onKeyDown={(e) => { if (e.key === 'Enter' && open && list[0]) { e.preventDefault(); pick(list[0][0]); } if (e.key === 'Escape') setOpen(false); }} />
         <button type="button" className="picker-btn" disabled={disabled} aria-label={t('Afficher la liste')} onClick={(e) => { e.preventDefault(); setQ(''); setOpen(!open); }}>▾</button>
