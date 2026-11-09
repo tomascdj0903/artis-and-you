@@ -313,7 +313,12 @@ export function InviteClients() {
     <div className="content narrow">
       <TopBar title={t('Inviter mes clients')} sub={t('Gratuit pour les particuliers')} />
       <div className="notice">{t('Vos clients créent leur compte gratuit en un clic depuis le lien : ils retrouvent leurs devis, factures et rendez-vous, et votre conversation s’ouvre directement. Plus ils sont nombreux sur Artesa, plus on vous recommande.')}</div>
-      <div className="row mt" style={{ gap: 8 }}><input className="input grow" readOnly value={clientInviteLink(company)} onFocus={(e) => e.target.select()} /><button className="btn sm" onClick={() => navigator.clipboard?.writeText(clientInviteMsg(company))}>{t('Copier le message')}</button></div>
+      <div className="row mt" style={{ gap: 8 }}><input className="input grow" readOnly value={clientInviteLink(company)} onFocus={(e) => e.target.select()} /></div>
+      <div className="row mt" style={{ gap: 8, flexWrap: 'wrap' }}>
+        <a className="btn sm" href={`sms:?&body=${encodeURIComponent(clientInviteMsg(company))}`}>{t('SMS')}</a>
+        <a className="btn sm" href={`mailto:?subject=${encodeURIComponent(t('Votre espace client sur Artesa'))}&body=${encodeURIComponent(clientInviteMsg(company))}`}><LuMail /> {t('E-mail')}</a>
+        <button className="btn sm ghost" onClick={() => navigator.clipboard?.writeText(clientInviteMsg(company))}>{t('Copier le message')}</button>
+      </div>
       <Sec title={t('Clients sans compte')} meta={t('{n} clients', { n: todo.length })} />
       {todo.length > 8 && <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} />}
       {!shown.length ? <Empty text={t('Tous vos clients particuliers ont déjà un compte Artesa.')} /> : <div className="list">{shown.map((c) => (
