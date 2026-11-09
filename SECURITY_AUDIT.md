@@ -22,8 +22,8 @@ Les correctifs sont sur `main`, qui déploie la production. La branche `security
 | 6 | Moyenne | Changement des participants d'une conversation, par exemple pour faire entrer une autre entreprise | `update conversations set other_company_id = …` | Migration 0014 : trigger `protect_conversation` | Corrigé. Rejoué : bloqué. Mise à jour normale : OK |
 | 7 | Moyenne | Rattacher un RDV, document, chantier ou fichier au client d'une autre entreprise (spam ou hameçonnage vers son espace client) | `insert into appointments(client_id = <client d'un autre>)` | Migration 0014 : policies RESTRICTIVE sur `client_id` et `project_id` | Corrigé, non rejoué (aucun client d'une autre entreprise accessible) |
 | 8 | Moyenne | Storage : la règle de lecture comparait `f.path` à `f.name` (colonne de la table) au lieu du chemin du fichier demandé. Un document du coffre-fort partagé était lisible par n'importe quel compte connaissant son chemin, et les fichiers partagés restaient illisibles pour les clients | Lecture d'un objet `files/<entreprise>/vault/...` avec un compte sans lien | Migration 0014 : policy réécrite (`objects.name`, appartenance à l'entreprise), taille maximale 25 Mo | Corrigé |
-| 9 | Moyenne | Edge Function `push` : abonnement push avec une URL arbitraire, que le serveur appellait ensuite (SSRF) | `insert into push_subscriptions(endpoint = 'https://interne/…')` | Migration 0017 : contrainte sur les services push officiels (FCM, Apple, Mozilla, Windows) | **À valider par toi** (prête, non appliquée) |
-| 10 | Moyenne | Codes d'invitation d'équipe de 6 caractères sans limite d'essais (force brute) | Appels répétés à `rpc/join_company` | Migration 0017 : 10 essais ratés par heure et par compte | **À valider par toi** (prête, non appliquée) |
+| 9 | Moyenne | Edge Function `push` : abonnement push avec une URL arbitraire, que le serveur appellait ensuite (SSRF) | `insert into push_subscriptions(endpoint = 'https://interne/…')` | Migration 0017 : contrainte sur les services push officiels (FCM, Apple, Mozilla, Windows) | Corrigé (appliquée) ; vérifié |
+| 10 | Moyenne | Codes d'invitation d'équipe de 6 caractères sans limite d'essais (force brute) | Appels répétés à `rpc/join_company` | Migration 0017 : 10 essais ratés par heure et par compte | Corrigé (appliquée) ; vérifié |
 | 11 | Moyenne | Aucun en-tête de sécurité HTTP | `curl -I` | `web/vercel.json` : CSP, HSTS, X-Frame-Options DENY, `frame-ancestors 'none'`, `nosniff`, Referrer-Policy, Permissions-Policy | En place dans `vercel.json`. Aucune violation CSP en local. Non vérifié sur le site en ligne : déploiement en cours |
 | 12 | Moyenne | Electron : `shell.openExternal` sur n'importe quel protocole (`file:`, `ms-msdt:`…), navigation `file:` libre, IPC sans contrôle de l'origine, DevTools en production | Lien `ms-msdt:` dans un message | `desktop/main.js` : sandbox, protocoles autorisés (http, https, mailto, tel, sms, whatsapp), `file:` limité à la page hors ligne, IPC réservé au site officiel, DevTools coupés une fois installé | Corrigé (actif à la prochaine version du logiciel) |
 | 13 | Basse | Lien `href` construit à partir de données saisies (site web d'un client) : `javascript:` | Site web = `javascript:alert(1)` | Composant `KV` : seuls http, https, mailto, tel et sms passent (React 19 bloquait déjà `javascript:`) | Corrigé |
@@ -56,12 +56,10 @@ Les correctifs sont sur `main`, qui déploie la production. La branche `security
 - Pour les stores, il faudra un emballage natif. Il faudra aussi remplir les fiches « App Privacy » (Apple) et « Data safety » (Google), et viser l'API Android récente. « Sign in with Apple » n'est requis que si une connexion Google ou Facebook est ajoutée.
 
 ## Actions que toi seul peux faire
-1. Valider l'application de la migration 0017 (push et codes d'invitation).
-2. Supabase › Authentication : activer la protection contre les mots de passe ayant fuité, vérifier les URL de redirection (pas de joker) et les limites de débit.
-3. Vercel › Settings › Deployment Protection : activer Vercel Authentication sur les previews.
-4. Acheter un certificat de signature de code Windows et un compte Apple Developer pour signer le logiciel.
-5. Régénérer le lockfile depuis ton poste (`cd web && npm i`) et lancer `npm audit`.
-6. Aucune rotation de clé nécessaire : aucun secret n'a fuité.
+1. Supabase › Authentication : vérifier les URL de redirection (pas de joker). Protection mots de passe fuités : option payante, écartée.
+2. Vercel › Settings › Deployment Protection : activer Vercel Authentication sur les previews.
+3. Signature de code, `npm audit` et mise à jour d'Electron : écartés pour l'instant (décision du propriétaire).
+4. Aucune rotation de clé nécessaire : aucun secret n'a fuité.
 
 ## Résumé
 - Faille critique corrigée : un gérant pouvait entrer dans les données d'une autre entreprise.
@@ -71,4 +69,4 @@ Les correctifs sont sur `main`, qui déploie la production. La branche `security
 - Deux correctifs prêts à valider (push, codes d'invitation), plus des réglages de dashboard à faire toi-même.
 - Aucun secret n'a fuité.
 
-**Score de risque global : avant 8/10 (élevé), après 3/10 (modéré, en attendant 0017 et les réglages dashboard).**
+**Score de risque global : avant 8/10 (élevé), après 2/10 (faible).**
