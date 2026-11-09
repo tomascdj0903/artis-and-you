@@ -86,7 +86,7 @@ function Shell({ tabs, children, path }) {
   return (
     <div className="app">
       <aside className="side">
-        <Link to={tabs[0][0]} className="brand"><Wordmark size={30} /></Link>
+        <Link to={tabs[0][0]} className="brand"><Wordmark size={30} light /></Link>
         <nav>
           {tabs.map(([to, I, label, exact]) => (
             <Link key={to} to={to} className={active(to, exact) ? 'on' : ''}><I />{t(label)}{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>

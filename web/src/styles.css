@@ -938,13 +938,17 @@ h1, h2, .tile { letter-spacing: -0.01em; }
   .hb-kpi { flex-direction: column; align-items: flex-start; gap: 0; }
   .hb-foot a, .hb-foot button { flex: 0 1 auto; justify-content: center; }
 }
-/* Menu latéral clair (sable) : le bandeau encre de l'accueil reste le seul bloc sombre */
-@media (min-width: 701px) {
-  .side { background: var(--bg-soft); color: var(--text); border-right: 1px solid var(--line-2); }
-  .side nav a { color: var(--text-2); }
-  .side nav a:hover { background: var(--bordeaux-50); color: var(--text); }
-  .side nav a.on { background: var(--bordeaux); color: #fff; }
-  .side .me { background: var(--surface); border: 1px solid var(--line-2); }
-  .side .me small { color: var(--text-3); }
-  :root[data-theme="dark"] .side { background: var(--bg-soft); }
-}
+/* Inversion (9/11) : menu latéral encre, bandeau d'accueil clair (sable) */
+.home-band { background: var(--bg-soft); color: var(--text); border: 1px solid var(--line-2); border-top: 0; }
+.hb-hello span { color: var(--text-3); }
+.home-band .search { border: 1.5px solid var(--line-2); }
+.hb-kpi { background: var(--surface); color: var(--text); border: 1px solid var(--line-2); }
+.hb-kpi:hover { background: var(--bordeaux-50); border-color: var(--bordeaux-200); }
+.hb-kpi span { color: var(--text-3); }
+.hb-foot a, .hb-foot button { background: var(--bordeaux-50); color: var(--text-2); border: 1px solid var(--bordeaux-200); }
+.hb-foot a:hover, .hb-foot button:hover { background: var(--bordeaux-100); }
+.hb-foot u { color: var(--bordeaux); }
+.home-band .topbar { color: var(--text); }
+.home-band .topbar .iconbtn, .home-band .topbar .notifbell .iconbtn { background: var(--surface); color: var(--text); }
+.home-band .logo-btn img { filter: none; }
+:root[data-theme="dark"] .home-band { background: var(--surface); }
