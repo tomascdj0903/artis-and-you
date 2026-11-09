@@ -37,7 +37,7 @@ export function Notifications() {
         return (
           <div key={n.id}>
             {show && <div className="small bold muted" style={{ margin: '14px 0 6px' }}>{dateMed(day)}</div>}
-            <button className="card row" style={{ width: '100%', textAlign: 'left', marginBottom: 10, background: 'var(--surface)', color: 'inherit', borderWidth: n.read ? 1 : 2, borderColor: n.read ? 'var(--line)' : 'var(--bordeaux)' }} onClick={() => open(n)}>
+            <button className="card row" style={{ width: '100%', textAlign: 'left', marginBottom: 10, background: n.read ? 'var(--bordeaux-50)' : 'var(--bordeaux-100)', color: 'inherit', borderWidth: n.read ? 1 : 2, borderColor: n.read ? 'var(--line)' : 'var(--bordeaux)' }} onClick={() => open(n)}>
               <span className="ficon"><I /></span>
               <div className="grow"><div className="row between"><Pill c="navy">{t({ rdv: 'RDV', documents: 'Documents', paiement: 'Paiement', message: 'Message', systeme: 'Info' }[n.category])}</Pill>{!n.read && <span style={{ width: 10, height: 10, borderRadius: 5, background: 'var(--bordeaux)' }} />}</div>
                 <b style={{ display: 'block', marginTop: 6 }}>{t(n.title)}</b><span className="small muted">{n.body}</span><div className="small red-t bold">{rel(n.created_at)}</div></div>

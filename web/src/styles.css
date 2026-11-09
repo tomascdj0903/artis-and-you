@@ -911,3 +911,11 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 :root[data-theme="dark"] .htile small.warn { color: #FFE2A8; }
 @media (min-width: 701px) { .home-band .topbar { padding: 16px 0 0; margin-bottom: -28px; } }
 @media (max-width: 700px) { .hb-foot a, .hb-foot button { flex: 1 1 100%; justify-content: space-between; } .hb-kpi span { font-size: 12px; } }
+/* Lignes et cartes cliquables : fond terracotta très clair pour qu'elles se détachent */
+.list { background: var(--bordeaux-50); border-color: var(--bordeaux-200); }
+.list .li, .list .li:nth-child(even) { background: var(--bordeaux-50); }
+.list .li + .li { border-top-color: var(--bordeaux-200); }
+.li.click:hover, button.li:hover, a.li:hover { background: var(--bordeaux-100) !important; }
+.li.click, button.li, a.li { background: var(--bordeaux-50); }
+.card.soft { background: var(--bordeaux-50); border-color: var(--bordeaux-200); }
+:root[data-theme="dark"] .list, :root[data-theme="dark"] .list .li, :root[data-theme="dark"] .card.soft { background: var(--surface); }
