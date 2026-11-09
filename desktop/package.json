@@ -1,9 +1,9 @@
 {
   "name": "artis-and-you-desktop",
-  "productName": "Artis & You",
-  "version": "1.1.0",
-  "description": "Artis & You — logiciel PC et Mac",
-  "author": "Artis & You",
+  "productName": "Artesa",
+  "version": "1.2.0",
+  "description": "Artesa — logiciel PC et Mac",
+  "author": "Artesa",
   "main": "main.js",
   "private": true,
   "scripts": {
@@ -20,8 +20,8 @@
   },
   "build": {
     "appId": "fr.artisandyou.app",
-    "productName": "Artis & You",
-    "copyright": "© Artis & You",
+    "productName": "Artesa",
+    "copyright": "© Artesa",
     "directories": { "output": "release", "buildResources": "build" },
     "files": ["main.js", "preload.js", "config.json", "offline.html", "build/icon.png"],
     "publish": [{ "provider": "github", "owner": "tomascdj0903", "repo": "artis-and-you", "releaseType": "release" }],
@@ -36,7 +36,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Artis & You",
+      "shortcutName": "Artesa",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
@@ -49,6 +49,6 @@
       "artifactName": "Artis-and-You.${ext}",
       "identity": null
     },
-    "dmg": { "title": "Artis & You" }
+    "dmg": { "title": "Artesa" }
   }
 }

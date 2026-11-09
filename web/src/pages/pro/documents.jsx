@@ -365,7 +365,7 @@ export function DocDetail({ params }) {
           <Field label={t('Message (modifiable)')}><textarea value={rel.text} onChange={(e) => setRel({ ...rel, text: e.target.value })} style={{ minHeight: 200 }} /></Field>
           <div className="btns"><div className="two">
             <button className="btn ghost" onClick={() => doRemind('email')}><LuMail /> {t('Par e-mail')}</button>
-            <button className="btn" disabled={!b.clientLive?.user_id} title={!b.clientLive?.user_id ? t('Ce client n’a pas de compte Artis & You') : ''} onClick={() => doRemind('app')}><LuSend /> {t('Messagerie')}</button>
+            <button className="btn" disabled={!b.clientLive?.user_id} title={!b.clientLive?.user_id ? t('Ce client n’a pas de compte Artesa') : ''} onClick={() => doRemind('app')}><LuSend /> {t('Messagerie')}</button>
           </div></div>
         </>}
       </Sheet>
@@ -445,13 +445,13 @@ export function SendModal({ open, b, onClose, onSent, pdfNode }) {
     }
     return x;
   };
-  const inApp = () => run(async () => { await finalize(); onClose(); onSent(); }, b.clientLive?.user_id ? t('Envoyé dans l’espace Artis & You du client') : t('Document émis. Le client le verra dès qu’il aura créé son compte avec cet e-mail.'));
+  const inApp = () => run(async () => { await finalize(); onClose(); onSent(); }, b.clientLive?.user_id ? t('Envoyé dans l’espace Artesa du client') : t('Document émis. Le client le verra dès qu’il aura créé son compte avec cet e-mail.'));
   const byMail = () => run(async () => {
     const x = await finalize();
     onClose(); onSent();
     if (pdfNode?.current) await exportPdf(pdfNode.current, pdfName(x));
-    const body = isQ ? t('Bonjour,\n\nVeuillez trouver ci-joint notre devis {n} pour : {o}.\n\nVous pouvez aussi le consulter et le signer dans votre espace Artis & You : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: location.origin, c: b.company.name })
-      : t('Bonjour,\n\nVeuillez trouver ci-joint notre facture {n} pour : {o}.\n\nVous pouvez la régler par virement (IBAN sur la facture) ou en ligne depuis votre espace Artis & You : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: location.origin, c: b.company.name });
+    const body = isQ ? t('Bonjour,\n\nVeuillez trouver ci-joint notre devis {n} pour : {o}.\n\nVous pouvez aussi le consulter et le signer dans votre espace Artesa : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: location.origin, c: b.company.name })
+      : t('Bonjour,\n\nVeuillez trouver ci-joint notre facture {n} pour : {o}.\n\nVous pouvez la régler par virement (IBAN sur la facture) ou en ligne depuis votre espace Artesa : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: location.origin, c: b.company.name });
     window.location.href = `mailto:${client.email || ''}?subject=${encodeURIComponent((isQ ? t('Devis') : t('Facture')) + ' ' + x.number)}&body=${encodeURIComponent(body)}`;
   }, pdfNode ? t('PDF téléchargé : joignez-le à l’e-mail') : t('Document émis'));
   return (
@@ -461,7 +461,7 @@ export function SendModal({ open, b, onClose, onSent, pdfNode }) {
         <p className="muted">{d.number || t('Brouillon')} · {clientName(client)}</p>
         {!d.number && <p className="small notice" style={{ textAlign: 'left' }}>{isQ ? t('Le devis reçoit son numéro définitif à l’envoi.') : t('À l’envoi, la facture reçoit son numéro définitif et ne pourra plus être modifiée (seulement corrigée par un avoir).')}</p>}
         {isQ ? <button className="opt red" onClick={() => wip(t('La signature électronique'))}><LuFilePen /><div><b>{t('Envoyer par signature électronique')}</b><small>{t('Via l’application, avec code SMS')}</small></div></button>
-          : <button className="opt red" onClick={() => wip(t('La facture électronique via Artis & You'))}><LuFilePen /><div><b>{t('Envoyer via Artis & You')}</b><small>{t('Facture électronique + lien de paiement')}</small></div></button>}
+          : <button className="opt red" onClick={() => wip(t('La facture électronique via Artesa'))}><LuFilePen /><div><b>{t('Envoyer via Artesa')}</b><small>{t('Facture électronique + lien de paiement')}</small></div></button>}
         <button className="opt" onClick={inApp}><LuSend /><div><b>{t('Envoyer dans l’espace client')}</b><small>{b.clientLive?.user_id ? t('Visible tout de suite dans son application') : t('Visible dès qu’il crée son compte')}</small></div></button>
         <button className="opt" onClick={byMail}><LuMail /><div><b>{t('Envoyer par e-mail')}</b><small>{isQ ? t("À l'adresse de la fiche client") : t('PDF + lien de paiement')}</small></div></button>
         <button className="link mt" onClick={onClose}>{t('Annuler')}</button>

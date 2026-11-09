@@ -162,7 +162,7 @@ export function DataPrivacy() {
   }, t('Export téléchargé'));
   const del = async () => {
     if (!(await confirm({ title: t('Supprimer mon compte ?'), text: t('Votre demande sera traitée sous 30 jours. Les factures émises restent conservées 10 ans (obligation légale).'), ok: t('Demander la suppression'), danger: true }))) return;
-    window.location.href = `mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Suppression de mon compte'))}&body=${encodeURIComponent(t('Bonjour, je souhaite supprimer mon compte Artis & You ({e}).', { e: profile.email }))}`;
+    window.location.href = `mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Suppression de mon compte'))}&body=${encodeURIComponent(t('Bonjour, je souhaite supprimer mon compte Artesa ({e}).', { e: profile.email }))}`;
   };
   return (
     <div className="content narrow">
@@ -171,7 +171,7 @@ export function DataPrivacy() {
       {isPro && <><Sec title={t('Visibilité')} /><div className="kv"><Link className="r" to="/pro/compte/entreprise"><span className="k">{t('Profil public et visibilité')}</span><span className="v">›</span></Link></div></>}
       <Sec title={t('Vos choix')} />
       <div className="kv">
-        <SettingToggle label={t('Aider à améliorer Artis & You')} hint={t('Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.')} checked={pv.audience} onChange={(v) => set('audience', v)} />
+        <SettingToggle label={t('Aider à améliorer Artesa')} hint={t('Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.')} checked={pv.audience} onChange={(v) => set('audience', v)} />
         <SettingToggle label={t('Recevoir les nouveautés')} hint={t('Un e-mail de temps en temps sur les nouvelles fonctionnalités')} checked={pv.news} onChange={(v) => set('news', v)} />
       </div>
       <Sec title={t('Vos données')} />
@@ -250,7 +250,7 @@ export function NotFound() {
   return <div className="content"><TopBar title={t('Page introuvable')} /><Empty text={t('Cette page n’existe pas.')}><button className="btn sm" onClick={() => navigate('/')}>{t("Retour à l'accueil")}</button></Empty></div>;
 }
 
-// ─────────────── Administration Artis & You (vérification SIRET, avis) ───────────────
+// ─────────────── Administration Artesa (vérification SIRET, avis) ───────────────
 export function Admin() {
   const { run, profile } = useApp();
   const [tab, setTab] = useState('siret');
@@ -260,7 +260,7 @@ export function Admin() {
     const [cos, revs] = await Promise.all([api.select('companies', {}, { order: 'created_at.desc', limit: 300 }), api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' })]);
     return { cos, revs, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
   }, []);
-  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artis & You.')} /></div>;
+  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artesa.')} /></div>;
   if (!b) return <div className="content"><TopBar title={t('Administration')} /><Loader /></div>;
   const st = (c) => c.verification_status || (c.verified ? 'approved' : 'pending');
   const pending = b.cos.filter((c) => st(c) === 'pending');
@@ -268,7 +268,7 @@ export function Admin() {
   const missing = (c) => companyMissing(c).map(([, l]) => t(l));
   return (
     <div className="content">
-      <TopBar title={t('Administration')} sub="Artis & You" />
+      <TopBar title={t('Administration')} sub="Artesa" />
       <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })]]} value={tab} onChange={setTab} />
       {tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
         <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>

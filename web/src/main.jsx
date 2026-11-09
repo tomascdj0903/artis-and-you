@@ -7,7 +7,7 @@ import { Tour, useTours } from './ui/tour.jsx';
 import { Landing } from './pages/auth/landing.jsx';
 import { useLocation, matchRoute, navigate, Link } from './lib/router.jsx';
 import { t, loadLang, getLang } from './lib/i18n.js';
-import { Loader, Avatar } from './ui/index.jsx';
+import { Loader, Avatar, Wordmark } from './ui/index.jsx';
 import { OFFLINE, api } from './lib/api.js';
 import { isLocked, bioEnabled, bioUnlock, lockAfterHidden } from './lib/security.js';
 import { fullName } from './lib/format.js';
@@ -86,7 +86,7 @@ function Shell({ tabs, children, path }) {
   return (
     <div className="app">
       <aside className="side">
-        <Link to={tabs[0][0]} className="brand"><img src="/logo.svg" alt="" /><span>ARTIS <b>&amp;</b> YOU</span></Link>
+        <Link to={tabs[0][0]} className="brand"><Wordmark size={30} light /></Link>
         <nav>
           {tabs.map(([to, I, label, exact]) => (
             <Link key={to} to={to} className={active(to, exact) ? 'on' : ''}><I />{t(label)}{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>
@@ -106,7 +106,7 @@ function Shell({ tabs, children, path }) {
       {tour && <Tour id={tour} onDone={finishTour} />}
       {!hideTabs && (
         <nav className="tabbar" aria-label={t('Navigation')}>
-          {tabs.map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I />{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
+          {tabs.map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t(label === 'Mon réseau' ? 'Réseau' : label === 'Notifications' ? 'Alertes' : label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
         </nav>
       )}
     </div>
@@ -121,7 +121,7 @@ function LockScreen({ onUnlock }) {
   return (
     <div className="auth" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24 }}>
       <div style={{ display: 'grid', gap: 14, maxWidth: 360, width: '100%', textAlign: 'center' }}>
-        <img src="/logo.svg" alt="Artis & You" style={{ width: 90, height: 90, margin: '0 auto' }} />
+        <Wordmark size={54} style={{ margin: '0 auto' }} />
         <h1 style={{ fontSize: 22, margin: 0 }}>{t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
         <p className="muted" style={{ margin: 0 }}>{t('Application verrouillée. Utilisez Face ID, Touch ID, votre empreinte ou Windows Hello.')}</p>
         {err && <div className="error">{err}</div>}

@@ -94,7 +94,7 @@ vérifié par notre équipe|checked by our team|verificado pela nossa equipa|ver
 Adresse du siège|Registered office address|Morada da sede|Indirizzo della sede
 Téléphone de l’entreprise|Company phone|Telefone da empresa|Telefono dell'azienda
 E-mail de l’entreprise|Company email|E-mail da empresa|E-mail dell'azienda
-Votre compte sera vérifié par l’équipe Artis & You (SIRET, informations légales) avant d’être visible des clients.|Your account will be checked by the Artis & You team (SIRET, legal information) before being visible to clients.|A sua conta será verificada pela equipa Artis & You (SIRET, informações legais) antes de ficar visível para os clientes.|Il tuo account sarà verificato dal team Artis & You (SIRET, informazioni legali) prima di essere visibile ai clienti.
+Votre compte sera vérifié par l’équipe Artesa (SIRET, informations légales) avant d’être visible des clients.|Your account will be checked by the Artesa team (SIRET, legal information) before being visible to clients.|A sua conta será verificada pela equipa Artesa (SIRET, informações legais) antes de ficar visível para os clientes.|Il tuo account sarà verificato dal team Artesa (SIRET, informazioni legali) prima di essere visibile ai clienti.
 Se déconnecter ?|Log out?|Terminar sessão?|Disconnettersi?
 Vos données restent dans ce navigateur. Vous devrez saisir à nouveau votre e-mail et votre mot de passe.|Your data stays in this browser. You will need to enter your email and password again.|Os seus dados ficam neste navegador. Terá de introduzir novamente o e-mail e a palavra-passe.|I tuoi dati restano in questo browser. Dovrai inserire di nuovo e-mail e password.
 Vous devrez saisir à nouveau votre e-mail et votre mot de passe (et votre code de double authentification si elle est activée).|You will need to enter your email and password again (and your two-factor code if it is enabled).|Terá de introduzir novamente o e-mail e a palavra-passe (e o código de dupla autenticação, se estiver ativa).|Dovrai inserire di nuovo e-mail e password (e il codice di autenticazione a due fattori, se attiva).
@@ -136,7 +136,7 @@ Copier la clé|Copy the key|Copiar a chave|Copia la chiave
 Ouvrir dans l’application|Open in the app|Abrir na aplicação|Apri nell'app
 Saisissez le code à 6 chiffres affiché :|Enter the 6-digit code shown:|Introduza o código de 6 dígitos apresentado:|Inserisci il codice a 6 cifre mostrato:
 Activer|Turn on|Ativar|Attiva
-Aider à améliorer Artis & You|Help improve Artis & You|Ajudar a melhorar o Artis & You|Aiuta a migliorare Artis & You
+Aider à améliorer Artesa|Help improve Artesa|Ajudar a melhorar o Artesa|Aiuta a migliorare Artesa
 Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.|Share anonymous usage statistics (pages viewed, errors). No client, quote or invoice data is sent.|Partilhar estatísticas de utilização anónimas (páginas consultadas, erros). Nenhum dado de clientes, orçamentos ou faturas é transmitido.|Condividi statistiche d'uso anonime (pagine visitate, errori). Nessun dato di clienti, preventivi o fatture viene trasmesso.
 Un e-mail de temps en temps sur les nouvelles fonctionnalités|An occasional email about new features|Um e-mail de vez em quando sobre as novidades|Un'e-mail ogni tanto sulle novità
 Retour aux articles|Back to articles|Voltar aos artigos|Torna agli articoli
@@ -152,7 +152,7 @@ Comment faire… (ex. relancer une facture, dimanche, logo)|How do I… (e.g. ch
 Tous les articles|All articles|Todos os artigos|Tutti gli articoli
 Aucun article ne correspond. Écrivez-nous, on vous répond rapidement.|No matching article. Write to us, we'll answer quickly.|Nenhum artigo corresponde. Escreva-nos, respondemos rapidamente.|Nessun articolo corrisponde. Scrivici, ti rispondiamo rapidamente.
 réponse sous 24 h ouvrées|reply within 1 business day|resposta em 24 h úteis|risposta entro 24 h lavorative
-Réservé à l’équipe Artis & You.|Reserved for the Artis & You team.|Reservado à equipa Artis & You.|Riservato al team Artis & You.
+Réservé à l’équipe Artesa.|Reserved for the Artesa team.|Reservado à equipa Artesa.|Riservato al team Artesa.
 Entreprise validée|Company approved|Empresa validada|Azienda convalidata
 Demande de compléments envoyée|Request for more information sent|Pedido de informações adicionais enviado|Richiesta di integrazioni inviata
 Aucune entreprise en attente|No company waiting|Nenhuma empresa em espera|Nessuna azienda in attesa
@@ -163,13 +163,13 @@ Merci de compléter : {l}.|Please complete: {l}.|Por favor complete: {l}.|Comple
 Demander des compléments|Ask for more information|Pedir informações adicionais|Chiedi integrazioni
 Message à l’entreprise|Message to the company|Mensagem para a empresa|Messaggio all'azienda
 serveurs situés dans l’Union européenne, région Paris|servers located in the European Union, Paris region|servidores situados na União Europeia, região de Paris|server situati nell'Unione europea, regione di Parigi
-Installer Artis & You|Install Artis & You|Instalar o Artis & You|Installa Artis & You
+Installer Artesa|Install Artesa|Instalar o Artesa|Installa Artesa
 Ordinateur|Computer|Computador|Computer
 Téléphone et tablette|Phone and tablet|Telemóvel e tablet|Telefono e tablet
 Ou installer la version web|Or install the web version|Ou instalar a versão web|Oppure installa la versione web
 Sans téléchargement, depuis ce navigateur (Chrome, Edge)|No download, from this browser (Chrome, Edge)|Sem download, a partir deste navegador (Chrome, Edge)|Senza download, da questo browser (Chrome, Edge)
-Ajoutez Artis & You sur l’écran d’accueil : l’application s’ouvre en plein écran avec son icône, comme une vraie application, et elle est toujours à jour.|Add Artis & You to your home screen: the app opens full screen with its icon, like a real app, and is always up to date.|Adicione o Artis & You ao ecrã principal: a aplicação abre em ecrã inteiro com o seu ícone, como uma aplicação a sério, e está sempre atualizada.|Aggiungi Artis & You alla schermata Home: l'app si apre a schermo intero con la sua icona, come una vera app, ed è sempre aggiornata.
-Artis & You est installée sur cet appareil.|Artis & You is installed on this device.|O Artis & You está instalado neste dispositivo.|Artis & You è installata su questo dispositivo.
+Ajoutez Artesa sur l’écran d’accueil : l’application s’ouvre en plein écran avec son icône, comme une vraie application, et elle est toujours à jour.|Add Artesa to your home screen: the app opens full screen with its icon, like a real app, and is always up to date.|Adicione o Artesa ao ecrã principal: a aplicação abre em ecrã inteiro com o seu ícone, como uma aplicação a sério, e está sempre atualizada.|Aggiungi Artesa alla schermata Home: l'app si apre a schermo intero con la sua icona, come una vera app, ed è sempre aggiornata.
+Artesa est installée sur cet appareil.|Artesa is installed on this device.|O Artesa está instalado neste dispositivo.|Artesa è installata su questo dispositivo.
 Installer l’application|Install the app|Instalar a aplicação|Installa l'app
 Ouvrez {u} dans Chrome|Open {u} in Chrome|Abra {u} no Chrome|Apri {u} in Chrome
 Touchez le menu ⋮ en haut à droite|Tap the ⋮ menu at the top right|Toque no menu ⋮ no canto superior direito|Tocca il menu ⋮ in alto a destra
@@ -182,12 +182,12 @@ Sur votre téléphone, ouvrez {u} puis suivez les étapes ci-dessus.|On your pho
 Copier le lien|Copy the link|Copiar a ligação|Copia il link
 Logiciel PC / Mac et application mobile|PC / Mac software and mobile app|Software PC / Mac e aplicação móvel|Software PC / Mac e app mobile
 Complétez les champs obligatoires : {l}|Fill in the required fields: {l}|Preencha os campos obrigatórios: {l}|Compila i campi obbligatori: {l}
-Merci ! Votre dossier est renvoyé à l’équipe Artis & You.|Thank you! Your file has been sent back to the Artis & You team.|Obrigado! O seu processo foi reenviado à equipa Artis & You.|Grazie! La tua pratica è stata rinviata al team Artis & You.
+Merci ! Votre dossier est renvoyé à l’équipe Artesa.|Thank you! Your file has been sent back to the Artesa team.|Obrigado! O seu processo foi reenviado à equipa Artesa.|Grazie! La tua pratica è stata rinviata al team Artesa.
 Changer le logo|Change the logo|Alterar o logótipo|Cambia il logo
 Ajouter le logo|Add the logo|Adicionar o logótipo|Aggiungi il logo
 Vous pourrez le recadrer avant de l’enregistrer.|You can crop it before saving.|Poderá recortá-lo antes de guardar.|Potrai ritagliarlo prima di salvarlo.
 Informations à compléter|Information to complete|Informações a completar|Informazioni da completare
-Validation en cours par l’équipe Artis & You|Being checked by the Artis & You team|Validação em curso pela equipa Artis & You|Verifica in corso da parte del team Artis & You
+Validation en cours par l’équipe Artesa|Being checked by the Artesa team|Validação em curso pela equipa Artesa|Verifica in corso da parte del team Artesa
 Toutes les informations obligatoires sont renseignées|All required information has been filled in|Todas as informações obrigatórias estão preenchidas|Tutte le informazioni obbligatorie sono compilate
 obligatoire pour la validation du compte|required for account approval|obrigatório para a validação da conta|obbligatorio per la convalida dell'account
 Choisir…|Choose…|Escolher…|Scegli…
@@ -225,8 +225,8 @@ Validées une par une · scénario personnalisable|Approved one by one · custom
 Relances à faire|Reminders to send|Lembretes a enviar|Solleciti da inviare
 CA|Revenue|Faturação|Fatturato
 Avec un montant dû|With an amount due|Com montante em dívida|Con importo dovuto
-Avec compte Artis & You|With an Artis & You account|Com conta Artis & You|Con account Artis & You
-Sans compte Artis & You|Without an Artis & You account|Sem conta Artis & You|Senza account Artis & You
+Avec compte Artesa|With an Artesa account|Com conta Artesa|Con account Artesa
+Sans compte Artesa|Without an Artesa account|Sem conta Artesa|Senza account Artesa
 Tout effacer|Clear all|Limpar tudo|Cancella tutto
 {n} sur {m}|{n} of {m}|{n} de {m}|{n} su {m}
 Trier|Sort|Ordenar|Ordina
@@ -292,9 +292,9 @@ Pas encore relancé.|Not reminded yet.|Ainda sem lembretes.|Non ancora sollecita
 Relances suspendues.|Reminders paused.|Lembretes suspensos.|Solleciti sospesi.
 Relances|Reminders|Lembretes|Solleciti
 Message (modifiable)|Message (editable)|Mensagem (editável)|Messaggio (modificabile)
-Ce client n’a pas de compte Artis & You|This client has no Artis & You account|Este cliente não tem conta Artis & You|Questo cliente non ha un account Artis & You
+Ce client n’a pas de compte Artesa|This client has no Artesa account|Este cliente não tem conta Artesa|Questo cliente non ha un account Artesa
 Messagerie|Messaging|Mensagens|Messaggi
-Visible dans son espace Artis & You|Visible in their Artis & You space|Visível no seu espaço Artis & You|Visibile nel suo spazio Artis & You
+Visible dans son espace Artesa|Visible in their Artesa space|Visível no seu espaço Artesa|Visibile nel suo spazio Artesa
 Document expiré : {n}|Expired document: {n}|Documento expirado: {n}|Documento scaduto: {n}
 Document à renouveler : {n}|Document to renew: {n}|Documento a renovar: {n}|Documento da rinnovare: {n}
 Expiré depuis le {d}|Expired since {d}|Expirado desde {d}|Scaduto dal {d}
@@ -304,11 +304,11 @@ Notification {n} jours avant la date de fin de validité|Notification {n} days b
 Aucun rappel pour ce type de document|No reminder for this type of document|Nenhum lembrete para este tipo de documento|Nessun promemoria per questo tipo di documento
 Délai du rappel|Reminder delay|Antecedência do lembrete|Anticipo del promemoria
 Partager avec mes clients|Share with my clients|Partilhar com os meus clientes|Condividi con i miei clienti
-Visible dans l’espace Artis & You de vos clients (ex. attestation décennale)|Visible in your clients' Artis & You space (e.g. ten-year insurance certificate)|Visível no espaço Artis & You dos seus clientes (ex.: certificado de seguro decenal)|Visibile nello spazio Artis & You dei tuoi clienti (es. attestato di assicurazione decennale)
+Visible dans l’espace Artesa de vos clients (ex. attestation décennale)|Visible in your clients' Artesa space (e.g. ten-year insurance certificate)|Visível no espaço Artesa dos seus clientes (ex.: certificado de seguro decenal)|Visibile nello spazio Artesa dei tuoi clienti (es. attestato di assicurazione decennale)
 Visible uniquement par votre entreprise|Visible only to your company|Visível apenas para a sua empresa|Visibile solo alla tua azienda
 Ces réglages s’appliqueront aux documents que vous ajouterez.|These settings will apply to the documents you add.|Estas definições aplicam-se aos documentos que adicionar.|Queste impostazioni si applicheranno ai documenti che aggiungerai.
 Votre inscription est à compléter|Your registration needs completing|A sua inscrição está por completar|La tua iscrizione è da completare
-L’équipe Artis & You a besoin d’informations supplémentaires.|The Artis & You team needs more information.|A equipa Artis & You precisa de mais informações.|Il team Artis & You ha bisogno di altre informazioni.
+L’équipe Artesa a besoin d’informations supplémentaires.|The Artesa team needs more information.|A equipa Artesa precisa de mais informações.|Il team Artesa ha bisogno di altre informazioni.
 Compte en cours de validation|Account being approved|Conta em validação|Account in fase di convalida
 {n} demandes de rendez-vous à traiter|{n} appointment requests to handle|{n} pedidos de marcação a tratar|{n} richieste di appuntamento da gestire
 1 demande de rendez-vous à traiter|1 appointment request to handle|1 pedido de marcação a tratar|1 richiesta di appuntamento da gestire
@@ -366,10 +366,10 @@ Suspendre|Pause|Suspender|Sospendi
 Aucune relance programmée.|No reminder scheduled.|Nenhum lembrete programado.|Nessun sollecito programmato.
 Relances suspendues|Paused reminders|Lembretes suspensos|Solleciti sospesi
 Réactiver|Resume|Reativar|Riattiva
-Messagerie Artis & You|Artis & You messaging|Mensagens Artis & You|Messaggi Artis & You
+Messagerie Artesa|Artesa messaging|Mensagens Artesa|Messaggi Artesa
 Aucune relance envoyée pour l’instant.|No reminder sent yet.|Nenhum lembrete enviado por enquanto.|Nessun sollecito inviato per ora.
 À|To|Para|A
-messagerie Artis & You|Artis & You messaging|mensagens Artis & You|messaggi Artis & You
+messagerie Artesa|Artesa messaging|mensagens Artesa|messaggi Artesa
 aucune adresse e-mail|no email address|nenhum e-mail|nessun indirizzo e-mail
 Ouvrir l’e-mail|Open the email|Abrir o e-mail|Apri l'e-mail
 Envoi automatique|Automatic sending|Envio automático|Invio automatico
@@ -424,7 +424,7 @@ CRM, KPI et export|CRM, KPIs and export|CRM, KPI e exportação|CRM, KPI ed espo
 Compte et sécurité|Account and security|Conta e segurança|Account e sicurezza
 Devis, factures et chantiers|Quotes, invoices and jobs|Orçamentos, faturas e obras|Preventivi, fatture e cantieri
 Valider mon compte entreprise|Get my company account approved|Validar a minha conta de empresa|Far convalidare il mio account aziendale
-L’équipe Artis & You vérifie chaque entreprise avant qu’elle soit visible des particuliers.|The Artis & You team checks each company before it becomes visible to clients.|A equipa Artis & You verifica cada empresa antes de ficar visível para os particulares.|Il team Artis & You verifica ogni azienda prima che sia visibile ai privati.
+L’équipe Artesa vérifie chaque entreprise avant qu’elle soit visible des particuliers.|The Artesa team checks each company before it becomes visible to clients.|A equipa Artesa verifica cada empresa antes de ficar visível para os particulares.|Il team Artesa verifica ogni azienda prima che sia visibile ai privati.
 Ouvrez Paramètres › Mon entreprise.|Open Settings › My company.|Abra Definições › A minha empresa.|Apri Impostazioni › La mia azienda.
 Remplissez tous les champs marqués d’une étoile : forme juridique, SIRET, adresse, téléphone, e-mail, métier et assurance décennale.|Fill in all fields marked with an asterisk: legal form, SIRET, address, phone, email, trade and ten-year insurance.|Preencha todos os campos marcados com asterisco: forma jurídica, SIRET, morada, telefone, e-mail, profissão e seguro decenal.|Compila tutti i campi con l'asterisco: forma giuridica, SIRET, indirizzo, telefono, e-mail, mestiere e assicurazione decennale.
 Enregistrez. Si l’équipe vous a demandé des compléments, votre dossier repart automatiquement en vérification.|Save. If the team asked for more information, your file is automatically sent back for checking.|Guarde. Se a equipa pediu informações adicionais, o seu processo volta automaticamente à verificação.|Salva. Se il team ha chiesto integrazioni, la tua pratica torna automaticamente in verifica.
@@ -454,7 +454,7 @@ Par type, statut, ville, pays, date, chiffre d’affaires ou montant dû.|By typ
 Clients › bouton filtres à droite de la recherche.|Clients › filters button next to the search.|Clientes › botão de filtros ao lado da pesquisa.|Clienti › pulsante filtri accanto alla ricerca.
 Retirez un filtre en touchant son étiquette, ou « Tout effacer ».|Remove a filter by tapping its label, or “Clear all”.|Retire um filtro tocando na etiqueta, ou “Limpar tudo”.|Rimuovi un filtro toccandone l'etichetta, o “Cancella tutto”.
 Changez le tri avec la liste au-dessus du tableau.|Change the sorting with the list above the table.|Altere a ordenação com a lista por cima da tabela.|Cambia l'ordinamento con l'elenco sopra la tabella.
-Inviter un client sur Artis & You|Invite a client to Artis & You|Convidar um cliente para o Artis & You|Invitare un cliente su Artis & You
+Inviter un client sur Artesa|Invite a client to Artesa|Convidar um cliente para o Artesa|Invitare un cliente su Artesa
 Avec un compte, le client voit ses devis, signe en ligne et échange avec vous.|With an account, the client sees their quotes, signs online and chats with you.|Com uma conta, o cliente vê os orçamentos, assina online e fala consigo.|Con un account, il cliente vede i preventivi, firma online e ti scrive.
 Ouvrez la fiche du client › Chatbox.|Open the client card › Chatbox.|Abra a ficha do cliente › Chatbox.|Apri la scheda del cliente › Chatbox.
 Touchez « L’inviter par e-mail ».|Tap “Invite by email”.|Toque em “Convidar por e-mail”.|Tocca “Invitalo via e-mail”.
@@ -524,7 +524,7 @@ Classique, Moderne ou Épuré, avec votre couleur et votre logo.|Classic, Modern
 Paramètres › Devis et factures › Modèle du PDF.|Settings › Quotes and invoices › PDF template.|Definições › Orçamentos e faturas › Modelo do PDF.|Impostazioni › Preventivi e fatture › Modello PDF.
 Ajoutez un pied de page ou une signature si besoin, puis Enregistrer.|Add a footer or a signature if needed, then Save.|Adicione um rodapé ou uma assinatura se necessário e depois Guardar.|Aggiungi un piè di pagina o una firma se serve, poi Salva.
 Mentions obligatoires sur mes factures|Mandatory information on my invoices|Menções obrigatórias nas minhas faturas|Diciture obbligatorie sulle mie fatture
-Artis & You les ajoute automatiquement à partir de vos réglages.|Artis & You adds them automatically from your settings.|O Artis & You adiciona-as automaticamente a partir das suas definições.|Artis & You le aggiunge automaticamente dalle tue impostazioni.
+Artesa les ajoute automatiquement à partir de vos réglages.|Artesa adds them automatically from your settings.|O Artesa adiciona-as automaticamente a partir das suas definições.|Artesa le aggiunge automaticamente dalle tue impostazioni.
 Identité complète (SIRET, forme juridique, capital, RM, TVA) : Mon entreprise.|Full identity (SIRET, legal form, capital, RM, VAT): My company.|Identidade completa (SIRET, forma jurídica, capital, RM, IVA): A minha empresa.|Identità completa (SIRET, forma giuridica, capitale, RM, IVA): La mia azienda.
 Conditions de paiement, pénalités de retard, escompte : Devis et factures.|Payment terms, late penalties, discount: Quotes and invoices.|Condições de pagamento, penalidades de atraso, desconto: Orçamentos e faturas.|Condizioni di pagamento, penali di ritardo, sconto: Preventivi e fatture.
 Assurance décennale et médiateur de la consommation (obligatoire pour les particuliers) : à renseigner une fois.|Ten-year insurance and consumer mediator (mandatory for private clients): fill in once.|Seguro decenal e mediador do consumo (obrigatório para particulares): a preencher uma vez.|Assicurazione decennale e mediatore del consumo (obbligatorio per i privati): da compilare una volta.
@@ -695,7 +695,7 @@ Cochez ce que vos clients peuvent réserver en ligne, et la durée de chacun (co
 Relier mon agenda|Link my calendar|Ligar a minha agenda|Collega il mio calendario
 Tout le planning dans Google Agenda, Outlook ou l’iPhone, mis à jour automatiquement|Your whole planning in Google Calendar, Outlook or iPhone, updated automatically|Toda a agenda no Google Agenda, Outlook ou iPhone, atualizada automaticamente|Tutto il planning in Google Calendar, Outlook o iPhone, aggiornato automaticamente
 Lien copié|Link copied|Ligação copiada|Link copiato
-Votre planning Artis & You apparaît dans votre agenda habituel et se met à jour tout seul (toutes les 15 min à quelques heures selon l’application). Les modifications se font dans Artis & You.|Your Artis & You planning appears in your usual calendar and updates by itself (every 15 min to a few hours depending on the app). Changes are made in Artis & You.|A sua agenda Artis & You aparece na sua agenda habitual e atualiza-se sozinha (de 15 em 15 min a algumas horas, conforme a aplicação). As alterações fazem-se no Artis & You.|Il tuo planning Artis & You appare nel tuo calendario abituale e si aggiorna da solo (da 15 min a qualche ora secondo l'app). Le modifiche si fanno in Artis & You.
+Votre planning Artesa apparaît dans votre agenda habituel et se met à jour tout seul (toutes les 15 min à quelques heures selon l’application). Les modifications se font dans Artesa.|Your Artesa planning appears in your usual calendar and updates by itself (every 15 min to a few hours depending on the app). Changes are made in Artesa.|A sua agenda Artesa aparece na sua agenda habitual e atualiza-se sozinha (de 15 em 15 min a algumas horas, conforme a aplicação). As alterações fazem-se no Artesa.|Il tuo planning Artesa appare nel tuo calendario abituale e si aggiorna da solo (da 15 min a qualche ora secondo l'app). Le modifiche si fanno in Artesa.
 Disponible quand l’application sera en ligne (serveur Supabase). En attendant, utilisez « Exporter mon planning (.ics) ».|Available once the app is online (Supabase server). Meanwhile, use “Export my planning (.ics)”.|Disponível quando a aplicação estiver online (servidor Supabase). Entretanto, use “Exportar a minha agenda (.ics)”.|Disponibile quando l'app sarà online (server Supabase). Nel frattempo usa “Esporta il mio planning (.ics)”.
 Google Agenda : « Autres agendas » › + › « À partir de l’URL », collez le lien.|Google Calendar: “Other calendars” › + › “From URL”, paste the link.|Google Agenda: “Outras agendas” › + › “A partir do URL”, cole a ligação.|Google Calendar: “Altri calendari” › + › “Da URL”, incolla il link.
 Outlook : « Ajouter un calendrier » › « S’abonner à partir du web ».|Outlook: “Add calendar” › “Subscribe from web”.|Outlook: “Adicionar calendário” › “Subscrever a partir da Web”.|Outlook: “Aggiungi calendario” › “Iscriviti dal Web”.
@@ -765,9 +765,9 @@ Précédent|Previous|Anterior|Precedente
 Passer|Skip|Saltar|Salta
 Suivant|Next|Seguinte|Avanti
 Terminer|Finish|Terminar|Fine
-Bienvenue sur Artis & You 👋|Welcome to Artis & You 👋|Bem-vindo à Artis & You 👋|Benvenuto su Artis & You 👋
+Bienvenue sur Artesa 👋|Welcome to Artesa 👋|Bem-vindo à Artesa 👋|Benvenuto su Artesa 👋
 C’est parti !|Let's go!|Vamos lá!|Si parte!
-Je gère mes devis, factures et rendez-vous avec Artis & You. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.|I manage my quotes, invoices and appointments with Artis & You. Sign up with my code {c}: 1 month free for both of us.|Faço os meus orçamentos, faturas e marcações com a Artis & You. Inscreve-te com o meu código {c}: 1 mês grátis para os dois.|Gestisco preventivi, fatture e appuntamenti con Artis & You. Iscriviti con il mio codice {c}: 1 mese gratis per entrambi.
+Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.|I manage my quotes, invoices and appointments with Artesa. Sign up with my code {c}: 1 month free for both of us.|Faço os meus orçamentos, faturas e marcações com a Artesa. Inscreve-te com o meu código {c}: 1 mês grátis para os dois.|Gestisco preventivi, fatture e appuntamenti con Artesa. Iscriviti con il mio codice {c}: 1 mese gratis per entrambi.
 Lien de parrainage copié|Referral link copied|Link de recomendação copiado|Link di invito copiato
 Parrainez un artisan : 1 mois offert pour vous deux|Refer a tradesperson: 1 month free for both of you|Recomende um profissional: 1 mês grátis para os dois|Invita un artigiano: 1 mese gratis per entrambi
 Votre code : {c}|Your code: {c}|O seu código: {c}|Il tuo codice: {c}
@@ -802,10 +802,32 @@ Formule|Plan|Plano|Piano
 Essayer {p} gratuitement|Try {p} for free|Experimentar {p} grátis|Prova {p} gratis
 30 jours d’essai gratuit, sans carte bancaire · sans engagement|30-day free trial, no card · no commitment|30 dias grátis, sem cartão · sem compromisso|30 giorni gratis, senza carta · senza vincoli
 Aucune carte bancaire, aucun abonnement.|No card, no subscription.|Sem cartão, sem assinatura.|Nessuna carta, nessun abbonamento.
-Pourquoi Artis & You ?|Why Artis & You?|Porquê a Artis & You?|Perché Artis & You?
+Pourquoi Artesa ?|Why Artesa?|Porquê a Artesa?|Perché Artesa?
 Logiciel de devis classique|Typical quoting software|Software de orçamentos clássico|Software di preventivi classico
 Plateforme de mise en relation|Lead-generation platform|Plataforma de contactos|Piattaforma di intermediazione
 Selon l’offre|Depends on plan|Conforme o plano|Secondo l'offerta
 Derniers documents|Latest documents|Últimos documentos|Ultimi documenti
 Payer|Pay|Pagar|Paga
 À traiter|To do|A tratar|Da fare
+RDV aujourd’hui|appointments today|marcações hoje|appuntamenti oggi
+devis en attente|quotes pending|orçamentos pendentes|preventivi in attesa
+CA HT du mois|revenue this month (excl. VAT)|faturação do mês (s/ IVA)|fatturato del mese (IVA escl.)
+1 fiche client|1 client|1 cliente|1 cliente
+{n} fiches clients|{n} clients|{n} clientes|{n} clienti
+1 RDV aujourd’hui|1 appointment today|1 marcação hoje|1 appuntamento oggi
+{n} RDV aujourd’hui|{n} appointments today|{n} marcações hoje|{n} appuntamenti oggi
+Aucun RDV aujourd’hui|No appointments today|Sem marcações hoje|Nessun appuntamento oggi
+1 facture en retard|1 overdue invoice|1 fatura em atraso|1 fattura scaduta
+{n} factures en retard|{n} overdue invoices|{n} faturas em atraso|{n} fatture scadute
+1 devis en attente|1 quote pending|1 orçamento pendente|1 preventivo in attesa
+{n} devis en attente|{n} quotes pending|{n} orçamentos pendentes|{n} preventivi in attesa
+Devis et factures|Quotes and invoices|Orçamentos e faturas|Preventivi e fatture
+Suivi et chiffres|Tracking and figures|Acompanhamento e números|Monitoraggio e numeri
+1 message non lu|1 unread message|1 mensagem não lida|1 messaggio non letto
+{n} messages non lus|{n} unread messages|{n} mensagens não lidas|{n} messaggi non letti
+Clients et équipe|Clients and team|Clientes e equipa|Clienti e squadra
+1 pro dans mon réseau|1 pro in my network|1 profissional na minha rede|1 professionista nella mia rete
+{n} pros dans mon réseau|{n} pros in my network|{n} profissionais na minha rede|{n} professionisti nella mia rete
+Trouver des pros|Find pros|Encontrar profissionais|Trova professionisti
+Réseau|Network|Rede|Rete
+Alertes|Alerts|Alertas|Avvisi

@@ -24,15 +24,15 @@ Deno.serve(async (req) => {
   const { data: cl } = ids.length ? await db.from('clients').select('id,type,first_name,last_name,company_name').in('id', ids) : { data: [] };
   const name = (c: any) => (c ? (c.type === 'pro' ? c.company_name : [c.first_name, c.last_name].filter(Boolean).join(' ')) : '');
   const cm = Object.fromEntries((cl || []).map((c: any) => [c.id, c]));
-  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Artis & You//FR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
-    'X-WR-CALNAME:' + esc('Artis & You · ' + (co.trade_name || co.name)), 'X-WR-TIMEZONE:Europe/Paris', 'REFRESH-INTERVAL;VALUE=DURATION:PT15M', 'X-PUBLISHED-TTL:PT15M'];
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Artesa//FR', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+    'X-WR-CALNAME:' + esc('Artesa · ' + (co.trade_name || co.name)), 'X-WR-TIMEZONE:Europe/Paris', 'REFRESH-INTERVAL;VALUE=DURATION:PT15M', 'X-PUBLISHED-TTL:PT15M'];
   for (const a of ap || []) {
     const who = name(cm[a.client_id]);
     L.push('BEGIN:VEVENT', 'UID:' + a.id + '@artisandyou', 'DTSTAMP:' + f(new Date()), 'DTSTART:' + f(a.start_at), 'DTEND:' + f(a.end_at),
       'SUMMARY:' + esc((a.status === 'a_valider' ? '[À valider] ' : '') + (a.title || a.type) + (who ? ' · ' + who : '')),
       'STATUS:' + (a.status === 'a_valider' ? 'TENTATIVE' : 'CONFIRMED'));
     if (a.mode === 'visio') L.push('LOCATION:Visio WhatsApp'); else if (a.address) L.push('LOCATION:' + esc(a.address));
-    const desc = [a.contact_name && 'Contact : ' + a.contact_name, a.contact_phone && 'Tél. : ' + a.contact_phone, 'Ouvrir dans Artis & You : https://artis-and-you.vercel.app/pro/planning/rdv/' + a.id].filter(Boolean).join('\n');
+    const desc = [a.contact_name && 'Contact : ' + a.contact_name, a.contact_phone && 'Tél. : ' + a.contact_phone, 'Ouvrir dans Artesa : https://artis-and-you.vercel.app/pro/planning/rdv/' + a.id].filter(Boolean).join('\n');
     L.push('DESCRIPTION:' + esc(desc));
     if (RR[a.recurrence]) L.push('RRULE:' + RR[a.recurrence]);
     L.push('END:VEVENT');

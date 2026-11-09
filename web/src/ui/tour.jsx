@@ -9,7 +9,7 @@ import { t } from '../lib/i18n.js';
 const S = (title, text, sel) => ({ title, text, sel });
 export const TOURS = {
   'welcome-pro': [
-    S('Bienvenue sur Artis & You 👋', 'En 1 minute, voici l’essentiel. Vous pourrez revoir ce tutoriel à tout moment dans Mon compte › Aide.'),
+    S('Bienvenue sur Artesa 👋', 'En 1 minute, voici l’essentiel. Vous pourrez revoir ce tutoriel à tout moment dans Mon compte › Aide.'),
     S('Votre barre de recherche', 'Cherchez un client, un devis, un rendez-vous ou une action (« nouveau devis »). Le micro permet de dicter.', '.searchrow'),
     S('Clients', 'Toutes vos fiches clients, particuliers et professionnels, avec leurs chantiers, devis et factures.', 'a[href="/pro/clients"]'),
     S('Planning', 'Vos rendez-vous et chantiers. Les demandes des particuliers arrivent ici « À valider ».', 'a[href="/pro/planning"]'),
@@ -20,7 +20,7 @@ export const TOURS = {
     S('C’est parti !', 'Commencez par compléter votre entreprise et votre logo, puis créez votre premier client.'),
   ],
   'welcome-client': [
-    S('Bienvenue sur Artis & You 👋', 'Trouvez un artisan, prenez rendez-vous et retrouvez tous vos documents au même endroit.'),
+    S('Bienvenue sur Artesa 👋', 'Trouvez un artisan, prenez rendez-vous et retrouvez tous vos documents au même endroit.'),
     S('Trouver un artisan', 'Cherchez par métier ou par ville, consultez les avis et demandez un rendez-vous en ligne.', '.searchrow, .search'),
     S('Mes rendez-vous', 'Suivez vos demandes et vos rendez-vous confirmés, déplacez-les ou annulez-les.', 'a[href="/client/rdv"]'),
     S('Messages', 'Discutez directement avec vos artisans, envoyez des photos.', 'a[href="/client/messages"]'),

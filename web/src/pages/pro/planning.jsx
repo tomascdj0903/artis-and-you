@@ -10,7 +10,7 @@ import { icsFile, rrule } from '../../lib/ics.js';
 import { TopBar, SearchBar, KV, Sec, Sheet, Field, Chips, Seg, Toggle, SettingToggle, useData, Loader, Empty, StatusPill, Img, Modal, Lightbox, Pill } from '../../ui/index.jsx';
 
 export const DEFAULT_DURATIONS = { Diagnostic: 60, 'Dépannage': 90, Devis: 60, Entretien: 60, Chantier: 240 };
-const PALETTE = ['#00123B', '#7F1111', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
+const PALETTE = ['#2B1F1C', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
 const hashColor = (s = '') => PALETTE[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % PALETTE.length];
 export const planSettings = (company) => ({ view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true, ...(company?.settings?.planning || {}), durations: { ...DEFAULT_DURATIONS, ...(company?.settings?.planning?.durations || {}) }, offered: company?.settings?.planning?.offered || APPT_TYPES.filter((x) => x !== 'Diagnostic') });
 // Nombre de colonnes de la semaine : jusqu'au dernier jour travaillé (le dimanche s'affiche s'il est coché)
@@ -68,7 +68,7 @@ export function Planning() {
     setUndo({ a, prev, label: `${dateShort(start)} ${hm(start)}` }); reload();
     setTimeout(() => setUndo((u) => (u && u.a.id === a.id ? null : u)), 8000);
   };
-  const color = (a) => (a.personal ? '#8A90A0' : s.colorBy === 'client' ? hashColor(a.client_id || a.title) : tm[a.team_id]?.color || '#00123B');
+  const color = (a) => (a.personal ? '#8A90A0' : s.colorBy === 'client' ? hashColor(a.client_id || a.title) : tm[a.team_id]?.color || '#2B1F1C');
   const all = data ? expandAppointments(data.appts, range[0], range[1]) : [];
   const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const match = (a) => { const c = data?.cm[a.client_id]; const hay = nz([a.title, a.type, clientName(c), c?.company_name, c?.last_name, c?.first_name, a.address, a.contact_name, a.notes, dateShort(a.start_at)].join(' ')); return nz(q).trim().split(/\s+/).every((w) => hay.includes(w)); };
@@ -529,13 +529,13 @@ function AgendaSync({ open, onClose }) {
   const copy = () => { navigator.clipboard?.writeText(feed); toast(t('Lien copié')); };
   return (
     <Sheet open onClose={onClose} title={t('Relier mon agenda')}>
-      <p className="small">{t('Votre planning Artis & You apparaît dans votre agenda habituel et se met à jour tout seul (toutes les 15 min à quelques heures selon l’application). Les modifications se font dans Artis & You.')}</p>
+      <p className="small">{t('Votre planning Artesa apparaît dans votre agenda habituel et se met à jour tout seul (toutes les 15 min à quelques heures selon l’application). Les modifications se font dans Artesa.')}</p>
       {OFFLINE ? <div className="notice small">{t('Disponible quand l’application sera en ligne (serveur Supabase). En attendant, utilisez « Exporter mon planning (.ics) ».')}</div> : !tok ? <Loader /> : <>
         <div className="card soft small" style={{ wordBreak: 'break-all', fontFamily: 'ui-monospace, monospace' }}>{feed}</div>
         <div className="row" style={{ gap: 8, margin: '8px 0 14px', flexWrap: 'wrap' }}>
           <button className="btn sm" onClick={copy}>{t('Copier le lien')}</button>
           <a className="btn sm ghost" href={'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(webcal)} target="_blank" rel="noreferrer">Google Agenda ↗</a>
-          <a className="btn sm ghost" href={'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(feed) + '&name=Artis%20%26%20You'} target="_blank" rel="noreferrer">Outlook ↗</a>
+          <a className="btn sm ghost" href={'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(feed) + '&name=Artesa'} target="_blank" rel="noreferrer">Outlook ↗</a>
           <a className="btn sm ghost" href={webcal}>{t('iPhone / Mac')}</a>
         </div>
         <ol className="small" style={{ paddingLeft: 18, margin: 0 }}>

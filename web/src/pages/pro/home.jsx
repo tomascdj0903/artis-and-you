@@ -2,14 +2,28 @@ import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useEffect, useState } from 'react';
 import { checkVaultReminders } from './files.jsx';
 import { dueReminders, autoReminders } from '../../lib/relances.js';
-import { LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
+import { LuHandshake, LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { api } from '../../lib/api.js';
 import { TopBar, SearchBar, useData, Loader, Sec, Empty, StatusPill } from '../../ui/index.jsx';
 import { clientName, money, date, dateShort, hm } from '../../lib/format.js';
-import { statusPill, kindLabel, apptStatus } from '../../lib/docs.js';
+import { statusPill, kindLabel, apptStatus, effectiveStatus } from '../../lib/docs.js';
+
+const tileSub = (to, st, unread) => {
+  if (!st) return null;
+  const n = (k, one, many) => (k === 1 ? t(one) : t(many, { n: k }));
+  switch (to) {
+    case '/pro/clients': return [n(st.clients, '1 fiche client', '{n} fiches clients')];
+    case '/pro/planning': return [st.today ? n(st.today, '1 RDV aujourd’hui', '{n} RDV aujourd’hui') : t('Aucun RDV aujourd’hui')];
+    case '/pro/documents': return st.late ? ['! ' + n(st.late, '1 facture en retard', '{n} factures en retard'), true] : [st.pending ? n(st.pending, '1 devis en attente', '{n} devis en attente') : t('Devis et factures')];
+    case '/pro/crm': return [t('Suivi et chiffres')];
+    case '/pro/messages': return [unread.messages ? n(unread.messages, '1 message non lu', '{n} messages non lus') : t('Clients et équipe')];
+    case '/pro/reseau': return [st.net ? n(st.net, '1 pro dans mon réseau', '{n} pros dans mon réseau') : t('Trouver des pros')];
+    default: return null;
+  }
+};
 
 export function Home() {
   const { company, can, profile } = useApp();
@@ -33,6 +47,22 @@ export function Home() {
     })();
   }, [company.id]);
   const [q, setQ] = useState('');
+  // Chiffres de l'accueil : RDV du jour, devis en attente, CA du mois, compteurs des tuiles
+  const [st] = useData(async () => {
+    const d0 = new Date(); d0.setHours(0, 0, 0, 0); const d1 = new Date(d0); d1.setDate(d1.getDate() + 1);
+    const m0 = new Date(d0.getFullYear(), d0.getMonth(), 1).toISOString().slice(0, 10);
+    const [ap, docs, cl, net] = await Promise.all([
+      can('planning') ? api.select('appointments', { company_id: company.id }) : [],
+      can('devis') || can('kpi') ? api.select('documents', { company_id: company.id }) : [],
+      can('clients') ? api.select('clients', { company_id: company.id }, { columns: 'id' }) : [],
+      api.select('network', { company_id: company.id }).catch(() => []),
+    ]);
+    const today = ap.filter((a) => ['valide', 'a_valider'].includes(a.status) && new Date(a.start_at) >= d0 && new Date(a.start_at) < d1).length;
+    const pending = docs.filter((d) => d.kind === 'devis' && d.number && effectiveStatus(d) === 'envoye').length;
+    const late = docs.filter((d) => ['facture', 'acompte'].includes(d.kind) && effectiveStatus(d) === 'retard').length;
+    const ca = docs.filter((d) => d.number && (d.issue_date || '') >= m0 && ['facture', 'acompte', 'avoir'].includes(d.kind)).reduce((s, d) => s + (d.kind === 'avoir' ? -1 : 1) * Number(d.totals?.ht || 0), 0);
+    return { today, pending, late, ca, clients: cl.length, net: net.length };
+  }, [unread.rdv]);
   const days = company?.trial_ends_at ? Math.ceil((new Date(company.trial_ends_at) - new Date()) / 864e5) : null;
   const tiles = [
     ['/pro/clients', LuUsers, 'Clients', can('clients')], ['/pro/planning', LuCalendar, 'Planning', can('planning')],
@@ -42,14 +72,32 @@ export function Home() {
   return (
     <div className="content">
       <TopBar back={false} home />
-      <h1 className="hide-mob" style={{ fontSize: 28, marginBottom: 4 }}>{t('Bonjour {n}', { n: profile.first_name })} <span className="muted" style={{ fontSize: 18, fontWeight: 600 }}>· {company?.name}</span></h1>
-      <SmartSearch />
+      <section className="home-band">
+        <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{company?.trade_name || company?.name}</b></div>
+        <SmartSearch />
+        {st && <div className="hb-kpis">
+          {can('planning') && <Link to="/pro/planning" className="hb-kpi"><b>{st.today}</b><span>{t('RDV aujourd’hui')}</span></Link>}
+          {can('devis') && <Link to="/pro/documents/devis" className="hb-kpi"><b>{st.pending}</b><span>{t('devis en attente')}</span></Link>}
+          {can('kpi') && <Link to="/pro/crm/kpi" className="hb-kpi"><b>{money(st.ca).replace(/,00\s?€/, ' €')}</b><span>{t('CA HT du mois')}</span></Link>}
+        </div>}
+      </section>
+      <div className="htiles">
+        {tiles.map(([to, I, l]) => { const sub = tileSub(to, st, unread); return (
+          <Link key={to} to={to} className="htile">
+            <span className="ht-ic"><I /></span>
+            <b>{t(l)}</b>
+            {sub && <small className={sub[1] ? 'warn' : ''}>{sub[0]}</small>}
+            {to === '/pro/messages' && unread.messages > 0 && <span className="dot">{unread.messages}</span>}
+            {to === '/pro/planning' && unread.rdv > 0 && <span className="dot">{unread.rdv}</span>}
+          </Link>
+        ); })}
+      </div>
       {company && (company.verification_status || (company.verified ? 'approved' : 'pending')) !== 'approved' && (
         <Link to="/pro/compte/entreprise" className="alert" style={{ color: 'inherit' }}>
           <LuShieldAlert className="red-t" size={28} style={{ flexShrink: 0 }} />
           <div>{company.verification_status === 'rejected'
-            ? <><b>{t('Votre inscription est à compléter')}</b><div className="small">{company.verification_note || t('L’équipe Artis & You a besoin d’informations supplémentaires.')}</div></>
-            : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artis & You vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
+            ? <><b>{t('Votre inscription est à compléter')}</b><div className="small">{company.verification_note || t('L’équipe Artesa a besoin d’informations supplémentaires.')}</div></>
+            : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artesa vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
         </Link>
       )}
  {reqs?.length > 0 && (
@@ -65,9 +113,6 @@ export function Home() {
         <Link to="/pro/compte/abonnement" className="notice">⏳ <span>{t('Essai gratuit : encore {n} jours. Choisir ma formule', { n: days })} →</span></Link>
       )}
       {company?.referral_code && <ReferralCard code={company.referral_code} />}
-      <div className="tiles home">
-        {tiles.map(([to, I, l]) => <button key={to} className="tile" style={{ position: 'relative' }} onClick={() => navigate(to)}><I />{t(l)}{to === '/pro/planning' && unread.rdv > 0 && <span className="dot" style={{ position: 'absolute', top: 10, right: 12 }}>{unread.rdv}</span>}{to === '/pro/messages' && unread.messages > 0 && <span className="dot" style={{ position: 'absolute', top: 10, right: 12 }}>{unread.messages}</span>}</button>)}
-      </div>
       <div className="row" style={{ justifyContent: 'flex-end', marginTop: 40 }}><Link to="/mentions-legales" className="bold">{t('Mentions légales')}</Link></div>
     </div>
   );
@@ -116,9 +161,9 @@ export function ReferralCard({ code }) {
   const [hide, setHide] = useState(() => { try { return localStorage.getItem('ay-ref-hide') === code; } catch { return false; } });
   if (hide) return null;
   const url = `${location.origin}/inscription/artisan?parrain=${encodeURIComponent(code)}`;
-  const msg = t('Je gère mes devis, factures et rendez-vous avec Artis & You. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.', { c: code });
+  const msg = t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.', { c: code });
   const share = async () => {
-    try { if (navigator.share) { await navigator.share({ title: 'Artis & You', text: msg, url }); return; } } catch { return; }
+    try { if (navigator.share) { await navigator.share({ title: 'Artesa', text: msg, url }); return; } } catch { return; }
     try { await navigator.clipboard.writeText(msg + ' ' + url); toast(t('Lien de parrainage copié')); } catch {}
   };
   return (

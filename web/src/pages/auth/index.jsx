@@ -6,7 +6,7 @@ import { AddressFields } from '../../ui/address.jsx';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t, LANGS, getLang } from '../../lib/i18n.js';
-import { Field, Chips } from '../../ui/index.jsx';
+import { Field, Chips, Wordmark } from '../../ui/index.jsx';
 import { TRADES, LEGAL_FORMS } from '../../lib/docs.js';
 
 function AuthLayout({ children, art = true }) {
@@ -15,7 +15,7 @@ function AuthLayout({ children, art = true }) {
     <div className={'auth' + (art ? ' split' : '')}>
       {art && (
         <div className="auth-art">
-          <img src="/logo.svg" alt="" style={{ width: 84 }} />
+          <Wordmark size={56} light />
           <h2>{t('Les artisans')} <b>&amp;</b> {t('leurs clients, enfin au même endroit.')}</h2>
           <p>{t('Clients, planning, devis, factures, messages et réseau de pros pour l’artisan. Recherche d’artisans, rendez-vous, suivi de chantier et documents pour le particulier.')}</p>
           <ul><li>{t('Devis et factures conformes')}</li><li>{t('Prise de rendez-vous en ligne')}</li><li>{t('Messagerie client et équipe')}</li><li>{t('Coffre-fort de documents')}</li></ul>
@@ -58,7 +58,7 @@ export function Login() {
   if (mfa) return (
     <AuthLayout>
       <form onSubmit={submitCode} style={{ display: 'grid', gap: 14 }}>
-        <img className="auth-logo" src="/logo.svg" alt="Artis & You" />
+        <Wordmark size={64} style={{ margin: '8px auto 6px' }} />
         <h1 className="center" style={{ fontSize: 24, margin: 0 }}>{t('Double authentification')}</h1>
         <p className="center muted" style={{ margin: 0 }}>{t('Saisissez le code à 6 chiffres affiché dans votre application d’authentification.')}</p>
         <input className="pillinput center" style={{ fontSize: 26, letterSpacing: 8, fontWeight: 800 }} inputMode="numeric" autoComplete="one-time-code" maxLength={7} autoFocus value={code} onChange={(e) => setCode(e.target.value.replace(/[^\d ]/g, ''))} aria-label={t('Code')} placeholder="000000" />
@@ -72,7 +72,7 @@ export function Login() {
   return (
     <AuthLayout>
       <form onSubmit={submit} style={{ display: 'grid', gap: 14 }}>
-        <img className="auth-logo" src="/logo.svg" alt="Artis & You" />
+        <Wordmark size={64} style={{ margin: '8px auto 6px' }} />
         <input className="pillinput" type="email" autoComplete="email" placeholder={t('E-mail')} value={email} onChange={(e) => setEmail(e.target.value)} required aria-label={t('E-mail')} />
         <input className="pillinput" type="password" autoComplete="current-password" placeholder={t('Mot de passe')} value={pw} onChange={(e) => setPw(e.target.value)} required aria-label={t('Mot de passe')} />
         <Link to="/mot-de-passe-oublie" className="center bold">{t('Mot de passe oublié')}</Link>
@@ -89,7 +89,7 @@ export function Login() {
 export function SignupChoice() {
   return (
     <AuthLayout>
-      <img className="auth-logo" src="/logo.svg" alt="" style={{ width: 110, height: 110 }} />
+      <Wordmark size={64} style={{ margin: '8px auto 6px' }} />
       <h1 className="center" style={{ fontSize: 26 }}>{t('Créer mon compte')}</h1>
       <p className="center muted">{t('Vous êtes…')}</p>
       <button className="opt red" onClick={() => navigate('/inscription/artisan')}><LuHammer /><div><b>{t('Artisan ou entreprise')}</b><small>{t('Gérer mes clients, mon planning, mes devis et factures. 30 jours d’essai.')}</small></div></button>
@@ -286,7 +286,7 @@ export function SignupPro() {
                   <Chips multi options={list.map((x) => [x, t(x)])} value={c.trades} onChange={(trades) => setC({ ...c, trades })} /></div>
               ))}
               <Field label={t('Code de parrainage')} hint={t('facultatif — 1 mois offert')}><input value={c.referral} onChange={(e) => setC({ ...c, referral: e.target.value.toUpperCase() })} /></Field>
-              <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artis & You (SIRET, informations légales) avant d’être visible des clients.')}</p>
+              <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artesa (SIRET, informations légales) avant d’être visible des clients.')}</p>
             </>
           )}
           {err && <div className="error">{err}</div>}

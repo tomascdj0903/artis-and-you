@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { LuMonitor, LuApple, LuDownload, LuArrowLeft, LuRefreshCw, LuSmartphone, LuShare } from 'react-icons/lu';
 import { navigate } from '../../lib/router.jsx';
+import { Wordmark } from '../../ui/index.jsx';
 import { t } from '../../lib/i18n.js';
 import { GITHUB_REPO, APP_VERSION } from '../../lib/api.js';
 
@@ -19,11 +20,11 @@ export function Mentions() {
   return (
     <Page title={t('Mentions légales')}>
       <h3>{t('Éditeur')}</h3>
-      <p>Artis &amp; You — [{t('forme juridique, capital, adresse du siège, RCS, SIRET à compléter')}]<br />{t('Directeur de la publication')} : [{t('à compléter')}]<br />{t('Contact')} : support@artisandyou.fr</p>
+      <p>Artesa — [{t('forme juridique, capital, adresse du siège, RCS, SIRET à compléter')}]<br />{t('Directeur de la publication')} : [{t('à compléter')}]<br />{t('Contact')} : support@artisandyou.fr</p>
       <h3>{t('Hébergement')}</h3>
       <p>{t('Application web')} : Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, {t('États-Unis')}.<br />{t('Données')} : Supabase ({t('serveurs situés dans l’Union européenne, région Paris')}).</p>
       <h3>{t('Propriété intellectuelle')}</h3>
-      <p>{t('La marque, le logo et l’interface Artis & You sont protégés. Toute reproduction sans autorisation est interdite.')}</p>
+      <p>{t('La marque, le logo et l’interface Artesa sont protégés. Toute reproduction sans autorisation est interdite.')}</p>
     </Page>
   );
 }
@@ -31,11 +32,11 @@ export function Mentions() {
 export function CGU() {
   return (
     <Page title={t("Conditions générales d'utilisation")}>
-      <h3>1. {t('Objet')}</h3><p>{t('Artis & You met en relation des artisans et des particuliers, et fournit aux artisans des outils de gestion (clients, planning, devis, factures, messagerie).')}</p>
-      <h3>2. {t('Comptes')}</h3><p>{t('Le compte particulier est gratuit. Le compte artisan est payant après une période d’essai de 30 jours. L’artisan déclare un SIRET valide, vérifié par Artis & You.')}</p>
-      <h3>3. {t('Responsabilités')}</h3><p>{t('L’artisan reste seul responsable de ses devis, factures, prestations et du respect de ses obligations légales et fiscales. Artis & You n’est pas partie aux contrats conclus entre artisans et particuliers.')}</p>
+      <h3>1. {t('Objet')}</h3><p>{t('Artesa met en relation des artisans et des particuliers, et fournit aux artisans des outils de gestion (clients, planning, devis, factures, messagerie).')}</p>
+      <h3>2. {t('Comptes')}</h3><p>{t('Le compte particulier est gratuit. Le compte artisan est payant après une période d’essai de 30 jours. L’artisan déclare un SIRET valide, vérifié par Artesa.')}</p>
+      <h3>3. {t('Responsabilités')}</h3><p>{t('L’artisan reste seul responsable de ses devis, factures, prestations et du respect de ses obligations légales et fiscales. Artesa n’est pas partie aux contrats conclus entre artisans et particuliers.')}</p>
       <h3>4. {t('Avis')}</h3><p>{t('Seuls les clients ayant eu un rendez-vous peuvent publier un avis. Les avis sont relus avant publication et peuvent être refusés s’ils sont injurieux ou hors sujet.')}</p>
-      <h3>5. {t('Paiements')}</h3><p>{t('Les paiements des factures sont versés directement à l’artisan. Artis & You ne prélève aucune commission sur ces paiements.')}</p>
+      <h3>5. {t('Paiements')}</h3><p>{t('Les paiements des factures sont versés directement à l’artisan. Artesa ne prélève aucune commission sur ces paiements.')}</p>
       <h3>6. {t('Résiliation')}</h3><p>{t('Chaque utilisateur peut supprimer son compte à tout moment depuis Données et confidentialité.')}</p>
     </Page>
   );
@@ -69,8 +70,8 @@ export function Download() {
     <div className="auth">
       <div className="auth-box" style={{ maxWidth: 600 }}>
         <button className="iconbtn" onClick={() => (history.length > 1 ? navigate(-1) : navigate('/'))} aria-label={t('Retour')}><LuArrowLeft /></button>
-        <img className="auth-logo" src="/logo.svg" alt="Artis & You" style={{ width: 100, height: 100 }} />
-        <h1 className="center" style={{ fontSize: 28 }}>{t('Installer Artis & You')}</h1>
+        <Wordmark size={60} style={{ margin: '0 auto' }} />
+        <h1 className="center" style={{ fontSize: 28 }}>{t('Installer Artesa')}</h1>
         <div className="seg" style={{ margin: '6px 0 14px' }}>{[['pc', t('Ordinateur')], ['tel', t('Téléphone et tablette')]].map(([v, l]) => <button key={v} className={tab === v ? 'on' : ''} onClick={() => setTab(v)}>{l}</button>)}</div>
         {tab === 'pc' ? <>
           <p className="center muted">{t('Le logiciel s’ouvre dans sa propre fenêtre, avec son icône, et se met à jour tout seul. Une connexion internet est nécessaire.')}</p>
@@ -80,8 +81,8 @@ export function Download() {
           <p className="small faint">{t('Au premier lancement sur Windows, si SmartScreen s’affiche, cliquez sur « Informations complémentaires » puis « Exécuter quand même » (le logiciel n’est pas encore signé). Sur Mac : clic droit sur l’application puis « Ouvrir ».')}</p>
           {canInstall && <button className="opt" onClick={install}><LuMonitor /><div><b>{t('Ou installer la version web')}</b><small>{t('Sans téléchargement, depuis ce navigateur (Chrome, Edge)')}</small></div></button>}
         </> : <>
-          <p className="center muted">{t('Ajoutez Artis & You sur l’écran d’accueil : l’application s’ouvre en plein écran avec son icône, comme une vraie application, et elle est toujours à jour.')}</p>
-          {installed ? <div className="notice">✅ {t('Artis & You est installée sur cet appareil.')}</div> : <>
+          <p className="center muted">{t('Ajoutez Artesa sur l’écran d’accueil : l’application s’ouvre en plein écran avec son icône, comme une vraie application, et elle est toujours à jour.')}</p>
+          {installed ? <div className="notice">✅ {t('Artesa est installée sur cet appareil.')}</div> : <>
             <div className={'card' + (isAndroid() ? '' : ' soft')} style={{ marginBottom: 12 }}>
               <div className="row" style={{ gap: 10 }}><LuSmartphone size={26} className="red-t" /><b style={{ fontSize: 17 }}>Android</b></div>
               {canInstall ? <button className="btn block mt" onClick={install}><LuDownload /> {t('Installer l’application')}</button> : (

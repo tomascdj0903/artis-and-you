@@ -235,7 +235,7 @@ export function Export() {
   if (!b) return <div className="content"><TopBar title={t('Export comptable')} /><Loader /></div>;
   const sgn = (d) => (d.kind === 'avoir' ? -1 : 1);
   const ventes = b.inv.map((d) => [d.issue_date, d.number, kindLabel(d.kind), clientName(b.cm[d.client_id]), d.object, sgn(d) * Number(d.totals?.ht || 0), sgn(d) * Number(d.totals?.tva || 0), sgn(d) * Number(d.totals?.ttc || 0), (d.totals?.vat || []).map((v) => v.rate + '%').join(' ')]);
-  const enc = b.pays.map((p) => [p.paid_on, b.dm[p.document_id]?.number || '', clientName(b.cm[b.dm[p.document_id]?.client_id]), t(p.method), p.via_platform ? 'Artis & You' : t('Manuel'), Number(p.amount)]);
+  const enc = b.pays.map((p) => [p.paid_on, b.dm[p.document_id]?.number || '', clientName(b.cm[b.dm[p.document_id]?.client_id]), t(p.method), p.via_platform ? 'Artesa' : t('Manuel'), Number(p.amount)]);
   const achats = b.purchases.map((p) => [p.date, p.supplier, p.label, Number(p.amount_ht), Number(p.vat), Number(p.amount_ht) + Number(p.vat)]);
   const vatRates = {};
   b.inv.forEach((d) => (d.totals?.vat || []).forEach((v) => { vatRates[v.rate] = vatRates[v.rate] || { base: 0, tva: 0 }; vatRates[v.rate].base += sgn(d) * v.base; vatRates[v.rate].tva += sgn(d) * v.amount; }));

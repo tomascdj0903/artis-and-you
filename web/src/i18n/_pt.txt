@@ -24,7 +24,7 @@
 23|Atividade
 24|Atual
 25|Administração
-26|Administração Artis & You
+26|Administração Artesa
 27|Morada
 28|Morada da intervenção
 29|Morada de faturação
@@ -83,8 +83,8 @@
 82|Chegada prevista por volta das {h} para: {o}.
 83|Artigo
 84|Artigos · {n}
-85|A Artis & You põe em contacto profissionais e particulares, e oferece aos profissionais ferramentas de gestão (clientes, agenda, orçamentos, faturas, mensagens).
-86|Artis & You no seu computador
+85|A Artesa põe em contacto profissionais e particulares, e oferece aos profissionais ferramentas de gestão (clientes, agenda, orçamentos, faturas, mensagens).
+86|Artesa no seu computador
 87|Profissional
 88|Profissional ou empresa
 89|Profissionais
@@ -162,12 +162,12 @@
 161|Aprovado
 162|Olá {n}
 163|Olá {n},\n\nEm anexo, a exportação contabilística de {p} (vendas, recebimentos, compras, IVA).\n\nCom os melhores cumprimentos,\n{c}
-164|Olá,\n\nPara falar connosco, receber os seus orçamentos e faturas e acompanhar a sua obra, crie a sua conta gratuita na Artis & You com este e-mail:\n{url}\n\nAté breve,\n{c}
-165|Olá,\n\nEm anexo, o nosso orçamento {n} para: {o}.\n\nTambém o pode consultar e assinar no seu espaço Artis & You: {u}\n\nCom os melhores cumprimentos,\n{c}
-166|Olá,\n\nEm anexo, a nossa fatura {n} para: {o}.\n\nPode pagá-la por transferência (IBAN na fatura) ou online no seu espaço Artis & You: {u}\n\nCom os melhores cumprimentos,\n{c}
+164|Olá,\n\nPara falar connosco, receber os seus orçamentos e faturas e acompanhar a sua obra, crie a sua conta gratuita na Artesa com este e-mail:\n{url}\n\nAté breve,\n{c}
+165|Olá,\n\nEm anexo, o nosso orçamento {n} para: {o}.\n\nTambém o pode consultar e assinar no seu espaço Artesa: {u}\n\nCom os melhores cumprimentos,\n{c}
+166|Olá,\n\nEm anexo, a nossa fatura {n} para: {o}.\n\nPode pagá-la por transferência (IBAN na fatura) ou online no seu espaço Artesa: {u}\n\nCom os melhores cumprimentos,\n{c}
 167|Olá, venho relembrar o orçamento {n} ({m}). Não hesite se tiver dúvidas.
-168|Olá, quero apagar a minha conta Artis & You ({e}).
-169|Olá, convido-o a juntar-se a mim na Artis & You para trocarmos sobre as nossas obras. Com o meu código {c}, tem 1 mês grátis: {u}
+168|Olá, quero apagar a minha conta Artesa ({e}).
+169|Olá, convido-o a juntar-se a mim na Artesa para trocarmos sobre as nossas obras. Com o meu código {c}, tem 1 mês grátis: {u}
 170|Olá, salvo erro, a fatura {n} ({m}) continua por pagar. Obrigado desde já.
 171|Rascunho
 172|Rascunho guardado
@@ -181,11 +181,11 @@
 180|Capital social
 181|Cartão bancário
 182|Cartão e débito direto SEPA
-183|Cartão ou débito direto via Artis & You
-184|Cartão ou débito direto pelo link Artis & You
+183|Cartão ou débito direto via Artesa
+184|Cartão ou débito direto pelo link Artesa
 185|Cartões BTP
 186|Este cliente tem documentos emitidos: passe-o para « Inativo » em vez de o apagar.
-187|Este cliente ainda não tem conta Artis & You: não verá estas mensagens.
+187|Este cliente ainda não tem conta Artesa: não verá estas mensagens.
 188|O que recebo
 189|O que os profissionais veem
 190|Certificação
@@ -195,7 +195,7 @@
 194|Estas informações ajudam o profissional a preparar a intervenção (IVA reduzido se a habitação tiver mais de 2 anos).
 195|Esta ação é definitiva.
 196|Esta fatura foi emitida: já não pode ser alterada. Crie uma nota de crédito.
-197|Esta funcionalidade chega muito em breve à Artis & You.
+197|Esta funcionalidade chega muito em breve à Artesa.
 198|Esta página não existe.
 199|Mudar a foto
 200|Obra
@@ -244,7 +244,7 @@
 243|Entendido
 244|Contabilista guardado
 245|Conta
-246|Conta Artis & You
+246|Conta Artesa
 247|Contas
 248|Condições
 249|Condições de pagamento
@@ -388,9 +388,9 @@
 387|Enviar por e-mail
 388|Enviar para assinatura eletrónica
 389|Enviar uma mensagem
-390|Enviar via Artis & You
+390|Enviar via Artesa
 391|Enviar ao meu contabilista
-392|Enviado para o espaço Artis & You do cliente
+392|Enviado para o espaço Artesa do cliente
 393|Enviadas pelo cliente
 394|Desconto de pronto pagamento
 395|Numerário
@@ -460,7 +460,7 @@
 459|IBAN
 460|Identidade
 461|Identidade, contactos, morada da habitação, mensagens, fotos e documentos trocados, marcações, orçamentos e faturas.
-462|Ainda não está na Artis & You?
+462|Ainda não está na Artesa?
 463|Ele avisa quando estiver a caminho
 464|Imprimir
 465|Inativo
@@ -476,7 +476,7 @@
 475|Intervenções
 476|Título
 477|Integrações
-478|Convite Artis & You
+478|Convite Artesa
 479|Convites pendentes
 480|Convidar para uma obra
 481|Convidar um membro
@@ -496,9 +496,9 @@
 495|A hora de fim deve ser depois da hora de início.
 496|A cor é usada na agenda
 497|A autenticação de dois fatores
-498|A fatura eletrónica via Artis & You
+498|A fatura eletrónica via Artesa
 499|A linha telefónica
-500|A marca, o logótipo e a interface Artis & You estão protegidos. É proibida qualquer reprodução sem autorização.
+500|A marca, o logótipo e a interface Artesa estão protegidos. É proibida qualquer reprodução sem autorização.
 501|A assinatura eletrónica
 502|A sincronização Google Calendar / Outlook
 503|Abrir o itinerário
@@ -508,7 +508,7 @@
 507|O SIRET deve ter 14 dígitos válidos.
 508|O chat com o suporte
 509|O cliente será avisado.
-510|A conta de particular é gratuita. A conta de profissional é paga após 30 dias de teste. O profissional declara um SIRET válido, verificado pela Artis & You.
+510|A conta de particular é gratuita. A conta de profissional é paga após 30 dias de teste. O profissional declara um SIRET válido, verificado pela Artesa.
 511|O orçamento recebe o número definitivo no envio.
 512|A habitação
 513|O software abre na sua própria janela, com o seu ícone, e atualiza-se sozinho. É necessária ligação à internet.
@@ -518,10 +518,10 @@
 517|Os profissionais
 518|Os profissionais com quem trabalha aparecerão aqui.
 519|Os certificados e garantias partilhados pelos seus profissionais aparecerão aqui.
-520|As avaliações são verificadas (só após uma marcação real) e revistas pela Artis & You antes da publicação.
+520|As avaliações são verificadas (só após uma marcação real) e revistas pela Artesa antes da publicação.
 521|Os envios automáticos por e-mail e SMS chegam em breve.
 522|As faturas da subscrição
-523|Os pagamentos das faturas vão diretamente para o profissional. A Artis & You não cobra comissão.
+523|Os pagamentos das faturas vão diretamente para o profissional. A Artesa não cobra comissão.
 524|Os tutoriais em vídeo
 525|Descrição
 526|Link do WhatsApp enviado ao cliente
@@ -537,7 +537,7 @@
 536|Logótipo da empresa
 537|Logótipo guardado
 538|Seg
-539|O profissional é o único responsável pelos seus orçamentos, faturas, prestações e pelo cumprimento das obrigações legais e fiscais. A Artis & You não é parte nos contratos entre profissionais e particulares.
+539|O profissional é o único responsável pelos seus orçamentos, faturas, prestações e pelo cumprimento das obrigações legais e fiscais. A Artesa não é parte nos contratos entre profissionais e particulares.
 540|O profissional será avisado.
 541|Convidá-lo por e-mail
 542|A minha biblioteca
@@ -574,7 +574,7 @@
 573|Os meus orçamentos
 574|Os meus documentos
 575|As minhas faturas
-576|As minhas faturas Artis & You
+576|As minhas faturas Artesa
 577|Os meus convidados
 578|As minhas mensagens
 579|As minhas notificações
@@ -838,8 +838,8 @@
 837|Recusado
 838|Recusado em {d}
 839|Recusados
-840|Junte-se à {c} na Artis & You: crie a sua conta em {u} e escolha « Juntar-me a uma equipa » com o código {k}.
-841|Junte-se a mim na Artis & You
+840|Junte-se à {c} na Artesa: crie a sua conta em {u} e escolha « Juntar-me a uma equipa » com o código {k}.
+841|Junte-se a mim na Artesa
 842|Entrar na videochamada no WhatsApp
 843|Juntar-me à equipa
 844|Juntar-me a uma equipa
@@ -916,7 +916,7 @@
 915|Estado dos projetos
 916|Estado do projeto atualizado
 917|Seguinte
-918|Acompanhe a sua obra na Artis & You
+918|Acompanhe a sua obra na Artesa
 919|Acompanhamento da obra
 920|Suporte
 921|Eliminação da minha conta
@@ -1013,7 +1013,7 @@
 1012|Sex
 1013|Versão
 1014|Versão web
-1015|Via Artis & You
+1015|Via Artesa
 1016|Pela aplicação, com código SMS
 1017|Cidade
 1018|Cidade e raio
@@ -1021,7 +1021,7 @@
 1020|Transferência
 1021|Transferência SEPA
 1022|Visibilidade
-1023|Visível no espaço Artis & You deles
+1023|Visível no espaço Artesa deles
 1024|Visível no meu perfil público (trabalhos)
 1025|Visível quando criar a conta
 1026|Visível pelos particulares
@@ -1041,7 +1041,7 @@
 1040|Os seus dados só são partilhados com os profissionais que contacta e com os nossos subcontratados técnicos (alojamento). Nunca são vendidos.
 1041|Os seus direitos
 1042|As suas profissões
-1043|O seu SIRET está a ser verificado pela equipa Artis & You.
+1043|O seu SIRET está a ser verificado pela equipa Artesa.
 1044|O seu profissional
 1045|A sua necessidade
 1046|A sua biblioteca está vazia. Adicione produtos em CRM → A minha biblioteca.
@@ -1136,11 +1136,11 @@
 1147|{n} fotos adicionadas
 1148|{n} projetos em curso
 1149|{n} profissionais
-1150|{n} profissionais encontrados na Artis & You
+1150|{n} profissionais encontrados na Artesa
 1151|{n} será avisado da sua chegada.
 1152|{n} selecionados
 1153|{n} futuras
-1154|{x} chega muito em breve à Artis & You.
+1154|{x} chega muito em breve à Artesa.
 1155|« {n} » adicionado
 1156|A adicionar
 1157|Em dia

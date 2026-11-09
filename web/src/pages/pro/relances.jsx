@@ -61,7 +61,7 @@ export function Relances() {
             <div className="row small" style={{ justifyContent: 'space-between', margin: '8px 0' }}><span><LuBellRing className="red-t" /> {t(r.step.title)}</span><b>{r.kind === 'devis' ? money(r.d.totals?.ttc) : t('{m} restant', { m: money(remaining(r.d)) })}</b></div>
             {(r.d.reminders || []).length > 0 && <div className="small faint">{t('Déjà relancé {n} fois · dernière le {d}', { n: r.d.reminders.length, d: date(r.d.reminders[r.d.reminders.length - 1].at) })}</div>}
             <div className="row" style={{ gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
-              <button className="btn sm" disabled={!c?.user_id} title={!c?.user_id ? t('Ce client n’a pas de compte Artis & You') : ''} onClick={() => open(r, 'app')}><LuSend /> {t('Messagerie')}</button>
+              <button className="btn sm" disabled={!c?.user_id} title={!c?.user_id ? t('Ce client n’a pas de compte Artesa') : ''} onClick={() => open(r, 'app')}><LuSend /> {t('Messagerie')}</button>
               <button className="btn sm ghost" onClick={() => open(r, 'email')}><LuMail /> {t('E-mail')}</button>
               <button className="btn sm ghost" onClick={() => pause(r.d, true)} title={t('Ne plus relancer ce document')}><LuPause /></button>
             </div>
@@ -77,14 +77,14 @@ export function Relances() {
       </>}
 
       {tab === 'history' && (history.length ? <div className="kv">{history.slice(0, 100).map((h, i) => (
-        <div className="r" key={i}><span className="k"><b className="click" onClick={() => navigate('/pro/documents/' + h.d.id)}>{h.d.number}</b> · {clientName(b.cm[h.d.client_id])}<small style={{ display: 'block' }}>{t(h.title)} · {h.channel === 'app' ? t('Messagerie Artis & You') : t('E-mail')}</small></span><span className="v small">{dateTime(h.at)}</span></div>
+        <div className="r" key={i}><span className="k"><b className="click" onClick={() => navigate('/pro/documents/' + h.d.id)}>{h.d.number}</b> · {clientName(b.cm[h.d.client_id])}<small style={{ display: 'block' }}>{t(h.title)} · {h.channel === 'app' ? t('Messagerie Artesa') : t('E-mail')}</small></span><span className="v small">{dateTime(h.at)}</span></div>
       ))}</div> : <Empty text={t('Aucune relance envoyée pour l’instant.')} />)}
 
       {tab === 'settings' && <ScenarioSettings company={company} setCompany={setCompany} run={run} toast={toast} />}
 
       <Sheet open={!!edit} onClose={() => setEdit(null)} title={edit ? t(edit.r.step.title) + ' · ' + edit.r.d.number : ''}>
         {edit && <>
-          <div className="small muted mb">{t('À')} : {clientName(b.cm[edit.r.d.client_id])} · {edit.channel === 'app' ? t('messagerie Artis & You') : (b.cm[edit.r.d.client_id]?.email || t('aucune adresse e-mail'))}</div>
+          <div className="small muted mb">{t('À')} : {clientName(b.cm[edit.r.d.client_id])} · {edit.channel === 'app' ? t('messagerie Artesa') : (b.cm[edit.r.d.client_id]?.email || t('aucune adresse e-mail'))}</div>
           <Field label={t('Message (modifiable)')}><textarea value={edit.text} onChange={(e) => setEdit({ ...edit, text: e.target.value })} style={{ minHeight: 220 }} /></Field>
           <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setEdit(null)}>{t('Annuler')}</button><button className="btn" onClick={send}>{edit.channel === 'app' ? <><LuSend /> {t('Envoyer')}</> : <><LuMail /> {t('Ouvrir l’e-mail')}</>}</button></div></div>
         </>}

@@ -6,7 +6,7 @@ import { t } from '../lib/i18n.js';
 export const SIG_FONTS = ['Dancing Script', 'Great Vibes', 'Allura', 'Sacramento', 'Caveat', 'Homemade Apple'];
 
 // Transforme le nom écrit dans la police choisie en image PNG (fond transparent)
-export async function textSignature(name, font, color = '#00123B') {
+export async function textSignature(name, font, color = '#2B1F1C') {
   try { await document.fonts.load(`64px "${font}"`); } catch {}
   const c = document.createElement('canvas'); const x = c.getContext('2d');
   x.font = `64px "${font}"`; const w = Math.ceil(x.measureText(name).width) + 40;
@@ -20,7 +20,7 @@ export function DrawPad({ value, onChange }) {
   useEffect(() => {
     const c = ref.current; const r = c.getBoundingClientRect(); const k = window.devicePixelRatio || 1;
     c.width = r.width * k; c.height = r.height * k; const x = c.getContext('2d'); x.scale(k, k);
-    x.lineWidth = 2.4; x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = '#00123B';
+    x.lineWidth = 2.4; x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = '#2B1F1C';
     if (value) { const im = new Image(); im.onload = () => x.drawImage(im, 0, 0, r.width, r.height); im.src = value; }
   }, []);
   const pos = (e) => { const r = ref.current.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };

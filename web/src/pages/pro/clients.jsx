@@ -65,7 +65,7 @@ export function Clients() {
     ...f.cities.map((x) => [x, { cities: f.cities.filter((y) => y !== x) }]), f.country && [t(f.country), { country: '' }],
     (f.period || f.from || f.to) && [f.period ? t(PERIODS.find((p) => p[0] === f.period)[1]) : `${f.from ? date(f.from) : '…'} → ${f.to ? date(f.to) : '…'}`, { period: '', from: '', to: '' }],
     (f.caMin !== '' || f.caMax !== '') && [`${t('CA')} ${f.caMin || 0} – ${f.caMax || '∞'} €`, { caMin: '', caMax: '' }], f.due && [t('Avec un montant dû'), { due: false }],
-    f.account && [f.account === 'oui' ? t('Avec compte Artis & You') : t('Sans compte Artis & You'), { account: '' }],
+    f.account && [f.account === 'oui' ? t('Avec compte Artesa') : t('Sans compte Artesa'), { account: '' }],
   ].filter(Boolean);
   return (
     <div className="content">
@@ -98,7 +98,7 @@ export function Clients() {
         <div className="small bold">{t('Chiffre d’affaires facturé (€ HT)')}</div>
         <div className="form-grid two"><Field label={t('Minimum')}><input type="number" min="0" value={f.caMin} onChange={(e) => setFilter({ ...f, caMin: e.target.value })} /></Field><Field label={t('Maximum')}><input type="number" min="0" value={f.caMax} onChange={(e) => setFilter({ ...f, caMax: e.target.value })} /></Field></div>
         <label className="check"><input type="checkbox" checked={f.due} onChange={(e) => setFilter({ ...f, due: e.target.checked })} />{t('Seulement les clients avec un montant dû')}</label>
-        <div className="small bold">{t('Compte Artis & You')}</div>
+        <div className="small bold">{t('Compte Artesa')}</div>
         <Chips options={[['', t('Tous')], ['oui', t('Avec compte')], ['non', t('Sans compte')]]} value={f.account} onChange={(account) => setFilter({ ...f, account })} />
         <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setFilter({ ...EMPTY_F, sort: f.sort })}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} clients', { n: list.length })}</button></div></div>
       </Sheet>
@@ -215,7 +215,7 @@ export function ClientCard({ params }) {
             [t('N° client'), c.number], [t('Type de client'), c.type === 'pro' ? t('Professionnel') : t('Particulier')], [t('Civilité'), c.civility], [t('Nom'), c.last_name], [t('Prénom'), c.first_name],
             c.type === 'pro' && [t('Raison sociale'), c.company_name], c.type === 'pro' && [t('Enseigne commerciale'), c.trade_name], c.type === 'pro' && [t('Forme juridique'), c.legal_form],
             [t('Statut client'), <Pill c={c.status === 'actif' ? 'green' : 'grey'}>{t({ actif: 'Actif', prospect: 'Prospect', inactif: 'Inactif' }[c.status])}</Pill>],
-            c.type === 'pro' && [t('Date de création'), date(c.creation_date)], [t('Compte Artis & You'), c.user_id ? t('Oui') : t('Non')],
+            c.type === 'pro' && [t('Date de création'), date(c.creation_date)], [t('Compte Artesa'), c.user_id ? t('Oui') : t('Non')],
           ]} />
           <Sec title={t('Coordonnées')} />
           <KV rows={[
@@ -277,12 +277,12 @@ export function ClientChat({ params }) {
     return { c, conv, projects };
   }, [params.id]);
   if (!r) return <div className="content"><TopBar title={t('Chatbox')} /><Loader /></div>;
-  const invite = `mailto:${r.c.email || ''}?subject=${encodeURIComponent(t('Suivez votre chantier sur Artis & You'))}&body=${encodeURIComponent(t('Bonjour,\n\nPour échanger avec nous, recevoir vos devis et factures et suivre votre chantier, créez votre compte gratuit sur Artis & You avec cette adresse e-mail :\n{url}\n\nÀ bientôt,\n{c}', { url: location.origin + '/inscription/particulier', c: company.name }))}`;
+  const invite = `mailto:${r.c.email || ''}?subject=${encodeURIComponent(t('Suivez votre chantier sur Artesa'))}&body=${encodeURIComponent(t('Bonjour,\n\nPour échanger avec nous, recevoir vos devis et factures et suivre votre chantier, créez votre compte gratuit sur Artesa avec cette adresse e-mail :\n{url}\n\nÀ bientôt,\n{c}', { url: location.origin + '/inscription/particulier', c: company.name }))}`;
   return (
     <div className="content narrow">
       <TopBar title={t('Chatbox')} sub={clientName(r.c)} />
       <Chat convId={r.conv.id} projects={r.projects} banner={!r.c.user_id && (
-        <div className="banner"><LuMail /><div className="grow small">{t('Ce client n’a pas encore de compte Artis & You : il ne verra pas ces messages.')} <a className="red-t bold" href={invite}>{t('L’inviter par e-mail')}</a></div></div>
+        <div className="banner"><LuMail /><div className="grow small">{t('Ce client n’a pas encore de compte Artesa : il ne verra pas ces messages.')} <a className="red-t bold" href={invite}>{t('L’inviter par e-mail')}</a></div></div>
       )} />
     </div>
   );
@@ -313,7 +313,7 @@ export function ClientHistory({ params }) {
     b.files.filter((f) => f.kind === 'photo').forEach((f) => { const k = f.created_at.slice(0, 10); byDay[k] = (byDay[k] || 0) + 1; });
     Object.entries(byDay).forEach(([d, n]) => ev.push({ at: d + 'T12:00:00', icon: LuCamera, color: 'navy', title: t('{n} photos ajoutées', { n }), sub: '', link: '/pro/photos/' + b.c.id }));
   } else if (tab === 'paiements') {
-    ev = b.pays.map((p) => ({ at: p.paid_on + 'T12:00:00', when: p.created_at, icon: LuEuro, color: p.via_platform ? '' : 'ghost', title: p.via_platform ? t('{m} reçu', { m: t(p.method) }) : t('Paiement ajouté manuellement'), sub: `${docNum[p.document_id]?.number} · ${money(p.amount)} · ${t(p.method)}${p.note ? ' · ' + p.note : ''}`, tag: p.via_platform ? t('Via Artis & You') : t('Ajouté par vous'), link: '/pro/documents/' + p.document_id }));
+    ev = b.pays.map((p) => ({ at: p.paid_on + 'T12:00:00', when: p.created_at, icon: LuEuro, color: p.via_platform ? '' : 'ghost', title: p.via_platform ? t('{m} reçu', { m: t(p.method) }) : t('Paiement ajouté manuellement'), sub: `${docNum[p.document_id]?.number} · ${money(p.amount)} · ${t(p.method)}${p.note ? ' · ' + p.note : ''}`, tag: p.via_platform ? t('Via Artesa') : t('Ajouté par vous'), link: '/pro/documents/' + p.document_id }));
   } else {
     b.docs.filter((d) => d.number).forEach((d) => {
       const q = d.kind === 'devis';

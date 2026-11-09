@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { LuCheck, LuX, LuHardHat, LuHouse, LuCalendarCheck, LuFilePen, LuMessageSquare, LuShieldCheck } from 'react-icons/lu';
 import { Link } from '../../lib/router.jsx';
+import { Wordmark } from '../../ui/index.jsx';
 import { PLANS } from '../../lib/docs.js';
 import { t } from '../../lib/i18n.js';
 
@@ -11,19 +12,19 @@ const CITIES = ['Nice', 'Cannes', 'Antibes', 'Monaco', 'Grasse', 'Menton', 'Cagn
 
 export function Landing() {
   useEffect(() => {
-    document.title = t('Artis & You · Devis, factures et rendez-vous pour artisans du bâtiment');
+    document.title = t('Artesa · Devis, factures et rendez-vous pour artisans du bâtiment');
   }, []);
   return (
     <div className="lp">
       <header className="lp-top">
-        <Link to="/" className="lp-brand"><img src="/logo.svg" alt="" width="34" height="34" /><span>Artis &amp; You</span></Link>
+        <Link to="/" className="lp-brand" aria-label="Artesa"><Wordmark size={30} /></Link>
         <nav className="lp-nav"><a href="#tarifs" className="hide-mob">{t('Tarifs')}</a><Link to="/connexion">{t('Se connecter')}</Link><Link to="/inscription" className="btn sm">{t('Créer un compte')}</Link></nav>
       </header>
 
       <section className="lp-hero">
         <div className="lp-hero-txt">
           <h1>{t('Le chantier, du premier appel à la dernière facture.')}</h1>
-          <p className="lp-lead">{t('Artis & You réunit les artisans et leurs clients : prise de rendez-vous, devis signés en ligne, factures conformes, messages et documents du logement, au même endroit.')}</p>
+          <p className="lp-lead">{t('Artesa réunit les artisans et leurs clients : prise de rendez-vous, devis signés en ligne, factures conformes, messages et documents du logement, au même endroit.')}</p>
           <div className="lp-ctas">
             <Link to="/inscription/artisan" className="btn">{t('Je suis artisan')}</Link>
             <Link to="/inscription/particulier" className="btn navy">{t('Je cherche un artisan')}</Link>
@@ -59,11 +60,11 @@ export function Landing() {
         <h2>{t('Des artisans de tous les métiers du bâtiment')}</h2>
         <p className="muted">{TRADES.map(t).join(', ')}.</p>
         <h2>{t('Partout en France')}</h2>
-        <p className="muted">{t('Artis & You est née à Nice et se développe dans toute la France : {c}…', { c: CITIES.join(', ') })}</p>
+        <p className="muted">{t('Artesa est née à Nice et se développe dans toute la France : {c}…', { c: CITIES.join(', ') })}</p>
       </section>
 
       <footer className="lp-foot">
-        <span>© {new Date().getFullYear()} Artis &amp; You</span>
+        <span>© {new Date().getFullYear()} Artesa</span>
         <nav><Link to="/mentions-legales">{t('Mentions légales')}</Link><Link to="/cgu">{t('CGU')}</Link><Link to="/confidentialite">{t('Confidentialité')}</Link><Link to="/telecharger">{t('Applications')}</Link></nav>
       </footer>
     </div>
@@ -176,10 +177,10 @@ function Pricing() {
       </div>
 
       <div className="lp-cmp">
-        <h2>{t('Pourquoi Artis & You ?')}</h2>
+        <h2>{t('Pourquoi Artesa ?')}</h2>
         <div className="lp-cmp-wrap">
           <table>
-            <thead><tr><th />{['Artis & You', 'Logiciel de devis classique', 'Plateforme de mise en relation'].map((h, i) => <th key={h} className={i === 0 ? 'us' : ''}>{t(h)}</th>)}</tr></thead>
+            <thead><tr><th />{['Artesa', 'Logiciel de devis classique', 'Plateforme de mise en relation'].map((h, i) => <th key={h} className={i === 0 ? 'us' : ''}>{t(h)}</th>)}</tr></thead>
             <tbody>{CMP.map(([l, ...v]) => <tr key={l}><td>{t(l)}</td>{v.map((x, i) => <td key={i} className={i === 0 ? 'us' : ''}><Mark v={x} /></td>)}</tr>)}</tbody>
           </table>
         </div>

@@ -57,7 +57,7 @@ export function mockBackend({ saveSession, getSession }) {
     reviews: { status: 'en_attente' },
     notifications: { read: false, category: 'rdv' },
     projects: { manual: {} },
-    teams: { color: '#00123B' },
+    teams: { color: '#2B1F1C' },
   };
 
   function match(row, filters = {}) {
@@ -171,7 +171,7 @@ export function mockBackend({ saveSession, getSession }) {
   const rpcs = {
     is_admin() { return isAdmin(); },
     admin_review_company({ p_id, p_status, p_note = '' }) {
-      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
       const c = db.companies.find((x) => x.id === p_id); if (!c) throw new Error('Entreprise introuvable');
       Object.assign(c, { verification_status: p_status, verified: p_status === 'approved', verification_note: p_note, verified_at: now() });
       notifyCompany(c.id, 'systeme', p_status === 'approved' ? 'Votre entreprise est validée' : 'Votre inscription est à compléter', p_status === 'approved' ? 'Votre profil est maintenant visible des clients.' : p_note, '/pro/compte/entreprise');
@@ -195,10 +195,10 @@ export function mockBackend({ saveSession, getSession }) {
       const ref = p.referral ? db.companies.find((c) => c.referral_code === p.referral.toUpperCase()) : null;
       const c = { ...defaults.companies, id: id(), owner_id: me(), name: p.name, siret: p.siret || '', siren: (p.siret || '').replace(/\D/g, '').slice(0, 9), trades: p.trades || [], city: p.city || '', zip: p.zip || '', address: p.address || '', country: p.country || 'France', legal_form: p.legal_form || '', phone: p.phone || '', email: p.email || '', verification_status: 'pending', verified: false,
         referred_by: ref?.id || null, referral_code: Math.random().toString(36).slice(2, 10).toUpperCase(), trial_ends_at: new Date(Date.now() + 30 * 864e5).toISOString(), created_at: now(),
-        settings: { planning: { view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true }, docs: { quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', onlinePayment: true, einvoice: true }, pdf: { color: '#7F1111', footer: '' }, notifications: { push: true, email: true, sms: false } } };
+        settings: { planning: { view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true }, docs: { quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', onlinePayment: true, einvoice: true }, pdf: { color: '#B4432A', footer: '' }, notifications: { push: true, email: true, sms: false } } };
       db.companies.push(c);
       Object.assign(profile(), { kind: 'artisan', company_id: c.id, member_role: 'gerant' });
-      db.teams.push({ id: id(), company_id: c.id, name: 'Équipe principale', color: '#00123B', created_at: now() });
+      db.teams.push({ id: id(), company_id: c.id, name: 'Équipe principale', color: '#2B1F1C', created_at: now() });
       db.profiles.filter((x) => ADMIN_EMAILS.includes(String(x.email).toLowerCase())).forEach((x) => notify(x.id, 'systeme', 'Nouvelle entreprise à valider', c.name + ' · SIRET ' + c.siret, '/' + (x.company_id ? 'pro' : 'client') + '/admin'));
       return c;
     },
@@ -331,7 +331,7 @@ export function mockBackend({ saveSession, getSession }) {
     async update(table, filters, patch) { await ready;
       let last = null;
       for (const r of db[table].filter((x) => match(x, filters))) {
-        if (table === 'companies' && !isAdmin() && ('verified' in patch || 'verification_status' in patch)) return fail('Seule l’équipe Artis & You peut valider une entreprise.');
+        if (table === 'companies' && !isAdmin() && ('verified' in patch || 'verification_status' in patch)) return fail('Seule l’équipe Artesa peut valider une entreprise.');
         if (table === 'documents' && r.locked && ('lines' in patch || 'totals' in patch || 'client_id' in patch)) return fail('Cette facture est émise : elle ne peut plus être modifiée. Créez un avoir.');
         const old = { ...r }; Object.assign(r, patch); afterUpdate(table, old, r); last = r;
       }

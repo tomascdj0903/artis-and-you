@@ -172,7 +172,7 @@ const remote = {
   async mfaEnroll() {
     const u = await http('/auth/v1/user');
     for (const f of (u.factors || []).filter((x) => x.status !== 'verified')) await http('/auth/v1/factors/' + f.id, { method: 'DELETE' }).catch(() => {});
-    const r = await http('/auth/v1/factors', { method: 'POST', body: { factor_type: 'totp', friendly_name: 'Artis & You ' + new Date().toISOString().slice(0, 16) } });
+    const r = await http('/auth/v1/factors', { method: 'POST', body: { factor_type: 'totp', friendly_name: 'Artesa ' + new Date().toISOString().slice(0, 16) } });
     return { factorId: r.id, secret: r.totp.secret, uri: r.totp.uri, qr: r.totp.qr_code };
   },
   async mfaConfirm(factorId, code) {

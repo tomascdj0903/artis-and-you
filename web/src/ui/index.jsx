@@ -41,7 +41,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
     <header className={'topbar' + (home ? ' home-top' : '')}>
       <div>
         {back ? <button className="iconbtn" onClick={onBack || (() => (history.length > 1 ? navigate(-1) : navigate(base)))} aria-label={t('Retour')}><LuChevronLeft /></button>
-          : <Link to={base} className="logo-btn hide-desk" aria-label="Artis & You"><img src="/logo.svg" alt="" /></Link>}
+          : <Link to={base} className="logo-btn hide-desk" aria-label="Artesa"><img src="/logo.svg" alt="" /></Link>}
       </div>
       <div className="title">{title && <h1>{title}</h1>}{sub && <div className="sub">{sub}</div>}</div>
       <div className="right">
@@ -249,4 +249,13 @@ export function DeviceNotif() {
   const ask = async () => { try { const p = await Notification.requestPermission(); setPerm(p); if (p === 'granted') { await subscribePush(); new Notification(t('Notifications activées'), { body: t('Vous serez prévenu ici des nouvelles demandes, messages et documents.'), icon: '/icon-192.png' }); } } catch {} };
   const hint = perm === 'granted' ? t('Activées : vous êtes prévenu même quand l’application est en arrière-plan') : perm === 'denied' ? t('Bloquées dans le navigateur : autorisez-les dans les réglages du site (cadenas à gauche de l’adresse)') : perm === 'unsupported' ? t('Non disponibles ici. Sur iPhone, installez d’abord l’application sur l’écran d’accueil.') : t('Pour être prévenu même quand l’application est en arrière-plan');
   return <div className="r set-row"><span className="k">{t('Notifications sur cet appareil')}<small>{hint}</small></span>{perm === 'default' ? <button className="btn xs" onClick={ask}>{t('Activer')}</button> : <span className={'toggle-wrap' + (perm === 'granted' ? ' on' : '')} style={{ fontSize: 12.5 }}>{perm === 'granted' ? '✓ ' + t('Activées') : '—'}</span>}</div>;
+}
+
+// Logo Artesa : le « A » dessiné + « rtesa » en Quicksand. light = sur fond sombre
+export function Wordmark({ size = 28, light = false, style }) {
+  return (
+    <span className={'wordmark' + (light ? ' light' : '')} style={{ fontSize: size, ...style }} role="img" aria-label="Artesa">
+      <img src={light ? '/logo-light.svg' : '/logo.svg'} alt="" style={{ width: size * 0.95, height: size * 0.95 }} />rtesa
+    </span>
+  );
 }

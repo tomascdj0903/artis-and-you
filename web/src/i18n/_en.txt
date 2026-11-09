@@ -24,7 +24,7 @@
 23|Business
 24|Current
 25|Administration
-26|Artis & You administration
+26|Artesa administration
 27|Address
 28|Job address
 29|Billing address
@@ -83,8 +83,8 @@
 82|Expected around {h} for: {o}.
 83|Item
 84|Items · {n}
-85|Artis & You connects tradespeople and homeowners, and gives tradespeople management tools (clients, calendar, quotes, invoices, messaging).
-86|Artis & You on your computer
+85|Artesa connects tradespeople and homeowners, and gives tradespeople management tools (clients, calendar, quotes, invoices, messaging).
+86|Artesa on your computer
 87|Tradesperson
 88|Tradesperson or company
 89|Tradespeople
@@ -162,12 +162,12 @@
 161|Approved for agreement
 162|Hello {n}
 163|Hello {n},\n\nPlease find attached the accounting export for {p} (sales, receipts, purchases, VAT).\n\nKind regards,\n{c}
-164|Hello,\n\nTo chat with us, receive your quotes and invoices and follow your job, create your free Artis & You account with this email address:\n{url}\n\nSee you soon,\n{c}
-165|Hello,\n\nPlease find attached our quote {n} for: {o}.\n\nYou can also view and sign it in your Artis & You space: {u}\n\nKind regards,\n{c}
-166|Hello,\n\nPlease find attached our invoice {n} for: {o}.\n\nYou can pay it by bank transfer (IBAN on the invoice) or online from your Artis & You space: {u}\n\nKind regards,\n{c}
+164|Hello,\n\nTo chat with us, receive your quotes and invoices and follow your job, create your free Artesa account with this email address:\n{url}\n\nSee you soon,\n{c}
+165|Hello,\n\nPlease find attached our quote {n} for: {o}.\n\nYou can also view and sign it in your Artesa space: {u}\n\nKind regards,\n{c}
+166|Hello,\n\nPlease find attached our invoice {n} for: {o}.\n\nYou can pay it by bank transfer (IBAN on the invoice) or online from your Artesa space: {u}\n\nKind regards,\n{c}
 167|Hello, I am following up on quote {n} ({m}). Feel free to ask if you have any questions.
-168|Hello, I would like to delete my Artis & You account ({e}).
-169|Hello, I invite you to join me on Artis & You to work together on our jobs. With my code {c}, you get 1 month free: {u}
+168|Hello, I would like to delete my Artesa account ({e}).
+169|Hello, I invite you to join me on Artesa to work together on our jobs. With my code {c}, you get 1 month free: {u}
 170|Hello, unless I am mistaken, invoice {n} ({m}) is still unpaid. Thank you in advance.
 171|Draft
 172|Draft saved
@@ -181,11 +181,11 @@
 180|Share capital
 181|Bank card
 182|Card and SEPA direct debit
-183|Card or direct debit via Artis & You
-184|Card or direct debit via the Artis & You link
+183|Card or direct debit via Artesa
+184|Card or direct debit via the Artesa link
 185|Construction ID cards
 186|This client has issued documents: set them to "Inactive" instead of deleting.
-187|This client has no Artis & You account yet: they won't see these messages.
+187|This client has no Artesa account yet: they won't see these messages.
 188|What I receive
 189|What tradespeople can see
 190|Certification
@@ -195,7 +195,7 @@
 194|This helps the tradesperson prepare (reduced VAT if the home is over 2 years old).
 195|This cannot be undone.
 196|This invoice has been issued: it can no longer be edited. Create a credit note.
-197|This feature is coming very soon to Artis & You.
+197|This feature is coming very soon to Artesa.
 198|This page does not exist.
 199|Change photo
 200|Job
@@ -244,7 +244,7 @@
 243|Got it
 244|Accountant saved
 245|Account
-246|Artis & You account
+246|Artesa account
 247|Accounts
 248|Terms
 249|Payment terms
@@ -388,9 +388,9 @@
 387|Send by email
 388|Send for e-signature
 389|Send a message
-390|Send via Artis & You
+390|Send via Artesa
 391|Send to my accountant
-392|Sent to the client's Artis & You space
+392|Sent to the client's Artesa space
 393|Sent by the client
 394|Early payment discount
 395|Cash
@@ -460,7 +460,7 @@
 459|IBAN
 460|Identity
 461|Identity, contact details, home address, messages, photos and documents exchanged, appointments, quotes and invoices.
-462|Not on Artis & You yet?
+462|Not on Artesa yet?
 463|They let you know when they are on the way
 464|Print
 465|Inactive
@@ -476,7 +476,7 @@
 475|Jobs done
 476|Title
 477|Integrations
-478|Artis & You invitation
+478|Artesa invitation
 479|Pending invitations
 480|Invite to a job
 481|Invite a member
@@ -496,9 +496,9 @@
 495|End time must be after start time.
 496|The colour is used in the calendar
 497|Two-factor authentication
-498|E-invoicing via Artis & You
+498|E-invoicing via Artesa
 499|The phone line
-500|The Artis & You brand, logo and interface are protected. Any reproduction without permission is prohibited.
+500|The Artesa brand, logo and interface are protected. Any reproduction without permission is prohibited.
 501|E-signature
 502|Google Calendar / Outlook sync
 503|Start directions
@@ -508,7 +508,7 @@
 507|The SIRET must contain 14 valid digits.
 508|Chat with support
 509|The client will be notified.
-510|The homeowner account is free. The tradesperson account is paid after a 30-day trial. Tradespeople declare a valid SIRET, checked by Artis & You.
+510|The homeowner account is free. The tradesperson account is paid after a 30-day trial. Tradespeople declare a valid SIRET, checked by Artesa.
 511|The quote gets its final number when sent.
 512|The home
 513|The software opens in its own window, with its icon, and updates itself. An internet connection is required.
@@ -518,10 +518,10 @@
 517|Tradespeople
 518|The tradespeople you work with will appear here.
 519|Certificates and warranties shared by your tradespeople will appear here.
-520|Reviews are verified (only after a real appointment) and checked by Artis & You before publication.
+520|Reviews are verified (only after a real appointment) and checked by Artesa before publication.
 521|Automatic emails and SMS are coming soon.
 522|Subscription invoices
-523|Invoice payments go directly to the tradesperson. Artis & You takes no commission on them.
+523|Invoice payments go directly to the tradesperson. Artesa takes no commission on them.
 524|Video tutorials
 525|Label
 526|WhatsApp link sent to the client
@@ -537,7 +537,7 @@
 536|Company logo
 537|Logo saved
 538|Mon
-539|The tradesperson remains solely responsible for their quotes, invoices, services and legal and tax obligations. Artis & You is not a party to contracts between tradespeople and homeowners.
+539|The tradesperson remains solely responsible for their quotes, invoices, services and legal and tax obligations. Artesa is not a party to contracts between tradespeople and homeowners.
 540|The tradesperson will be notified.
 541|Invite them by email
 542|My library
@@ -574,7 +574,7 @@
 573|My quotes
 574|My documents
 575|My invoices
-576|My Artis & You invoices
+576|My Artesa invoices
 577|My referrals
 578|My messages
 579|My notifications
@@ -838,8 +838,8 @@
 837|Refused
 838|Refused on {d}
 839|Refused
-840|Join {c} on Artis & You: create your account at {u} then choose "Join a team" with code {k}.
-841|Join me on Artis & You
+840|Join {c} on Artesa: create your account at {u} then choose "Join a team" with code {k}.
+841|Join me on Artesa
 842|Join the WhatsApp video call
 843|Join the team
 844|Join a team
@@ -916,7 +916,7 @@
 915|Project status
 916|Project status updated
 917|Next
-918|Follow your job on Artis & You
+918|Follow your job on Artesa
 919|Job tracking
 920|Support
 921|Delete my account
@@ -1013,7 +1013,7 @@
 1012|Fri
 1013|Version
 1014|Web version
-1015|Via Artis & You
+1015|Via Artesa
 1016|Via the app, with SMS code
 1017|City
 1018|City and radius
@@ -1021,7 +1021,7 @@
 1020|Bank transfer
 1021|SEPA transfer
 1022|Visibility
-1023|Visible in their Artis & You space
+1023|Visible in their Artesa space
 1024|Visible on my public profile (past work)
 1025|Visible once they create their account
 1026|Visible to homeowners
@@ -1041,7 +1041,7 @@
 1040|Your data is only shared with the tradespeople you contact and with our technical subcontractors (hosting). It is never sold.
 1041|Your rights
 1042|Your trades
-1043|Your SIRET is being checked by the Artis & You team.
+1043|Your SIRET is being checked by the Artesa team.
 1044|Your tradesperson
 1045|Your need
 1046|Your library is empty. Add products in CRM → My library.
@@ -1136,11 +1136,11 @@
 1147|{n} photos added
 1148|{n} projects in progress
 1149|{n} pros
-1150|{n} pros found on Artis & You
+1150|{n} pros found on Artesa
 1151|{n} will be notified of your arrival.
 1152|{n} selected
 1153|{n} upcoming
-1154|{x} is coming very soon to Artis & You.
+1154|{x} is coming very soon to Artesa.
 1155|"{n}" added
 1156|To add
 1157|Up to date

@@ -35,7 +35,7 @@ export async function checkTotp(secret, code) {
   for (const d of [0, -30e3, 30e3]) if ((await totp(secret, Date.now() + d)) === c) return true;
   return false;
 }
-export const otpauthUri = (secret, email) => `otpauth://totp/${encodeURIComponent('Artis & You:' + email)}?secret=${secret}&issuer=${encodeURIComponent('Artis & You')}&digits=6&period=30`;
+export const otpauthUri = (secret, email) => `otpauth://totp/${encodeURIComponent('Artesa:' + email)}?secret=${secret}&issuer=${encodeURIComponent('Artesa')}&digits=6&period=30`;
 export const groupSecret = (s) => s.replace(/(.{4})/g, '$1 ').trim();
 
 // ───── Face ID / Touch ID / empreinte / Windows Hello (WebAuthn, sur cet appareil) ─────
@@ -52,7 +52,7 @@ export const bioEnabled = (userId) => !!(userId && readBio()[userId]);
 export async function bioEnable(userId, email, name) {
   const cred = await navigator.credentials.create({ publicKey: {
     challenge: crypto.getRandomValues(new Uint8Array(32)),
-    rp: { name: 'Artis & You' },
+    rp: { name: 'Artesa' },
     user: { id: new TextEncoder().encode(userId).slice(0, 64), name: email, displayName: name || email },
     pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
     authenticatorSelection: { authenticatorAttachment: 'platform', userVerification: 'required', residentKey: 'discouraged' },

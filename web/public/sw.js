@@ -26,8 +26,8 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('message', (e) => { if (e.data === 'ay-clear-data') caches.delete(DATA); });
 
 self.addEventListener('push', (e) => {
-  let d = {}; try { d = e.data.json(); } catch { d = { title: 'Artis & You', body: e.data?.text() || '' }; }
-  e.waitUntil(self.registration.showNotification(d.title || 'Artis & You', { body: d.body || '', icon: '/icon-192.png', badge: '/icon-192.png', tag: d.tag, data: { link: d.link || '/' } }));
+  let d = {}; try { d = e.data.json(); } catch { d = { title: 'Artesa', body: e.data?.text() || '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'Artesa', { body: d.body || '', icon: '/icon-192.png', badge: '/icon-192.png', tag: d.tag, data: { link: d.link || '/' } }));
 });
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();
