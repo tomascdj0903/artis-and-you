@@ -81,7 +81,8 @@ function Shell({ tabs, children, path }) {
   if (/^\/pro\/documents\/[^/]+/.test(path) && history.state?.from === 'client') p = '/pro/clients';
   const active = (to, exact) => (exact ? p === to : p === to || p.startsWith(to + '/'));
   const badge = (to) => (to.endsWith('/messages') ? unread.messages : to.endsWith('/notifications') ? unread.notifs : to === '/pro/planning' ? unread.rdv || 0 : 0);
-  const hideTabs = false;
+  // Dans une conversation, la barre d'onglets laisse la place à la barre de saisie (comme WhatsApp)
+  const hideTabs = /^\/(pro|client)\/messages\/[^/]+$|^\/pro\/clients\/[^/]+\/chat$/.test(path);
   const [tour, finishTour] = useTours(path); // Accueil artisan : pas de barre d'onglets (maquette 02)
   return (
     <div className="app">
