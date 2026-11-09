@@ -113,9 +113,9 @@ export function Network() {
     const cos = n.length ? await api.select('companies', { id: n.map((x) => x.pro_id) }) : [];
     const shares = await api.select('project_shares', {});
     const myProjects = new Set((await api.select('projects', { company_id: company.id }, { columns: 'id' })).map((p) => p.id));
-    const [reqs, shared] = await Promise.all([api.rpc('network_requests_list').catch(() => []), api.rpc('shared_projects').catch(() => [])]);
+    const [reqs, shared, invites] = await Promise.all([api.rpc('network_requests_list').catch(() => []), api.rpc('shared_projects').catch(() => []), api.rpc('project_invites_list').catch(() => [])]);
     const list = n.map((x) => ({ ...x, co: cos.find((c) => c.id === x.pro_id), common: shares.filter((s) => s.company_id === x.pro_id && myProjects.has(s.project_id)).length })).filter((x) => x.co);
-    list.reqs = (reqs || []).filter((r) => r.status === 'pending'); list.shared = shared || [];
+    list.reqs = (reqs || []).filter((r) => r.status === 'pending'); list.shared = shared || []; list.invites = invites || [];
     return list;
   }, []);
   if (!b) return <div className="content"><TopBar title={t('Mon réseau')} /><Loader /></div>;
@@ -135,6 +135,18 @@ export function Network() {
               <button className="btn xs ghost" onClick={() => run(() => api.rpc('network_answer', { p_id: r.id, p_accept: false }), t('Demande refusée')).then(reload)}>{t('Refuser')}</button>
               <button className="btn xs" onClick={() => run(() => api.rpc('network_answer', { p_id: r.id, p_accept: true }), t('Vous êtes maintenant connectés')).then(reload)}>{t('Accepter')}</button>
             </div> : <Pill c="white">{t('En attente')}</Pill>}
+          </div>
+        ))}</div>
+      </>}
+      {b.invites.length > 0 && <>
+        <Sec title={t('Invitations sur un chantier')} />
+        <div className="list">{b.invites.map((x) => (
+          <div key={x.project_id} className="li">
+            <div className="grow"><div className="t1">{x.title}</div><div className="t2">{t('{n} vous invite', { n: x.from.name })}{x.address ? ' · ' + x.address : ''}</div></div>
+            <div className="row" style={{ gap: 6 }}>
+              <button className="btn xs ghost" onClick={() => run(() => api.rpc('project_invite_answer', { p_project: x.project_id, p_accept: false }), t('Invitation refusée')).then(reload)}>{t('Refuser')}</button>
+              <button className="btn xs" onClick={() => run(() => api.rpc('project_invite_answer', { p_project: x.project_id, p_accept: true }), t('Vous avez rejoint le chantier')).then(reload)}>{t('Accepter')}</button>
+            </div>
           </div>
         ))}</div>
       </>}
@@ -176,7 +188,7 @@ export function NetworkAdd() {
     return m;
   }, []);
   const search = async (v) => { setQ(v); if (v.trim().length < 2) return setRes(null); const r = await api.rpc('directory_search', { p_query: v.trim(), p_trade: '', p_city: '' }); setRes(r.filter((x) => x.id !== company.id)); };
-  const inviteMsg = t('Bonjour, je vous invite à me rejoindre sur Artesa pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert : {u}', { c: company.referral_code, u: location.origin + '/inscription/artisan' });
+  const inviteMsg = t('Bonjour, je vous invite à me rejoindre sur Artesa pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert en plus de l’essai : {u}', { c: company.referral_code, u: location.origin + '/inscription/artisan' });
   return (
     <div className="content narrow">
       <TopBar title={t('Ajouter un pro')} sub={t('Rechercher un professionnel')} />
@@ -214,12 +226,9 @@ export function ProProfile({ params }) {
   const startChat = async () => { const id = await api.rpc('start_conversation', { p_company: p.id }); navigate('/pro/messages/' + id); };
   const invite = async (pr) => {
     await run(async () => {
-      await api.insert('project_shares', { project_id: pr.id, company_id: p.id }).catch(() => {});
-      const convId = await api.rpc('start_conversation', { p_company: p.id });
-      await api.update('conversations', { id: convId }, { project_id: pr.id });
-      await api.insert('messages', { conversation_id: convId, sender_name: company.name, sender_company_id: company.id, card: { type: 'cal', title: t('Chantier partagé') + ' · ' + pr.title, sub: pr.address }, body: '' });
+      const convId = await api.rpc('project_invite', { p_project: pr.id, p_company: p.id });
       setShare(false); navigate('/pro/messages/' + convId);
-    }, t('Chantier partagé'));
+    }, t('Invitation envoyée : le pro doit l’accepter'));
   };
   const total = Object.values(p.distribution || {}).reduce((s, n) => s + n, 0);
   return (
@@ -247,10 +256,10 @@ export function ProProfile({ params }) {
         {!b.inNet && b.req?.incoming && <button className="btn" onClick={() => run(() => api.rpc('network_answer', { p_id: b.req.id, p_accept: true }), t('Vous êtes maintenant connectés')).then(reload)}><LuUserPlus /> {t('Accepter sa demande')}</button>}
         <button className="btn" onClick={startChat}>{t('Envoyer un message')}</button>
         {b.inNet && <button className="btn ghost sm" onClick={() => run(() => api.rpc('network_remove', { p_pro: p.id }), t('Retiré de votre réseau')).then(reload)}>{t('Retirer de mon réseau')}</button>}
-        <div className="two">{p.phone ? <a className="btn ghost" href={'tel:' + p.phone}><LuPhone /> {t('Appeler')}</a> : <span />}<button className="btn ghost" onClick={() => setShare(true)}>{t('Inviter sur un chantier')}</button></div>
+        <div className="two">{p.phone ? <a className="btn ghost" href={'tel:' + p.phone}><LuPhone /> {t('Appeler')}</a> : <span />}{b.inNet ? <button className="btn ghost" onClick={() => setShare(true)}>{t('Inviter sur un chantier')}</button> : <span />}</div>
       </div>
       <Sheet open={share} onClose={() => setShare(false)} title={t('Inviter sur un chantier')}>
-        <p className="small muted">{t('Le pro verra le nom et l’adresse du chantier, et pourra échanger avec vous. Il ne voit ni vos prix ni l’historique du client.')}</p>
+        <p className="small muted">{t('Le pro reçoit une invitation en message privé et doit l’accepter. Il verra ensuite le nom, l’adresse et le planning du chantier, mais ni vos prix ni l’historique du client.')}</p>
         <div className="list">{b.projects.map((pr) => <button key={pr.id} className="li click" onClick={() => invite(pr)}><div className="grow"><div className="t1">{pr.title}</div><div className="t2">{pr.address}</div></div><LuChevronRight /></button>)}</div>
         {!b.projects.length && <Empty text={t('Aucun chantier pour ce client. Il est créé avec le premier devis ou rendez-vous.')} />}
       </Sheet>

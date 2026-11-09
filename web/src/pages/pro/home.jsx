@@ -161,14 +161,14 @@ export function ReferralCard({ code }) {
   const [hide, setHide] = useState(() => { try { return localStorage.getItem('ay-ref-hide') === code; } catch { return false; } });
   if (hide) return null;
   const url = `${location.origin}/inscription/artisan?parrain=${encodeURIComponent(code)}`;
-  const msg = t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.', { c: code });
+  const msg = t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: code });
   const share = async () => {
     try { if (navigator.share) { await navigator.share({ title: 'Artesa', text: msg, url }); return; } } catch { return; }
     try { await navigator.clipboard.writeText(msg + ' ' + url); toast(t('Lien de parrainage copié')); } catch {}
   };
   return (
     <div className="notice ref">
-      🎁 <span><b>{t('Parrainez un artisan : 1 mois offert pour vous deux')}</b><small className="block">{t('Votre code : {c}', { c: code })}</small></span>
+      🎁 <span><b>{t('Parrainez un artisan : 1 mois offert pour lui, 15 jours pour vous')}</b><small className="block">{t('Votre code : {c}', { c: code })}</small></span>
       <button className="btn xs" onClick={share}>{t('Partager')}</button>
       <button className="link small" aria-label={t('Masquer')} onClick={() => { try { localStorage.setItem('ay-ref-hide', code); } catch {} setHide(true); }}>✕</button>
     </div>
@@ -179,10 +179,10 @@ export function ReferralCard({ code }) {
 function ReferralLink({ code }) {
   const { toast } = useApp();
   const url = `${location.origin}/inscription/artisan?parrain=${encodeURIComponent(code)}`;
-  const msg = t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.', { c: code });
+  const msg = t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: code });
   const share = async () => {
     try { if (navigator.share) { await navigator.share({ title: 'Artesa', text: msg, url }); return; } } catch { return; }
     try { await navigator.clipboard.writeText(msg + ' ' + url); toast(t('Lien de parrainage copié')); } catch {}
   };
-  return <button type="button" onClick={share}>🎁 <span className="hb-long">{t('Parrainez un artisan : 1 mois offert pour vous deux')} ·</span><span className="hb-short">{t('1 mois offert')}</span> <u>{t('Parrainer')}</u></button>;
+  return <button type="button" onClick={share}>🎁 <span className="hb-long">{t('Parrainez un artisan : 1 mois offert pour lui, 15 jours pour vous')} ·</span><span className="hb-short">{t('1 mois offert')}</span> <u>{t('Parrainer')}</u></button>;
 }

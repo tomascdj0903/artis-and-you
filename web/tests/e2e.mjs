@@ -23,7 +23,7 @@ const field = (label) => pg.locator(`label.field:has(span:text-is("${label}"))`)
 const skipTour = async () => { if (await pg.locator('.tour-x').count()) await pg.click('.tour-x'); };
 
 await step('La page d’accueil publique s’affiche', async () => {
-  await pg.goto(BASE + '/'); await pg.waitForSelector('h1:has-text("Le chantier")');
+  await pg.goto(BASE + '/'); await pg.waitForSelector('h1:has-text("facturation électronique")');
 });
 await step('Inscription d’un artisan', async () => {
   await pg.goto(BASE + '/inscription'); await pg.click('button.opt:has-text("Artisan ou entreprise")');
@@ -54,7 +54,7 @@ await step('Création d’un client', async () => {
 });
 await step('Création d’un devis', async () => {
   await pg.goto(BASE + '/pro/documents/nouveau?kind=devis'); await pg.waitForTimeout(500); await skipTour();
-  const sel = field('Client'); const v = await sel.locator('option').nth(1).getAttribute('value'); await sel.selectOption(v);
+  await pg.locator('.picker input').first().click(); await pg.locator('.picker-list button').first().click();
   await field('Objet').fill('Remplacement du chauffe-eau');
   const row = pg.locator('div:has(> input[placeholder="Désignation"])').first();
   await row.locator('input[placeholder="Désignation"]').fill('Chauffe-eau 200 L');

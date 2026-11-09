@@ -70,6 +70,7 @@ export function Subscription() {
   const [filleuls] = useData(async () => (await api.select('companies', { referred_by: company.id }, { columns: 'id,name,created_at' }).catch(() => [])), []);
   const days = Math.ceil((new Date(company.trial_ends_at) - new Date()) / 864e5);
   const copy = () => { navigator.clipboard?.writeText(company.referral_code); };
+  const [refStats] = useData(() => api.rpc('referral_stats').catch(() => null), []);
   return (
     <div className="content">
       <TopBar title={t('Abonnement et parrainage')} />
@@ -91,9 +92,10 @@ export function Subscription() {
       <div className="list"><MenuRow onClick={() => wip(t('Le paiement de l’abonnement'))} icon={LuCreditCard} label={t('Moyen de paiement')} sub={t('Aucun pour l’instant')} /><MenuRow onClick={() => wip(t('Les factures d’abonnement'))} icon={LuFileText} label={t('Mes factures Artesa')} /></div>
       <Sec title={t('Parrainage')} />
       <div className="card soft">
-        <p>{t('Partagez votre code : votre filleul et vous gagnez chacun 1 mois offert.')}</p>
+        <p>{t('Partagez votre code : votre filleul gagne 1 mois offert en plus de son essai (2 mois en tout), et vous gagnez 15 jours offerts. Jusqu’à 10 filleuls.')}</p>
+        {refStats && <p className="small muted">{t('{n} filleuls sur 10', { n: refStats.count })}{refStats.count >= 10 ? ' · ' + t('Maximum atteint : votre code ne donne plus d’avantage.') : ''}</p>}
         <div className="row"><b style={{ fontSize: 24, letterSpacing: 3 }} className="red-t">{company.referral_code}</b><button className="btn xs ghost" onClick={copy}><LuCopy /> {t('Copier')}</button>
-          <a className="btn xs ghost" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artesa'))}&body=${encodeURIComponent(t('Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert.', { u: location.origin + '/inscription/artisan', c: company.referral_code }))}`}>{t('Partager')}</a></div>
+          <a className="btn xs ghost" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artesa'))}&body=${encodeURIComponent(t('Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert en plus de l’essai.', { u: location.origin + '/inscription/artisan', c: company.referral_code }))}`}>{t('Partager')}</a></div>
       </div>
       <Sec title={t('Mes filleuls')} meta={t('{n} mois gagnés', { n: filleuls?.length || 0 })} />
       {filleuls?.length ? <div className="list">{filleuls.map((f) => <div className="li" key={f.id}><div className="grow"><div className="t1">{f.name}</div><div className="t2">{t('Inscrit le {d}', { d: date(f.created_at) })}</div></div><Pill c="green">+1 {t('mois')}</Pill></div>)}</div> : <Empty text={t('Pas encore de filleul.')} />}
@@ -145,7 +147,7 @@ export function CompanySettings() {
             {F('name', t('Raison sociale'), { req: 1 })}{F('trade_name', t('Nom commercial'))}
             <label className={'field' + (missKeys.has('legal_form') ? ' missing' : '')}><span>{t('Forme juridique')}<b className="red-t"> *</b></span><select value={c.legal_form || ''} onChange={(e) => setC({ ...c, legal_form: e.target.value, ...(e.target.value === 'Micro-entreprise' ? { vat_regime: 'franchise' } : {}) })}><option value="">{t('Choisir…')}</option>{[...new Set([...LEGAL_FORMS, c.legal_form].filter(Boolean))].map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></label>
             {F('capital', t('Capital'), { placeholder: '10 000 €', req: SOCIETIES.includes(c.legal_form) ? 1 : 0 })}
-            {F('siret', 'SIRET', { req: 1, inputMode: 'numeric', onBlur: () => { const d = String(c.siret || '').replace(/\D/g, ''); if (d.length === 14) setC((x) => ({ ...x, siren: d.slice(0, 9) })); } })}{F('siren', 'SIREN')}{F('vat_number', t('N° TVA intracom.'))}{F('rm', t('N° RM (Répertoire des métiers)'))}
+            {F('siret', 'SIRET', { req: 1, inputMode: 'numeric', onBlur: () => { const d = String(c.siret || '').replace(/\D/g, ''); if (d.length === 14) setC((x) => ({ ...x, siren: d.slice(0, 9) })); } })}{F('siren', 'SIREN', { req: 1 })}{F('vat_number', t('N° TVA intracom.'))}{F('rm', t('N° RM (Répertoire des métiers)'))}
           </div>
           <Field label={t('Régime de TVA')}><select value={c.vat_regime} onChange={(e) => setC({ ...c, vat_regime: e.target.value })}><option value="normal">{t('Assujetti à la TVA')}</option><option value="franchise">{t('Franchise en base (art. 293 B du CGI, micro-entreprise)')}</option></select></Field>
           <div className={missKeys.has('address') || missKeys.has('city') || missKeys.has('zip') ? 'missing-block' : ''}><AddressFields value={c} onChange={setC} required /></div>
@@ -294,7 +296,7 @@ export function DocSettings({ scope = 'factures' }) {
   const [s, setS] = useState({ quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, depositPct: 30, quoteTerms: '', paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', mediator: '', labourRate: 45, onlinePayment: true, einvoice: true, ...(company.settings?.docs || {}) });
   const [iban, setIban] = useState({ iban: company.iban || '', bic: company.bic || '' });
   const isQ = scope === 'devis';
-  const F = (k, label, props = {}) => <Field label={label}><input value={s[k] ?? ''} onChange={(e) => setS({ ...s, [k]: e.target.value })} {...props} /></Field>;
+  const F = (k, label, props = {}) => <Field label={label} req={props.req}><input value={s[k] ?? ''} onChange={(e) => setS({ ...s, [k]: e.target.value })} {...props} req={undefined} /></Field>;
   const save = () => {
     const ps = [s.quotePrefix, s.invoicePrefix, s.creditPrefix];
     if (ps.some((x) => !PREFIX_RE.test(x || ''))) return toast(t('Préfixes : lettres et chiffres uniquement (6 max.)'), true);
@@ -321,13 +323,14 @@ export function DocSettings({ scope = 'factures' }) {
         {F('quoteTerms', t('Mention en bas des devis'), { placeholder: t('ex. Devis gratuit. Bon pour accord : date et signature.') })}
       </> : <>
         <div className="form-grid two">
-          {F('paymentTerms', t('Conditions de paiement'))}{F('penalties', t('Pénalités de retard'))}{F('discount', t('Escompte'))}
+          {F('paymentTerms', t('Conditions de paiement'), { req: 1 })}{F('penalties', t('Pénalités de retard'), { req: 1 })}{F('discount', t('Escompte'), { req: 1 })}
         </div>
       </>}
-      {F('mediator', t('Médiateur de la consommation (obligatoire pour les particuliers)'), { placeholder: t('Nom et site du médiateur') })}
+      <p className="small faint"><b className="req-star">*</b> {t('mention obligatoire sur les devis et factures (et pour la facture électronique)')}</p>
+      {F('mediator', t('Médiateur de la consommation (obligatoire pour les particuliers)'), { placeholder: t('Nom et site du médiateur'), req: 1 })}
       {!isQ && <>
         <Sec title={t('Paiement')} />
-        <div className="form-grid two"><Field label="IBAN"><input value={iban.iban} onChange={(e) => setIban({ ...iban, iban: e.target.value.toUpperCase() })} /></Field><Field label="BIC"><input value={iban.bic} onChange={(e) => setIban({ ...iban, bic: e.target.value.toUpperCase() })} /></Field></div>
+        <div className="form-grid two"><Field label="IBAN" req><input value={iban.iban} onChange={(e) => setIban({ ...iban, iban: e.target.value.toUpperCase() })} /></Field><Field label="BIC"><input value={iban.bic} onChange={(e) => setIban({ ...iban, bic: e.target.value.toUpperCase() })} /></Field></div>
       </>}
       <div className="kv mt">
         {!isQ && <SettingToggle label={t('Paiement en ligne (carte, prélèvement)')} hint={t('Ajoute un encart « Payer en ligne » sur vos factures (paiement en ligne bientôt disponible)')} checked={s.onlinePayment} onChange={(v) => setS({ ...s, onlinePayment: v })} />}

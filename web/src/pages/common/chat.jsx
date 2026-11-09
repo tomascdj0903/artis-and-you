@@ -115,7 +115,13 @@ export function Chat({ convId, projects = [], banner }) {
               ) : m.card && (
                 <div className={'sys' + (m.card.type === 'done' ? ' ok' : '')}>
                   {m.card.type === 'done' ? <LuCircleCheck className="green-t" size={26} /> : m.card.type === 'rdv' ? <LuVideo size={24} /> : m.card.type === 'relance' ? <LuFileText size={24} /> : <LuCalendarCheck size={24} />}
-                  <div><b className={m.card.type === 'done' ? 'green-t' : ''}>{m.card.title}</b><span className="small muted">{m.card.sub}</span></div>
+                  <div><b className={m.card.type === 'done' ? 'green-t' : ''}>{m.card.title}</b><span className="small muted">{m.card.sub}</span>
+                    {m.card.type === 'project_invite' && !mine && profile.company_id && <div className="row mt" style={{ gap: 6 }}>
+                      <button className="btn xs ghost" onClick={() => api.rpc('project_invite_answer', { p_project: m.card.project_id, p_accept: false }).then(() => toast(t('Invitation refusée')), (e) => toast(e.message))}>{t('Refuser')}</button>
+                      <button className="btn xs" onClick={() => api.rpc('project_invite_answer', { p_project: m.card.project_id, p_accept: true }).then(() => { toast(t('Vous avez rejoint le chantier')); navigate('/pro/planning?projet=' + m.card.project_id); }, (e) => toast(e.message))}>{t('Accepter')}</button>
+                    </div>}
+                    {m.card.type === 'project_invite' && mine && <span className="small muted">{t('En attente de sa réponse')}</span>}
+                  </div>
                 </div>
               )}
               {photos.length > 0 && <div className={'photos' + (mine ? ' r' : '')}>{photos.map((p) => <Img key={p.path} path={p.path} onClick={() => setBig(p.path)} />)}</div>}

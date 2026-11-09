@@ -12,7 +12,7 @@ const CITIES = ['Nice', 'Cannes', 'Antibes', 'Monaco', 'Grasse', 'Menton', 'Cagn
 
 export function Landing() {
   useEffect(() => {
-    document.title = t('Artesa · Devis, factures et rendez-vous pour artisans du bâtiment');
+    document.title = t('Artesa · Facturation électronique, devis et rendez-vous pour artisans du bâtiment');
   }, []);
   return (
     <div className="lp">
@@ -23,8 +23,8 @@ export function Landing() {
 
       <section className="lp-hero">
         <div className="lp-hero-txt">
-          <h1>{t('Le chantier, du premier appel à la dernière facture.')}</h1>
-          <p className="lp-lead">{t('Artesa réunit les artisans et leurs clients : prise de rendez-vous, devis signés en ligne, factures conformes, messages et documents du logement, au même endroit.')}</p>
+          <h1>{t('Devis, rendez-vous et facturation électronique : tout votre chantier au même endroit.')}</h1>
+          <p className="lp-lead">{t('Artesa réunit les artisans et leurs clients : prise de rendez-vous, devis signés en ligne, factures électroniques conformes à la réforme 2026, messages et documents du logement, au même endroit.')}</p>
           <div className="lp-ctas">
             <Link to="/inscription/artisan" className="btn">{t('Je suis artisan')}</Link>
             <Link to="/inscription/particulier" className="btn navy">{t('Je cherche un artisan')}</Link>
@@ -71,7 +71,7 @@ export function Landing() {
   );
 }
 
-const PRO_PTS = ['Devis et factures conformes, numérotés automatiquement', 'Signature électronique des devis par vos clients', 'Planning d’équipe et demandes de rendez-vous en ligne', 'Relances automatiques des impayés', 'Factures d’acompte, de situation et avoirs', 'Export comptable et suivi de votre chiffre d’affaires'];
+const PRO_PTS = ['Facturation électronique intégrée, prête pour l’obligation 2026–2027', 'Devis et factures conformes, numérotés automatiquement', 'Signature électronique des devis par vos clients', 'Planning d’équipe et demandes de rendez-vous en ligne', 'Relances automatiques des impayés', 'Factures d’acompte, de situation et avoirs', 'Export comptable et suivi de votre chiffre d’affaires'];
 const CLI_PTS = ['Trouvez un artisan vérifié près de chez vous', 'Prenez rendez-vous en ligne, sur site ou en visio', 'Signez vos devis et payez vos factures en ligne', 'Gardez tous les documents de votre logement', 'Échangez avec vos artisans par message'];
 
 // Artisans / particuliers : deux onglets côte à côte, un seul panneau affiché (moins de défilement)

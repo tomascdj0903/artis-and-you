@@ -73,6 +73,7 @@ export function Login() {
     <AuthLayout>
       <form onSubmit={submit} style={{ display: 'grid', gap: 14 }}>
         <Wordmark size={64} style={{ margin: '8px auto 6px' }} />
+        <p className="center muted" style={{ margin: '-4px 0 4px', fontWeight: 600 }}>{t('Devis, planning et facturation électronique pour les artisans')}</p>
         <input className="pillinput" type="email" autoComplete="email" placeholder={t('E-mail')} value={email} onChange={(e) => setEmail(e.target.value)} required aria-label={t('E-mail')} />
         <input className="pillinput" type="password" autoComplete="current-password" placeholder={t('Mot de passe')} value={pw} onChange={(e) => setPw(e.target.value)} required aria-label={t('Mot de passe')} />
         <Link to="/mot-de-passe-oublie" className="center bold">{t('Mot de passe oublié')}</Link>
@@ -209,6 +210,7 @@ export function SignupPro() {
   const [v, set] = useState({ civility: '', first_name: '', last_name: '', email: '', phone: '', password: '' });
   const [c, setC] = useState({ name: '', legal_form: '', siret: '', trades: [], address: '', zip: '', city: '', country: 'France', phone: profile?.phone || '', email: profile?.email || '', referral: (new URLSearchParams(location.search).get('parrain') || '').toUpperCase() });
   const [mode, setMode] = useState('create');
+  const [siretSt, setSiretSt] = useState(null);
   const [code, setCode] = useState('');
   const [cgu, setCgu] = useState(false);
   const [err, setErr] = useState('');
@@ -234,6 +236,7 @@ export function SignupPro() {
       if (mode === 'join') await api.rpc('join_company', { p_code: code.trim() });
       else {
         if (!siretValid(c.siret)) throw new Error(t('Le SIRET doit contenir 14 chiffres valides.'));
+        if (siretSt === 'active') throw new Error(t('Ce SIRET est déjà inscrit sur Artesa. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.'));
         if (!c.legal_form) throw new Error(t('Choisissez la forme juridique.'));
         if (!c.address || !c.zip || !c.city) throw new Error(t('L’adresse complète de l’entreprise est obligatoire.'));
         if (!phoneValid(c.phone || profile?.phone)) throw new Error(t('Numéro de téléphone invalide.'));
@@ -272,7 +275,9 @@ export function SignupPro() {
               <Field label={t('Raison sociale')}><input value={c.name} onChange={(e) => setC({ ...c, name: e.target.value })} required /></Field>
               <div className="form-grid two">
                 <Field label={t('Forme juridique')}><select value={c.legal_form} onChange={(e) => setC({ ...c, legal_form: e.target.value })} required><option value="">{t('Choisir')}</option>{LEGAL_FORMS.map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
-                <Field label={t('SIRET')} hint={t('vérifié par notre équipe')}><input value={c.siret} onChange={(e) => setC({ ...c, siret: e.target.value })} required inputMode="numeric" placeholder="845 216 937 00024" /></Field>
+                <Field label={t('SIRET')} hint={t('vérifié par notre équipe')}><input value={c.siret} onChange={(e) => { setC({ ...c, siret: e.target.value }); setSiretSt(null); }} onBlur={() => siretValid(c.siret) && api.rpc('siret_status', { p_siret: c.siret.replace(/\s/g, '') }).then(setSiretSt, () => {})} required inputMode="numeric" placeholder="845 216 937 00024" /></Field>
+                {siretSt === 'active' && <div className="error" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET est déjà inscrit sur Artesa. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.')}</div>}
+                {siretSt === 'known' && <div className="notice small" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET a déjà utilisé Artesa par le passé. Vous pouvez recréer votre compte, mais sans essai gratuit ni avantage de parrainage.')}</div>}
               </div>
               <div className="field"><span>{t('Adresse du siège')}</span></div>
               <AddressFields value={c} onChange={(x) => setC({ ...c, ...x })} required />
@@ -285,7 +290,7 @@ export function SignupPro() {
                 <div key={g}><div className="small bold red-t" style={{ margin: '6px 0' }}>{t(g).toUpperCase()}</div>
                   <Chips multi options={list.map((x) => [x, t(x)])} value={c.trades} onChange={(trades) => setC({ ...c, trades })} /></div>
               ))}
-              <Field label={t('Code de parrainage')} hint={t('facultatif — 1 mois offert')}><input value={c.referral} onChange={(e) => setC({ ...c, referral: e.target.value.toUpperCase() })} /></Field>
+              <Field label={t('Code de parrainage')} hint={t('facultatif — 1 mois offert en plus')}><input value={c.referral} onChange={(e) => setC({ ...c, referral: e.target.value.toUpperCase() })} /></Field>
               <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artesa (SIRET, informations légales) avant d’être visible des clients.')}</p>
             </>
           )}

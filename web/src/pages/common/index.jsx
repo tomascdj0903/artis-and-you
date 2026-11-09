@@ -67,10 +67,10 @@ export function MyProfile() {
       <TopBar title={t('Mon profil')} />
       <div className="center mb"><Avatar name={p.first_name} last={p.last_name} path={p.avatar_path} size="lg" ring={profile.kind !== 'artisan'} /><button className="link red" onClick={photo}>{t('Changer la photo')}</button></div>
       <div className="form-grid two">
-        <Field label={t('Prénom')}><input value={p.first_name} onChange={(e) => setP({ ...p, first_name: e.target.value })} /></Field>
-        <Field label={t('Nom')}><input value={p.last_name} onChange={(e) => setP({ ...p, last_name: e.target.value })} /></Field>
-        <Field label={t('E-mail')}><input type="email" value={p.email} onChange={(e) => setP({ ...p, email: e.target.value })} /></Field>
-        <Field label={t('Téléphone')}><input type="tel" value={p.phone} onChange={(e) => setP({ ...p, phone: e.target.value })} /></Field>
+        <Field label={t('Prénom')} req><input value={p.first_name} onChange={(e) => setP({ ...p, first_name: e.target.value })} /></Field>
+        <Field label={t('Nom')} req><input value={p.last_name} onChange={(e) => setP({ ...p, last_name: e.target.value })} /></Field>
+        <Field label={t('E-mail')} req><input type="email" value={p.email} onChange={(e) => setP({ ...p, email: e.target.value })} /></Field>
+        <Field label={t('Téléphone')} req><input type="tel" value={p.phone} onChange={(e) => setP({ ...p, phone: e.target.value })} /></Field>
       </div>
       {profile.kind === 'artisan' && <KV rows={[[t('Rôle'), t({ gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' }[profile.member_role]) + ' · ' + t('modifiable dans Mon équipe')]]} />}
       <Sec title={t('Sécurité')} />

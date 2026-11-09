@@ -206,9 +206,13 @@ export function mockBackend({ saveSession, getSession }) {
     },
     create_company({ p }) {
       if (myCompany()) throw new Error('Vous avez déjà une entreprise');
-      const ref = p.referral ? db.companies.find((c) => c.referral_code === p.referral.toUpperCase()) : null;
+      const sir = String(p.siret || '').replace(/\D/g, '');
+      if (sir && db.companies.some((c) => String(c.siret || '').replace(/\D/g, '') === sir)) throw new Error('Ce SIRET est déjà utilisé par une entreprise inscrite sur Artesa. Connectez-vous avec le compte existant ou contactez-nous.');
+      let ref = p.referral ? db.companies.find((c) => c.referral_code === p.referral.toUpperCase()) : null;
+      if (ref && db.companies.filter((c) => c.referred_by === ref.id).length >= 10) ref = null;
+      if (ref) { ref.trial_ends_at = new Date(Math.max(Date.now(), +new Date(ref.trial_ends_at || 0)) + 15 * 864e5).toISOString(); notifyCompany(ref.id, 'systeme', 'Parrainage réussi 🎁', p.name + ' a rejoint Artesa avec votre code : 15 jours offerts pour vous.', '/pro/compte/abonnement'); }
       const c = { ...defaults.companies, id: id(), owner_id: me(), name: p.name, siret: p.siret || '', siren: (p.siret || '').replace(/\D/g, '').slice(0, 9), trades: p.trades || [], city: p.city || '', zip: p.zip || '', address: p.address || '', country: p.country || 'France', legal_form: p.legal_form || '', phone: p.phone || '', email: p.email || '', verification_status: 'pending', verified: false,
-        referred_by: ref?.id || null, referral_code: Math.random().toString(36).slice(2, 10).toUpperCase(), trial_ends_at: new Date(Date.now() + 30 * 864e5).toISOString(), created_at: now(),
+        referred_by: ref?.id || null, referral_code: Math.random().toString(36).slice(2, 10).toUpperCase(), trial_ends_at: new Date(Date.now() + (ref ? 60 : 30) * 864e5).toISOString(), created_at: now(),
         settings: { planning: { view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true }, docs: { quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', onlinePayment: true, einvoice: true }, pdf: { color: '#B4432A', footer: '' }, notifications: { push: true, email: true, sms: false } } };
       db.companies.push(c);
       Object.assign(profile(), { kind: 'artisan', company_id: c.id, member_role: 'gerant' });
@@ -339,8 +343,8 @@ export function mockBackend({ saveSession, getSession }) {
     },
     shared_projects() {
       const mc = myCompany();
-      const ids = new Set([...db.projects.filter((p) => p.company_id === mc).map((p) => p.id).filter((pid) => db.project_shares.some((s) => s.project_id === pid)), ...db.project_shares.filter((s) => s.company_id === mc).map((s) => s.project_id)]);
-      return [...ids].map((pid) => { const p = db.projects.find((x) => x.id === pid); if (!p) return null; const cids = [p.company_id, ...db.project_shares.filter((s) => s.project_id === pid).map((s) => s.company_id)]; return { id: p.id, title: p.title, address: p.address, owner: p.company_id, members: [...new Set(cids)].map((c) => { const co = db.companies.find((x) => x.id === c) || {}; return { id: c, name: co.trade_name || co.name || '', trades: co.trades || [] }; }) }; }).filter(Boolean);
+      const ids = new Set([...db.projects.filter((p) => p.company_id === mc).map((p) => p.id).filter((pid) => db.project_shares.some((s) => s.project_id === pid && s.status !== 'pending')), ...db.project_shares.filter((s) => s.company_id === mc && s.status !== 'pending').map((s) => s.project_id)]);
+      return [...ids].map((pid) => { const p = db.projects.find((x) => x.id === pid); if (!p) return null; const cids = [p.company_id, ...db.project_shares.filter((s) => s.project_id === pid && s.status !== 'pending').map((s) => s.company_id)]; return { id: p.id, title: p.title, address: p.address, owner: p.company_id, members: [...new Set(cids)].map((c) => { const co = db.companies.find((x) => x.id === c) || {}; return { id: c, name: co.trade_name || co.name || '', trades: co.trades || [] }; }) }; }).filter(Boolean);
     },
     shared_project_planning({ p_project, p_from, p_to }) {
       const mc = myCompany(); const sp = rpcs.shared_projects().find((x) => x.id === p_project); if (!sp) return [];
@@ -371,6 +375,34 @@ export function mockBackend({ saveSession, getSession }) {
       const mc = myCompany(); const rs = db.ratings.filter((r) => r.kind === 'pro_pro' && r.target_company === p_company);
       return { avg: rs.length ? rs.reduce((s, r) => s + r.rating, 0) / rs.length : null, n: rs.length, mine: rs.find((r) => r.author_company === mc)?.rating || null };
     },
+    project_invite({ p_project, p_company }) {
+      const mc = myCompany(); const pr = db.projects.find((p) => p.id === p_project && p.company_id === mc);
+      if (!pr) throw new Error('Seul le pro qui a créé le chantier peut inviter.');
+      if (!db.network.some((n) => n.company_id === mc && n.pro_id === p_company)) throw new Error("Ajoutez d'abord ce pro à votre réseau : il doit accepter votre demande avant d'être invité sur un chantier.");
+      if (db.project_shares.some((x) => x.project_id === p_project && x.company_id === p_company)) throw new Error('Ce pro est déjà invité sur ce chantier.');
+      db.project_shares.push({ project_id: p_project, company_id: p_company, status: 'pending', invited_by: mc, created_at: now() });
+      const conv = rpcs.start_conversation({ p_company }); const co = db.companies.find((c) => c.id === mc);
+      const m = { id: id(), conversation_id: conv, sender_id: me(), sender_name: co.name, sender_company_id: mc, body: '', attachments: [], card: { type: 'project_invite', title: 'Invitation sur un chantier · ' + pr.title, sub: pr.address || '', project_id: pr.id }, created_at: now() };
+      db.messages.push(m); afterInsert('messages', m);
+      notifyCompany(p_company, 'systeme', 'Invitation sur un chantier', `${co.trade_name || co.name} vous invite sur « ${pr.title} »`, '/pro/messages/' + conv);
+      return conv;
+    },
+    project_invite_answer({ p_project, p_accept }) {
+      const mc = myCompany(); const sh = db.project_shares.find((x) => x.project_id === p_project && x.company_id === mc && x.status === 'pending');
+      if (!sh) throw new Error('Invitation introuvable ou déjà traitée.');
+      const pr = db.projects.find((p) => p.id === p_project); const co = db.companies.find((c) => c.id === mc);
+      if (p_accept) sh.status = 'accepted'; else db.project_shares = db.project_shares.filter((x) => x !== sh);
+      const conv = rpcs.start_conversation({ p_company: pr.company_id });
+      const m = { id: id(), conversation_id: conv, sender_id: me(), sender_name: co.name, sender_company_id: mc, body: '', attachments: [], card: { type: p_accept ? 'done' : 'info', title: p_accept ? 'Invitation acceptée' : 'Invitation refusée', sub: pr.title, project_id: pr.id }, created_at: now() };
+      db.messages.push(m); afterInsert('messages', m);
+      notifyCompany(pr.company_id, 'systeme', p_accept ? 'Invitation acceptée' : 'Invitation refusée', `${co.trade_name || co.name} ${p_accept ? 'rejoint' : 'ne rejoint pas'} le chantier « ${pr.title} »`, '/pro/planning?projet=' + pr.id);
+    },
+    project_invites_list() {
+      const mc = myCompany();
+      return db.project_shares.filter((x) => x.company_id === mc && x.status === 'pending').map((x) => { const p = db.projects.find((y) => y.id === x.project_id) || {}; const c = db.companies.find((y) => y.id === p.company_id) || {}; return { project_id: p.id, title: p.title, address: p.address, created_at: x.created_at, from: { id: c.id, name: c.trade_name || c.name } }; });
+    },
+    referral_stats() { return { count: db.companies.filter((c) => c.referred_by && c.referred_by === myCompany()).length, max: 10 }; },
+    siret_status({ p_siret }) { const d = String(p_siret).replace(/\D/g, ''); return db.companies.some((c) => String(c.siret || '').replace(/\D/g, '') === d) ? 'active' : 'new'; },
     finish_past_appointments() {
       const mc = myCompany(); let n = 0;
       db.appointments.filter((a) => a.company_id === mc && a.status === 'valide' && a.end_at < now()).forEach((a) => { a.status = 'termine'; n++; });

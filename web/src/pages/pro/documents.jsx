@@ -7,7 +7,7 @@ import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, iso, clientName, date, fullName } from '../../lib/format.js';
 import { computeTotals, newLine, defaultLines, VAT_RATES, kindLabel, statusPill, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
-import { TopBar, Sec, Field, Seg, Chips, Sheet, Modal, useData, Loader, Empty, Toggle, SearchBar, StatusPill } from '../../ui/index.jsx';
+import { TopBar, Sec, Field, Seg, Chips, Sheet, Modal, useData, Loader, Empty, Toggle, SearchBar, StatusPill , Picker } from '../../ui/index.jsx';
 import { DocList } from './doclist.jsx';
 import { LuBellRing } from 'react-icons/lu';
 import { dueReminders, nextReminder, scenarios, fillTemplate, sendReminder } from '../../lib/relances.js';
@@ -219,7 +219,7 @@ export function DocEdit({ params }) {
       <div style={{ maxWidth: 820 }}>
         <div>
           {!params.id && !d.source_id && d.kind !== 'devis' && <KindPicker d={d} upd={upd} />}
-          <Field label={t('Client')}><select value={d.client_id} onChange={(e) => pickClient(e.target.value)} disabled={!!d.source_id && d.kind !== 'devis'}><option value="">{t('Choisir un client')}</option>{b.clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)}{c.billing_city ? ' · ' + c.billing_city : ''}</option>)}</select></Field>
+          <Field label={t('Client')}><Picker options={b.clients.map((c) => [c.id, clientName(c), [c.billing_city, c.number].filter(Boolean).join(' · ')])} value={d.client_id} onChange={pickClient} disabled={!!d.source_id && d.kind !== 'devis'} /></Field>
           {!b.clients.length && <p className="small">{t('Aucun client : ')}{' '}<a className="red-t bold" href="/pro/clients/nouveau">{t('créer un client')}</a></p>}
           <Field label={t('Objet')}><input value={d.object} onChange={(e) => upd({ object: e.target.value })} placeholder={t('ex. Changement d’un chauffe-eau')} /></Field>
           <div className="form-grid two">

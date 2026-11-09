@@ -156,8 +156,34 @@ export function Seg({ options, value, onChange }) {
   return <div className="seg">{options.map(([v, l]) => <button key={v} type="button" className={value === v ? 'on' : ''} onClick={() => onChange(v)}>{l}</button>)}</div>;
 }
 
-export function Field({ label, hint, children }) {
-  return <label className="field"><span>{label} {hint && <span className="hint">{hint}</span>}</span>{children}</label>;
+export function Field({ label, hint, req, children }) {
+  return <label className={'field' + (req ? ' req' : '')}><span>{label}{req && <b className="req-star" title={t('Obligatoire')}> *</b>} {hint && <span className="hint">{hint}</span>}</span>{children}</label>;
+}
+
+// Liste déroulante où l'on peut aussi taper pour chercher (utile avec des centaines de clients)
+export function Picker({ options, value, onChange, placeholder, required, disabled, empty }) {
+  const cur = options.find((o) => o[0] === value);
+  const [q, setQ] = useState(null);
+  const [open, setOpen] = useState(false);
+  const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const words = nz(q || '').trim().split(/\s+/).filter(Boolean);
+  const list = options.filter((o) => !words.length || words.every((w) => nz(o[1] + ' ' + (o[2] || '')).includes(w))).slice(0, 80);
+  const pick = (v) => { onChange(v); setQ(null); setOpen(false); };
+  return (
+    <div className="picker" onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) { setOpen(false); setQ(null); } }}>
+      <div className="picker-in">
+        <input value={q ?? (cur ? cur[1] : '')} placeholder={placeholder || t('Tapez un nom ou choisissez')} disabled={disabled} required={required && !value}
+          onFocus={(e) => { setOpen(true); e.target.select(); }} onChange={(e) => { setQ(e.target.value); setOpen(true); }}
+          onKeyDown={(e) => { if (e.key === 'Enter' && open && list[0]) { e.preventDefault(); pick(list[0][0]); } if (e.key === 'Escape') setOpen(false); }} />
+        <button type="button" className="picker-btn" disabled={disabled} aria-label={t('Afficher la liste')} onClick={(e) => { e.preventDefault(); setQ(''); setOpen(!open); }}>▾</button>
+      </div>
+      {open && !disabled && <div className="picker-list" role="listbox">
+        {empty && <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => pick('')} className="muted">{empty}</button>}
+        {list.map((o) => <button type="button" key={o[0]} onMouseDown={(e) => e.preventDefault()} onClick={() => pick(o[0])} className={o[0] === value ? 'on' : ''}>{o[1]}{o[2] && <small>{o[2]}</small>}</button>)}
+        {!list.length && <div className="small muted" style={{ padding: 10 }}>{t('Aucun résultat')}</div>}
+      </div>}
+    </div>
+  );
 }
 export function Toggle({ checked, onChange, label, state }) {
   const input = <input type="checkbox" role="switch" className="toggle" checked={!!checked} onChange={(e) => onChange(e.target.checked)} aria-label={label} />;

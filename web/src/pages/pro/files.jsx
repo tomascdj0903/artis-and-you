@@ -5,7 +5,7 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { clientName, dateMed, date, iso, rel } from '../../lib/format.js';
-import { DOC_TYPES, VAULT_TYPES, docTypeLabel, validity } from '../../lib/docs.js';
+import { DOC_TYPES, VAULT_TYPES, VAULT_REQUIRED, docTypeLabel, validity } from '../../lib/docs.js';
 import { TopBar, SearchBar, Sec, Sheet, Field, Chips, useData, Loader, Empty, Img, Lightbox, openFile, pickFiles, Toggle, SettingToggle, StatusPill, Pill } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
@@ -228,11 +228,12 @@ export function Vault() {
       <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={f.st.length + f.types.length > 0} />
       {alerts.length > 0 && <div className="alert"><LuTriangleAlert className="red-t" size={26} /><div><b>{t('{n} documents à renouveler', { n: alerts.length })}</b><div className="small">{alerts.map((x) => `${t(x.l)} ${stKey(x.cur) === 'exp' ? t('expiré') : t('expire le {d}', { d: date(x.cur.valid_until) })}`).join(' · ')}</div></div></div>}
       <Sec title={<><LuLock className="red-t" /> {t('Mes documents')}</>} meta={t('{n} documents', { n: files.length })} />
+      <p className="small faint" style={{ marginTop: -6 }}><b className="req-star">*</b> {t('document obligatoire pour exercer (à présenter sur demande d’un client ou d’un donneur d’ordre)')}</p>
       <div className="list">
         {shown.map((x) => (
           <button key={x.k} className="li click" onClick={() => navigate('/pro/coffre-fort/' + x.k)}>
             <div className="ficon navy"><LuFolder /></div>
-            <div className="grow"><div className="t1">{t(x.l)}</div>
+            <div className="grow"><div className="t1">{t(x.l)}{VAULT_REQUIRED.includes(x.k) && <b className="req-star" title={t('Obligatoire')}> *</b>}</div>
               <div className="row small">{t('{n} doc', { n: x.fs.length })}{x.cur ? <StatusPill s={validity(x.cur)} /> : <Pill c="grey">{t('À ajouter')}</Pill>}</div>
               {x.cur?.valid_until && <div className="t2">{t('Valide jusqu’au {d}', { d: date(x.cur.valid_until) })}</div>}</div>
             <LuChevronRight />

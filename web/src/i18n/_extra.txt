@@ -871,3 +871,15 @@ Chantiers en commun|Shared jobs|Obras em comum|Cantieri in comune
 Qui intervient et quand sur ce chantier. Seuls vos propres rendez-vous sont modifiables.|Who works on this job and when. Only your own appointments can be edited.|Quem intervém e quando nesta obra. Só as suas marcações podem ser alteradas.|Chi interviene e quando su questo cantiere. Solo i tuoi appuntamenti sono modificabili.
 Ajouter mon intervention|Add my visit|Adicionar a minha intervenção|Aggiungi il mio intervento
 Chantier en commun (facultatif)|Shared job (optional)|Obra em comum (opcional)|Cantiere in comune (facoltativo)
+Invitation envoyée : le pro doit l’accepter|Invitation sent: the pro must accept it|Convite enviado: o profissional tem de aceitar|Invito inviato: il professionista deve accettarlo
+Invitations sur un chantier|Job invitations|Convites para obras|Inviti ai cantieri
+{n} vous invite|{n} invites you|{n} convida-o|{n} ti invita
+Vous avez rejoint le chantier|You joined the job|Juntou-se à obra|Ti sei unito al cantiere
+Invitation refusée|Invitation declined|Convite recusado|Invito rifiutato
+Obligatoire|Required|Obrigatório|Obbligatorio
+Tapez un nom ou choisissez|Type a name or choose|Escreva um nome ou escolha|Digita un nome o scegli
+Afficher la liste|Show list|Mostrar a lista|Mostra l'elenco
+Aucun résultat|No results|Sem resultados|Nessun risultato
+Devis, rendez-vous et facturation électronique : tout votre chantier au même endroit.|Quotes, appointments and e-invoicing: your whole job in one place.|Orçamentos, marcações e faturação eletrónica: toda a sua obra num só lugar.|Preventivi, appuntamenti e fatturazione elettronica: tutto il cantiere in un unico posto.
+Devis, planning et facturation électronique pour les artisans|Quotes, scheduling and e-invoicing for tradespeople|Orçamentos, agenda e faturação eletrónica para artesãos|Preventivi, planning e fatturazione elettronica per artigiani
+Facturation électronique intégrée, prête pour l’obligation 2026–2027|Built-in e-invoicing, ready for the 2026–2027 mandate|Faturação eletrónica integrada, pronta para a obrigação 2026–2027|Fatturazione elettronica integrata, pronta per l'obbligo 2026–2027

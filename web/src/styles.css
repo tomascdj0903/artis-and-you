@@ -988,3 +988,17 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .tile .tile-new { margin-top: 4px; white-space: nowrap; max-width: 100%; display: inline-flex; align-items: center; gap: 4px; padding: 7px 10px; border-radius: 999px; border: 0; background: #2B1F1C; color: #fff; font: 600 12.5px Inter, sans-serif; cursor: pointer; min-height: 34px; }
 .tile .tile-new svg { width: 14px; height: 14px; color: #fff; }
 .tile .tile-new:hover { background: #4a3732; }
+.req-star { color: #8E3220; font-weight: 800; }
+.picker { position: relative; }
+.picker-in { display: flex; align-items: center; }
+.picker-in input { flex: 1; padding-right: 40px; }
+.picker-btn { margin-left: -40px; width: 40px; height: 40px; border: 0; background: transparent; font-size: 16px; cursor: pointer; color: var(--muted, #6B5F5B); }
+.picker-list { position: absolute; z-index: 40; left: 0; right: 0; top: calc(100% + 4px); max-height: 280px; overflow: auto; background: var(--card, #fff); border: 1px solid #E8E0D6; border-radius: 12px; box-shadow: 0 8px 24px rgba(43,31,28,.15); }
+.picker-list button { display: block; width: 100%; text-align: left; padding: 10px 12px; border: 0; background: transparent; font: inherit; cursor: pointer; }
+.picker-list button small { display: block; color: #6B5F5B; font-size: 12px; }
+.picker-list button:hover, .picker-list button.on { background: #FDF3EF; }
+
+/* Tuiles de la fiche client : icône en haut, titre et sous-titre alignés en bas, toutes identiques */
+.tiles.three .tile.ctile { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 4px; text-align: left; min-height: 120px; padding: 16px; }
+.tiles.three .tile.ctile > svg { margin-bottom: auto; width: 42px; height: 42px; padding: 10px; }
+.tiles.three .tile.ctile small { font-weight: 500; opacity: .85; font-size: 12.5px; line-height: 1.3; }

@@ -7,7 +7,7 @@ import { t, locale } from '../../lib/i18n.js';
 import { clientName, dateShort, dateTime, hm, startOfWeek, addDays, weekNumber, iso, fullName, date } from '../../lib/format.js';
 import { apptStatus, APPT_TYPES, expandAppointments } from '../../lib/docs.js';
 import { icsFile, rrule } from '../../lib/ics.js';
-import { TopBar, SearchBar, KV, Sec, Sheet, Field, Chips, Seg, Toggle, SettingToggle, useData, Loader, Empty, StatusPill, Img, Modal, Lightbox, Pill } from '../../ui/index.jsx';
+import { TopBar, SearchBar, KV, Sec, Sheet, Field, Chips, Seg, Toggle, SettingToggle, useData, Loader, Empty, StatusPill, Img, Modal, Lightbox, Pill , Picker } from '../../ui/index.jsx';
 
 export const DEFAULT_DURATIONS = { Diagnostic: 60, 'Dépannage': 90, Devis: 60, Entretien: 60, Chantier: 240 };
 const PALETTE = ['#2B1F1C', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
@@ -444,7 +444,7 @@ export function ApptEdit({ params }) {
       <form onSubmit={save}>
         <label className="check"><input type="checkbox" checked={a.personal} onChange={(e) => setA({ ...a, personal: e.target.checked })} />{t('RDV personnel (sans client)')}</label>
         {(sharedP || []).length > 0 && <Field label={t('Chantier en commun (facultatif)')}><select value={(sharedP || []).some((x) => x.id === a.project_id) ? a.project_id : ''} onChange={(e) => { const sp = sharedP.find((x) => x.id === e.target.value); setA({ ...a, project_id: e.target.value || null, ...(sp && !a.address ? { address: sp.address || '' } : {}), ...(sp && !a.title ? { title: sp.title } : {}) }); }}><option value="">—</option>{sharedP.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}</select></Field>}
-        {!a.personal && <Field label={t('Client')}><select value={a.client_id || ''} onChange={(e) => pickClient(e.target.value)} required={!(sharedP || []).some((x) => x.id === a.project_id)}><option value="">{t('Choisir un client')}</option>{clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)} · {c.billing_city}</option>)}</select></Field>}
+        {!a.personal && <Field label={t('Client')}><Picker options={clients.map((c) => [c.id, clientName(c), c.billing_city])} value={a.client_id || ''} onChange={pickClient} required={!(sharedP || []).some((x) => x.id === a.project_id)} /></Field>}
         {!a.personal && <Chips options={APPT_TYPES.map((x) => [x, t(x)])} value={a.type} onChange={(type) => setA({ ...a, type, ...(params.id ? {} : { end_at: new Date(+new Date(a.start_at) + (s.durations[type] || s.duration) * 6e4).toISOString() }) })} red />}
         {!a.personal && !params.id && <p className="small faint" style={{ marginTop: -6 }}>{t('Durée prévue pour « {t} » : {d} (modifiable dans les réglages du planning)', { t: t(a.type), d: fmtDur(s.durations[a.type] || s.duration) })}</p>}
         <Field label={t('Objet')}><input value={a.title} onChange={(e) => setA({ ...a, title: e.target.value })} placeholder={t('ex. Changement d’un chauffe-eau')} /></Field>

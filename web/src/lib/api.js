@@ -1,5 +1,6 @@
 // Couche de données : Supabase (production) ou base locale (tests hors-ligne).
 import { mockBackend } from './mock.js';
+import { t } from './i18n.js';
 
 const ENV = typeof __ENV__ !== 'undefined' ? __ENV__ : {};
 const URL_ = (ENV.SUPABASE_URL || '').replace(/\/$/, '');
@@ -137,6 +138,9 @@ const remote = {
   // Authentification
   async signUp(email, password, data) {
     const d = await http('/auth/v1/signup?redirect_to=' + encodeURIComponent(location.origin + '/'), { method: 'POST', body: { email, password, data }, auth: false });
+    // Supabase ne renvoie pas d'erreur pour une adresse déjà inscrite (identities vide) : on bloque ici
+    const u = d.user || d;
+    if (!d.access_token && Array.isArray(u?.identities) && u.identities.length === 0) throw new Error(t('Un compte existe déjà avec cette adresse e-mail. Connectez-vous, ou utilisez une autre adresse : une adresse ne peut servir qu’à un seul compte.'));
     if (d.access_token) saveSession({ ...d, expires_at: Date.now() / 1000 + d.expires_in });
     return { needsConfirm: !d.access_token };
   },

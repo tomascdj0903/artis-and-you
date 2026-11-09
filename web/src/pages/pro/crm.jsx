@@ -9,7 +9,7 @@ import { starterFor } from '../../lib/starter.js';
 import { money, money0, date, dateShort, clientName, iso, num } from '../../lib/format.js';
 import { STEPS, autoSteps, stepState, ALL_TRADES, VAT_RATES, kindLabel } from '../../lib/docs.js';
 import { makeXlsx, download } from '../../lib/xlsx.js';
-import { TopBar, SearchBar, Sec, Sheet, Field, Chips, Seg, useData, Loader, Empty, Pill, Table } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Sheet, Field, Chips, Seg, useData, Loader, Empty, Pill, Table , Picker } from '../../ui/index.jsx';
 import { KpiView } from './kpi.jsx';
 
 export function CrmHome() {
@@ -147,7 +147,7 @@ function NewProject({ open, clients, onClose, onDone }) {
   if (!open) return null;
   return (
     <Sheet open onClose={onClose} title={t('Nouveau projet')}>
-      <Field label={t('Client')}><select value={v.client_id} onChange={(e) => { const c = clients.find((x) => x.id === e.target.value); setV({ ...v, client_id: e.target.value, address: c ? [c.site_address, c.site_city].filter(Boolean).join(' ') : '' }); }}><option value="">{t('Choisir un client')}</option>{clients.map((c) => <option key={c.id} value={c.id}>{clientName(c)}</option>)}</select></Field>
+      <Field label={t('Client')}><Picker options={clients.map((c) => [c.id, clientName(c), c.site_city || c.billing_city])} value={v.client_id} onChange={(id) => { const c = clients.find((x) => x.id === id); setV({ ...v, client_id: id, address: c ? [c.site_address, c.site_city].filter(Boolean).join(' ') : '' }); }} /></Field>
       <Field label={t('Intitulé')}><input value={v.title} onChange={(e) => setV({ ...v, title: e.target.value })} placeholder={t('ex. Rénovation salle de bains')} /></Field>
       <Field label={t('Adresse du chantier')}><input value={v.address} onChange={(e) => setV({ ...v, address: e.target.value })} /></Field>
       <button className="btn block" disabled={!v.client_id || !v.title} onClick={() => run(() => api.insert('projects', { ...v, company_id: company.id }), t('Projet créé')).then(onDone)}>{t('Créer')}</button>

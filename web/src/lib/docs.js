@@ -133,6 +133,8 @@ export const VAULT_TYPES = [
   ['kbis', 'Kbis'], ['urssaf', 'Attestation de vigilance URSSAF'], ['decennale', 'Attestation décennale'], ['rcpro', 'Assurance RC Pro'],
   ['fiscale', 'Attestation de régularité fiscale'], ['certification', 'Certifications (RGE, Qualibat)'], ['btp', 'Cartes BTP'], ['contrat', 'Contrats'], ['autre', 'Autres documents'],
 ];
+// Documents légalement exigés d'un artisan (BTP) : Kbis / immatriculation, vigilance URSSAF (sous-traitance > 5 000 €), décennale
+export const VAULT_REQUIRED = ['kbis', 'urssaf', 'decennale'];
 export const docTypeLabel = (k, list = DOC_TYPES) => t((list.find((x) => x[0] === k) || [k, k])[1]);
 export function validity(f) {
   if (!f.valid_until) return ['green', t('À jour')];

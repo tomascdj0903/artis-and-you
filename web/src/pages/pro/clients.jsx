@@ -1,6 +1,6 @@
 import { RateBox } from './messages.jsx';
 import { useState } from 'react';
-import { LuPlus, LuPencil, LuEuro, LuFileText, LuFilePen, LuX, LuCamera, LuCalendarCheck, LuHardHat, LuFolderOpen, LuMail } from 'react-icons/lu';
+import { LuChartColumn, LuMessageSquare, LuHistory, LuPlus, LuPencil, LuEuro, LuFileText, LuFilePen, LuX, LuCamera, LuCalendarCheck, LuHardHat, LuFolderOpen, LuMail } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation } from '../../lib/router.jsx';
@@ -186,8 +186,8 @@ export function ClientCard({ params }) {
     if (await confirm({ title: t('Supprimer ce client ?'), text: t('Cette action est définitive.'), ok: t('Supprimer'), danger: true })) { await run(() => api.remove('clients', { id: c.id }), t('Client supprimé')); navigate('/pro/clients'); }
   };
   const tiles = [
-    ['kpi', 'KPI', 'CRM', can('kpi')], ['factures', 'Factures', 'Documents', can('devis')], ['chat', 'Chatbox', 'Messages', true],
-    ['devis', 'Devis', 'Documents', can('devis')], ['historique', 'Historique', '', true], ['docs', 'Autres docs', 'Documents', true],
+    ['devis', 'Devis', 'Créer, suivre, signer', can('devis'), LuFilePen], ['factures', 'Factures', 'Paiements et relances', can('devis'), LuFileText], ['chat', 'Messages', 'Discuter avec le client', true, LuMessageSquare],
+    ['historique', 'Historique', 'RDV, paiements, documents', true, LuHistory], ['docs', 'Autres docs', 'Photos, plans, attestations', true, LuFolderOpen], ['kpi', 'KPI', 'Chiffres de ce client', can('kpi'), LuChartColumn],
   ].filter((x) => x[3]);
   return (
     <div className="content">
@@ -200,7 +200,7 @@ export function ClientCard({ params }) {
           <div className="amount"><small>{t('Solde')}</small>{money(solde)}</div></div>
       </div>
       <div className="tiles three" style={{ marginTop: 14 }}>
-        {tiles.map(([k, l, s]) => <button key={k} className="tile" onClick={() => go(k)}>{t(l)}{s && <small>{t(s)}</small>}</button>)}
+        {tiles.map(([k, l, s, , Ic]) => <button key={k} className="tile ctile" onClick={() => go(k)}><Ic />{t(l)}<small>{t(s)}</small></button>)}
       </div>
       <div className="btns inline">
         <div className="two">
