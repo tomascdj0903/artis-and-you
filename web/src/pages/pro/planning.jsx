@@ -75,9 +75,15 @@ export function Planning() {
   const all = data ? expandAppointments(data.appts, range[0], range[1]) : [];
   const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const match = (a) => { const c = data?.cm[a.client_id]; const hay = nz([a.title, a.type, clientName(c), c?.company_name, c?.last_name, c?.first_name, a.address, a.contact_name, a.notes, dateShort(a.start_at)].join(' ')); return nz(q).trim().split(/\s+/).every((w) => hay.includes(w)); };
-  const evs = all.filter((a) => !teamF.length || teamF.includes(a.team_id));
+  // Légende cliquable : on masque / affiche une équipe, un pro du chantier, les dispos, les RDV à valider / validés, les visios
+  const [hide, setHide] = useState(() => { try { return new Set(JSON.parse(localStorage.getItem('ay-plan-hide') || '[]')); } catch { return new Set(); } });
+  const tog = (k) => setHide((h) => { const n = new Set(h); n.has(k) ? n.delete(k) : n.add(k); try { localStorage.setItem('ay-plan-hide', JSON.stringify([...n])); } catch {} return n; });
+  const evs = all.filter((a) => (!teamF.length || teamF.includes(a.team_id))
+    && !(a.company ? hide.has('co:' + a.company_id) : a.team_id && hide.has('team:' + a.team_id))
+    && !(a.status === 'a_valider' && hide.has('a_valider')) && !(['valide', 'termine'].includes(a.status) && hide.has('valide')) && !(a.mode === 'visio' && hide.has('visio')));
   const dragOk = !proj && can('planning') && profile.member_role !== 'ouvrier';
   const sp = (shared || []).find((x) => x.id === proj);
+  const L = ({ k, children }) => <button type="button" className={hide.has(k) ? 'off' : ''} aria-pressed={!hide.has(k)} onClick={() => tog(k)}>{children}</button>;
   const move = (n) => { const a = new Date(anchor); if (view === 'day') a.setDate(a.getDate() + n); else if (view === 'month') a.setMonth(a.getMonth() + n); else a.setDate(a.getDate() + 7 * n); setAnchor(a); };
   const label = view === 'month' ? anchor.toLocaleDateString(locale(), { month: 'long', year: 'numeric' }) : view === 'day' ? dateShort(anchor) : t('Semaine {n}', { n: weekNumber(startOfWeek(anchor)) });
   const sub = view === 'week' ? `${range[0].toLocaleDateString(locale(), { day: 'numeric', month: 'short' })} – ${addDays(range[1], -1).toLocaleDateString(locale(), { day: 'numeric', month: 'short', year: 'numeric' })}` : '';
@@ -92,8 +98,8 @@ export function Planning() {
       {sp && <div className="shared-head">
         <div className="sh-top"><div className="grow"><b>{sp.title}</b>{sp.address && <div className="small muted">{sp.address}</div>}</div>
           <button className="btn xs" onClick={() => navigate('/pro/planning/nouveau?project=' + sp.id)}><LuPlus /> {t('Mon intervention')}</button></div>
-        <div className="sh-members">{sp.members.map((m) => <span key={m.id}><i style={{ background: hashColor(m.id) }} />{m.name}{m.trades?.[0] ? ' · ' + t(m.trades[0]) : ''}</span>)}</div>
-        <div className="small muted">{t('Qui intervient et quand sur ce chantier. Seuls vos propres rendez-vous sont modifiables.')}</div>
+        <div className="sh-members">{sp.members.map((m) => <button type="button" key={m.id} className={hide.has('co:' + m.id) ? 'off' : ''} onClick={() => tog('co:' + m.id)} aria-pressed={!hide.has('co:' + m.id)}><i style={{ background: hashColor(m.id) }} />{m.name}{m.trades?.[0] ? ' · ' + t(m.trades[0]) : ''}</button>)}</div>
+        <div className="small muted">{t('Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.')}</div>
       </div>}
       <SearchBar placeholder={t('Recherchez un rendez-vous (client, objet, adresse)')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={teamF.length > 0} />
       <div className="cal-head">
@@ -105,12 +111,12 @@ export function Planning() {
         <div className="seg" style={{ margin: 0, minWidth: 210 }}>{[['day', t('Jour')], ['week', t('Semaine')], ['month', t('Mois')]].map(([v, l]) => <button key={v} className={view === v ? 'on' : ''} onClick={() => setView(v)} style={{ padding: '6px 8px', fontSize: 13, minHeight: 40 }}>{l}</button>)}</div>
         {profile.member_role !== 'ouvrier' && <Link to="/pro/planning/reglages" className="btn xs ghost"><LuSettings /> {t('Réglages')}</Link>}
       </div>
-      <div className="cal-legend">
-        {s.colorBy === 'team' && teams.map((x) => <span key={x.id}><i style={{ background: x.color }} />{x.name}</span>)}
-        <span><i className="ev dispo" style={{ position: 'static' }} />{t('Dispo')}</span>
-        <span><i style={{ border: '2px dashed var(--bordeaux)' }} />{t('À valider')}</span>
-        <span><i style={{ background: 'var(--ardoise)' }} />{t('Validé')}</span>
-        <span><LuVideo /> {t('Visio')}</span>
+      <div className="cal-legend toggles" title={t('Touchez pour afficher ou masquer')}>
+        {!proj && s.colorBy === 'team' && teams.map((x) => <L key={x.id} k={'team:' + x.id}><i style={{ background: x.color }} />{x.name}</L>)}
+        {!proj && <L k="dispo"><i className="ev dispo" style={{ position: 'static' }} />{t('Dispo')}</L>}
+        <L k="a_valider"><i style={{ border: '2px dashed var(--bordeaux)' }} />{t('À valider')}</L>
+        <L k="valide"><i style={{ background: 'var(--ardoise)' }} />{t('Validé')}</L>
+        <L k="visio"><LuVideo /> {t('Visio')}</L>
       </div>
       {undo && <div className="notice row" style={{ justifyContent: 'space-between', marginBottom: 8 }}><span>{t('Rendez-vous déplacé au {d}', { d: undo.label })}</span><button className="btn xs ghost" onClick={async () => { await run(() => api.update('appointments', { id: undo.a.id }, undo.prev)); setUndo(null); reload(); }}>{t('Annuler')}</button></div>}
       {q.trim() ? <SearchResults list={(allData || []).filter((a) => match(a)).filter((a) => !teamF.length || teamF.includes(a.team_id))} loading={!allData} cm={data?.cm || {}} color={color} q={q.trim()} />
@@ -118,7 +124,7 @@ export function Planning() {
         <MonthGrid range={range} anchor={anchor} evs={evs} color={color} cm={data.cm} onDay={(d) => { setAnchor(d); setView('day'); }} onMove={dragOk ? moveAppt : null} />
       ) : (
         <WeekGrid days={view === 'day' ? [range[0]] : Array.from({ length: weekLength(s) }, (_, i) => addDays(range[0], i))}
-          s={s} evs={evs} busy={all} color={color} cm={data.cm} onNew={newAt} onMove={dragOk ? moveAppt : null} />
+          s={s} evs={evs} busy={all} noFree={hide.has('dispo')} color={color} cm={data.cm} onNew={newAt} onMove={dragOk ? moveAppt : null} />
       )}
       {dragOk && !q.trim() && view !== 'month' && <p className="small faint" style={{ marginTop: 6 }}>{t('Astuce : faites glisser un rendez-vous pour le déplacer (par pas de 15 min).')}</p>}
       {can('planning') && profile.member_role !== 'ouvrier' && <button className="fab" onClick={() => navigate('/pro/planning/nouveau')} aria-label={t('Nouveau rendez-vous')}><LuPlus /></button>}
@@ -130,7 +136,7 @@ export function Planning() {
   );
 }
 
-function WeekGrid({ days, s, evs, busy, color, cm, onNew, onMove }) {
+function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove }) {
   const [h0, h1] = s.hours; const H = 46;
   const todayKey = iso(new Date());
   const top = (d) => ((d.getHours() + d.getMinutes() / 60 - h0) * H);
@@ -168,7 +174,7 @@ function WeekGrid({ days, s, evs, busy, color, cm, onNew, onMove }) {
         {days.map((d) => {
           const key = iso(d);
           const dayEv = evs.filter((a) => iso(new Date(a.start_at)) === key);
-          const free = busy.some((a) => a.company) ? [] : freeWindows(d, busy, s, 30);
+          const free = noFree || busy.some((a) => a.company) ? [] : freeWindows(d, busy, s, 30);
           return (
             <div key={key} data-day={key} className={'cal-col' + (s.days.includes(d.getDay()) ? '' : ' off') + (ghost?.day === key ? ' drop' : '')} style={{ height: (h1 - h0) * H }}
               onDoubleClick={(e) => { if (e.target !== e.currentTarget) return; const y = e.nativeEvent.offsetY; const x = new Date(d); x.setHours(h0, 0, 0, 0); x.setMinutes(Math.floor((y / H) * 2) * 30); onNew(x); }}>

@@ -2052,4 +2052,6 @@ export default {"(copie)":"(copy)",
 "Invité le {d}":"Invited on {d}",
 "Espace client Artesa":"Artesa client space",
 "Copié !":"Copied!",
-"Mon intervention":"My visit"};
+"Mon intervention":"My visit",
+"Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.":"Tap a pro to show or hide them. Only your own appointments can be edited.",
+"Touchez pour afficher ou masquer":"Tap to show or hide"};

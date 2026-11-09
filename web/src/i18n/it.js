@@ -2052,4 +2052,6 @@ export default {"(copie)":"(copia)",
 "Invité le {d}":"Invitato il {d}",
 "Espace client Artesa":"Area clienti Artesa",
 "Copié !":"Copiato!",
-"Mon intervention":"Il mio intervento"};
+"Mon intervention":"Il mio intervento",
+"Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.":"Tocca un professionista per mostrarlo o nasconderlo. Solo i tuoi appuntamenti sono modificabili.",
+"Touchez pour afficher ou masquer":"Tocca per mostrare o nascondere"};

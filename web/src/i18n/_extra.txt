@@ -893,3 +893,5 @@ Espace client Artesa|Artesa client space|Espaço cliente Artesa|Area clienti Art
 Partager|Share|Partilhar|Condividi
 Copié !|Copied!|Copiado!|Copiato!
 Mon intervention|My visit|A minha intervenção|Il mio intervento
+Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.|Tap a pro to show or hide them. Only your own appointments can be edited.|Toque num profissional para mostrar ou ocultar. Só as suas marcações podem ser alteradas.|Tocca un professionista per mostrarlo o nasconderlo. Solo i tuoi appuntamenti sono modificabili.
+Touchez pour afficher ou masquer|Tap to show or hide|Toque para mostrar ou ocultar|Tocca per mostrare o nascondere
