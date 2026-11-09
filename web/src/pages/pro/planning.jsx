@@ -87,10 +87,7 @@ export function Planning() {
     <div className="content" style={{ maxWidth: 1400 }}>
       <TopBar title={t('Planning')} sub={sub} back={false} />
       {(shared || []).length > 0 && <div className="row" style={{ gap: 8, marginBottom: 10 }}>
-        <select className="input" style={{ flex: 1, minHeight: 44 }} value={proj} onChange={(e) => setProj(e.target.value)} aria-label={t('Planning affiché')}>
-          <option value="">{t('Mon planning')}</option>
-          <optgroup label={t('Chantiers en commun')}>{shared.map((x) => <option key={x.id} value={x.id}>{x.title}</option>)}</optgroup>
-        </select>
+        <div style={{ flex: 1 }}><Picker options={shared.map((x) => [x.id, x.title, [x.address, (x.members || []).map((m) => m.name).join(', ')].filter(Boolean).join(' · ')])} value={proj} onChange={setProj} empty={t('Mon planning')} placeholder={t('Mon planning · tapez un chantier')} /></div>
       </div>}
       {sp && <div className="notice" style={{ marginBottom: 8 }}><b>{sp.title}</b>{sp.address ? ' · ' + sp.address : ''}<div className="cal-legend" style={{ margin: '6px 0 0' }}>{sp.members.map((m) => <span key={m.id}><i style={{ background: hashColor(m.id) }} />{m.name}{m.trades?.[0] ? ' (' + t(m.trades[0]) + ')' : ''}</span>)}</div><div className="small muted">{t('Qui intervient et quand sur ce chantier. Seuls vos propres rendez-vous sont modifiables.')}</div><button className="btn xs mt" onClick={() => navigate('/pro/planning/nouveau?project=' + sp.id)}><LuPlus /> {t('Ajouter mon intervention')}</button></div>}
       <SearchBar placeholder={t('Recherchez un rendez-vous (client, objet, adresse)')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={teamF.length > 0} />
