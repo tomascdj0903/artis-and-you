@@ -71,14 +71,18 @@ export function Home() {
   ].filter((x) => x[3]);
   return (
     <div className="content">
-      <TopBar back={false} home />
       <section className="home-band">
+        <TopBar back={false} home />
         <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{company?.trade_name || company?.name}</b></div>
         <SmartSearch />
         {st && <div className="hb-kpis">
           {can('planning') && <Link to="/pro/planning" className="hb-kpi"><b>{st.today}</b><span>{t('RDV aujourd’hui')}</span></Link>}
           {can('devis') && <Link to="/pro/documents/devis" className="hb-kpi"><b>{st.pending}</b><span>{t('devis en attente')}</span></Link>}
           {can('kpi') && <Link to="/pro/crm/kpi" className="hb-kpi"><b>{money(st.ca).replace(/,00\s?€/, ' €')}</b><span>{t('CA HT du mois')}</span></Link>}
+        </div>}
+        {((days !== null && days >= 0 && days <= 30 && company?.plan) || company?.referral_code) && <div className="hb-foot">
+          {days !== null && days >= 0 && days <= 30 && company?.plan && <Link to="/pro/compte/abonnement">⏳ {t('Essai gratuit : {n} jours restants', { n: days })} · <u>{t('Choisir ma formule')}</u></Link>}
+          {company?.referral_code && <ReferralLink code={company.referral_code} />}
         </div>}
       </section>
       <div className="htiles">
@@ -109,10 +113,6 @@ export function Home() {
         </div>
       )}
       {relN > 0 && <Link to="/pro/relances" className="notice">🔔 <span>{relN > 1 ? t('{n} relances clients à envoyer aujourd’hui', { n: relN }) : t('1 relance client à envoyer aujourd’hui')} →</span></Link>}
-      {days !== null && days >= 0 && days <= 30 && company?.plan && (
-        <Link to="/pro/compte/abonnement" className="notice">⏳ <span>{t('Essai gratuit : encore {n} jours. Choisir ma formule', { n: days })} →</span></Link>
-      )}
-      {company?.referral_code && <ReferralCard code={company.referral_code} />}
       <div className="row" style={{ justifyContent: 'flex-end', marginTop: 40 }}><Link to="/mentions-legales" className="bold">{t('Mentions légales')}</Link></div>
     </div>
   );
@@ -173,4 +173,16 @@ export function ReferralCard({ code }) {
       <button className="link small" aria-label={t('Masquer')} onClick={() => { try { localStorage.setItem('ay-ref-hide', code); } catch {} setHide(true); }}>✕</button>
     </div>
   );
+}
+
+// Parrainage intégré au bandeau : un lien discret qui partage le code
+function ReferralLink({ code }) {
+  const { toast } = useApp();
+  const url = `${location.origin}/inscription/artisan?parrain=${encodeURIComponent(code)}`;
+  const msg = t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert pour nous deux.', { c: code });
+  const share = async () => {
+    try { if (navigator.share) { await navigator.share({ title: 'Artesa', text: msg, url }); return; } } catch { return; }
+    try { await navigator.clipboard.writeText(msg + ' ' + url); toast(t('Lien de parrainage copié')); } catch {}
+  };
+  return <button type="button" onClick={share}>🎁 {t('Parrainez un artisan : 1 mois offert pour vous deux')} · <u>{t('Partager')}</u></button>;
 }

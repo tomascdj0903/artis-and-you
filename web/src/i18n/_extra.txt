@@ -831,3 +831,5 @@ Clients et équipe|Clients and team|Clientes e equipa|Clienti e squadra
 Trouver des pros|Find pros|Encontrar profissionais|Trova professionisti
 Réseau|Network|Rede|Rete
 Alertes|Alerts|Alertas|Avvisi
+Essai gratuit : {n} jours restants|Free trial: {n} days left|Teste grátis: faltam {n} dias|Prova gratuita: {n} giorni rimasti
+Choisir ma formule|Choose my plan|Escolher o meu plano|Scegli il mio piano

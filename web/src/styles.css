@@ -887,3 +887,27 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .pill.red-o { border-color: #C98A1E; color: #8A5600; }
 :root[data-theme="dark"] .pill.red { background: #3D2E12; color: #F0B860; }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+/* Bandeau d'accueil collé en haut, en-tête (logo, cloche, avatar) intégré */
+.home-band { margin: 0 -16px 18px; border-radius: 0 0 28px 28px; padding: 4px 16px 20px; }
+.home-band .topbar { padding: 14px 0 6px; color: #fff; }
+.home-band .topbar .iconbtn, .home-band .topbar .notifbell .iconbtn { background: rgba(255,255,255,.1); color: #fff; }
+.home-band .topbar .avatar { background: var(--bordeaux); color: #fff; }
+.home-band .logo-btn img { filter: brightness(0) invert(1); }
+@media (min-width: 701px) {
+  .home-band { margin: 0 -32px 22px; padding: 4px 32px 26px; border-radius: 0 0 32px 32px; }
+  .home-band .topbar { padding: 22px 0 4px; }
+}
+.hb-foot { display: flex; flex-wrap: wrap; gap: 8px; }
+.hb-foot a, .hb-foot button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 14px; border-radius: 999px; border: 0; background: rgba(255,255,255,.08); color: #F2E7E2; font: 600 13px var(--font); text-decoration: none; cursor: pointer; text-align: left; }
+.hb-foot a:hover, .hb-foot button:hover { background: rgba(255,255,255,.14); }
+.hb-foot u { text-underline-offset: 2px; color: #fff; }
+/* Tuiles en terracotta (demande du 9/11) */
+.htile, .tile { background: var(--bordeaux); color: #fff; border-color: transparent; }
+.htile:hover, .tile:hover { border-color: transparent; background: var(--bordeaux-600); box-shadow: var(--shadow); }
+.ht-ic, .tile > svg { background: rgba(255,255,255,.16); color: #fff; }
+.htile small, .tile small { color: #FBE3DA; }
+.htile small.warn { color: #FFE2A8; }
+.htile .dot { background: #fff; color: var(--bordeaux); }
+:root[data-theme="dark"] .htile small.warn { color: #FFE2A8; }
+@media (min-width: 701px) { .home-band .topbar { padding: 16px 0 0; margin-bottom: -28px; } }
+@media (max-width: 700px) { .hb-foot a, .hb-foot button { flex: 1 1 100%; justify-content: space-between; } .hb-kpi span { font-size: 12px; } }

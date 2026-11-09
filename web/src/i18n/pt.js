@@ -1996,4 +1996,6 @@ export default {"(copie)":"(cópia)",
 "{n} pros dans mon réseau":"{n} profissionais na minha rede",
 "Trouver des pros":"Encontrar profissionais",
 "Réseau":"Rede",
-"Alertes":"Alertas"};
+"Alertes":"Alertas",
+"Essai gratuit : {n} jours restants":"Teste grátis: faltam {n} dias",
+"Choisir ma formule":"Escolher o meu plano"};

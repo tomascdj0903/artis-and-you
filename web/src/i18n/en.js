@@ -1996,4 +1996,6 @@ export default {"(copie)":"(copy)",
 "{n} pros dans mon réseau":"{n} pros in my network",
 "Trouver des pros":"Find pros",
 "Réseau":"Network",
-"Alertes":"Alerts"};
+"Alertes":"Alerts",
+"Essai gratuit : {n} jours restants":"Free trial: {n} days left",
+"Choisir ma formule":"Choose my plan"};
