@@ -938,3 +938,13 @@ h1, h2, .tile { letter-spacing: -0.01em; }
   .hb-kpi { flex-direction: column; align-items: flex-start; gap: 0; }
   .hb-foot a, .hb-foot button { flex: 0 1 auto; justify-content: center; }
 }
+/* Menu latéral clair (sable) : le bandeau encre de l'accueil reste le seul bloc sombre */
+@media (min-width: 701px) {
+  .side { background: var(--bg-soft); color: var(--text); border-right: 1px solid var(--line-2); }
+  .side nav a { color: var(--text-2); }
+  .side nav a:hover { background: var(--bordeaux-50); color: var(--text); }
+  .side nav a.on { background: var(--bordeaux); color: #fff; }
+  .side .me { background: var(--surface); border: 1px solid var(--line-2); }
+  .side .me small { color: var(--text-3); }
+  :root[data-theme="dark"] .side { background: var(--bg-soft); }
+}
