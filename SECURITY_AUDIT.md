@@ -28,7 +28,7 @@ Les correctifs sont sur `main`, qui déploie la production. La branche `security
 | 12 | Moyenne | Electron : `shell.openExternal` sur n'importe quel protocole (`file:`, `ms-msdt:`…), navigation `file:` libre, IPC sans contrôle de l'origine, DevTools en production | Lien `ms-msdt:` dans un message | `desktop/main.js` : sandbox, protocoles autorisés (http, https, mailto, tel, sms, whatsapp), `file:` limité à la page hors ligne, IPC réservé au site officiel, DevTools coupés une fois installé | Corrigé (actif à la prochaine version du logiciel) |
 | 13 | Basse | Lien `href` construit à partir de données saisies (site web d'un client) : `javascript:` | Site web = `javascript:alert(1)` | Composant `KV` : seuls http, https, mailto, tel et sms passent (React 19 bloquait déjà `javascript:`) | Corrigé |
 | 14 | Basse | Protection contre les mots de passe ayant fuité désactivée (HaveIBeenPwned) | — | Réglage du dashboard Supabase | **À faire par toi** |
-| 15 | Basse | Déploiements preview Vercel publics (même base de prod, seule la clé publishable y figure) | URL `*-schedule7.vercel.app` | Activer « Vercel Authentication » sur les previews | **À faire par toi** |
+| 15 | Basse | Déploiements preview Vercel publics (même base de prod, seule la clé publishable y figure) | URL `*-schedule7.vercel.app` | Activer « Vercel Authentication » sur les previews | Fait par le propriétaire (9/11) |
 | 16 | Info | Électron 33 en fin de support | — | Passer à la version stable actuelle d'Electron et d'electron-builder | À faire (la vérification de version était impossible ici) |
 | 17 | Info | Mises à jour du logiciel non signées (Windows SmartScreen, macOS Gatekeeper) | — | Certificat de signature de code Windows et compte Apple Developer | À faire par toi |
 
@@ -56,8 +56,8 @@ Les correctifs sont sur `main`, qui déploie la production. La branche `security
 - Pour les stores, il faudra un emballage natif. Il faudra aussi remplir les fiches « App Privacy » (Apple) et « Data safety » (Google), et viser l'API Android récente. « Sign in with Apple » n'est requis que si une connexion Google ou Facebook est ajoutée.
 
 ## Actions que toi seul peux faire
-1. Supabase › Authentication : vérifier les URL de redirection (pas de joker). Protection mots de passe fuités : option payante, écartée.
-2. Vercel › Settings › Deployment Protection : activer Vercel Authentication sur les previews.
+1. ✅ Supabase › Authentication : URL de redirection vérifiées (fait le 9/11). Protection mots de passe fuités : option payante, écartée.
+2. ✅ Vercel › Deployment Protection : previews protégées (fait le 9/11).
 3. Signature de code, `npm audit` et mise à jour d'Electron : écartés pour l'instant (décision du propriétaire).
 4. Aucune rotation de clé nécessaire : aucun secret n'a fuité.
 
