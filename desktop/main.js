@@ -25,7 +25,7 @@ function createWindow() {
     backgroundColor: '#FFFFFF',
     show: false,
     autoHideMenuBar: true,
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, spellcheck: true },
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, devTools: !app.isPackaged, spellcheck: true },
   });
   win.once('ready-to-show', () => win.show());
   win.loadURL(APP_URL);

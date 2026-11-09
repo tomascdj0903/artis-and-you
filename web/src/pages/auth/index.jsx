@@ -242,7 +242,7 @@ export function SignupPro() {
   const s2 = async (e) => {
     e.preventDefault(); setErr(''); setBusy(true);
     try {
-      if (mode === 'join') await api.rpc('join_company', { p_code: code.trim() });
+      if (mode === 'join' && !(await api.rpc('join_company', { p_code: code.trim() }))) throw new Error(t('Code invalide ou déjà utilisé'));
       else {
         if (!siretValid(c.siret)) throw new Error(t('Le SIRET doit contenir 14 chiffres valides.'));
         if (siretSt === 'active') throw new Error(t('Ce SIRET est déjà inscrit sur Artesa. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.'));

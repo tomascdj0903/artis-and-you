@@ -82,7 +82,7 @@ export function KV({ rows }) {
       {rows.filter(Boolean).map(([k, v, o = {}], i) => (
         <div className={'r' + (o.total ? ' total' : '')} key={i}>
           <span className="k">{k}</span>
-          <span className={'v' + (o.red ? ' red' : '')}>{o.href ? <a href={o.href} target={o.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{v}</a> : (v === '' || v == null ? '—' : v)}</span>
+          <span className={'v' + (o.red ? ' red' : '')}>{o.href && /^(https?:|mailto:|tel:|sms:)/i.test(o.href) ? <a href={o.href} target={o.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{v}</a> : (v === '' || v == null ? '—' : v)}</span>
         </div>
       ))}
     </div>
