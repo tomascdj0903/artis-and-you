@@ -285,3 +285,14 @@ export function Wordmark({ size = 28, light = false, style }) {
     </span>
   );
 }
+
+// Bouton « Partager » : ouvre le menu de partage du téléphone / de l'ordinateur (WhatsApp, Messenger, LinkedIn…), sinon copie le texte
+export function ShareButton({ title, text, url, className = 'btn sm ghost' }) {
+  const [done, setDone] = useState(false);
+  const go = async (e) => {
+    e.preventDefault();
+    try { if (navigator.share) { await navigator.share({ title, text, url }); return; } } catch (x) { if (x?.name === 'AbortError') return; }
+    try { await navigator.clipboard.writeText([text, url].filter(Boolean).join(' ')); setDone(true); setTimeout(() => setDone(false), 2000); } catch {}
+  };
+  return <button type="button" className={className} onClick={go}>⤴ {done ? t('Copié !') : t('Partager')}</button>;
+}

@@ -2050,4 +2050,5 @@ export default {"(copie)":"(cópia)",
 "Clients sans compte":"Clientes sem conta",
 "Copier le message":"Copiar a mensagem",
 "Invité le {d}":"Convidado em {d}",
-"Espace client Artesa":"Espaço cliente Artesa"};
+"Espace client Artesa":"Espaço cliente Artesa",
+"Copié !":"Copiado!"};

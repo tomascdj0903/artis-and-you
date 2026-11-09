@@ -890,3 +890,5 @@ Clients sans compte|Clients without an account|Clientes sem conta|Clienti senza 
 Copier le message|Copy message|Copiar a mensagem|Copia il messaggio
 Invité le {d}|Invited on {d}|Convidado em {d}|Invitato il {d}
 Espace client Artesa|Artesa client space|Espaço cliente Artesa|Area clienti Artesa
+Partager|Share|Partilhar|Condividi
+Copié !|Copied!|Copiado!|Copiato!

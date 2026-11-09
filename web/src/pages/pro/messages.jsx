@@ -6,7 +6,7 @@ import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { clientName, rel, date, initials } from '../../lib/format.js';
 import { TRADES } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, Field } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, Field , ShareButton } from '../../ui/index.jsx';
 import { Chat, convMeta } from '../common/chat.jsx';
 
 async function loadConvCtx(company, teams, members) {
@@ -209,6 +209,7 @@ export function NetworkAdd() {
         <div className="row" style={{ flexDirection: 'column', gap: 6 }}>
           <a className="btn xs ghost-red" href={`sms:?&body=${encodeURIComponent(inviteMsg)}`}>{t('SMS')}</a>
           <a className="btn xs ghost-red" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artesa'))}&body=${encodeURIComponent(inviteMsg)}`}><LuMail /> {t('E-mail')}</a>
+          <ShareButton className="btn xs ghost-red" title={t('Rejoignez-moi sur Artesa')} text={inviteMsg} />
         </div>
       </div>
     </div>
@@ -317,6 +318,7 @@ export function InviteClients() {
       <div className="row mt" style={{ gap: 8, flexWrap: 'wrap' }}>
         <a className="btn sm" href={`sms:?&body=${encodeURIComponent(clientInviteMsg(company))}`}>{t('SMS')}</a>
         <a className="btn sm" href={`mailto:?subject=${encodeURIComponent(t('Votre espace client sur Artesa'))}&body=${encodeURIComponent(clientInviteMsg(company))}`}><LuMail /> {t('E-mail')}</a>
+        <ShareButton title={t('Votre espace client sur Artesa')} text={clientInviteMsg(company)} />
         <button className="btn sm ghost" onClick={() => navigator.clipboard?.writeText(clientInviteMsg(company))}>{t('Copier le message')}</button>
       </div>
       <Sec title={t('Clients sans compte')} meta={t('{n} clients', { n: todo.length })} />

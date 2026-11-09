@@ -9,7 +9,7 @@ import { PLANS, TRADES, kindLabel, LEGAL_FORMS, SOCIETIES, companyMissing } from
 import { AddressFields, CityInput } from '../../ui/address.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 import { siretValid } from '../auth/index.jsx';
-import { TopBar, Sec, KV, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img } from '../../ui/index.jsx';
+import { TopBar, Sec, KV, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img , ShareButton } from '../../ui/index.jsx';
 import { A4, useLogo } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
 import { SignatureEditor } from '../../ui/signature.jsx';
@@ -95,7 +95,7 @@ export function Subscription() {
         <p>{t('Partagez votre code : votre filleul gagne 1 mois offert en plus de son essai (2 mois en tout), et vous gagnez 15 jours offerts. Jusqu’à 10 filleuls.')}</p>
         {refStats && <p className="small muted">{t('{n} filleuls sur 10', { n: refStats.count })}{refStats.count >= 10 ? ' · ' + t('Maximum atteint : votre code ne donne plus d’avantage.') : ''}</p>}
         <div className="row"><b style={{ fontSize: 24, letterSpacing: 3 }} className="red-t">{company.referral_code}</b><button className="btn xs ghost" onClick={copy}><LuCopy /> {t('Copier')}</button>
-          <a className="btn xs ghost" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artesa'))}&body=${encodeURIComponent(t('Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert en plus de l’essai.', { u: location.origin + '/inscription/artisan', c: company.referral_code }))}`}>{t('Partager')}</a></div>
+          <a className="btn xs ghost" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artesa'))}&body=${encodeURIComponent(t('Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert en plus de l’essai.', { u: location.origin + '/inscription/artisan', c: company.referral_code }))}`}>{t('Partager')}</a><ShareButton className="btn xs ghost" title={t('Rejoignez-moi sur Artesa')} text={t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: company.referral_code })} url={location.origin + '/inscription/artisan?parrain=' + encodeURIComponent(company.referral_code)} /></div>
       </div>
       <Sec title={t('Mes filleuls')} meta={t('{n} mois gagnés', { n: filleuls?.length || 0 })} />
       {filleuls?.length ? <div className="list">{filleuls.map((f) => <div className="li" key={f.id}><div className="grow"><div className="t1">{f.name}</div><div className="t2">{t('Inscrit le {d}', { d: date(f.created_at) })}</div></div><Pill c="green">+1 {t('mois')}</Pill></div>)}</div> : <Empty text={t('Pas encore de filleul.')} />}
