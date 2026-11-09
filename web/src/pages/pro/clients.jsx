@@ -1,4 +1,4 @@
-import { RateBox } from './messages.jsx';
+import { RateBox, InviteClientButtons } from './messages.jsx';
 import { useState } from 'react';
 import { LuChartColumn, LuMessageSquare, LuHistory, LuPlus, LuPencil, LuEuro, LuFileText, LuFilePen, LuX, LuCamera, LuCalendarCheck, LuHardHat, LuFolderOpen, LuMail } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
@@ -235,6 +235,10 @@ export function ClientCard({ params }) {
           {c.type === 'pro' && <><Sec title={t('Informations légales')} /><KV rows={[['SIRET', c.siret], ['SIREN', c.siren], [t('N° TVA'), c.vat_number], ['RCS', c.rcs]]} /></>}
           <Sec title={t('Paiement')} />
           <KV rows={[[t('Conditions de paiement'), c.payment_terms], [t('Mode de paiement'), t(c.payment_mode)], [t('Encours max'), money(c.max_outstanding)], [t('Solde'), money(solde), { red: solde > 0 }]]} />
+          {!c.user_id && c.type !== 'pro' && <>
+            <Sec title={t('Espace client Artesa')} />
+            <div className="card soft"><div className="small mb">{t('Ce client n’a pas encore de compte. Invitez-le : c’est gratuit pour lui, il retrouve ses devis et factures et peut vous écrire directement.')}</div><InviteClientButtons c={c} onDone={reload} />{c.invited_at && <div className="small muted mt">{t('Invité le {d}', { d: date(c.invited_at) })}</div>}</div>
+          </>}
           <Sec title={t('Fiabilité du client')} />
           <ClientRating id={c.id} />
           <div className="sec"><h2>{t('Note libre')}</h2><button className="plus" onClick={() => setNote(c.note || '')} aria-label={t('Modifier la note')}><LuPlus /></button></div>

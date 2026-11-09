@@ -37,7 +37,7 @@ const PRO = [
   ['/pro/crm', Pro.CrmHome], ['/pro/crm/statut', Pro.ProjectStatus], ['/pro/crm/kpi', Pro.CompanyKpi], ['/pro/crm/export', Pro.Export],
   ['/pro/crm/bibliotheque', Pro.Library], ['/pro/crm/bibliotheque/:id', Pro.ItemEdit],
   ['/pro/messages', Pro.Messages], ['/pro/messages/:id', Pro.Conversation],
-  ['/pro/reseau', Pro.Network], ['/pro/reseau/ajouter', Pro.NetworkAdd], ['/pro/reseau/:id', Pro.ProProfile],
+  ['/pro/reseau', Pro.Network], ['/pro/reseau/ajouter', Pro.NetworkAdd], ['/pro/reseau/inviter-clients', Pro.InviteClients], ['/pro/reseau/:id', Pro.ProProfile],
   ['/pro/notifications', Common.Notifications], ['/pro/admin', Common.Admin],
   ['/pro/compte', Pro.Account], ['/pro/compte/profil', Common.MyProfile], ['/pro/compte/abonnement', Pro.Subscription], ['/pro/compte/entreprise', Pro.CompanySettings],
   ['/pro/compte/equipe', Pro.TeamSettings], ['/pro/compte/equipe/:id', Pro.MemberSettings], ['/pro/compte/documents', Pro.InvoiceSettings], ['/pro/compte/devis', Pro.QuoteSettings], ['/pro/compte/factures', Pro.InvoiceSettings], ['/pro/compte/pdf', Pro.PdfSettings],

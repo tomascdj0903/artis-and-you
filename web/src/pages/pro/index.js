@@ -4,6 +4,6 @@ export { Planning, ApptDetail, ApptEdit, PlanningSettings } from './planning.jsx
 export { DocumentsHome, QuotesAll, InvoicesAll, DocEdit, DocDetail, DocPdf } from './documents.jsx';
 export { PhotosClients, PhotosClient, OtherDocsClients, OtherDocsClient, Vault, VaultType } from './files.jsx';
 export { CrmHome, ProjectStatus, CompanyKpi, Export, Library, ItemEdit } from './crm.jsx';
-export { Messages, Conversation, Network, NetworkAdd, ProProfile } from './messages.jsx';
+export { Messages, Conversation, Network, NetworkAdd, ProProfile, InviteClients } from './messages.jsx';
 export { Account, Subscription, CompanySettings, TeamSettings, MemberSettings, DocSettings, QuoteSettings, InvoiceSettings, PdfSettings, NotifSettings, Integrations, Reviews } from './account.jsx';
 export { Relances } from './relances.jsx';

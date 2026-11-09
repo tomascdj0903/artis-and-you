@@ -60,6 +60,7 @@ export const TOURS = {
   '/pro/reseau': [
     S('Mon réseau', 'Les pros avec qui vous travaillez : échangez, partagez des chantiers, organisez-vous.'),
     S('Ajouter un pro', 'Le bouton + cherche un pro sur Artesa et lui envoie une demande. Dès qu’il accepte, vous êtes connectés des deux côtés.', '.plus'),
+    S('Inviter vos clients', 'La carte « Inviter mes clients » envoie à vos clients un lien d’inscription gratuite par SMS ou e-mail. À l’inscription, votre conversation s’ouvre directement.'),
     S('Demandes reçues', 'Les demandes de connexion apparaissent en haut de cette page et dans vos notifications : Accepter ou Refuser.'),
     S('Projets en commun', 'Depuis la fiche d’un pro, « Inviter sur un chantier » crée un projet en commun. Vous retrouvez ces projets ici et leur planning partagé dans Planning.'),
     S('Notes entre pros', 'Après avoir travaillé ensemble, vous pouvez noter un pro une seule fois depuis sa fiche.'),

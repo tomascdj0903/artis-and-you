@@ -2043,4 +2043,11 @@ export default {"(copie)":"(copia)",
 "Afficher la liste":"Mostra l'elenco",
 "Devis, rendez-vous et facturation électronique : tout votre chantier au même endroit.":"Preventivi, appuntamenti e fatturazione elettronica: tutto il cantiere in un unico posto.",
 "Devis, planning et facturation électronique pour les artisans":"Preventivi, planning e fatturazione elettronica per artigiani",
-"Facturation électronique intégrée, prête pour l’obligation 2026–2027":"Fatturazione elettronica integrata, pronta per l'obbligo 2026–2027"};
+"Facturation électronique intégrée, prête pour l’obligation 2026–2027":"Fatturazione elettronica integrata, pronta per l'obbligo 2026–2027",
+"Inviter mes clients":"Invita i miei clienti",
+"Inviter mes clients sur Artesa":"Invita i miei clienti su Artesa",
+"Gratuit pour les particuliers":"Gratuito per i privati",
+"Clients sans compte":"Clienti senza account",
+"Copier le message":"Copia il messaggio",
+"Invité le {d}":"Invitato il {d}",
+"Espace client Artesa":"Area clienti Artesa"};

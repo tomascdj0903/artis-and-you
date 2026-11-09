@@ -2043,4 +2043,11 @@ export default {"(copie)":"(copy)",
 "Afficher la liste":"Show list",
 "Devis, rendez-vous et facturation électronique : tout votre chantier au même endroit.":"Quotes, appointments and e-invoicing: your whole job in one place.",
 "Devis, planning et facturation électronique pour les artisans":"Quotes, scheduling and e-invoicing for tradespeople",
-"Facturation électronique intégrée, prête pour l’obligation 2026–2027":"Built-in e-invoicing, ready for the 2026–2027 mandate"};
+"Facturation électronique intégrée, prête pour l’obligation 2026–2027":"Built-in e-invoicing, ready for the 2026–2027 mandate",
+"Inviter mes clients":"Invite my clients",
+"Inviter mes clients sur Artesa":"Invite my clients to Artesa",
+"Gratuit pour les particuliers":"Free for homeowners",
+"Clients sans compte":"Clients without an account",
+"Copier le message":"Copy message",
+"Invité le {d}":"Invited on {d}",
+"Espace client Artesa":"Artesa client space"};

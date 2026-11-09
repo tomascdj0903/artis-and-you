@@ -154,6 +154,8 @@ export function mockBackend({ saveSession, getSession }) {
     let c = db.clients.find((x) => x.company_id === companyId && x.user_id === me());
     if (c) return c.id;
     const p = profile();
+    c = db.clients.find((x) => x.company_id === companyId && !x.user_id && x.email && String(x.email).toLowerCase() === String(p.email).toLowerCase());
+    if (c) { c.user_id = me(); return c.id; }
     const n = db.clients.filter((x) => x.company_id === companyId).length + 1;
     c = { ...defaults.clients, id: id(), company_id: companyId, user_id: me(), number: 'CL-' + String(n).padStart(5, '0'), last_name: p.last_name, first_name: p.first_name, email: p.email, mobile: p.phone,
       billing_address: p.home?.address || '', billing_zip: p.home?.zip || '', billing_city: p.home?.city || '', site_address: p.home?.address || '', site_zip: p.home?.zip || '', site_city: p.home?.city || '', created_at: now() };

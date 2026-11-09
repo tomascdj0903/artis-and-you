@@ -125,6 +125,9 @@ export function Network() {
     <div className="content">
       <TopBar title={t('Mon réseau')} sub={t('Mes pros')} back={false} settings="/pro/compte/entreprise" />
       <SearchBar placeholder={t('Recherchez un pro')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={trades.length > 0} />
+      <button className="card soft row" style={{ width: '100%', textAlign: 'left', cursor: 'pointer', border: 0, marginBottom: 6 }} onClick={() => navigate('/pro/reseau/inviter-clients')}>
+        <span style={{ fontSize: 26 }}>📣</span><div className="grow"><b>{t('Inviter mes clients sur Artesa')}</b><div className="small muted">{t('Gratuit pour eux : ils retrouvent leurs documents et vous écrivent directement.')}</div></div><LuChevronRight />
+      </button>
       {b.reqs.length > 0 && <>
         <Sec title={t('Demandes de connexion')} />
         <div className="list">{b.reqs.map((r) => (
@@ -279,6 +282,46 @@ export function RateBox({ score, label, onRate }) {
         <div className="row mt" style={{ gap: 4 }}>{[1, 2, 3, 4, 5].map((n) => <button key={n} type="button" className="btn xs ghost" aria-label={n + '/5'} onClick={() => setR(n)} style={{ minWidth: 36, color: n <= r ? 'var(--bordeaux)' : undefined }}>{n <= r ? '★' : '☆'}</button>)}</div>
         {r > 0 && <><textarea className="input mt" rows={2} placeholder={t('Commentaire (facultatif)')} value={c} onChange={(e) => setC(e.target.value)} /><button className="btn sm mt" onClick={() => onRate(r, c)}>{t('Envoyer ma note')}</button></>}
       </>}
+    </div>
+  );
+}
+
+// Bouche-à-oreille : inviter ses clients à créer leur compte gratuit (la conversation avec le pro s'ouvre à l'inscription)
+export const clientInviteLink = (company) => location.origin + '/inscription/particulier?pro=' + company.id;
+export const clientInviteMsg = (company, c) => t('Bonjour {p}, je gère désormais mes devis, factures et rendez-vous sur Artesa. Créez votre compte gratuit pour retrouver vos documents, prendre rendez-vous et m’écrire directement : {u} — {n}', { p: c?.first_name || '', u: clientInviteLink(company), n: company.trade_name || company.name });
+export function InviteClientButtons({ c, onDone, small }) {
+  const { company } = useApp();
+  const msg = clientInviteMsg(company, c);
+  const mark = () => { api.update('clients', { id: c.id }, { invited_at: new Date().toISOString() }).then(onDone, () => {}); };
+  const phone = c.mobile || c.phone;
+  return (
+    <div className="row" style={{ gap: 6 }}>
+      {phone && <a className={'btn xs ' + (small ? 'ghost' : 'ghost-red')} href={`sms:${phone.replace(/\s/g, '')}?&body=${encodeURIComponent(msg)}`} onClick={mark}>{t('SMS')}</a>}
+      {c.email && <a className={'btn xs ' + (small ? 'ghost' : 'ghost-red')} href={`mailto:${c.email}?subject=${encodeURIComponent(t('Votre espace client sur Artesa'))}&body=${encodeURIComponent(msg)}`} onClick={mark}><LuMail /> {t('E-mail')}</a>}
+      {!phone && !c.email && <button className="btn xs ghost" onClick={() => { navigator.clipboard?.writeText(msg); mark(); }}>{t('Copier le message')}</button>}
+    </div>
+  );
+}
+export function InviteClients() {
+  const { company } = useApp();
+  const [q, setQ] = useState('');
+  const [list, reload] = useData(() => api.select('clients', { company_id: company.id }, { order: 'last_name.asc' }), []);
+  if (!list) return <div className="content"><TopBar title={t('Inviter mes clients')} /><Loader /></div>;
+  const todo = list.filter((c) => !c.user_id && c.type !== 'pro');
+  const shown = todo.filter((c) => !q || clientName(c).toLowerCase().includes(q.toLowerCase()));
+  return (
+    <div className="content narrow">
+      <TopBar title={t('Inviter mes clients')} sub={t('Gratuit pour les particuliers')} />
+      <div className="notice">{t('Vos clients créent leur compte gratuit en un clic depuis le lien : ils retrouvent leurs devis, factures et rendez-vous, et votre conversation s’ouvre directement. Plus ils sont nombreux sur Artesa, plus on vous recommande.')}</div>
+      <div className="row mt" style={{ gap: 8 }}><input className="input grow" readOnly value={clientInviteLink(company)} onFocus={(e) => e.target.select()} /><button className="btn sm" onClick={() => navigator.clipboard?.writeText(clientInviteMsg(company))}>{t('Copier le message')}</button></div>
+      <Sec title={t('Clients sans compte')} meta={t('{n} clients', { n: todo.length })} />
+      {todo.length > 8 && <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} />}
+      {!shown.length ? <Empty text={t('Tous vos clients particuliers ont déjà un compte Artesa.')} /> : <div className="list">{shown.map((c) => (
+        <div key={c.id} className="li">
+          <div className="grow"><div className="t1">{clientName(c)}</div><div className="t2">{[c.billing_city, c.invited_at ? t('Invité le {d}', { d: date(c.invited_at) }) : ''].filter(Boolean).join(' · ')}</div></div>
+          <InviteClientButtons c={c} onDone={reload} />
+        </div>
+      ))}</div>}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LuHammer, LuHouse, LuArrowLeft, LuMail } from 'react-icons/lu';
 import { api, getSession, OFFLINE } from '../../lib/api.js';
 import { markUnlocked } from '../../lib/security.js';
@@ -134,6 +134,14 @@ const checkAccount = (v) => {
 };
 
 export function SignupClient() {
+  // Invitation d'un artisan : /inscription/particulier?pro=<id> → après l'inscription, la conversation avec lui s'ouvre directement
+  const pro = new URLSearchParams(location.search).get('pro');
+  const [proName, setProName] = useState('');
+  useEffect(() => { if (pro) api.rpc('directory_get', { p_id: pro }).then((x) => setProName(x?.trade_name || x?.name || ''), () => {}); }, [pro]);
+  const goHome = async () => {
+    if (pro) { try { const id = await api.rpc('start_conversation', { p_company: pro }); navigate('/client/messages/' + id, { replace: true }); return; } catch {} }
+    navigate('/client', { replace: true });
+  };
   const [v, set] = useState({ civility: '', first_name: '', last_name: '', email: '', phone: '', password: '', home: { address: '', zip: '', city: '', country: 'France' } });
   const [cgu, setCgu] = useState(false);
   const [err, setErr] = useState('');
@@ -146,17 +154,18 @@ export function SignupClient() {
     setBusy(true);
     try {
       const r = await api.signUp(v.email.trim().toLowerCase(), v.password, { kind: 'particulier', civility: v.civility, first_name: v.first_name, last_name: v.last_name, phone: v.phone, home: v.home, lang: getLang() });
-      if (r.needsConfirm) setSent({ email: v.email.trim().toLowerCase(), devCode: r.devCode }); else navigate('/client', { replace: true });
+      if (r.needsConfirm) setSent({ email: v.email.trim().toLowerCase(), devCode: r.devCode }); else goHome();
     } catch (x) { setErr(x.message); }
     setBusy(false);
   };
-  if (sent) return <AuthLayout><VerifyEmailBox email={sent.email} devCode={sent.devCode} onDone={() => navigate('/client', { replace: true })} /></AuthLayout>;
+  if (sent) return <AuthLayout><VerifyEmailBox email={sent.email} devCode={sent.devCode} onDone={goHome} /></AuthLayout>;
   return (
     <AuthLayout>
       <form onSubmit={submit}>
         <button type="button" className="iconbtn" onClick={() => navigate('/inscription')} aria-label={t('Retour')}><LuArrowLeft /></button>
         <h1 style={{ fontSize: 26, margin: '8px 0 4px' }}>{t('Créer mon compte gratuit')}</h1>
-        <p className="muted mb">{t('Pour trouver un artisan, prendre rendez-vous et suivre vos chantiers.')}</p>
+        {pro ? <div className="notice mb">{proName ? t('{n} vous invite sur Artesa.', { n: proName }) + ' ' : ''}{t('Créez votre compte gratuit : vous retrouverez vos devis, factures et rendez-vous, et pourrez écrire directement à votre artisan.')}</div>
+          : <p className="muted mb">{t('Pour trouver un artisan, prendre rendez-vous et suivre vos chantiers.')}</p>}
         <AccountFields v={v} set={set} />
         <div className="field"><span>{t('Adresse de votre logement')}</span></div>
         <AddressFields value={v.home} onChange={(home) => set({ ...v, home })} required />

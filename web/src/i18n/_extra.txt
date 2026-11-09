@@ -883,3 +883,10 @@ Aucun résultat|No results|Sem resultados|Nessun risultato
 Devis, rendez-vous et facturation électronique : tout votre chantier au même endroit.|Quotes, appointments and e-invoicing: your whole job in one place.|Orçamentos, marcações e faturação eletrónica: toda a sua obra num só lugar.|Preventivi, appuntamenti e fatturazione elettronica: tutto il cantiere in un unico posto.
 Devis, planning et facturation électronique pour les artisans|Quotes, scheduling and e-invoicing for tradespeople|Orçamentos, agenda e faturação eletrónica para artesãos|Preventivi, planning e fatturazione elettronica per artigiani
 Facturation électronique intégrée, prête pour l’obligation 2026–2027|Built-in e-invoicing, ready for the 2026–2027 mandate|Faturação eletrónica integrada, pronta para a obrigação 2026–2027|Fatturazione elettronica integrata, pronta per l'obbligo 2026–2027
+Inviter mes clients|Invite my clients|Convidar os meus clientes|Invita i miei clienti
+Inviter mes clients sur Artesa|Invite my clients to Artesa|Convidar os meus clientes para a Artesa|Invita i miei clienti su Artesa
+Gratuit pour les particuliers|Free for homeowners|Gratuito para particulares|Gratuito per i privati
+Clients sans compte|Clients without an account|Clientes sem conta|Clienti senza account
+Copier le message|Copy message|Copiar a mensagem|Copia il messaggio
+Invité le {d}|Invited on {d}|Convidado em {d}|Invitato il {d}
+Espace client Artesa|Artesa client space|Espaço cliente Artesa|Area clienti Artesa
