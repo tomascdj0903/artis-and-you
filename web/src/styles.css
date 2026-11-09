@@ -919,3 +919,22 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .li.click, button.li, a.li { background: var(--bordeaux-50); }
 .card.soft { background: var(--bordeaux-50); border-color: var(--bordeaux-200); }
 :root[data-theme="dark"] .list, :root[data-theme="dark"] .list .li, :root[data-theme="dark"] .card.soft { background: var(--surface); }
+/* Bandeau d'accueil plus compact */
+.home-band { gap: 10px; }
+.hb-hello span { font-size: 13px; } .hb-hello b { font-size: 21px; }
+.home-band .search { height: 46px; min-height: 46px; }
+.home-band .search input { font-size: 15px; }
+.hb-kpi { padding: 8px 12px; border-radius: 14px; flex-direction: row; align-items: baseline; gap: 8px; }
+.hb-kpi b { font-size: 18px; } .hb-kpi span { font-size: 12.5px; }
+.hb-foot { justify-content: center; }
+.hb-foot a, .hb-foot button { min-height: 30px; padding: 4px 12px; font-size: 12.5px; }
+@media (min-width: 701px) {
+  .home-band { padding: 2px 32px 18px; }
+  .home-band .topbar { padding: 12px 0 0; margin-bottom: -34px; }
+  .home-band .topbar .avatar, .home-band .topbar .iconbtn { width: 40px; height: 40px; min-width: 40px; font-size: 14px; }
+}
+@media (max-width: 700px) {
+  .hb-hello b { font-size: 19px; }
+  .hb-kpi { flex-direction: column; align-items: flex-start; gap: 0; }
+  .hb-foot a, .hb-foot button { flex: 0 1 auto; justify-content: center; }
+}
