@@ -13,6 +13,10 @@ if (!app.requestSingleInstanceLock()) app.quit();
 app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });
 app.setAppUserModelId('fr.artisandyou.app');
 
+// N'ouvre à l'extérieur que des liens web, mail, téléphone, SMS ou WhatsApp (jamais file:, ms-msdt:, smb:…)
+const SAFE_EXT = ['https:', 'http:', 'mailto:', 'tel:', 'sms:', 'whatsapp:'];
+function openExt(url) { try { if (SAFE_EXT.includes(new URL(url).protocol)) shell.openExternal(url); } catch {} }
+
 function createWindow() {
   win = new BrowserWindow({
     width: 1360, height: 880, minWidth: 380, minHeight: 600,
@@ -21,7 +25,7 @@ function createWindow() {
     backgroundColor: '#FFFFFF',
     show: false,
     autoHideMenuBar: true,
-    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, spellcheck: true },
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, webSecurity: true, spellcheck: true },
   });
   win.once('ready-to-show', () => win.show());
   win.loadURL(APP_URL);
@@ -33,13 +37,14 @@ function createWindow() {
   win.webContents.on('will-navigate', (e, url) => {
     if (url.startsWith('retry://')) { e.preventDefault(); win.loadURL(APP_URL); return; }
     const u = new URL(url);
-    if (u.host !== APP_HOST && !url.startsWith('file:')) { e.preventDefault(); shell.openExternal(url); }
+    if (u.protocol === 'file:') { if (!url.endsWith('/offline.html')) e.preventDefault(); return; }
+    if (u.host !== APP_HOST) { e.preventDefault(); openExt(url); }
   });
   // Liens externes (WhatsApp, e-mail, téléphone, cartes, téléchargements GitHub…) : navigateur / appli du système
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('blob:') || url.startsWith('data:')) return { action: 'allow' };
     try { if (new URL(url).host === APP_HOST) return { action: 'allow' }; } catch {}
-    shell.openExternal(url);
+    openExt(url);
     return { action: 'deny' };
   });
 }
@@ -87,8 +92,10 @@ function checkUpdates(byUser) {
   manual = byUser;
   autoUpdater.checkForUpdates().catch(() => {});
 }
-ipcMain.handle('app-version', () => app.getVersion());
-ipcMain.handle('check-updates', () => checkUpdates(true));
+// Le pont n'accepte que les appels venant de la webapp officielle
+const fromApp = (e) => { try { return new URL(e.senderFrame.url).host === APP_HOST; } catch { return false; } };
+ipcMain.handle('app-version', (e) => (fromApp(e) ? app.getVersion() : null));
+ipcMain.handle('check-updates', (e) => (fromApp(e) ? checkUpdates(true) : null));
 
 app.whenReady().then(() => {
   permissions();
