@@ -1,3 +1,4 @@
+import { kbd } from '../../lib/a11y.js';
 import { RateBox, InviteClientButtons } from './messages.jsx';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
@@ -347,7 +348,7 @@ export function ClientHistory({ params }) {
             return (
               <div key={i}>
                 {show && <div className="tl-day">{dateMed(day)}</div>}
-                <div className="tl-item" onClick={e.link ? () => navigate(e.link) : undefined} style={e.link ? { cursor: 'pointer' } : undefined}>
+                <div {...(e.link ? kbd : null)} className="tl-item" onClick={e.link ? () => navigate(e.link) : undefined} style={e.link ? { cursor: 'pointer' } : undefined}>
                   <div className={'tl-ico ' + e.color}><I /></div>
                   <div className="tl-card"><div className="h">{e.title}<small>{hm(e.when || e.at)}</small></div><div className="small muted">{e.sub}</div>{e.tag && <div style={{ marginTop: 6 }}><Pill c={e.color === 'ghost' ? 'grey' : 'green'}>{e.tag}</Pill></div>}</div>
                 </div>

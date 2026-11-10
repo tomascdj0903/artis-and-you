@@ -1,3 +1,4 @@
+import { kbd } from '../../lib/a11y.js';
 import { useState, useMemo } from 'react';
 import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuImage, LuStar, LuSearch, LuMessageSquarePlus } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
@@ -206,7 +207,7 @@ export function NewRequest({ params }) {
       <textarea className="input" style={{ minHeight: 130, borderColor: 'var(--bordeaux)' }} value={text} onChange={(e) => setText(e.target.value)} placeholder={t('Décrivez le problème : depuis quand, où, ce que vous avez déjà fait…')} />
       <Sec title={t('Photos ou vidéo')} meta={t('{n} photos', { n: photos.length })} />
       <div className="photos-grid">
-        {photos.map((f, i) => <img key={i} src={URL.createObjectURL(f)} alt="" onClick={() => setPhotos(photos.filter((_, j) => j !== i))} title={t('Retirer')} />)}
+        {photos.map((f, i) => <img {...kbd} aria-label={t('Retirer')} key={i} src={URL.createObjectURL(f)} alt="" onClick={() => setPhotos(photos.filter((_, j) => j !== i))} title={t('Retirer')} />)}
         <button className="ph" style={{ border: '2px dashed var(--bordeaux)', color: 'var(--bordeaux)', fontSize: 28 }} onClick={addPhotos} aria-label={t('Ajouter des photos')}><LuPlus /></button>
       </div>
       <Sec title={t('Type de rendez-vous')} />

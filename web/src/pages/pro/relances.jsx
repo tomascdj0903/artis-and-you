@@ -1,4 +1,5 @@
 // Relances clients : à faire, programmées, historique et réglages des scénarios
+import { kbd } from '../../lib/a11y.js';
 import { useState } from 'react';
 import { LuSend, LuMail, LuPause, LuPlay, LuPlus, LuTrash2, LuBellRing, LuChevronRight } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
@@ -55,7 +56,7 @@ export function Relances() {
         <div className="proj-grid">{todo.map((r) => { const c = b.cm[r.d.client_id]; return (
           <div key={r.d.id} className="card proj">
             <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div><b className="click" onClick={() => navigate('/pro/documents/' + r.d.id)}>{r.d.number}</b><div className="small muted">{clientName(c)}</div></div>
+              <div><b {...kbd} className="click" onClick={() => navigate('/pro/documents/' + r.d.id)}>{r.d.number}</b><div className="small muted">{clientName(c)}</div></div>
               <Pill c={r.kind === 'devis' ? 'navy-o' : r.late > 7 ? 'red' : 'red-o'}>{r.kind === 'devis' ? t('Devis envoyé il y a {n} j', { n: r.late }) : r.late < 0 ? t('Échéance dans {n} j', { n: -r.late }) : t('{n} j de retard', { n: r.late })}</Pill>
             </div>
             <div className="row small" style={{ justifyContent: 'space-between', margin: '8px 0' }}><span><LuBellRing className="red-t" /> {t(r.step.title)}</span><b>{r.kind === 'devis' ? money(r.d.totals?.ttc) : t('{m} restant', { m: money(remaining(r.d)) })}</b></div>
@@ -71,13 +72,13 @@ export function Relances() {
 
       {tab === 'planned' && <>
         {planned.length ? <div className="kv">{planned.map(({ d, n }) => (
-          <div className="r" key={d.id}><span className="k"><b className="click" onClick={() => navigate('/pro/documents/' + d.id)}>{d.number}</b> · {clientName(b.cm[d.client_id])}<small style={{ display: 'block' }}>{t(n.step.title)}</small></span><span className="row" style={{ gap: 8 }}><span className="v">{date(n.at)}</span><button className="iconbtn" onClick={() => pause(d, true)} aria-label={t('Suspendre')}><LuPause /></button></span></div>
+          <div className="r" key={d.id}><span className="k"><b {...kbd} className="click" onClick={() => navigate('/pro/documents/' + d.id)}>{d.number}</b> · {clientName(b.cm[d.client_id])}<small style={{ display: 'block' }}>{t(n.step.title)}</small></span><span className="row" style={{ gap: 8 }}><span className="v">{date(n.at)}</span><button className="iconbtn" onClick={() => pause(d, true)} aria-label={t('Suspendre')}><LuPause /></button></span></div>
         ))}</div> : <Empty text={t('Aucune relance programmée.')} />}
         {paused.length > 0 && <><Sec title={t('Relances suspendues')} /><div className="kv">{paused.map((d) => <div className="r" key={d.id}><span className="k">{d.number} · {clientName(b.cm[d.client_id])}</span><button className="btn xs ghost" onClick={() => pause(d, false)}><LuPlay /> {t('Réactiver')}</button></div>)}</div></>}
       </>}
 
       {tab === 'history' && (history.length ? <div className="kv">{history.slice(0, 100).map((h, i) => (
-        <div className="r" key={i}><span className="k"><b className="click" onClick={() => navigate('/pro/documents/' + h.d.id)}>{h.d.number}</b> · {clientName(b.cm[h.d.client_id])}<small style={{ display: 'block' }}>{t(h.title)} · {h.channel === 'app' ? t('Messagerie Artesa') : t('E-mail')}</small></span><span className="v small">{dateTime(h.at)}</span></div>
+        <div className="r" key={i}><span className="k"><b {...kbd} className="click" onClick={() => navigate('/pro/documents/' + h.d.id)}>{h.d.number}</b> · {clientName(b.cm[h.d.client_id])}<small style={{ display: 'block' }}>{t(h.title)} · {h.channel === 'app' ? t('Messagerie Artesa') : t('E-mail')}</small></span><span className="v small">{dateTime(h.at)}</span></div>
       ))}</div> : <Empty text={t('Aucune relance envoyée pour l’instant.')} />)}
 
       {tab === 'settings' && <ScenarioSettings company={company} setCompany={setCompany} run={run} toast={toast} />}
@@ -114,7 +115,7 @@ function ScenarioSettings({ company, setCompany, run }) {
             <div className="b">{n + 1}</div>
             <div className="grow" style={{ minWidth: 0 }}>
               <div className="row" style={{ justifyContent: 'space-between', gap: 8 }}>
-                <div className="click" onClick={() => setOpen(open === st.id ? null : st.id)}><b>{t(st.title)}</b><div className="small muted">{whenLabel(st.days, kind)} · {t(TONES.find((x) => x[0] === st.tone)?.[1] || '')}</div></div>
+                <div {...kbd} className="click" onClick={() => setOpen(open === st.id ? null : st.id)}><b>{t(st.title)}</b><div className="small muted">{whenLabel(st.days, kind)} · {t(TONES.find((x) => x[0] === st.tone)?.[1] || '')}</div></div>
                 <span className="row" style={{ gap: 6 }}><input type="checkbox" role="switch" className="toggle" checked={st.on} onChange={(e) => setStep(i, { on: e.target.checked })} aria-label={t(st.title)} /><button className="iconbtn" onClick={() => setOpen(open === st.id ? null : st.id)} aria-label={t('Modifier')}><LuChevronRight style={{ transform: open === st.id ? 'rotate(90deg)' : '' }} /></button></span>
               </div>
               {open === st.id && <StepEditor st={st} kind={kind} onSave={(p) => { setStep(i, p); setOpen(null); }} onDelete={steps.length > 1 ? () => { save({ ...s, [kind]: steps.filter((_, j) => j !== i) }); setOpen(null); } : null} />}

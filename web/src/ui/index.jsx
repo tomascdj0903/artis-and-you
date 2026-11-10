@@ -1,4 +1,5 @@
 // Composants d'interface partagés
+import { kbd, kbdRow } from '../lib/a11y.js';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { LuSettings, LuChevronLeft, LuChevronRight, LuSlidersHorizontal, LuSearch, LuBell, LuX, LuCamera, LuInbox } from 'react-icons/lu';
 import { navigate, Link } from '../lib/router.jsx';
@@ -110,7 +111,7 @@ export function Table({ cols, rows, onRow, empty }) {
         <thead><tr>{cols.map((c, i) => <th key={i} className={c.num ? 'num' : ''} style={c.w ? { width: c.w } : undefined}>{c.label}</th>)}</tr></thead>
         <tbody>
           {rows.map((r, i) => (
-            <tr key={r.id || i} className={onRow ? 'click' : ''} onClick={onRow ? () => onRow(r) : undefined} tabIndex={onRow ? 0 : undefined} onKeyDown={onRow ? (e) => e.key === 'Enter' && onRow(r) : undefined}>
+            <tr {...(onRow ? kbdRow : null)} key={r.id || i} className={onRow ? 'click' : ''} onClick={onRow ? () => onRow(r) : undefined} tabIndex={onRow ? 0 : undefined} onKeyDown={onRow ? (e) => e.key === 'Enter' && onRow(r) : undefined}>
               {cols.map((c, j) => <td key={j} className={(c.num ? 'num ' : '') + (c.strong ? 'strong' : '')}>{c.render ? c.render(r) : r[c.key]}</td>)}
             </tr>
           ))}
@@ -221,8 +222,8 @@ export function pickFiles({ accept = '*/*', multiple = true, capture } = {}) {
 export function Img({ path, alt = '', className, onClick }) {
   const [url, setUrl] = useState(cachedUrl(path));
   useEffect(() => { if (path) fileUrls([path]).then((r) => setUrl(r[path])); }, [path]);
-  if (!url) return <div className={'ph ' + (className || '')} onClick={onClick}><LuCamera /></div>;
-  return <img src={url} alt={alt} className={className} onClick={onClick} loading="lazy" />;
+  if (!url) return <div {...(onClick ? kbd : null)} className={'ph ' + (className || '')} onClick={onClick}><LuCamera /></div>;
+  return <img {...(onClick ? kbd : null)} src={url} alt={alt} className={className} onClick={onClick} loading="lazy" />;
 }
 
 export function Lightbox({ path, onClose }) {
@@ -271,7 +272,7 @@ export function CameraSheet({ open, onClose, onShot }) {
   return (
     <Sheet open onClose={onClose} title={t('Prendre une photo')}>
       {err ? <div className="notice">{err}</div> : <video ref={video} playsInline muted style={{ width: '100%', borderRadius: 14, background: '#000', maxHeight: '50vh' }} />}
-      {shots.length > 0 && <div className="photos-grid" style={{ marginTop: 10 }}>{shots.map((f, i) => <img key={i} src={URL.createObjectURL(f)} alt="" title={t('Retirer')} onClick={() => setShots(shots.filter((_, j) => j !== i))} />)}</div>}
+      {shots.length > 0 && <div className="photos-grid" style={{ marginTop: 10 }}>{shots.map((f, i) => <img {...kbd} aria-label={t('Retirer')} key={i} src={URL.createObjectURL(f)} alt="" title={t('Retirer')} onClick={() => setShots(shots.filter((_, j) => j !== i))} />)}</div>}
       <div className="btns"><div className="two">
         {err ? <button className="btn ghost" onClick={async () => { const fs = await pickFiles({ accept: 'image/*', capture: 'environment' }); if (fs.length) { onShot(fs); onClose(); } }}>{t('Choisir une photo')}</button>
           : <button className="btn ghost" onClick={snap}><LuCamera /> {t('Déclencher')}</button>}

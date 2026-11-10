@@ -1,3 +1,4 @@
+import { kbd } from '../../lib/a11y.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
 import { LuChevronLeft, LuChevronRight, LuSettings, LuPlus, LuVideo, LuMapPin, LuSend, LuImage, LuCalendarPlus, LuNavigation, LuCheck } from 'react-icons/lu';
@@ -167,7 +168,7 @@ function WeekPicker({ anchor, view, onPick, onClose }) {
       {weeks.map((w) => (
         <button key={iso(w[0])} className={'pick-grid pick-week' + (view === 'week' && iso(w[0]) === curWeek ? ' on' : '')} onClick={(e) => { if (view === 'week' || !e.target.dataset.day) onPick(w[0]); }}>
           <span className="wk">{weekNumber(w[0])}</span>
-          {w.map((d) => <span key={iso(d)} data-day={view === 'day' ? '1' : undefined} onClick={view === 'day' ? (e) => { e.stopPropagation(); onPick(d); } : undefined}
+          {w.map((d) => <span {...(view === 'day' ? kbd : null)} key={iso(d)} data-day={view === 'day' ? '1' : undefined} onClick={view === 'day' ? (e) => { e.stopPropagation(); onPick(d); } : undefined}
             className={(d.getMonth() !== m.getMonth() ? 'out ' : '') + (iso(d) === today ? 'today ' : '') + (view === 'day' && iso(d) === iso(anchor) ? 'sel' : '')}>{d.getDate()}</span>)}
         </button>
       ))}
@@ -284,7 +285,7 @@ function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove, compac
   };
   return (
     <div className="cal" style={{ '--n': days.length, '--h': H + 'px' }}>
-      <div className="cal-days"><div />{days.map((d) => <div key={d} className={iso(d) === todayKey ? 'today' : ''} onClick={compact ? () => onDay(d) : undefined} style={compact ? { cursor: 'pointer' } : undefined}>{d.toLocaleDateString(locale(), { weekday: 'short' }).replace('.', '')}<b>{d.getDate()}</b></div>)}</div>
+      <div {...(compact ? kbd : null)} className="cal-days"><div />{days.map((d) => <div key={d} className={iso(d) === todayKey ? 'today' : ''} onClick={compact ? () => onDay(d) : undefined} style={compact ? { cursor: 'pointer' } : undefined}>{d.toLocaleDateString(locale(), { weekday: 'short' }).replace('.', '')}<b>{d.getDate()}</b></div>)}</div>
       <div className="cal-body">
         <div className="cal-hours">{Array.from({ length: h1 - h0 }, (_, i) => <div key={i}>{h0 + i}h</div>)}</div>
         {days.map((d) => {
@@ -349,7 +350,7 @@ function MonthGrid({ range, anchor, evs, color, cm, onDay, onMove }) {
         {days.map((d) => {
           const k = iso(d); const list = evs.filter((a) => iso(new Date(a.start_at)) === k);
           return (
-            <div key={k} className={'cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '') + (over === k ? ' drop' : '')} onClick={() => onDay(d)} style={{ cursor: 'pointer' }}
+            <div {...kbd} key={k} className={'cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '') + (over === k ? ' drop' : '')} onClick={() => onDay(d)} style={{ cursor: 'pointer' }}
               onDragOver={onMove ? (e) => { e.preventDefault(); setOver(k); } : undefined} onDragLeave={() => setOver(null)}
               onDrop={onMove ? (e) => { e.preventDefault(); setOver(null); const a = evs.find((x) => x.id === e.dataTransfer.getData('text/plain')); if (!a) return; const o = new Date(a.start_at); const n = new Date(d); n.setHours(o.getHours(), o.getMinutes(), 0, 0); onMove(a, n); } : undefined}>
               <span className="n">{d.getDate()}</span>

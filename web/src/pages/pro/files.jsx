@@ -1,3 +1,4 @@
+import { kbd } from '../../lib/a11y.js';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
 import { LuPlus, LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2 } from 'react-icons/lu';
@@ -125,7 +126,7 @@ function FileRow({ f, onOpen, types = DOC_TYPES, extra }) {
   return (
     <div className="li">
       <div className="ficon"><LuFileText /></div>
-      <div className="grow" onClick={onOpen} style={{ cursor: onOpen ? 'pointer' : undefined }}>
+      <div {...(onOpen ? kbd : null)} className="grow" onClick={onOpen} style={{ cursor: onOpen ? 'pointer' : undefined }}>
         <div className="t1">{f.name}</div>
         <div className="t2">{extra}</div>
         <div className="row small" style={{ marginTop: 4 }}><Pill c="grey">{docTypeLabel(f.doc_type, types)}</Pill><span className="faint">{date(f.issued_at || f.created_at)}</span>{f.shared_with_client && <Pill c="green">{t('Partagé')}</Pill>}</div>

@@ -1,3 +1,4 @@
+import { kbd } from '../../lib/a11y.js';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
 import { LuMessageSquarePlus, LuMapPin, LuMessageSquare, LuPlus, LuPhone, LuUserPlus, LuChevronRight, LuMail, LuShieldCheck } from 'react-icons/lu';
@@ -134,7 +135,7 @@ export function Network() {
         <div className="list">{b.reqs.map((r) => (
           <div key={r.id} className="li">
             <Avatar name={r.company.name.split(' ')[0]} last={r.company.name.split(' ')[1]} path={r.company.logo_path} color="var(--ardoise)" />
-            <div className="grow" style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/reseau/' + r.company.id)}><div className="t1">{r.company.trade_name || r.company.name}</div><div className="t2">{(r.company.trades || []).slice(0, 2).map(t).join(', ')} · {r.company.city} · {r.incoming ? t('veut rejoindre votre réseau') : t('En attente de sa réponse')}</div></div>
+            <div {...kbd} className="grow" style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/reseau/' + r.company.id)}><div className="t1">{r.company.trade_name || r.company.name}</div><div className="t2">{(r.company.trades || []).slice(0, 2).map(t).join(', ')} · {r.company.city} · {r.incoming ? t('veut rejoindre votre réseau') : t('En attente de sa réponse')}</div></div>
             {r.incoming ? <div className="row" style={{ gap: 6 }}>
               <button className="btn xs ghost" onClick={() => run(() => api.rpc('network_answer', { p_id: r.id, p_accept: false }), t('Demande refusée')).then(reload)}>{t('Refuser')}</button>
               <button className="btn xs" onClick={() => run(() => api.rpc('network_answer', { p_id: r.id, p_accept: true }), t('Vous êtes maintenant connectés')).then(reload)}>{t('Accepter')}</button>
@@ -165,7 +166,7 @@ export function Network() {
       <div className="sec"><h2>{t('Mes contacts')} <span className="small muted" style={{ fontWeight: 400 }}>· {t('{n} pros', { n: b.length })}</span></h2><button className="plus" onClick={() => navigate('/pro/reseau/ajouter')} aria-label={t('Ajouter un pro')}><LuPlus /></button></div>
       {!list.length ? <Empty icon={LuUserPlus} text={t('Ajoutez les artisans avec qui vous travaillez pour échanger et partager des chantiers.')}><button className="btn sm" onClick={() => navigate('/pro/reseau/ajouter')}>{t('Ajouter un pro')}</button></Empty> : (
         <div className="grid2">{list.map(({ co, common, created_at }) => (
-          <div key={co.id} className="card soft row" style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/reseau/' + co.id)}>
+          <div {...kbd} key={co.id} className="card soft row" style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/reseau/' + co.id)}>
             <Avatar name={co.name.split(' ')[0]} last={co.name.split(' ')[1]} path={co.logo_path} color="var(--ardoise)" />
             <div className="grow"><div className="bold row wrap" style={{ gap: 6 }}>{co.trade_name || co.name} {(co.trades || [])[0] && <Pill c="navy">{t(co.trades[0])}</Pill>}</div>
               <div className="small muted">{co.name} · {co.city}</div>
