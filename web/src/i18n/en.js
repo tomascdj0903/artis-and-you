@@ -2054,4 +2054,5 @@ export default {"(copie)":"(copy)",
 "Copié !":"Copied!",
 "Mon intervention":"My visit",
 "Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.":"Tap a pro to show or hide them. Only your own appointments can be edited.",
-"Touchez pour afficher ou masquer":"Tap to show or hide"};
+"Touchez pour afficher ou masquer":"Tap to show or hide",
+"Touchez un jour ou un rendez-vous pour voir le détail.":"Tap a day or an appointment to see the details."};

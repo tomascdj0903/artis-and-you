@@ -895,3 +895,4 @@ Copié !|Copied!|Copiado!|Copiato!
 Mon intervention|My visit|A minha intervenção|Il mio intervento
 Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.|Tap a pro to show or hide them. Only your own appointments can be edited.|Toque num profissional para mostrar ou ocultar. Só as suas marcações podem ser alteradas.|Tocca un professionista per mostrarlo o nasconderlo. Solo i tuoi appuntamenti sono modificabili.
 Touchez pour afficher ou masquer|Tap to show or hide|Toque para mostrar ou ocultar|Tocca per mostrare o nascondere
+Touchez un jour ou un rendez-vous pour voir le détail.|Tap a day or an appointment to see the details.|Toque num dia ou numa marcação para ver o detalhe.|Tocca un giorno o un appuntamento per vedere i dettagli.

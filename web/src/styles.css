@@ -1036,3 +1036,18 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 /* L'avatar du bandeau d'accueil restait en partie sous le texte « Bonjour » sur ordinateur */
 .home-band .topbar { position: relative; z-index: 3; }
 .home-band .topbar .avatar, .home-band .topbar .iconbtn { position: relative; z-index: 4; }
+
+/* Planning sur téléphone, vue Semaine/Mois de 7 colonnes : on montre l'occupation, on lit le détail en vue Jour */
+.ev.compact { padding: 3px 2px; font-size: 10px; line-height: 1.15; overflow: hidden; border-radius: 6px; }
+.ev.compact br, .ev.compact b ~ * { display: none; }
+.ev.compact b { display: block; font-size: 10px; }
+.ev.slim { padding: 0; font-size: 0; border-radius: 4px; }
+.ev.slim * { display: none; }
+@media (max-width: 640px) {
+  .cal-days > div { font-size: 11px; }
+  .cal-days > div b { font-size: 15px; }
+  .cal-col .ev:not(.compact):not(.dispo) { font-size: 13px; padding: 6px 8px; }
+}
+.ev.compact { font-size: 0 !important; }
+.ev.compact b { font-size: 10px; display: block; white-space: nowrap; overflow: hidden; }
+.ev.compact.slim b { display: none; }

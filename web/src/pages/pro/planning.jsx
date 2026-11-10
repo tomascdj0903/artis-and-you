@@ -35,7 +35,9 @@ export function Planning() {
   const { company, teams, profile, can, run, confirm } = useApp();
   const s = planSettings(company);
   const { query } = useLocation();
-  const [view, setView] = useState(query.get('vue') || s.view);
+  // Sur téléphone, la vue Jour est la plus lisible : c'est la vue d'ouverture
+  const narrow = typeof window !== 'undefined' && window.matchMedia?.('(max-width: 640px)').matches;
+  const [view, setView] = useState(query.get('vue') || (narrow ? 'day' : s.view));
   const [anchor, setAnchor] = useState(() => query.get('d') ? new Date(query.get('d')) : new Date());
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
@@ -123,7 +125,8 @@ export function Planning() {
       : loading ? <Loader /> : view === 'month' ? (
         <MonthGrid range={range} anchor={anchor} evs={evs} color={color} cm={data.cm} onDay={(d) => { setAnchor(d); setView('day'); }} onMove={dragOk ? moveAppt : null} />
       ) : (
-        <WeekGrid days={view === 'day' ? [range[0]] : Array.from({ length: weekLength(s) }, (_, i) => addDays(range[0], i))}
+        {narrow && view === 'week' && <p className="small muted" style={{ margin: '0 0 6px' }}>{t('Touchez un jour ou un rendez-vous pour voir le détail.')}</p>}
+        <WeekGrid compact={narrow && view !== 'day'} onDay={(d) => { setAnchor(d); setView('day'); }} days={view === 'day' ? [range[0]] : Array.from({ length: weekLength(s) }, (_, i) => addDays(range[0], i))}
           s={s} evs={evs} busy={all} noFree={hide.has('dispo')} color={color} cm={data.cm} onNew={newAt} onMove={dragOk ? moveAppt : null} />
       )}
       {dragOk && !q.trim() && view !== 'month' && <p className="small faint" style={{ marginTop: 6 }}>{t('Astuce : faites glisser un rendez-vous pour le déplacer (par pas de 15 min).')}</p>}
@@ -151,7 +154,7 @@ function lanes(list) {
   return ev;
 }
 
-function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove }) {
+function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove, compact, onDay }) {
   const [h0, h1] = s.hours; const H = 46;
   const todayKey = iso(new Date());
   const top = (d) => ((d.getHours() + d.getMinutes() / 60 - h0) * H);
@@ -183,13 +186,13 @@ function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove }) {
   };
   return (
     <div className="cal" style={{ '--n': days.length, '--h': H + 'px' }}>
-      <div className="cal-days"><div />{days.map((d) => <div key={d} className={iso(d) === todayKey ? 'today' : ''}>{d.toLocaleDateString(locale(), { weekday: 'short' }).replace('.', '')}<b>{d.getDate()}</b></div>)}</div>
+      <div className="cal-days"><div />{days.map((d) => <div key={d} className={iso(d) === todayKey ? 'today' : ''} onClick={compact ? () => onDay(d) : undefined} style={compact ? { cursor: 'pointer' } : undefined}>{d.toLocaleDateString(locale(), { weekday: 'short' }).replace('.', '')}<b>{d.getDate()}</b></div>)}</div>
       <div className="cal-body">
         <div className="cal-hours">{Array.from({ length: h1 - h0 }, (_, i) => <div key={i}>{h0 + i}h</div>)}</div>
         {days.map((d) => {
           const key = iso(d);
           const dayEv = lanes(evs.filter((a) => iso(new Date(a.start_at)) === key));
-          const free = noFree || busy.some((a) => a.company) ? [] : freeWindows(d, busy, s, 30);
+          const free = noFree || compact || busy.some((a) => a.company) ? [] : freeWindows(d, busy, s, 30);
           return (
             <div key={key} data-day={key} className={'cal-col' + (s.days.includes(d.getDay()) ? '' : ' off') + (ghost?.day === key ? ' drop' : '')} style={{ height: (h1 - h0) * H }}
               onDoubleClick={(e) => { if (e.target !== e.currentTarget) return; const y = e.nativeEvent.offsetY; const x = new Date(d); x.setHours(h0, 0, 0, 0); x.setMinutes(Math.floor((y / H) * 2) * 30); onNew(x); }}>
@@ -199,9 +202,9 @@ function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove }) {
                 // Dans un chantier partagé, on ne déplace que ses propres RDV
                 const fixed = !onMove || (a.recurrence && a.recurrence !== 'none') || (a.company && !a.mine);
                 return (
-                  <button key={a.id + (a.occurrence || '')} className={'ev' + (a.status === 'a_valider' ? ' pending' : '') + (a.status === 'termine' ? ' done' : '') + (fixed ? '' : ' draggable') + (ghost?.id === a.id ? ' dragging' : '')} style={{ top: Math.max(0, top(st)), height: Math.max(22, top(en) - top(st) - 2), background: color(a), left: `calc(${(a._lane / a._lanes) * 100}% + 2px)`, width: `calc(${100 / a._lanes}% - 4px)`, right: 'auto' }}
-                    onPointerDown={fixed ? undefined : (e) => down(e, a)} onPointerMove={fixed ? undefined : moveEv} onPointerUp={fixed ? undefined : up} onPointerCancel={() => { drag.current = null; setGhost(null); }}
-                    onClick={fixed ? () => (!a.company || a.mine) && navigate('/pro/planning/rdv/' + a.id) : undefined} title={fixed ? undefined : t('Cliquez pour ouvrir, faites glisser pour déplacer')}>
+                  <button key={a.id + (a.occurrence || '')} className={'ev' + (compact && a._lanes > 1 ? ' slim' : '') + (compact ? ' compact' : '') + (a.status === 'a_valider' ? ' pending' : '') + (a.status === 'termine' ? ' done' : '') + (fixed ? '' : ' draggable') + (ghost?.id === a.id ? ' dragging' : '')} style={{ top: Math.max(0, top(st)), height: Math.max(22, top(en) - top(st) - 2), background: color(a), left: `calc(${(a._lane / a._lanes) * 100}% + 2px)`, width: `calc(${100 / a._lanes}% - 4px)`, right: 'auto' }}
+                    onPointerDown={fixed || compact ? undefined : (e) => down(e, a)} onPointerMove={fixed ? undefined : moveEv} onPointerUp={fixed || compact ? undefined : up} onPointerCancel={() => { drag.current = null; setGhost(null); }}
+                    onClick={compact ? () => onDay(new Date(a.start_at)) : fixed ? () => (!a.company || a.mine) && navigate('/pro/planning/rdv/' + a.id) : undefined} title={fixed ? undefined : t('Cliquez pour ouvrir, faites glisser pour déplacer')}>
                     <b>{hm(st)}{a.mode === 'visio' && ' 🎥'}</b>{a.company ? a.company : a.personal ? a.title : clientName(cm[a.client_id])}<br />{a.company ? (a.trades?.[0] ? t(a.trades[0]) : a.title) : !a.personal && a.title}
                   </button>
                 );

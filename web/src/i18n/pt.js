@@ -2054,4 +2054,5 @@ export default {"(copie)":"(cópia)",
 "Copié !":"Copiado!",
 "Mon intervention":"A minha intervenção",
 "Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.":"Toque num profissional para mostrar ou ocultar. Só as suas marcações podem ser alteradas.",
-"Touchez pour afficher ou masquer":"Toque para mostrar ou ocultar"};
+"Touchez pour afficher ou masquer":"Toque para mostrar ou ocultar",
+"Touchez un jour ou un rendez-vous pour voir le détail.":"Toque num dia ou numa marcação para ver o detalhe."};
