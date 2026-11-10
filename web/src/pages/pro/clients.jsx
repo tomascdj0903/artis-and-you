@@ -1,3 +1,4 @@
+import { kbd } from '../../lib/a11y.js';
 import { RateBox, InviteClientButtons } from './messages.jsx';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
@@ -6,9 +7,9 @@ import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { money, date, dateTime, clientName, fullName, dateMed, hm } from '../../lib/format.js';
-import { effectiveStatus, LEGAL_FORMS } from '../../lib/docs.js';
-import { AddressFields, COUNTRIES } from '../../ui/address.jsx';
+import { money, date, clientName, fullName, dateMed, hm } from '../../lib/format.js';
+import { LEGAL_FORMS } from '../../lib/docs.js';
+import { AddressFields } from '../../ui/address.jsx';
 import { TopBar, SearchBar, Sec, KV, Table, Pill, Sheet, Chips, Field, useData, Loader, Empty, Seg } from '../../ui/index.jsx';
 import { KpiView } from './kpi.jsx';
 import { DocList } from './doclist.jsx';
@@ -174,7 +175,7 @@ export function useClientBundle(id) {
 }
 
 export function ClientCard({ params }) {
-  const { company, run, confirm, can } = useApp();
+  const { run, confirm, can } = useApp();
   const [b, reload, loading] = useClientBundle(params.id);
   const [note, setNote] = useState(null);
   if (loading || !b) return <div className="content"><TopBar title={t('Client')} /><Loader /></div>;
@@ -217,7 +218,7 @@ export function ClientCard({ params }) {
           <KV rows={[
             [t('N° client'), c.number], [t('Type de client'), c.type === 'pro' ? t('Professionnel') : t('Particulier')], [t('Civilité'), c.civility], [t('Nom'), c.last_name], [t('Prénom'), c.first_name],
             c.type === 'pro' && [t('Raison sociale'), c.company_name], c.type === 'pro' && [t('Enseigne commerciale'), c.trade_name], c.type === 'pro' && [t('Forme juridique'), c.legal_form],
-            [t('Statut client'), <Pill c={c.status === 'actif' ? 'green' : 'grey'}>{t({ actif: 'Actif', prospect: 'Prospect', inactif: 'Inactif' }[c.status])}</Pill>],
+            [t('Statut client'), <Pill key="v" c={c.status === 'actif' ? 'green' : 'grey'}>{t({ actif: 'Actif', prospect: 'Prospect', inactif: 'Inactif' }[c.status])}</Pill>],
             c.type === 'pro' && [t('Date de création'), date(c.creation_date)], [t('Compte Artesa'), c.user_id ? t('Oui') : t('Non')],
           ]} />
           <Sec title={t('Coordonnées')} />
@@ -347,7 +348,7 @@ export function ClientHistory({ params }) {
             return (
               <div key={i}>
                 {show && <div className="tl-day">{dateMed(day)}</div>}
-                <div className="tl-item" onClick={e.link ? () => navigate(e.link) : undefined} style={e.link ? { cursor: 'pointer' } : undefined}>
+                <div {...(e.link ? kbd : null)} className="tl-item" onClick={e.link ? () => navigate(e.link) : undefined} style={e.link ? { cursor: 'pointer' } : undefined}>
                   <div className={'tl-ico ' + e.color}><I /></div>
                   <div className="tl-card"><div className="h">{e.title}<small>{hm(e.when || e.at)}</small></div><div className="small muted">{e.sub}</div>{e.tag && <div style={{ marginTop: 6 }}><Pill c={e.color === 'ghost' ? 'grey' : 'green'}>{e.tag}</Pill></div>}</div>
                 </div>

@@ -12,7 +12,7 @@ export async function loadDoc(id) {
   const [companyLive, clientLive, payments, source] = await Promise.all([
     api.one('companies', { id: d.company_id }).catch(() => null),
     d.client_id ? api.one('clients', { id: d.client_id }).catch(() => null) : null,
-    api.select('payments', { document_id: id }, { order: 'paid_on.asc' }).catch(() => []),
+    api.select('payments', { document_id: id }, { order: 'paid_on.asc' }), // pas de repli silencieux : sans les paiements, le reste à payer serait faux
     d.source_id ? api.one('documents', { id: d.source_id }).catch(() => null) : null,
   ]);
   const company = d.snapshot?.company ? { ...companyLive, ...d.snapshot.company, settings: companyLive?.settings || {} } : companyLive || {};
@@ -192,7 +192,6 @@ export function A4({ d, company, client, source, logoUrl }) {
         <thead><tr><th>{t('Désignation')}</th><th className="n">{t('Qté')}</th><th className="n">{t('PU HT (€)')}</th>{!franchise && !d.reverse_charge && <th className="n">{t('TVA')}</th>}<th className="n">{t('Total HT (€)')}</th></tr></thead>
         <tbody>
           {d.lines.map((l, i) => {
-            const nextSec = d.lines.slice(i + 1).find((x) => x.kind === 'section');
             const isLastOfSection = l.kind !== 'section' && (i === d.lines.length - 1 || d.lines[i + 1].kind === 'section');
             const secId = [...d.lines.slice(0, i + 1)].reverse().find((x) => x.kind === 'section')?.id;
             const cols = !franchise && !d.reverse_charge ? 5 : 4;

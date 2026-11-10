@@ -1195,3 +1195,11 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .ai-hist > button.ai-hist-clear { align-self: center; border: 0; background: none; color: var(--text-3); font-weight: 600; font-size: 13px; text-decoration: underline; margin-top: 6px; }
 @media (max-width: 640px) { .ai-sheet { max-height: 86vh; } .ai-in .input { min-width: 0; } }
 .ai-in .input:focus, .ai-in .input:focus-visible { outline: none; box-shadow: none; border-color: var(--primary); }
+
+/* Écran d'erreur (page qui plante) */
+.crash { min-height: 60vh; display: grid; place-content: center; gap: 12px; text-align: center; padding: 32px 20px; }
+.crash h1 { font-size: 22px; margin: 0; }
+.crash p { margin: 0 0 6px; max-width: 420px; }
+
+/* Accueil pré-rendu : masqué pour un utilisateur déjà connecté (ou dans le logiciel PC/Mac), le temps que l'app démarre */
+:root[data-in] #root > .lp { display: none; }

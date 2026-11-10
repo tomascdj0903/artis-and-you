@@ -3,12 +3,19 @@
 // Limites : 40 questions / jour / utilisateur, réponses courtes (max ~350 tokens), contexte réduit.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
-const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' };
+// Seuls le site Artesa (et ses aperçus Vercel) et le développement local peuvent appeler la fonction depuis un navigateur.
+// Le logiciel PC/Mac charge le site : même origine.
+const ALLOWED = /^https:\/\/artis-and-you(-[a-z0-9-]+)?\.vercel\.app$|^http:\/\/localhost(:\d+)?$/;
+const cors = (req: Request) => {
+  const o = req.headers.get('origin') || '';
+  return { 'Access-Control-Allow-Origin': ALLOWED.test(o) ? o : 'https://artis-and-you.vercel.app', Vary: 'Origin', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' };
+};
 const MODELS = ['llama-3.3-70b-versatile', 'openai/gpt-oss-20b', 'llama-3.1-8b-instant'];
 const DAILY = 40;
-const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...CORS, 'content-type': 'application/json' } });
 
 Deno.serve(async (req) => {
+  const CORS = cors(req);
+  const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...CORS, 'content-type': 'application/json' } });
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json({ error: 'method' }, 405);
   const auth = req.headers.get('authorization') || '';
@@ -39,6 +46,7 @@ Deno.serve(async (req) => {
   const system = `Tu es l'assistant de l'application Artesa. ${who}
 Réponds en français, de façon courte (3 à 5 phrases maximum), concrète, et vouvoie l'utilisateur.
 Appuie-toi UNIQUEMENT sur les fiches d'aide ci-dessous. Si elles ne permettent pas de répondre, dis-le simplement et propose de contacter le support (Paramètres › Aide et support). N'invente jamais de fonctionnalité, de prix ni de chemin de menu.
+Écris en texte simple : pas de Markdown, pas d'astérisques, pas de titres. Tu ne peux faire aucune action toi-même (envoyer un message, créer un document) : ne dis jamais qu'une action a été faite ou qu'une notification sera envoyée.
 Fiches d'aide :
 ${facts || '(aucune fiche trouvée)'}`;
 

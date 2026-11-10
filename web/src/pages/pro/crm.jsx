@@ -1,13 +1,14 @@
+import { kbd, kbdRow } from '../../lib/a11y.js';
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuPencil, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
+import { LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
 import { starterFor } from '../../lib/starter.js';
-import { money, money0, date, dateShort, clientName, iso, num } from '../../lib/format.js';
+import { money, money0, date, dateShort, clientName, iso } from '../../lib/format.js';
 import { STEPS, autoSteps, stepState, ALL_TRADES, VAT_RATES, kindLabel } from '../../lib/docs.js';
 import { makeXlsx, download } from '../../lib/xlsx.js';
 import { TopBar, SearchBar, Sec, Sheet, Field, Chips, Seg, useData, Loader, Empty, Pill, Table , Picker } from '../../ui/index.jsx';
@@ -15,7 +16,6 @@ import { KpiView } from './kpi.jsx';
 
 export function CrmHome() {
   const { can } = useApp();
-  const [q, setQ] = useState('');
   return (
     <div className="content">
       <TopBar title={t('CRM')} back={false} />
@@ -106,7 +106,7 @@ export function ProjectStatus() {
           {rows.map(({ p, info }) => (
             <div key={p.id} className="card proj">
               <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                <div style={{ minWidth: 0 }}><b className="click" onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small muted ellipsis">{p.title}{p.address ? ' · ' + p.address : ''}</div></div>
+                <div style={{ minWidth: 0 }}><b {...kbd} className="click" onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small muted ellipsis">{p.title}{p.address ? ' · ' + p.address : ''}</div></div>
                 <Pill c={{ devis: 'navy-o', planifier: 'yellow', chantier: 'navy', facturer: 'red-o', encaisser: 'red', termine: 'green' }[info.phase]}>{t(PHASES.find((x) => x[0] === info.phase)[1])}</Pill>
               </div>
               <div className="progress" style={{ margin: '12px 0 4px' }}><i style={{ width: `${(info.done / STEPS.length) * 100}%` }} /></div>
@@ -129,7 +129,7 @@ export function ProjectStatus() {
               <thead><tr><th>{t('Client')}</th>{STEPS.map(([k, l]) => <th key={k} className="v"><span>{t(l)}</span></th>)}</tr></thead>
               <tbody>{rows.map(({ p, auto }) => (
                 <tr key={p.id}>
-                  <td><b style={{ cursor: 'pointer' }} onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small faint">{p.title}</div></td>
+                  <td><b {...kbd} style={{ cursor: 'pointer' }} onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small faint">{p.title}</div></td>
                   {STEPS.map(([k, l]) => { const s = stepState(p, auto, k); return <td key={k}><button className={'ck ' + (s === 'auto' ? 'auto' : s === 'man' ? 'man' : '')} onClick={() => toggle(p, auto, k)} aria-label={t(l)} title={t(l)}>✓</button></td>; })}
                 </tr>
               ))}</tbody>
@@ -202,7 +202,7 @@ export function CompanyKpi() {
       <Sec title={t('Statut général des clients')} />
       {rows.length ? (
         <div className="table-wrap"><table className="t"><thead><tr><th>{t('Client')}</th><th>{t('Statut')}</th><th className="num">{t('CA HT')}</th><th className="num">{t('Dû')}</th><th className="num">{t('Dernier document')}</th></tr></thead>
-          <tbody>{rows.slice(0, 50).map((r) => <tr key={r.c.id} style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/clients/' + r.c.id)}><td className="strong">{clientName(r.c)}</td><td><Pill c={r.status[0]}>{t(r.status[1])}</Pill></td><td className="num">{money0(r.ca)}</td><td className={'num' + (r.due > 0.005 ? ' red-t' : '')}>{money0(r.due)}</td><td className="num" style={{ fontWeight: 400 }}>{r.last ? date(r.last) : '—'}</td></tr>)}</tbody></table></div>
+          <tbody>{rows.slice(0, 50).map((r) => <tr {...kbdRow} key={r.c.id} style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/clients/' + r.c.id)}><td className="strong">{clientName(r.c)}</td><td><Pill c={r.status[0]}>{t(r.status[1])}</Pill></td><td className="num">{money0(r.ca)}</td><td className={'num' + (r.due > 0.005 ? ' red-t' : '')}>{money0(r.due)}</td><td className="num" style={{ fontWeight: 400 }}>{r.last ? date(r.last) : '—'}</td></tr>)}</tbody></table></div>
       ) : <Empty text={t('Aucun client pour le moment. Ajoutez-en un avec le bouton +.')} />}
     </div>
   );

@@ -62,7 +62,7 @@ export function Login() {
         <h1 className="center" style={{ fontSize: 24, margin: 0 }}>{t('Double authentification')}</h1>
         <p className="center muted" style={{ margin: 0 }}>{t('Saisissez le code à 6 chiffres affiché dans votre application d’authentification.')}</p>
         <input className="pillinput center" style={{ fontSize: 26, letterSpacing: 8, fontWeight: 800 }} inputMode="numeric" autoComplete="one-time-code" maxLength={7} autoFocus value={code} onChange={(e) => setCode(e.target.value.replace(/[^\d ]/g, ''))} aria-label={t('Code')} placeholder="000000" />
-        {err && <div className="error">{err}</div>}
+        {err && <div className="error" role="alert">{err}</div>}
         <button className="btn" style={{ height: 58, fontSize: 19 }} disabled={busy || code.replace(/\D/g, '').length !== 6}>{busy ? '…' : t('Activer mon compte')}</button>
         <button type="button" className="link center bold" onClick={() => { setMfa(false); setCode(''); setErr(''); }}>{t('Retour')}</button>
         <p className="small faint center">{t('Plus accès à votre application ? Écrivez à support@artisandyou.fr depuis votre adresse e-mail.')}</p>
@@ -78,7 +78,7 @@ export function Login() {
         <input className="pillinput" type="password" autoComplete="current-password" placeholder={t('Mot de passe')} value={pw} onChange={(e) => setPw(e.target.value)} required aria-label={t('Mot de passe')} />
         <Link to="/mot-de-passe-oublie" className="center bold">{t('Mot de passe oublié')}</Link>
         <label className="check" style={{ justifyContent: 'center', fontSize: 19, color: 'var(--bordeaux)' }}><input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />{t('Se rappeler de moi')}</label>
-        {err && <div className="error">{err}</div>}
+        {err && <div className="error" role="alert">{err}</div>}
         <button className="btn" style={{ height: 58, fontSize: 19 }} disabled={busy}>{busy ? '…' : t('Se connecter')}</button>
         <div style={{ height: 30 }} />
         <button type="button" className="btn navy" style={{ height: 58, fontSize: 19 }} onClick={() => navigate('/inscription')}>{t('Créer un compte')}</button>
@@ -170,7 +170,7 @@ export function SignupClient() {
         <div className="field"><span>{t('Adresse de votre logement')}</span></div>
         <AddressFields value={v.home} onChange={(home) => set({ ...v, home })} required />
         <label className="check"><input type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} /><span>{t('J’accepte les')} <Link to="/cgu" className="red-t">{t('CGU')}</Link> {t('et la')} <Link to="/confidentialite" className="red-t">{t('politique de confidentialité')}</Link></span></label>
-        {err && <div className="error">{err}</div>}
+        {err && <div className="error" role="alert">{err}</div>}
         <button className="btn block mt" disabled={busy}>{busy ? '…' : t('Créer mon compte')}</button>
       </form>
     </AuthLayout>
@@ -200,7 +200,7 @@ export function VerifyEmailBox({ email, devCode: dc, onDone }) {
       {!OFFLINE && <p className="muted small">{t('Pensez à regarder dans vos spams. Si l’e-mail contient un code à 6 chiffres, saisissez-le ci-dessous.')}</p>}
       {OFFLINE && devCode && <div className="notice" style={{ textAlign: 'left' }}>{t('Mode local : aucun e-mail n’est envoyé. Votre code est {c}.', { c: devCode })}</div>}
       <input className="pillinput mt" value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))} inputMode="numeric" autoComplete="one-time-code" placeholder="••••••" required minLength={6} style={{ letterSpacing: 10 }} aria-label={t('Code de vérification')} />
-      {err && <div className="error">{err}</div>}
+      {err && <div className="error" role="alert">{err}</div>}
       {info && <div className="notice">{info}</div>}
       <button className="btn block mt" disabled={busy || code.length < 6}>{busy ? '…' : t('Valider mon adresse')}</button>
       <button type="button" className="link mt" onClick={resend}>{t('Renvoyer le code')}</button>
@@ -266,7 +266,7 @@ export function SignupPro() {
           <h1 style={{ fontSize: 26, margin: '4px 0 12px' }}>{t('Votre compte artisan')}</h1>
           <AccountFields v={v} set={set} />
           <label className="check"><input type="checkbox" checked={cgu} onChange={(e) => setCgu(e.target.checked)} /><span>{t('J’accepte les')} <Link to="/cgu" className="red-t">{t('CGU')}</Link> {t('et la')} <Link to="/confidentialite" className="red-t">{t('politique de confidentialité')}</Link></span></label>
-          {err && <div className="error">{err}</div>}
+          {err && <div className="error" role="alert">{err}</div>}
           <button className="btn block mt" disabled={busy}>{busy ? '…' : t('Continuer')}</button>
         </form>
       ) : (
@@ -285,7 +285,7 @@ export function SignupPro() {
               <div className="form-grid two">
                 <Field label={t('Forme juridique')}><select value={c.legal_form} onChange={(e) => setC({ ...c, legal_form: e.target.value })} required><option value="">{t('Choisir')}</option>{LEGAL_FORMS.map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
                 <Field label={t('SIRET')} hint={t('vérifié par notre équipe')}><input value={c.siret} onChange={(e) => { setC({ ...c, siret: e.target.value }); setSiretSt(null); }} onBlur={() => siretValid(c.siret) && api.rpc('siret_status', { p_siret: c.siret.replace(/\s/g, '') }).then(setSiretSt, () => {})} required inputMode="numeric" placeholder="845 216 937 00024" /></Field>
-                {siretSt === 'active' && <div className="error" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET est déjà inscrit sur Artesa. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.')}</div>}
+                {siretSt === 'active' && <div className="error" role="alert" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET est déjà inscrit sur Artesa. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.')}</div>}
                 {siretSt === 'known' && <div className="notice small" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET a déjà utilisé Artesa par le passé. Vous pouvez recréer votre compte, mais sans essai gratuit ni avantage de parrainage.')}</div>}
               </div>
               <div className="field"><span>{t('Adresse du siège')}</span></div>
@@ -303,7 +303,7 @@ export function SignupPro() {
               <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artesa (SIRET, informations légales) avant d’être visible des clients.')}</p>
             </>
           )}
-          {err && <div className="error">{err}</div>}
+          {err && <div className="error" role="alert">{err}</div>}
           <button className="btn block mt" disabled={busy}>{busy ? '…' : mode === 'join' ? t('Rejoindre l’équipe') : t('Commencer mon essai de 30 jours')}</button>
           <button type="button" className="link block mt" style={{ width: '100%' }} onClick={async () => { await api.signOut(); navigate('/connexion'); }}>{t('Se déconnecter')}</button>
         </form>
@@ -326,7 +326,7 @@ export function Forgot() {
           <>
             <p className="muted">{t('Indiquez votre e-mail, nous vous envoyons un lien pour choisir un nouveau mot de passe.')}</p>
             <Field label={t('E-mail')}><input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></Field>
-            {err && <div className="error">{err}</div>}
+            {err && <div className="error" role="alert">{err}</div>}
             <button className="btn block">{t('Envoyer le lien')}</button>
           </>
         )}
@@ -348,7 +348,7 @@ export function NewPassword() {
       <form onSubmit={submit}>
         <h1 style={{ fontSize: 26, margin: '8px 0' }}>{t('Nouveau mot de passe')}</h1>
         <Field label={t('Mot de passe')} hint={t('6 caractères minimum')}><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required minLength={6} /></Field>
-        {err && <div className="error">{err}</div>}
+        {err && <div className="error" role="alert">{err}</div>}
         <button className="btn block">{t('Enregistrer')}</button>
       </form>
     </AuthLayout>

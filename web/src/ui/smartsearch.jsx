@@ -9,7 +9,7 @@ import { api } from '../lib/api.js';
 import { useApp } from '../lib/store.jsx';
 import { navigate } from '../lib/router.jsx';
 import { t } from '../lib/i18n.js';
-import { clientName, money, date, dateShort, hm } from '../lib/format.js';
+import { clientName, money, dateShort, hm } from '../lib/format.js';
 import { kindLabel, statusPill } from '../lib/docs.js';
 
 const norm = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -51,7 +51,7 @@ export function SmartSearch({ placeholder, scope }) {
       if (act) {
         setAi(act);
         // Commande dictée à la voix et claire (« ouvre… », « fais un devis pour… ») : on l'exécute directement
-        if (voice.current && act.go && imperative(v)) { voice.current = false; setOpen(false); setQ(''); navigate(act.go); }
+        if (voice.current && act.go && (act.act || imperative(v))) { voice.current = false; setOpen(false); setQ(''); navigate(act.go); }
         return;
       }
       const kb = searchKB(v, '/pro');
@@ -128,7 +128,7 @@ export function SmartSearch({ placeholder, scope }) {
       const act = await runAction(v, { company }).catch(() => null);
       if (act) {
         pushRecent(v);
-        if (act.go && imperative(v)) { setOpen(false); setQ(''); navigate(act.go); return; }
+        if (act.go && (act.act || imperative(v))) { setOpen(false); setQ(''); navigate(act.go); return; }
         setAi(act); setAiAns(null); setOpen(true); return;
       }
       const kb = searchKB(v, '/pro');

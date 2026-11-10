@@ -1,5 +1,7 @@
+import { shrinkImage } from '../../lib/image.js';
+import { poll } from '../../lib/poll.js';
 import { useEffect, useRef, useState } from 'react';
-import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
+import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
@@ -21,7 +23,8 @@ export function Chat({ convId, projects = [], banner }) {
   const { profile, company, refreshUnread, toast } = useApp();
   const [msgs, setMsgs] = useState(null);
   const [conv, setConv] = useState(null);
-  const [text, setText] = useState('');
+  // Brouillon préparé par l'assistant (« envoie un message à X pour dire… ») : il attend dans le champ, rien n'est envoyé
+  const [text, setText] = useState(() => { try { const d = JSON.parse(sessionStorage.getItem('ay-draft') || 'null'); if (!d || d.to !== location.pathname) return ''; sessionStorage.removeItem('ay-draft'); return Date.now() - d.at < 120000 ? d.text : ''; } catch { return ''; } });
   const [menu, setMenu] = useState(false);
   const [doneSheet, setDoneSheet] = useState(false);
   const [big, setBig] = useState(null);
@@ -39,8 +42,8 @@ export function Chat({ convId, projects = [], banner }) {
   useEffect(() => {
     load();
     api.upsert('conversation_reads', { conversation_id: convId, user_id: uid(), last_read_at: new Date().toISOString() }).then(refreshUnread).catch(() => {});
-    const i = setInterval(load, 4000);
-    return () => { clearInterval(i); api.upsert('conversation_reads', { conversation_id: convId, user_id: uid(), last_read_at: new Date().toISOString() }).then(refreshUnread).catch(() => {}); };
+    const stop = poll(load, 4000); // en pause quand l'app n'est pas à l'écran, reprise immédiate au retour
+    return () => { stop(); api.upsert('conversation_reads', { conversation_id: convId, user_id: uid(), last_read_at: new Date().toISOString() }).then(refreshUnread).catch(() => {}); };
   }, [convId]);
 
   const senderName = fullName(profile) || company?.name || '';
@@ -70,7 +73,7 @@ export function Chat({ convId, projects = [], banner }) {
     if (!files.length) return;
     try {
       const atts = [];
-      for (const f of files) { if (f.size > 20e6) { toast(t('Fichier trop lourd (20 Mo max).'), true); continue; } atts.push(await uploadTo(myPrefix(profile) + '/chat/' + convId, f)); }
+      for (const raw of files) { const f = await shrinkImage(raw); if (f.size > 20e6) { toast(t('Fichier trop lourd (20 Mo max).'), true); continue; } atts.push(await uploadTo(myPrefix(profile) + '/chat/' + convId, f)); }
       if (atts.length) { await post({ attachments: atts }); await keepPhotos(atts); if (atts.some((a) => (a.mime || '').startsWith('image/')) && conv?.client_id) toast(t('Photos ajoutées dans Documents › Photos')); }
     } catch (x) { toast(x.message, true); }
   };

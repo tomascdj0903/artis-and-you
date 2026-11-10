@@ -1,5 +1,4 @@
 // Couche de données : Supabase (production) ou base locale (tests hors-ligne).
-import { mockBackend } from './mock.js';
 import { t } from './i18n.js';
 
 const ENV = typeof __ENV__ !== 'undefined' ? __ENV__ : {};
@@ -204,7 +203,10 @@ if (!OFFLINE && location.hash.includes('access_token=')) {
   http('/auth/v1/user').then((u) => saveSession({ ...session, user: u })).catch(() => {});
 }
 
-export const api = OFFLINE ? mockBackend({ saveSession, getSession: () => session }) : remote;
+// Le mode démo (données fictives dans le navigateur) n'est téléchargé que s'il sert : les vrais utilisateurs ne le chargent pas.
+// Toutes les méthodes de l'API sont asynchrones : on peut donc attendre le chargement à chaque appel.
+const lazyBackend = (load) => { let p; return new Proxy({}, { get: (_, k) => (k === 'then' ? undefined : (...a) => (p || (p = load())).then((b) => b[k](...a))) }); };
+export const api = OFFLINE ? lazyBackend(() => import('./mock.js').then((m) => m.mockBackend({ saveSession, getSession: () => session }))) : remote;
 
 // ─────────────── URLs de fichiers (cache) ───────────────
 const urlCache = new Map();

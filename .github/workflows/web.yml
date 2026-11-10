@@ -1,0 +1,41 @@
+# Vérifie la webapp à chaque envoi : traductions, build, puis tests des parcours principaux (mode local, sans base).
+# Un échec apparaît en rouge sur GitHub et dans l'e-mail de GitHub, avant que l'erreur ne soit vue par les utilisateurs.
+name: Webapp · build et tests
+
+on:
+  push:
+    paths: ['web/**', '.github/workflows/web.yml']
+  pull_request:
+    paths: ['web/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - name: Traductions cohérentes
+        run: node scripts/i18n.mjs && git diff --exit-code -- src/i18n
+      - name: Vérificateur de code (ESLint)
+        run: npm install --no-save eslint@9 @eslint/js@9 eslint-plugin-react@7 eslint-plugin-react-hooks@5 globals@15 && npx eslint src scripts tests build.mjs public/sw.js
+      - name: Build
+        run: npm run build
+      - name: Navigateur de test
+        run: npm install --no-save playwright@1 && npx playwright install --with-deps chromium
+      - name: Tests des parcours
+        run: node tests/e2e.mjs

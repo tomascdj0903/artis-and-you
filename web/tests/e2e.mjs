@@ -8,7 +8,8 @@ const DIST = path.resolve('dist'); const PORT = 5199; const BASE = `http://local
 const TYPES = { '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.html': 'text/html', '.json': 'application/json', '.webmanifest': 'application/manifest+json' };
 const server = http.createServer((req, res) => {
   let p = path.join(DIST, decodeURIComponent(req.url.split('?')[0]));
-  if (!p.startsWith(DIST) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) p = path.join(DIST, 'index.html');
+  // Comme Vercel : « / » sert l'accueil pré-rendu, les autres adresses la coque de l'app
+  if (!p.startsWith(DIST) || !fs.existsSync(p)) p = path.join(DIST, 'app.html'); else if (fs.statSync(p).isDirectory()) p = path.join(p, 'index.html');
   res.writeHead(200, { 'Content-Type': TYPES[path.extname(p)] || 'application/octet-stream' }); fs.createReadStream(p).pipe(res);
 }).listen(PORT);
 

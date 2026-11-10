@@ -16,14 +16,14 @@ const rest = (d) => Math.max(0, Number(d.totals?.ttc || 0) - Number(d.paid_amoun
 let cache = null;
 async function mine() {
   if (cache && cache.uid === uid() && Date.now() - cache.at < 30000) return cache;
-  const clients = await api.select('clients', { user_id: uid() }).catch(() => []);
+  const clients = await api.select('clients', { user_id: uid() });
   const cids = clients.map((c) => c.id);
   const ids = [...new Set(clients.map((c) => c.company_id))];
   const [cos, appts, docs, projects] = await Promise.all([
-    ids.length ? api.select('companies', { id: ids }).catch(() => []) : [],
-    cids.length ? api.select('appointments', { client_id: cids }, { order: 'start_at.asc' }).catch(() => []) : [],
-    cids.length ? api.select('documents', { client_id: cids }, { order: 'issue_date.desc' }).catch(() => []) : [],
-    cids.length ? api.select('projects', { client_id: cids }, { order: 'created_at.desc' }).catch(() => []) : [],
+    ids.length ? api.select('companies', { id: ids }) : [],
+    cids.length ? api.select('appointments', { client_id: cids }, { order: 'start_at.asc' }) : [],
+    cids.length ? api.select('documents', { client_id: cids }, { order: 'issue_date.desc' }) : [],
+    cids.length ? api.select('projects', { client_id: cids }, { order: 'created_at.desc' }) : [],
   ]);
   cache = { uid: uid(), at: Date.now(), cos, cm: Object.fromEntries(cos.map((c) => [c.id, c])), appts, docs: docs.filter((d) => d.number), projects };
   return cache;
@@ -105,6 +105,21 @@ export async function runClientAction(question) {
     if (co) { const to = `/client/artisans/${co.id}/demande`; return { text: t('Je vous ouvre la demande de rendez-vous chez {n} : décrivez votre besoin et choisissez un créneau.', { n: coName(co) }), links: [{ label: t('Demander un RDV à {n}', { n: coName(co) }), to }], go: to }; }
     const to = '/client/artisans' + (trade ? '?metier=' + encodeURIComponent(trade) : '');
     return { text: t('Choisissez d’abord l’artisan, puis « Demander un RDV » sur sa fiche.'), links: [{ label: 'Trouver un artisan', to }, ...d.cos.slice(0, 3).map((c) => ({ label: t('Demander un RDV à {n}', { n: coName(c) }), to: `/client/artisans/${c.id}/demande` }))], go: to };
+  }
+
+  // « Écris à Morel pour dire que je serai absent » : la conversation s'ouvre, le texte déjà écrit (rien n'est envoyé)
+  const dm = q.match(/^(?:previens|prevenir|informe|informer)\s+(.+?)\s*(?:\bqu(?:e|') ?|[:,«"“])\s*(.*)$/) || q.match(/^(?:envoie|envoyer|ecris|ecrire|dis|dire|demande|demander|reponds|repondre|message)\b(?: un| le)?(?: petit)?(?: message| mot)?\s+(?:a|au|aux|pour)\s+(.+?)\s*(?:\bpour (?:lui |leur )?(?:dire|demander|prevenir|rappeler)\b|\bqu(?:e|') ?|\bs(?:i|') ?(?=il|elle|c )|[:,«"“])\s*(.*)$/);
+  if (dm && dm[2]) {
+    const raw = String(question).trim();
+    const quoted = raw.match(/["«“]\s*([^"»”]+?)\s*["»”]/);
+    let body = quoted ? quoted[1] : '';
+    if (!body) { const cut = raw.search(/pour (lui |leur )?(dire|demander|prévenir|prevenir|rappeler)|\bqu[e’']|:|,/i); body = cut >= 0 ? raw.slice(cut).replace(/^(pour (lui |leur )?(dire|demander|prévenir|prevenir|rappeler)|qu[e’']|:|,)\s*(que |qu[’'])?/i, '') : dm[2]; }
+    body = body.trim().replace(/^./, (c) => c.toUpperCase());
+    const c = findCo(d.cos, nz(dm[1])) || (/artisan|plombier|electricien|peintre|macon|menuisier/.test(dm[1]) && d.cos.length === 1 ? d.cos[0] : null);
+    if (!c) return { text: t('Je ne trouve pas cet artisan parmi les vôtres.') + (d.cos.length ? ' ' + t('Vos artisans :') : ''), links: d.cos.length ? d.cos.slice(0, 4).map((x) => ({ label: coName(x), to: '/client/artisans/' + x.id })) : [{ label: 'Trouver un artisan', to: '/client/artisans' }] };
+    const id = await api.rpc('start_conversation', { p_company: c.id }), to = '/client/messages/' + id;
+    try { sessionStorage.setItem('ay-draft', JSON.stringify({ text: body, to, at: Date.now() })); } catch {}
+    return { text: t('Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.', { n: coName(c), m: body }), links: [{ label: t('Écrire à {n}', { n: coName(c) }), to }], go: to, act: true };
   }
 
   // 5) Joindre un de mes artisans : téléphone, appel, message

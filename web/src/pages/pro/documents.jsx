@@ -5,9 +5,9 @@ import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { money, iso, clientName, date, fullName } from '../../lib/format.js';
+import { money, iso, clientName, date } from '../../lib/format.js';
 import { computeTotals, newLine, defaultLines, VAT_RATES, kindLabel, statusPill, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
-import { TopBar, Sec, Field, Seg, Chips, Sheet, Modal, useData, Loader, Empty, Toggle, SearchBar, StatusPill , Picker } from '../../ui/index.jsx';
+import { TopBar, Sec, Field, Seg, Chips, Sheet, useData, Loader, Empty, StatusPill , Picker } from '../../ui/index.jsx';
 import { DocList } from './doclist.jsx';
 import { LuBellRing } from 'react-icons/lu';
 import { dueReminders, nextReminder, scenarios, fillTemplate, sendReminder } from '../../lib/relances.js';
@@ -15,7 +15,6 @@ import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf 
 
 export function DocumentsHome() {
   const { can } = useApp();
-  const [q, setQ] = useState('');
   return (
     <div className="content">
       <TopBar title={t('Documents')} back={false} settings="/pro/compte/factures" />
@@ -180,7 +179,6 @@ export function DocEdit({ params }) {
     if (!d.client_id) return toast(t('Choisissez un client.'), true);
     if (!d.lines.some((l) => l.kind === 'item' && l.label && Number(l.qty) && Number(l.price))) return toast(t('Ajoutez au moins une ligne avec un prix.'), true);
     const lines = d.lines.filter((l) => l.kind !== 'item' || l.label || Number(l.price));
-    const cl = b.clients.find((c) => c.id === d.client_id);
     let project_id = d.project_id || null;
     const row = { ...d, lines, project_id, totals: tot, start_date: d.start_date || null, due_date: isQ ? null : d.due_date || null, service_date: isQ ? null : d.service_date || null, deposit_pct: Number(d.deposit_pct) || 0, validity_days: Number(d.validity_days) || 30 };
     delete row.id; delete row.created_at;
@@ -297,7 +295,7 @@ function LibraryPicker({ open, items, onClose, onPick }) {
 
 // ─────────────── Détail (artisan) ───────────────
 export function DocDetail({ params }) {
-  const { company, run, confirm, wip, profile, toast } = useApp();
+  const { company, run, confirm, profile } = useApp();
   const [b, reload] = useData(() => loadDoc(params.id), [params.id]);
   const [send, setSend] = useState(false);
   const [pay, setPay] = useState(false);

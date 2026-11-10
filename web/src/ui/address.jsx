@@ -1,5 +1,5 @@
 // Saisie d'adresse et de ville avec propositions (API Adresse et API Géo de l'État, gratuites, sans clé)
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LuMapPin } from 'react-icons/lu';
 import { t } from '../lib/i18n.js';
 

@@ -2,7 +2,7 @@ import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useEffect, useState } from 'react';
 import { checkVaultReminders } from './files.jsx';
 import { dueReminders, autoReminders } from '../../lib/relances.js';
-import { LuHandshake, LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
+import { LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
@@ -46,7 +46,6 @@ export function Home() {
       setRelN(dueReminders(docs, company).length);
     })();
   }, [company.id]);
-  const [q, setQ] = useState('');
   // Chiffres de l'accueil : RDV du jour, devis en attente, CA du mois, compteurs des tuiles
   const [st] = useData(async () => {
     const d0 = new Date(); d0.setHours(0, 0, 0, 0); const d1 = new Date(d0); d1.setDate(d1.getDate() + 1);

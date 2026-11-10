@@ -1,7 +1,8 @@
 import './styles.css';
 import { createRoot } from 'react-dom/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { GlobalFab } from './ui/fab.jsx';
+import { ErrorBoundary } from './ui/errors.jsx';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
@@ -15,9 +16,13 @@ import { fullName } from './lib/format.js';
 
 import * as Auth from './pages/auth/index.jsx';
 import * as Legal from './pages/common/legal.jsx';
-import * as Pro from './pages/pro/index.js';
-import * as Cli from './pages/client/index.js';
-import * as Common from './pages/common/index.jsx';
+
+// L'espace artisan, l'espace particulier et les pages communes (compte, admin…) sont téléchargés séparément,
+// à la première visite : un particulier ne charge pas le code des devis, du CRM ou du planning des pros.
+const loaders = { pro: () => import('./pages/pro/index.js'), cli: () => import('./pages/client/index.js'), common: () => import('./pages/common/index.jsx') };
+const cache = {};
+const L = (mod, name) => cache[mod + name] || (cache[mod + name] = lazy(() => loaders[mod]().then((m) => ({ default: m[name] }))));
+export const preload = (mod) => loaders[mod]().catch(() => {});
 
 const PUBLIC = [
   ['/', Landing], ['/connexion', Auth.Login], ['/inscription', Auth.SignupChoice], ['/inscription/artisan', Auth.SignupPro], ['/inscription/particulier', Auth.SignupClient],
@@ -25,37 +30,37 @@ const PUBLIC = [
   ['/mentions-legales', Legal.Mentions], ['/cgu', Legal.CGU], ['/confidentialite', Legal.Privacy],
 ];
 const PRO = [
-  ['/pro', Pro.Home], ['/pro/recherche', Pro.GlobalSearch],
-  ['/pro/clients', Pro.Clients], ['/pro/clients/nouveau', Pro.ClientEdit], ['/pro/clients/:id', Pro.ClientCard], ['/pro/clients/:id/modifier', Pro.ClientEdit],
-  ['/pro/clients/:id/kpi', Pro.ClientKpi], ['/pro/clients/:id/factures', Pro.ClientInvoices], ['/pro/clients/:id/devis', Pro.ClientQuotes],
-  ['/pro/clients/:id/chat', Pro.ClientChat], ['/pro/clients/:id/historique', Pro.ClientHistory], ['/pro/clients/:id/docs', Pro.OtherDocsClient],
-  ['/pro/planning', Pro.Planning], ['/pro/planning/nouveau', Pro.ApptEdit], ['/pro/planning/rdv/:id', Pro.ApptDetail], ['/pro/planning/rdv/:id/modifier', Pro.ApptEdit], ['/pro/planning/reglages', Pro.PlanningSettings],
-  ['/pro/documents', Pro.DocumentsHome], ['/pro/documents/devis', Pro.QuotesAll], ['/pro/documents/factures', Pro.InvoicesAll],
-  ['/pro/documents/nouveau', Pro.DocEdit], ['/pro/documents/:id', Pro.DocDetail], ['/pro/documents/:id/modifier', Pro.DocEdit], ['/pro/documents/:id/pdf', Pro.DocPdf],
-  ['/pro/photos', Pro.PhotosClients], ['/pro/photos/:id', Pro.PhotosClient],
-  ['/pro/autres-docs', Pro.OtherDocsClients], ['/pro/autres-docs/:id', Pro.OtherDocsClient],
-  ['/pro/coffre-fort', Pro.Vault], ['/pro/coffre-fort/:type', Pro.VaultType],
-  ['/pro/crm', Pro.CrmHome], ['/pro/crm/statut', Pro.ProjectStatus], ['/pro/crm/kpi', Pro.CompanyKpi], ['/pro/crm/export', Pro.Export],
-  ['/pro/crm/bibliotheque', Pro.Library], ['/pro/crm/bibliotheque/:id', Pro.ItemEdit],
-  ['/pro/messages', Pro.Messages], ['/pro/messages/:id', Pro.Conversation],
-  ['/pro/reseau', Pro.Network], ['/pro/reseau/ajouter', Pro.NetworkAdd], ['/pro/reseau/inviter-clients', Pro.InviteClients], ['/pro/reseau/:id', Pro.ProProfile],
-  ['/pro/notifications', Common.Notifications], ['/pro/admin', Common.Admin],
-  ['/pro/compte', Pro.Account], ['/pro/compte/profil', Common.MyProfile], ['/pro/compte/abonnement', Pro.Subscription], ['/pro/compte/entreprise', Pro.CompanySettings],
-  ['/pro/compte/equipe', Pro.TeamSettings], ['/pro/compte/equipe/:id', Pro.MemberSettings], ['/pro/compte/documents', Pro.InvoiceSettings], ['/pro/compte/devis', Pro.QuoteSettings], ['/pro/compte/factures', Pro.InvoiceSettings], ['/pro/compte/pdf', Pro.PdfSettings],
-  ['/pro/compte/notifications', Pro.NotifSettings], ['/pro/relances', Pro.Relances], ['/pro/compte/integrations', Pro.Integrations], ['/pro/compte/donnees', Common.DataPrivacy],
-  ['/pro/compte/aide', Common.Help], ['/pro/compte/apparence', Common.Appearance], ['/pro/compte/avis', Pro.Reviews], ['/pro/reglages/profil-public', Pro.Reviews],
+  ['/pro', L('pro', 'Home')], ['/pro/recherche', L('pro', 'GlobalSearch')],
+  ['/pro/clients', L('pro', 'Clients')], ['/pro/clients/nouveau', L('pro', 'ClientEdit')], ['/pro/clients/:id', L('pro', 'ClientCard')], ['/pro/clients/:id/modifier', L('pro', 'ClientEdit')],
+  ['/pro/clients/:id/kpi', L('pro', 'ClientKpi')], ['/pro/clients/:id/factures', L('pro', 'ClientInvoices')], ['/pro/clients/:id/devis', L('pro', 'ClientQuotes')],
+  ['/pro/clients/:id/chat', L('pro', 'ClientChat')], ['/pro/clients/:id/historique', L('pro', 'ClientHistory')], ['/pro/clients/:id/docs', L('pro', 'OtherDocsClient')],
+  ['/pro/planning', L('pro', 'Planning')], ['/pro/planning/nouveau', L('pro', 'ApptEdit')], ['/pro/planning/rdv/:id', L('pro', 'ApptDetail')], ['/pro/planning/rdv/:id/modifier', L('pro', 'ApptEdit')], ['/pro/planning/reglages', L('pro', 'PlanningSettings')],
+  ['/pro/documents', L('pro', 'DocumentsHome')], ['/pro/documents/devis', L('pro', 'QuotesAll')], ['/pro/documents/factures', L('pro', 'InvoicesAll')],
+  ['/pro/documents/nouveau', L('pro', 'DocEdit')], ['/pro/documents/:id', L('pro', 'DocDetail')], ['/pro/documents/:id/modifier', L('pro', 'DocEdit')], ['/pro/documents/:id/pdf', L('pro', 'DocPdf')],
+  ['/pro/photos', L('pro', 'PhotosClients')], ['/pro/photos/:id', L('pro', 'PhotosClient')],
+  ['/pro/autres-docs', L('pro', 'OtherDocsClients')], ['/pro/autres-docs/:id', L('pro', 'OtherDocsClient')],
+  ['/pro/coffre-fort', L('pro', 'Vault')], ['/pro/coffre-fort/:type', L('pro', 'VaultType')],
+  ['/pro/crm', L('pro', 'CrmHome')], ['/pro/crm/statut', L('pro', 'ProjectStatus')], ['/pro/crm/kpi', L('pro', 'CompanyKpi')], ['/pro/crm/export', L('pro', 'Export')],
+  ['/pro/crm/bibliotheque', L('pro', 'Library')], ['/pro/crm/bibliotheque/:id', L('pro', 'ItemEdit')],
+  ['/pro/messages', L('pro', 'Messages')], ['/pro/messages/:id', L('pro', 'Conversation')],
+  ['/pro/reseau', L('pro', 'Network')], ['/pro/reseau/ajouter', L('pro', 'NetworkAdd')], ['/pro/reseau/inviter-clients', L('pro', 'InviteClients')], ['/pro/reseau/:id', L('pro', 'ProProfile')],
+  ['/pro/notifications', L('common', 'Notifications')], ['/pro/admin', L('common', 'Admin')],
+  ['/pro/compte', L('pro', 'Account')], ['/pro/compte/profil', L('common', 'MyProfile')], ['/pro/compte/abonnement', L('pro', 'Subscription')], ['/pro/compte/entreprise', L('pro', 'CompanySettings')],
+  ['/pro/compte/equipe', L('pro', 'TeamSettings')], ['/pro/compte/equipe/:id', L('pro', 'MemberSettings')], ['/pro/compte/documents', L('pro', 'InvoiceSettings')], ['/pro/compte/devis', L('pro', 'QuoteSettings')], ['/pro/compte/factures', L('pro', 'InvoiceSettings')], ['/pro/compte/pdf', L('pro', 'PdfSettings')],
+  ['/pro/compte/notifications', L('pro', 'NotifSettings')], ['/pro/relances', L('pro', 'Relances')], ['/pro/compte/integrations', L('pro', 'Integrations')], ['/pro/compte/donnees', L('common', 'DataPrivacy')],
+  ['/pro/compte/aide', L('common', 'Help')], ['/pro/compte/apparence', L('common', 'Appearance')], ['/pro/compte/avis', L('pro', 'Reviews')], ['/pro/reglages/profil-public', L('pro', 'Reviews')],
 ];
 const CLIENT = [
-  ['/client', Cli.Home], ['/client/artisans', Cli.Search], ['/client/artisans/:id', Cli.ArtisanCard], ['/client/artisans/:id/demande', Cli.NewRequest], ['/client/demande-envoyee/:id', Cli.RequestSent],
-  ['/client/rdv', Cli.Appointments], ['/client/rdv/:id', Cli.ApptDetail],
-  ['/client/messages', Cli.Messages], ['/client/messages/:id', Cli.Conversation],
-  ['/client/notifications', Common.Notifications], ['/client/admin', Common.Admin],
-  ['/client/documents', Cli.DocumentsHome], ['/client/devis', Cli.Quotes], ['/client/factures', Cli.Invoices],
-  ['/client/devis/:id', Cli.DocDetail], ['/client/factures/:id', Cli.DocDetail], ['/client/devis/:id/pdf', Cli.DocPdf], ['/client/factures/:id/pdf', Cli.DocPdf],
-  ['/client/factures/:id/payer', Cli.Pay], ['/client/avis/:id', Cli.Review],
-  ['/client/chantiers', Cli.Projects], ['/client/chantiers/:id', Cli.ProjectDetail], ['/client/autres-docs', Cli.OtherDocs],
-  ['/client/compte', Cli.Account], ['/client/compte/profil', Common.MyProfile], ['/client/compte/logement', Cli.Home2], ['/client/compte/artisans', Cli.MyArtisans],
-  ['/client/compte/notifications', Cli.NotifSettings], ['/client/compte/donnees', Common.DataPrivacy], ['/client/compte/aide', Common.Help], ['/client/compte/apparence', Common.Appearance],
+  ['/client', L('cli', 'Home')], ['/client/artisans', L('cli', 'Search')], ['/client/artisans/:id', L('cli', 'ArtisanCard')], ['/client/artisans/:id/demande', L('cli', 'NewRequest')], ['/client/demande-envoyee/:id', L('cli', 'RequestSent')],
+  ['/client/rdv', L('cli', 'Appointments')], ['/client/rdv/:id', L('cli', 'ApptDetail')],
+  ['/client/messages', L('cli', 'Messages')], ['/client/messages/:id', L('cli', 'Conversation')],
+  ['/client/notifications', L('common', 'Notifications')], ['/client/admin', L('common', 'Admin')],
+  ['/client/documents', L('cli', 'DocumentsHome')], ['/client/devis', L('cli', 'Quotes')], ['/client/factures', L('cli', 'Invoices')],
+  ['/client/devis/:id', L('cli', 'DocDetail')], ['/client/factures/:id', L('cli', 'DocDetail')], ['/client/devis/:id/pdf', L('cli', 'DocPdf')], ['/client/factures/:id/pdf', L('cli', 'DocPdf')],
+  ['/client/factures/:id/payer', L('cli', 'Pay')], ['/client/avis/:id', L('cli', 'Review')],
+  ['/client/chantiers', L('cli', 'Projects')], ['/client/chantiers/:id', L('cli', 'ProjectDetail')], ['/client/autres-docs', L('cli', 'OtherDocs')],
+  ['/client/compte', L('cli', 'Account')], ['/client/compte/profil', L('common', 'MyProfile')], ['/client/compte/logement', L('cli', 'Home2')], ['/client/compte/artisans', L('cli', 'MyArtisans')],
+  ['/client/compte/notifications', L('cli', 'NotifSettings')], ['/client/compte/donnees', L('common', 'DataPrivacy')], ['/client/compte/aide', L('common', 'Help')], ['/client/compte/apparence', L('common', 'Appearance')],
 ];
 
 function find(routes, path) {
@@ -84,6 +89,8 @@ function Shell({ tabs, children, path }) {
   const badge = (to) => (to.endsWith('/messages') ? unread.messages : to.endsWith('/notifications') ? unread.notifs : to === '/pro/planning' ? unread.rdv || 0 : 0);
   // Dans une conversation, la barre d'onglets laisse la place à la barre de saisie (comme WhatsApp)
   const hideTabs = /^\/(pro|client)\/messages\/[^/]+$|^\/pro\/clients\/[^/]+\/chat$/.test(path);
+  // Titre de l'onglet = titre de la page (annoncé par les lecteurs d'écran à chaque changement de page)
+  useEffect(() => { const i = setTimeout(() => { const h = document.querySelector('.main h1')?.textContent?.trim(); document.title = (h ? h + ' · ' : '') + 'Artesa'; }, 400); return () => clearTimeout(i); }, [path]);
   const [tour, finishTour] = useTours(path); // Accueil artisan : pas de barre d'onglets (maquette 02)
   return (
     <div className="app">
@@ -127,7 +134,7 @@ function LockScreen({ onUnlock }) {
         <Wordmark size={54} style={{ margin: '0 auto' }} />
         <h1 style={{ fontSize: 22, margin: 0 }}>{t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
         <p className="muted" style={{ margin: 0 }}>{t('Application verrouillée. Utilisez Face ID, Touch ID, votre empreinte ou Windows Hello.')}</p>
-        {err && <div className="error">{err}</div>}
+        {err && <div className="error" role="alert">{err}</div>}
         <button className="btn" onClick={go}>{t('Déverrouiller')}</button>
         <button className="link bold" onClick={async () => { await api.signOut(); location.href = '/connexion'; }}>{t('Utiliser mon mot de passe')}</button>
       </div>
@@ -159,19 +166,23 @@ function App() {
     if (logged && path.startsWith('/client') && isPro) navigate('/pro', { replace: true });
   }, [ready, logged, path, isPro]);
 
-  if (!ready) return <Loader />;
+  // On commence à télécharger le bon espace dès qu'on sait qui est connecté
+  useEffect(() => { if (logged) { preload(isPro ? 'pro' : 'cli'); preload('common'); } }, [logged, isPro]);
+
   const pub = find(PUBLIC, path);
+  // Visiteur non connecté sur une page publique : on l'affiche sans attendre (pas de roue de chargement sur l'accueil pré-rendu)
+  if (!ready) { if (pub && !session) { const [C, params] = pub; return <C params={params} />; } return <Loader />; }
   if (pub) { const [C, params] = pub; return <C params={params} />; }
   if (!logged) return <Loader />;
   if (locked) return <LockScreen onUnlock={() => setLocked(false)} />;
   const pro = path.startsWith('/pro'), routes = pro ? PRO : CLIENT;
   const hit = find(routes, path);
-  const [C, params] = hit || [Common.NotFound, {}];
-  return <Shell tabs={pro ? PRO_TABS : CLI_TABS} path={path}><C params={params} key={path} /></Shell>;
+  const [C, params] = hit || [L('common', 'NotFound'), {}];
+  return <Shell tabs={pro ? PRO_TABS : CLI_TABS} path={path}><ErrorBoundary key={path} home={pro ? '/pro' : '/client'}><Suspense fallback={<Loader />}><C params={params} key={path} /></Suspense></ErrorBoundary></Shell>;
 }
 
 // Installation sur téléphone (Android) : service worker minimal + bouton « Installer »
 if ('serviceWorker' in navigator && location.protocol === 'https:' && !navigator.userAgent.includes('Electron')) navigator.serviceWorker.register('/sw.js').catch(() => {});
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); window.__ayInstall = e; window.dispatchEvent(new Event('ay-installable')); });
 
-loadLang(getLang()).catch(() => {}).finally(() => createRoot(document.getElementById('root')).render(<AppProvider><App /></AppProvider>));
+loadLang(getLang()).catch(() => {}).finally(() => createRoot(document.getElementById('root')).render(<ErrorBoundary home="/"><AppProvider><App /></AppProvider></ErrorBoundary>));

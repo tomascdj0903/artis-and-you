@@ -49,7 +49,7 @@ export function parseWhen(q) {
   if (/ce mois/.test(q)) { const a = new Date(today.getFullYear(), today.getMonth(), 1); return [a, new Date(a.getFullYear(), a.getMonth() + 1, 1), t('ce mois-ci')]; }
   const dn = DAYS.findIndex((d) => new RegExp('\\b' + d + '\\b').test(q));
   if (dn >= 0) { let diff = (dn - today.getDay() + 7) % 7; if (diff === 0 && /prochain/.test(q)) diff = 7; const a = addDays(today, diff); return [a, addDays(a, 1), DAYS[dn] + ' ' + a.getDate()]; }
-  let m = q.match(/\b(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?\b/);
+  let m = q.match(/\b(\d{1,2})[/.-](\d{1,2})(?:[/.-](\d{2,4}))?\b/);
   if (m) { const y = m[3] ? (m[3].length === 2 ? 2000 + +m[3] : +m[3]) : today.getFullYear(); const a = new Date(y, +m[2] - 1, +m[1]); if (!isNaN(a)) return [a, addDays(a, 1), dateShort(a)]; }
   m = q.match(/\b(?:le )?(\d{1,2})(?:er)? (janvier|fevrier|mars|avril|mai|juin|juillet|aout|septembre|octobre|novembre|decembre)\b/);
   if (m) { let a = new Date(today.getFullYear(), MONTHS.indexOf(m[2]), +m[1]); if (a < addDays(today, -60)) a = new Date(today.getFullYear() + 1, MONTHS.indexOf(m[2]), +m[1]); return [a, addDays(a, 1), dateShort(a)]; }
@@ -165,6 +165,26 @@ export async function runAction(question, { company, profile }) {
   if (howTo) {
     if (/^ou (est|sont|se trouve|trouver)/.test(q)) { const p = PAGES.find(([re]) => re.test(q)); if (p) return { text: t('C’est ici : {p}.', { p: t(p[2]) }), links: [{ label: p[2], to: p[1] }] }; }
     return null;
+  }
+  // « Envoie un message à Vikra pour dire "Toujours bon pour jeudi ?" » : on ouvre la conversation, le texte déjà écrit.
+  // Rien n'est envoyé : l'utilisateur relit et appuie sur Envoyer.
+  const dm = q.match(/^(?:previens|prevenir|rappelle|rappeler a|informe|informer)\s+(.+?)\s*(?:\bqu(?:e|') ?|[:,«"“])\s*(.*)$/) || q.match(/^(?:envoie|envoyer|envoi|ecris|ecrire|dis|dire|demande|demander|reponds|repondre|previens|prevenir|message|sms)\b(?: un| le)?(?: petit)?(?: message| mot| sms)?\s+(?:a|au|aux|pour)\s+(.+?)\s*(?:\bpour (?:lui |leur )?(?:dire|demander|prevenir|rappeler)\b|\bqu(?:e|') ?|\bs(?:i|') ?(?=il|elle|c )|[:,«"“])\s*(.*)$/);
+  if (dm && dm[2]) {
+    const raw = String(question).trim();
+    const quoted = raw.match(/["«“]\s*([^"»”]+?)\s*["»”]/);
+    let body = quoted ? quoted[1] : '';
+    if (!body) { const cut = raw.search(/pour (lui |leur )?(dire|demander|prévenir|prevenir|rappeler)|\bqu[e’']|:|,/i); body = cut >= 0 ? raw.slice(cut).replace(/^(pour (lui |leur )?(dire|demander|prévenir|prevenir|rappeler)|qu[e’']|:|,)\s*(que |qu[’'])?/i, '') : dm[2]; }
+    body = body.trim().replace(/^./, (c) => c.toUpperCase());
+    const draft = (to) => { try { sessionStorage.setItem('ay-draft', JSON.stringify({ text: body, to, at: Date.now() })); } catch {} return to; };
+    const { match } = await target(company, dm[1]);
+    if (match) { const n = clientName(match), to = `/pro/clients/${match.id}/chat`; return { text: t('Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.', { n, m: body }), links: [{ label: t('Écrire à {n}', { n }), to }], go: draft(to), act: true }; }
+    // Sinon, un pro de mon réseau
+    const net = await api.select('network', { company_id: company.id });
+    const pros = net.length ? await api.select('companies', { id: net.map((x) => x.pro_id) }) : [];
+    const ws = nz(dm[1]).split(/[^a-z0-9]+/).filter((w) => w.length > 2);
+    const pro = pros.find((c) => { const names = nz([c.trade_name, c.name].join(' ')).split(/[^a-z0-9]+/); return ws.some((w) => names.some((x) => x === w || (w.length >= 4 && (x.startsWith(w) || lev(w, x) <= 1)))); });
+    if (pro) { const n = pro.trade_name || pro.name, id = await api.rpc('start_conversation', { p_company: pro.id }), to = '/pro/messages/' + id; return { text: t('Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.', { n, m: body }), links: [{ label: t('Écrire à {n}', { n }), to }], go: draft(to), act: true }; }
+    return { text: t('Je ne trouve pas « {n} » parmi vos clients ni vos pros.', { n: dm[1] }), links: [{ label: 'Messages', to: '/pro/messages' }, { label: 'Clients', to: '/pro/clients' }] };
   }
   const create = !howTo && (!has(q, /dernier|derniere|derniers/) || (/(dernier|nouveau) client|client de/.test(q) && has(q, /devis|facture|acompte|avoir|\brdv\b|rendez|message|ecri/))) && (shortFor || has(q, /\b(nouveau|nouvelle|creer|cree|ajoute|ajouter|faire|fais|fait|prepare|preparer|programme|planifie|planifier|cale|caler|prendre|redige|rediger|emettre|etablir)\b/));
   if (create) {

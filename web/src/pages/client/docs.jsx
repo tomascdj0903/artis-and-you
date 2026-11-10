@@ -1,13 +1,13 @@
 import { useRef, useState } from 'react';
-import { LuFilePen, LuFileText, LuHardHat, LuFolderOpen, LuChevronRight, LuDownload, LuPrinter, LuMessageSquare, LuCreditCard, LuLandmark, LuUser, LuHouse, LuUsers, LuBell, LuShield, LuCircleHelp, LuScale, LuLogOut, LuPalette, LuStar, LuCamera, LuDownload as LuDl } from 'react-icons/lu';
+import { LuFilePen, LuFileText, LuHardHat, LuFolderOpen, LuDownload, LuPrinter, LuMessageSquare, LuCreditCard, LuLandmark, LuUser, LuHouse, LuUsers, LuBell, LuShield, LuCircleHelp, LuScale, LuLogOut, LuPalette, LuStar, LuCamera, LuDownload as LuDl } from 'react-icons/lu';
 import { api, uid, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { money, date, dateMed, rel, dateShort, hm, fullName } from '../../lib/format.js';
+import { money, date, dateMed, dateShort, hm, fullName } from '../../lib/format.js';
 import { DrawPad, textSignature } from '../../ui/signature.jsx';
 import { statusPill, effectiveStatus, kindLabel, clientProgress, DOC_TYPES, VAULT_TYPES, docTypeLabel } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Chips, Field, Toggle, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet, KV } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Chips, Field, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet } from '../../ui/index.jsx';
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
 import { MenuRow } from '../pro/account.jsx';
 import { loadMine, coName } from './main.jsx';
@@ -102,7 +102,7 @@ export function Invoices() {
 }
 
 export function DocDetail({ params }) {
-  const { run, confirm, wip } = useApp();
+  const { run } = useApp();
   const [b, reload] = useData(() => loadDoc(params.id), [params.id]);
   const [refuse, setRefuse] = useState(false);
   const [reason, setReason] = useState('');

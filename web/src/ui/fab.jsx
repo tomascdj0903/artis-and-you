@@ -27,6 +27,9 @@ let owners = 0; const subs = new Set();
 const bump = (n) => { owners += n; subs.forEach((f) => f()); };
 const useOwners = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => owners);
 
+// Les réponses de l'IA contiennent parfois **du gras** : on l'affiche en gras au lieu de montrer les étoiles
+const rich = (s) => String(s || '').split(/\*\*(.+?)\*\*/g).map((x, i) => (i % 2 ? <b key={i}>{x}</b> : x));
+
 function routeActions(path) {
   if (path.startsWith('/client')) {
     const a = path.match(/^\/client\/artisans\/([0-9a-f-]{36})/);
@@ -138,9 +141,9 @@ function Assistant({ onClose }) {
     setMsgs((m) => [...m, { me: true, text }]);
     // 0) Demande sur ses propres données (dernier client, RDV de demain, factures en retard…) : réponse directe, sans IA
     setBusy(true);
-    const act = await (isClient ? runClientAction(text) : runAction(text, { company, profile })).catch((e) => { console.warn('assistant', e); return null; });
+    const act = await (isClient ? runClientAction(text) : runAction(text, { company, profile })).catch((e) => { console.warn('assistant', e); return { text: navigator.onLine === false ? t('Vous êtes hors ligne : je ne peux pas lire vos données pour le moment.') : t('Je n’arrive pas à lire vos données pour le moment. Réessayez dans un instant.') }; });
     setBusy(false);
-    if (act) { setMsgs((m) => [...m, { me: false, ...act }]); if (act.go && /^(ouvr|affich|montre|va |vas |aller|emmene|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|ajouter|programme|planifie|cale|ecri|redige)/.test(nz(text).replace(/^(peux.?tu|tu peux|pourrais.?tu|stp|svp|s il te plait|merci de|je veux|je voudrais|j aimerais)\s+/, ''))) setTimeout(() => open(act.go), 1100); return; }
+    if (act) { setMsgs((m) => [...m, { me: false, ...act }]); if (act.go && (act.act || /^(ouvr|affich|montre|va |vas |aller|emmene|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|ajouter|programme|planifie|cale|ecri|redige)/.test(nz(text).replace(/^(peux.?tu|tu peux|pourrais.?tu|stp|svp|s il te plait|merci de|je veux|je voudrais|j aimerais)\s+/, '')))) setTimeout(() => open(act.go), 1100); return; }
     if (OFFLINE) { setMsgs((m) => [...m, fallback]); return; }
     setBusy(true);
     const r = await api.fn('assistant', { question: text, audience: isClient ? 'client' : 'pro', facts: hits.map((e) => ({ q: e.q, a: e.a })), history: history.map((m) => ({ me: m.me, text: m.text })) }).catch(() => ({}));
@@ -170,7 +173,7 @@ function Assistant({ onClose }) {
         ) : <div className="ai-msgs">
           {msgs.map((m, i) => (
             <div key={i} className={'ai-msg' + (m.me ? ' me' : '')}>
-              {m.text}
+              {rich(m.text)}
               {m.links?.length > 0 && <div className="ai-links">{m.links.map((l) => l.href ? <a key={l.href} className="ai-link" href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{t(l.label)} ›</a> : <button key={l.to + l.label} onClick={() => open(l.to)}>{t(l.label)} ›</button>)}</div>}
               {m.sugg?.length > 0 && <div className="ai-sugg">{m.sugg.map((e) => <button key={e.id} onClick={() => answer(t(e.q))}>{t(e.q)}</button>)}</div>}
             </div>

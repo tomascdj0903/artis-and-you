@@ -1,6 +1,7 @@
+import { kbd } from '../../lib/a11y.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuChevronLeft, LuChevronRight, LuSettings, LuPlus, LuVideo, LuMapPin, LuSend, LuImage, LuCalendarPlus, LuNavigation, LuCheck } from 'react-icons/lu';
+import { LuChevronLeft, LuChevronRight, LuSettings, LuPlus, LuVideo, LuMapPin, LuSend, LuImage, LuNavigation } from 'react-icons/lu';
 import { api, OFFLINE, SUPABASE_URL } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
@@ -8,7 +9,7 @@ import { t, locale } from '../../lib/i18n.js';
 import { clientName, dateShort, dateTime, hm, startOfWeek, addDays, weekNumber, iso, fullName, date } from '../../lib/format.js';
 import { apptStatus, APPT_TYPES, expandAppointments } from '../../lib/docs.js';
 import { icsFile, rrule } from '../../lib/ics.js';
-import { TopBar, SearchBar, KV, Sec, Sheet, Field, Chips, Seg, Toggle, SettingToggle, useData, Loader, Empty, StatusPill, Img, Modal, Lightbox, Pill , Picker } from '../../ui/index.jsx';
+import { TopBar, SearchBar, KV, Sec, Sheet, Field, Chips, Seg, SettingToggle, useData, Loader, Empty, StatusPill, Img, Modal, Lightbox, Picker } from '../../ui/index.jsx';
 
 export const DEFAULT_DURATIONS = { Diagnostic: 60, 'Dépannage': 90, Devis: 60, Entretien: 60, Chantier: 240 };
 const PALETTE = ['#2B1F1C', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
@@ -167,7 +168,7 @@ function WeekPicker({ anchor, view, onPick, onClose }) {
       {weeks.map((w) => (
         <button key={iso(w[0])} className={'pick-grid pick-week' + (view === 'week' && iso(w[0]) === curWeek ? ' on' : '')} onClick={(e) => { if (view === 'week' || !e.target.dataset.day) onPick(w[0]); }}>
           <span className="wk">{weekNumber(w[0])}</span>
-          {w.map((d) => <span key={iso(d)} data-day={view === 'day' ? '1' : undefined} onClick={view === 'day' ? (e) => { e.stopPropagation(); onPick(d); } : undefined}
+          {w.map((d) => <span {...(view === 'day' ? kbd : null)} key={iso(d)} data-day={view === 'day' ? '1' : undefined} onClick={view === 'day' ? (e) => { e.stopPropagation(); onPick(d); } : undefined}
             className={(d.getMonth() !== m.getMonth() ? 'out ' : '') + (iso(d) === today ? 'today ' : '') + (view === 'day' && iso(d) === iso(anchor) ? 'sel' : '')}>{d.getDate()}</span>)}
         </button>
       ))}
@@ -284,7 +285,7 @@ function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove, compac
   };
   return (
     <div className="cal" style={{ '--n': days.length, '--h': H + 'px' }}>
-      <div className="cal-days"><div />{days.map((d) => <div key={d} className={iso(d) === todayKey ? 'today' : ''} onClick={compact ? () => onDay(d) : undefined} style={compact ? { cursor: 'pointer' } : undefined}>{d.toLocaleDateString(locale(), { weekday: 'short' }).replace('.', '')}<b>{d.getDate()}</b></div>)}</div>
+      <div {...(compact ? kbd : null)} className="cal-days"><div />{days.map((d) => <div key={d} className={iso(d) === todayKey ? 'today' : ''} onClick={compact ? () => onDay(d) : undefined} style={compact ? { cursor: 'pointer' } : undefined}>{d.toLocaleDateString(locale(), { weekday: 'short' }).replace('.', '')}<b>{d.getDate()}</b></div>)}</div>
       <div className="cal-body">
         <div className="cal-hours">{Array.from({ length: h1 - h0 }, (_, i) => <div key={i}>{h0 + i}h</div>)}</div>
         {days.map((d) => {
@@ -349,7 +350,7 @@ function MonthGrid({ range, anchor, evs, color, cm, onDay, onMove }) {
         {days.map((d) => {
           const k = iso(d); const list = evs.filter((a) => iso(new Date(a.start_at)) === k);
           return (
-            <div key={k} className={'cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '') + (over === k ? ' drop' : '')} onClick={() => onDay(d)} style={{ cursor: 'pointer' }}
+            <div {...kbd} key={k} className={'cell' + (d.getMonth() !== anchor.getMonth() ? ' out' : '') + (over === k ? ' drop' : '')} onClick={() => onDay(d)} style={{ cursor: 'pointer' }}
               onDragOver={onMove ? (e) => { e.preventDefault(); setOver(k); } : undefined} onDragLeave={() => setOver(null)}
               onDrop={onMove ? (e) => { e.preventDefault(); setOver(null); const a = evs.find((x) => x.id === e.dataTransfer.getData('text/plain')); if (!a) return; const o = new Date(a.start_at); const n = new Date(d); n.setHours(o.getHours(), o.getMinutes(), 0, 0); onMove(a, n); } : undefined}>
               <span className="n">{d.getDate()}</span>
@@ -365,7 +366,7 @@ function MonthGrid({ range, anchor, evs, color, cm, onDay, onMove }) {
 
 // ─────────────── Détail d'un RDV ───────────────
 export function ApptDetail({ params }) {
-  const { company, teams, run, confirm, profile, toast } = useApp();
+  const { company, teams, run, confirm, profile } = useApp();
   const [b, reload] = useData(async () => {
     const a = await api.one('appointments', { id: params.id });
     if (!a) return { a: null };
@@ -378,7 +379,6 @@ export function ApptDetail({ params }) {
   if (!b) return <div className="content"><TopBar title={t('Rendez-vous')} /><Loader /></div>;
   const { a, c, doc } = b;
   if (!a) return <div className="content"><TopBar title={t('Rendez-vous')} /><Empty text={t('Rendez-vous introuvable')} /></div>;
-  const team = teams.find((x) => x.id === a.team_id);
   const phone = a.contact_phone || c?.mobile || c?.phone || '';
   const wa = 'https://wa.me/' + phone.replace(/\D/g, '').replace(/^0/, '33');
   const notifyChat = async (card, body) => {
@@ -409,11 +409,11 @@ export function ApptDetail({ params }) {
           <KV rows={[
             !a.personal && [t('Client'), c ? <Link to={'/pro/clients/' + c.id}>{clientName(c)}</Link> : '—'],
             [t('Type'), t(a.type)],
-            [t('Équipe'), <select value={a.team_id || ''} onChange={(e) => run(() => api.update('appointments', { id: a.id }, { team_id: e.target.value || null }), t('Équipe mise à jour')).then(reload)} style={{ border: 0, background: 'transparent', fontWeight: 700, textAlign: 'right', color: 'inherit' }}>
+            [t('Équipe'), <select key="v" value={a.team_id || ''} onChange={(e) => run(() => api.update('appointments', { id: a.id }, { team_id: e.target.value || null }), t('Équipe mise à jour')).then(reload)} style={{ border: 0, background: 'transparent', fontWeight: 700, textAlign: 'right', color: 'inherit' }}>
               <option value="">—</option>{teams.map((x) => <option key={x.id} value={x.id}>● {x.name}</option>)}</select>],
             a.contact_name && [t('Contact sur place'), a.contact_name],
             phone && [t('Tél. mobile'), phone, { href: 'tel:' + phone }],
-            doc && [t('Devis lié'), <Link to={'/pro/documents/' + doc.id}>{doc.number || t('Brouillon')}</Link>],
+            doc && [t('Devis lié'), <Link key="v" to={'/pro/documents/' + doc.id}>{doc.number || t('Brouillon')}</Link>],
             a.recurrence !== 'none' && [t('Récurrence'), t({ weekly: 'Chaque semaine', monthly: 'Chaque mois', yearly: 'Chaque année' }[a.recurrence])],
             a.requested_by && [t('Demandé le'), dateTime(a.created_at)],
             a.validated_at && [t('Validé le'), dateTime(a.validated_at)],
@@ -597,7 +597,7 @@ export function ApptEdit({ params }) {
 const DUR_OPTS = [15, 30, 45, 60, 90, 120, 180, 240, 300, 360, 480];
 export const fmtDur = (m) => (m < 60 ? m + ' min' : Math.floor(m / 60) + ' h' + (m % 60 ? ' ' + (m % 60) : '') + (m >= 480 ? ' (' + t('journée') + ')' : ''));
 export function PlanningSettings() {
-  const { company, setCompany, run, wip, teams } = useApp();
+  const { company, setCompany, run, teams } = useApp();
   const [s, setS] = useState(planSettings(company));
   const save = async (patch) => {
     const n = { ...s, ...patch }; setS(n);
