@@ -32,7 +32,11 @@ Deno.serve(async (req) => {
   if ((row?.count || 0) >= DAILY) return json({ error: 'quota', answer: 'Vous avez atteint la limite de questions pour aujourd’hui. Réessayez demain, ou consultez l’aide.' }, 429);
   await admin.from('assistant_usage').upsert({ user_id: u.user.id, day, count: (row?.count || 0) + 1 });
 
-  const system = `Tu es l'assistant de l'application Artesa (logiciel pour artisans du bâtiment : devis, factures, planning, clients, réseau de pros).
+  // L'assistant sert aussi les particuliers (clients des artisans) : on adapte la présentation de l'app
+  const who = body.audience === 'client'
+    ? "Tu parles à un particulier, client d'artisans, qui utilise gratuitement l'espace client d'Artesa (trouver un artisan, demander un rendez-vous, signer ses devis, payer ses factures, suivre ses chantiers, écrire à ses artisans). Ce n'est pas un artisan : ne parle jamais de créer des devis ou des factures."
+    : "Tu parles à un artisan ou à son équipe (logiciel pour artisans du bâtiment : devis, factures, planning, clients, réseau de pros).";
+  const system = `Tu es l'assistant de l'application Artesa. ${who}
 Réponds en français, de façon courte (3 à 5 phrases maximum), concrète, et vouvoie l'utilisateur.
 Appuie-toi UNIQUEMENT sur les fiches d'aide ci-dessous. Si elles ne permettent pas de répondre, dis-le simplement et propose de contacter le support (Paramètres › Aide et support). N'invente jamais de fonctionnalité, de prix ni de chemin de menu.
 Fiches d'aide :

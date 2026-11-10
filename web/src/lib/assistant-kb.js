@@ -4,6 +4,8 @@
 // (au lieu de toute la documentation), ce qui limite fortement les tokens consommés.
 // Chaque fiche : q (question type), k (mots-clés), a (réponse courte), links (boutons qui ouvrent la bonne page), pages (pages où la proposer en premier).
 
+import { CLIENT_KB } from './assistant-kb-client.js';
+
 export const KB = [
   // ---------- Devis ----------
   { id: 'devis-creer', q: 'Comment créer un devis ?', k: 'creer faire nouveau devis estimation chiffrage', pages: ['/pro/documents', '/pro'],
@@ -129,26 +131,31 @@ const words = (x) => nz(x).split(/[^a-z0-9]+/).filter((w) => w.length > 1).map((
 // Les fiches les plus pertinentes pour une question (et la page en cours en cas d'égalité).
 // Un mot rare (« relance ») compte plus qu'un mot fréquent (« client »).
 const STOP = ['comment', 'faire', 'est', 'les', 'des', 'une', 'pour', 'mon', 'mes', 'que', 'quoi', 'avec', 'dans', 'sur', 'pas', 'qui', 'je', 'il', 'un', 'le', 'la', 'de', 'du', 'et', 'ou', 'ne'];
-let DF = null;
+// Côté particulier (/client…), on cherche dans les fiches des particuliers
+const DFS = new Map();
 const docWords = (e) => new Set([...words(e.k), ...words(e.q)]);
+export const kbFor = (path = '') => (path.startsWith('/client') ? CLIENT_KB : KB);
 export function searchKB(q, path = '', n = 3) {
-  if (!DF) { DF = {}; KB.forEach((e) => docWords(e).forEach((w) => { DF[w] = (DF[w] || 0) + 1; })); }
+  const base = kbFor(path);
+  if (!DFS.has(base)) { const DF = {}; base.forEach((e) => docWords(e).forEach((w) => { DF[w] = (DF[w] || 0) + 1; })); DFS.set(base, DF); }
+  const DF = DFS.get(base);
   const ws = [...new Set(words(q))].filter((w) => !STOP.includes(w));
   if (!ws.length) return [];
-  const idf = (w) => Math.log(1 + KB.length / (DF[w] || 1));
-  return KB.map((e) => {
+  const idf = (w) => Math.log(1 + base.length / (DF[w] || 1));
+  return base.map((e) => {
     const kw = words(e.k), qw = words(e.q);
     let sc = 0;
     for (const w of ws) {
       if (qw.includes(w)) sc += 1.5 * idf(w); else if (kw.includes(w)) sc += idf(w);
       else { const p = kw.find((k) => k.length > 3 && w.length > 3 && (k.startsWith(w.slice(0, 5)) || w.startsWith(k.slice(0, 5)))); if (p) sc += 0.6 * idf(p); }
     }
-    if (sc && e.pages?.some((p) => path.startsWith(p) && p !== '/pro')) sc += 0.3;
+    if (sc && e.pages?.some((p) => path.startsWith(p) && p !== '/pro' && p !== '/client')) sc += 0.3;
     return { e, sc };
   }).filter((x) => x.sc >= 1.2).sort((a, b) => b.sc - a.sc).slice(0, n).map((x) => x.e);
 }
 // Questions proposées d'emblée selon la page
 export const suggestFor = (path) => {
-  const best = KB.filter((e) => e.pages?.some((p) => p !== '/pro' && path.startsWith(p)));
-  return (best.length ? best : KB.filter((e) => e.pages?.includes('/pro'))).slice(0, 4);
+  const base = kbFor(path), root = path.startsWith('/client') ? '/client' : '/pro';
+  const best = base.filter((e) => e.pages?.some((p) => p !== root && path.startsWith(p)));
+  return (best.length ? best : base.filter((e) => e.pages?.includes(root))).slice(0, 4);
 };

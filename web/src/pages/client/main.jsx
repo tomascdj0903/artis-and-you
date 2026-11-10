@@ -74,8 +74,8 @@ export function Search() {
   const { query } = useLocation();
   const [q, setQ] = useState(query.get('q') || '');
   const [term, setTerm] = useState(q);
-  const [trade, setTrade] = useState('');
-  const [city, setCity] = useState('');
+  const [trade, setTrade] = useState(query.get('metier') || '');
+  const [city, setCity] = useState(query.get('ville') || '');
   const [place, setPlace] = useState(null); // ville choisie dans la liste (avec coordonnées)
   const [visio, setVisio] = useState(false);
   const [good, setGood] = useState(false);

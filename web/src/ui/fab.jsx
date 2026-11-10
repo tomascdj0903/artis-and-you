@@ -2,11 +2,12 @@
 // qui s'adapte à la page (planning, client, documents…) et se termine toujours par « Demander à l'assistant ».
 // Une page peut fournir sa propre action principale avec <Fab primary={…} /> ; sinon le bouton global s'affiche.
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { LuHistory, LuRotateCcw, LuArrowLeft, LuPlus, LuX, LuSparkles, LuCalendarPlus, LuFilePen, LuFileText, LuUserPlus, LuUsers, LuMegaphone, LuMessageSquare, LuSend } from 'react-icons/lu';
+import { LuHistory, LuRotateCcw, LuArrowLeft, LuPlus, LuX, LuSparkles, LuCalendarPlus, LuFilePen, LuFileText, LuUserPlus, LuUsers, LuMegaphone, LuMessageSquare, LuSend, LuSearch, LuCalendar, LuFileText as LuDoc } from 'react-icons/lu';
 import { t } from '../lib/i18n.js';
 import { navigate, useLocation as useRoute } from '../lib/router.jsx';
 import { searchKB, suggestFor, nz } from '../lib/assistant-kb.js';
 import { runAction } from '../lib/assistant-actions.js';
+import { runClientAction, CLIENT_CAPS } from '../lib/assistant-client-actions.js';
 import { DictateButton } from './dictate.jsx';
 import { useApp } from '../lib/store.jsx';
 import { api, OFFLINE, uid } from '../lib/api.js';
@@ -27,6 +28,16 @@ const bump = (n) => { owners += n; subs.forEach((f) => f()); };
 const useOwners = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => owners);
 
 function routeActions(path) {
+  if (path.startsWith('/client')) {
+    const a = path.match(/^\/client\/artisans\/([0-9a-f-]{36})/);
+    if (a) return [{ label: t('Demander un rendez-vous'), icon: LuCalendarPlus, to: '/client/artisans/' + a[1] + '/demande' }, { label: t('Trouver un autre artisan'), icon: LuSearch, to: '/client/artisans' }];
+    if (/^\/client\/(documents|devis|factures|chantiers|autres-docs)/.test(path)) return [{ label: t('Mes devis'), icon: LuFilePen, to: '/client/devis' }, { label: t('Mes factures'), icon: LuDoc, to: '/client/factures' }];
+    return [
+      { label: t('Trouver un artisan'), icon: LuSearch, to: '/client/artisans' },
+      { label: t('Mes rendez-vous'), icon: LuCalendar, to: '/client/rdv' },
+      { label: t('Écrire à un artisan'), icon: LuMessageSquare, to: '/client/messages' },
+    ];
+  }
   const m = path.match(/^\/pro\/clients\/([0-9a-f-]{36})/);
   if (m) return [
     { label: t('Nouveau devis pour ce client'), icon: LuFilePen, to: '/pro/documents/nouveau?kind=devis&client=' + m[1] },
@@ -96,7 +107,7 @@ export function PageFab(props) {
 export function GlobalFab() {
   const n = useOwners();
   const { path } = useRoute();
-  if (n > 0 || !path.startsWith('/pro') || /\/(nouveau|modifier|rdv\/|messages\/[^/]+$|chat$)/.test(path)) return null;
+  if (n > 0 || !/^\/(pro|client)(\/|$)/.test(path) || /\/(nouveau|modifier|rdv\/|messages\/[^/]+$|chat$|demande$|pdf$|payer$|admin)/.test(path)) return null;
   return <Fab />;
 }
 
@@ -105,7 +116,8 @@ export function GlobalFab() {
 function Assistant({ onClose }) {
   const { path } = useRoute();
   const { company, profile } = useApp();
-  const hello = () => [{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: [{ id: 'x1', q: 'Mes rendez-vous de demain' }, { id: 'x2', q: 'Qui me doit de l’argent ?' }, { id: 'x3', q: 'Ouvrir mon dernier client' }, { id: 'x4', q: 'Que sais-tu faire ?' }, ...suggestFor(path).slice(0, 2)] }];
+  const isClient = path.startsWith('/client');
+  const hello = () => [{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: [...(isClient ? CLIENT_CAPS.slice(0, 4) : [{ id: 'x1', q: 'Mes rendez-vous de demain' }, { id: 'x2', q: 'Qui me doit de l’argent ?' }, { id: 'x3', q: 'Ouvrir mon dernier client' }, { id: 'x4', q: 'Que sais-tu faire ?' }]), ...suggestFor(path).slice(0, 2)] }];
   const saved = useState(() => { const v = rd(sessionStorage, ck()); return v && Date.now() - v.at < IDLE ? v : null; })[0];
   const [q, setQ] = useState(saved?.q || '');
   const [msgs, setMsgs] = useState(saved?.msgs?.length ? saved.msgs : hello);
@@ -120,20 +132,20 @@ function Assistant({ onClose }) {
     const hits = searchKB(text, path);
     const fallback = hits.length
       ? { me: false, text: t(hits[0].a), links: hits[0].links, sugg: hits.slice(1) }
-      : { me: false, text: t('Je n’ai pas trouvé de réponse précise. Reformulez avec d’autres mots, ou écrivez au support.'), links: [{ label: 'Aide et support', to: '/pro/compte/aide' }] };
+      : { me: false, text: t('Je n’ai pas trouvé de réponse précise. Reformulez avec d’autres mots, ou écrivez au support.'), links: [{ label: 'Aide et support', to: (isClient ? '/client' : '/pro') + '/compte/aide' }] };
     const history = msgs.filter((m) => m.text).slice(-4);
     lastAt.current = Date.now(); pushHistory(text); setHist(null);
     setMsgs((m) => [...m, { me: true, text }]);
     // 0) Demande sur ses propres données (dernier client, RDV de demain, factures en retard…) : réponse directe, sans IA
     setBusy(true);
-    const act = await runAction(text, { company, profile }).catch((e) => { console.warn('assistant', e); return null; });
+    const act = await (isClient ? runClientAction(text) : runAction(text, { company, profile })).catch((e) => { console.warn('assistant', e); return null; });
     setBusy(false);
     if (act) { setMsgs((m) => [...m, { me: false, ...act }]); if (act.go && /^(ouvr|affich|montre|va |vas |aller|emmene|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|ajouter|programme|planifie|cale|ecri|redige)/.test(nz(text).replace(/^(peux.?tu|tu peux|pourrais.?tu|stp|svp|s il te plait|merci de|je veux|je voudrais|j aimerais)\s+/, ''))) setTimeout(() => open(act.go), 1100); return; }
     if (OFFLINE) { setMsgs((m) => [...m, fallback]); return; }
     setBusy(true);
-    const r = await api.fn('assistant', { question: text, facts: hits.map((e) => ({ q: e.q, a: e.a })), history: history.map((m) => ({ me: m.me, text: m.text })) }).catch(() => ({}));
+    const r = await api.fn('assistant', { question: text, audience: isClient ? 'client' : 'pro', facts: hits.map((e) => ({ q: e.q, a: e.a })), history: history.map((m) => ({ me: m.me, text: m.text })) }).catch(() => ({}));
     setBusy(false);
-    setMsgs((m) => [...m, r.answer ? { me: false, text: r.answer, links: hits[0]?.links || (r.error ? [] : [{ label: 'Aide et support', to: '/pro/compte/aide' }]), sugg: hits.slice(1), ai: !r.error } : fallback]);
+    setMsgs((m) => [...m, r.answer ? { me: false, text: r.answer, links: hits[0]?.links || (r.error ? [] : [{ label: 'Aide et support', to: (isClient ? '/client' : '/pro') + '/compte/aide' }]), sugg: hits.slice(1), ai: !r.error } : fallback]);
   };
   const send = () => { if (q.trim()) { answer(q.trim()); setQ(''); } };
   const open = (to) => { onClose(); navigate(to); };
