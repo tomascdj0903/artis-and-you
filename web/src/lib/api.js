@@ -120,6 +120,8 @@ const remote = {
   },
   async remove(table, filters) { await http(`/rest/v1/${table}?${qs(filters)}`, { method: 'DELETE' }); },
   async rpc(name, args = {}) { return http(`/rest/v1/rpc/${name}`, { method: 'POST', body: args }); },
+  // Fonction serveur (Edge Function) : renvoie toujours un objet, même en cas d'erreur
+  async fn(name, body) { const r = await http(`/functions/v1/${name}`, { method: 'POST', body, raw: true }); return r.json().catch(() => ({ error: 'http_' + r.status })); },
 
   // Fichiers
   async upload(path, file) {

@@ -6,6 +6,7 @@ import { LuPlus, LuX, LuSparkles, LuCalendarPlus, LuFilePen, LuFileText, LuUserP
 import { t } from '../lib/i18n.js';
 import { navigate, useLocation as useRoute } from '../lib/router.jsx';
 import { searchKB, suggestFor } from '../lib/assistant-kb.js';
+import { api, OFFLINE } from '../lib/api.js';
 
 // Nombre de pages qui affichent leur propre <Fab> (dans ce cas le bouton global se cache)
 let owners = 0; const subs = new Set();
@@ -92,12 +93,21 @@ function Assistant({ onClose }) {
   const { path } = useRoute();
   const [q, setQ] = useState('');
   const [msgs, setMsgs] = useState([{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: suggestFor(path) }]);
-  const answer = (text) => {
+  const [busy, setBusy] = useState(false);
+  // 1) on cherche les fiches d'aide ; 2) l'IA reformule à partir de ces fiches seulement (peu de tokens) ;
+  // 3) si l'IA est indisponible ou hors quota, on affiche la fiche telle quelle.
+  const answer = async (text) => {
     const hits = searchKB(text, path);
-    const bot = hits.length
+    const fallback = hits.length
       ? { me: false, text: t(hits[0].a), links: hits[0].links, sugg: hits.slice(1) }
       : { me: false, text: t('Je n’ai pas trouvé de réponse précise. Reformulez avec d’autres mots, ou écrivez au support.'), links: [{ label: 'Aide et support', to: '/pro/compte/aide' }] };
-    setMsgs((m) => [...m, { me: true, text }, bot]);
+    const history = msgs.filter((m) => m.text).slice(-4);
+    setMsgs((m) => [...m, { me: true, text }]);
+    if (OFFLINE) { setMsgs((m) => [...m, fallback]); return; }
+    setBusy(true);
+    const r = await api.fn('assistant', { question: text, facts: hits.map((e) => ({ q: e.q, a: e.a })), history: history.map((m) => ({ me: m.me, text: m.text })) }).catch(() => ({}));
+    setBusy(false);
+    setMsgs((m) => [...m, r.answer ? { me: false, text: r.answer, links: hits[0]?.links || (r.error ? [] : [{ label: 'Aide et support', to: '/pro/compte/aide' }]), sugg: hits.slice(1), ai: !r.error } : fallback]);
   };
   const send = () => { if (q.trim()) { answer(q.trim()); setQ(''); } };
   const open = (to) => { onClose(); navigate(to); };
@@ -115,11 +125,12 @@ function Assistant({ onClose }) {
               {m.sugg?.length > 0 && <div className="ai-sugg">{m.sugg.map((e) => <button key={e.id} onClick={() => answer(t(e.q))}>{t(e.q)}</button>)}</div>}
             </div>
           ))}
+          {busy && <div className="ai-msg ai-typing"><i /><i /><i /></div>}
           <div ref={end} />
         </div>
         <form className="ai-in" onSubmit={(e) => { e.preventDefault(); send(); }}>
           <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('Votre question…')} autoFocus />
-          <button className="btn sm" aria-label={t('Envoyer')}><LuSend /></button>
+          <button className="btn sm" disabled={busy} aria-label={t('Envoyer')}><LuSend /></button>
         </form>
       </div>
     </div>
