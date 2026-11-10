@@ -1,5 +1,6 @@
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
+import { PageFab } from '../../ui/fab.jsx';
 import { LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuPencil, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -136,7 +137,7 @@ export function ProjectStatus() {
           </div>
         </>
       )}
-      <button className="fab" onClick={() => setAdd(true)} aria-label={t('Nouveau projet')}><LuPlus /></button>
+      <PageFab primary={{ label: t('Nouveau projet'), onClick: () => setAdd(true) }} />
       <NewProject open={add} clients={b.clients} onClose={() => setAdd(false)} onDone={() => { setAdd(false); reload(); }} />
     </div>
   );
@@ -360,7 +361,7 @@ export function Library() {
           </button>
         ))}</div>
       )}
-      <button className="fab" onClick={() => navigate('/pro/crm/bibliotheque/nouveau?kind=' + tab)} aria-label={t('Ajouter un produit')}><LuPlus /></button>
+      <PageFab primary={{ label: t('Ajouter un produit'), onClick: () => navigate('/pro/crm/bibliotheque/nouveau?kind=' + tab) }} />
     </div>
   );
 }

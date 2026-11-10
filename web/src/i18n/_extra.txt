@@ -906,3 +906,11 @@ Ajouter un rendez-vous|Add an appointment|Adicionar uma marcação|Aggiungi un a
 Libre {a} – {b}|Free {a} – {b}|Livre {a} – {b}|Libero {a} – {b}
 {n} RDV en même temps|{n} appointments at the same time|{n} marcações ao mesmo tempo|{n} appuntamenti nello stesso momento
 Sem.|Wk|Sem.|Sett.
+Demander à l’assistant|Ask the assistant|Perguntar ao assistente|Chiedi all'assistente
+Assistant Artesa|Artesa assistant|Assistente Artesa|Assistente Artesa
+Votre question…|Your question…|A sua pergunta…|La tua domanda…
+Nouveau devis pour ce client|New quote for this client|Novo orçamento para este cliente|Nuovo preventivo per questo cliente
+Nouveau RDV pour ce client|New appointment for this client|Nova marcação para este cliente|Nuovo appuntamento per questo cliente
+Nouvelle facture pour ce client|New invoice for this client|Nova fatura para este cliente|Nuova fattura per questo cliente
+Ajouter un pro|Add a pro|Adicionar um profissional|Aggiungi un professionista
+Actions|Actions|Ações|Azioni

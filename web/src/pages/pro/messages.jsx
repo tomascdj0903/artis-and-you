@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PageFab } from '../../ui/fab.jsx';
 import { LuMessageSquarePlus, LuMapPin, LuMessageSquare, LuPlus, LuPhone, LuUserPlus, LuChevronRight, LuMail, LuShieldCheck } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -46,7 +47,7 @@ export function Messages() {
           );
         })}</div>
       )}
-      <button className="fab" onClick={() => setNw(true)} aria-label={t('Nouvelle conversation')}><LuMessageSquarePlus /></button>
+      <PageFab primary={{ label: t('Nouvelle conversation'), onClick: () => setNw(true) }} />
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer')}>
         <Chips multi options={[['client', t('Clients')], ['team', t('Équipes')], ['pro', t('Artisans')]]} value={kinds} onChange={setKinds} />
         <button className="btn block" onClick={() => setOpen(false)}>{t('Afficher')}</button>

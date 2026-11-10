@@ -1,6 +1,7 @@
 import './styles.css';
 import { createRoot } from 'react-dom/client';
 import { useEffect, useState } from 'react';
+import { GlobalFab } from './ui/fab.jsx';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
@@ -105,6 +106,7 @@ function Shell({ tabs, children, path }) {
         {children}
       </div>
       {tour && <Tour id={tour} onDone={finishTour} />}
+      {isPro && <GlobalFab />}
       {!hideTabs && (
         <nav className="tabbar" aria-label={t('Navigation')}>
           {tabs.map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t(label === 'Mon réseau' ? 'Réseau' : label === 'Notifications' ? 'Alertes' : label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}

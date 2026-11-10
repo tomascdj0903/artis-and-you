@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PageFab } from '../../ui/fab.jsx';
 import { LuPlus, LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2 } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -77,7 +78,7 @@ export function PhotosClient({ params }) {
           </div>
         );
       })}
-      <button className="fab" onClick={() => setAdd(true)} aria-label={t('Ajouter des photos')}><LuPlus /></button>
+      <PageFab primary={{ label: t('Ajouter des photos'), onClick: () => setAdd(true) }} />
       <AddPhotos open={add} onClose={() => setAdd(false)} projects={b.projects} onDone={() => { setAdd(false); reload(); }} clientId={params.id} />
       {big && (
         <div className="overlay center" onClick={() => setBig(null)}>
@@ -153,7 +154,7 @@ export function OtherDocsClient({ params }) {
       <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={types.length > 0} />
       <Sec title={t('Documents')} meta={t('{n} documents', { n: b.files.length })} />
       {!list.length ? <Empty text={t('Attestations, Kbis, contrats, plans… Ajoutez-les avec +.')} /> : <div className="list">{list.map((f) => <FileRow key={f.id} f={f} onOpen={() => setEdit(f)} extra={f.shared_with_client ? t('Partagé avec le client') : ''} />)}</div>}
-      <button className="fab" onClick={() => setAdd(true)} aria-label={t('Ajouter un document')}><LuPlus /></button>
+      <PageFab primary={{ label: t('Ajouter un document'), onClick: () => setAdd(true) }} />
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer par type')} right={<span className="red-t bold small">{t('{n} sélectionnés', { n: types.length })}</span>}>
         <div className="checklist">{DOC_TYPES.map(([k, l]) => <label key={k} className="check"><input type="checkbox" checked={types.includes(k)} onChange={(e) => setTypes(e.target.checked ? [...types, k] : types.filter((x) => x !== k))} />{t(l)}</label>)}</div>
         <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setTypes([])}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} documents', { n: list.length })}</button></div></div>
@@ -240,7 +241,7 @@ export function Vault() {
           </button>
         ))}
       </div>
-      <button className="fab" onClick={() => setAdd(true)} aria-label={t('Ajouter un document')}><LuPlus /></button>
+      <PageFab primary={{ label: t('Ajouter un document'), onClick: () => setAdd(true) }} />
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer')} right={<span className="red-t bold small">{t('{n} sélectionnés', { n: f.st.length + f.types.length })}</span>}>
         <div className="small bold">{t('Statut')}</div>
         <Chips multi options={[['ok', t('À jour')], ['soon', t('Expire bientôt')], ['exp', t('Expiré')]]} value={f.st} onChange={(st) => setF({ ...f, st })} />
@@ -311,7 +312,7 @@ export function VaultType({ params }) {
         <SettingToggle label={t('Partager avec mes clients')} hint={shared ? t('Visible dans l’espace Artesa de vos clients (ex. attestation décennale)') : t('Visible uniquement par votre entreprise')} checked={shared} onChange={(v) => setAll({ shared_with_client: v })} />
       </div>
       {!files.length && <p className="small faint">{t('Ces réglages s’appliqueront aux documents que vous ajouterez.')}</p>}
-      <button className="fab" onClick={() => setAdd(true)} aria-label={t('Ajouter')}><LuPlus /></button>
+      <PageFab primary={{ label: t('Ajouter'), onClick: () => setAdd(true) }} />
       <UploadSheet open={add} onClose={() => setAdd(false)} kind="vault" types={VAULT_TYPES} presetType={params.type} onDone={() => { setAdd(false); reload(); }} />
     </div>
   );

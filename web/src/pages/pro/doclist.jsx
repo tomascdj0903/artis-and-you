@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PageFab } from '../../ui/fab.jsx';
 import { LuPlus, LuX } from 'react-icons/lu';
 import { navigate, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
@@ -89,7 +90,7 @@ export function DocList({ docs, clients, kind, newHref, from }) {
           { label: t('Total HT'), num: true, render: (d) => money(d.totals?.ht) },
           ...(!isQ ? [{ label: t('Reste dû'), num: true, render: (d) => (d.kind === 'avoir' || d.status === 'annulee' ? '—' : money(remaining(d))) }] : []),
         ]} />
-      {newHref && <button className="fab" onClick={() => navigate(newHref)} aria-label={isQ ? t('Nouveau devis') : t('Nouvelle facture')}><LuPlus /></button>}
+      <PageFab hidden={!newHref} primary={newHref ? { label: isQ ? t('Nouveau devis') : t('Nouvelle facture'), to: newHref } : null} />
       <Sheet open={open} onClose={() => setOpen(false)} title={isQ ? t('Filtrer les devis') : t('Filtrer les factures')}>
         <div className="small bold">{t('Statut')}</div><Chips multi options={opts} value={f.st} onChange={(st) => set({ st })} />
         {!isQ && <><div className="small bold">{t('Type')}</div><Chips multi options={[['facture', t('Facture')], ['acompte', t("Facture d'acompte")], ['avoir', t('Avoir')]]} value={f.kinds} onChange={(kinds) => set({ kinds })} /></>}

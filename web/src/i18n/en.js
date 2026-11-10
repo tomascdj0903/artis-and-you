@@ -2064,4 +2064,10 @@ export default {"(copie)":"(copy)",
 "Ajouter un rendez-vous":"Add an appointment",
 "Libre {a} – {b}":"Free {a} – {b}",
 "{n} RDV en même temps":"{n} appointments at the same time",
-"Sem.":"Wk"};
+"Sem.":"Wk",
+"Demander à l’assistant":"Ask the assistant",
+"Assistant Artesa":"Artesa assistant",
+"Votre question…":"Your question…",
+"Nouveau devis pour ce client":"New quote for this client",
+"Nouveau RDV pour ce client":"New appointment for this client",
+"Nouvelle facture pour ce client":"New invoice for this client"};

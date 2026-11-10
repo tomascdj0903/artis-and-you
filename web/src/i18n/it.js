@@ -2064,4 +2064,10 @@ export default {"(copie)":"(copia)",
 "Ajouter un rendez-vous":"Aggiungi un appuntamento",
 "Libre {a} – {b}":"Libero {a} – {b}",
 "{n} RDV en même temps":"{n} appuntamenti nello stesso momento",
-"Sem.":"Sett."};
+"Sem.":"Sett.",
+"Demander à l’assistant":"Chiedi all'assistente",
+"Assistant Artesa":"Assistente Artesa",
+"Votre question…":"La tua domanda…",
+"Nouveau devis pour ce client":"Nuovo preventivo per questo cliente",
+"Nouveau RDV pour ce client":"Nuovo appuntamento per questo cliente",
+"Nouvelle facture pour ce client":"Nuova fattura per questo cliente"};

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { PageFab } from '../../ui/fab.jsx';
 import { LuChevronLeft, LuChevronRight, LuSettings, LuPlus, LuVideo, LuMapPin, LuSend, LuImage, LuCalendarPlus, LuNavigation, LuCheck } from 'react-icons/lu';
 import { api, OFFLINE, SUPABASE_URL } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -137,7 +138,7 @@ export function Planning() {
       </>
       )}
       {dragOk && !q.trim() && view !== 'month' && !narrow && <p className="small faint" style={{ marginTop: 6 }}>{t('Astuce : faites glisser un rendez-vous pour le déplacer (par pas de 15 min).')}</p>}
-      {can('planning') && profile.member_role !== 'ouvrier' && <button className="fab" onClick={() => navigate('/pro/planning/nouveau')} aria-label={t('Nouveau rendez-vous')}><LuPlus /></button>}
+      <PageFab hidden={!(can('planning') && profile.member_role !== 'ouvrier')} primary={{ label: t('Nouveau rendez-vous'), to: '/pro/planning/nouveau' }} />
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer par équipe')}>
         <Chips multi options={teams.map((x) => [x.id, x.name])} value={teamF} onChange={setTeamF} />
         <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setTeamF([])}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher')}</button></div></div>

@@ -1,5 +1,6 @@
 import { RateBox, InviteClientButtons } from './messages.jsx';
 import { useState } from 'react';
+import { PageFab } from '../../ui/fab.jsx';
 import { LuChartColumn, LuMessageSquare, LuHistory, LuPlus, LuPencil, LuEuro, LuFileText, LuFilePen, LuX, LuCamera, LuCalendarCheck, LuHardHat, LuFolderOpen, LuMail } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -86,7 +87,7 @@ export function Clients() {
           ...(f.sort === 'ca' || f.caMin !== '' || f.caMax !== '' ? [{ label: t('CA HT'), num: true, render: (c) => money(c.ca, 0) }] : []),
           ...(f.sort === 'due' || f.due ? [{ label: t('Dû'), num: true, render: (c) => <span className={c.due > 0 ? 'red-t' : ''}>{money(c.due)}</span> }] : []),
         ]} />
-      <button className="fab" onClick={() => navigate('/pro/clients/nouveau')} aria-label={t('Nouveau client')}><LuPlus /></button>
+      <PageFab primary={{ label: t('Nouveau client'), to: '/pro/clients/nouveau' }} />
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer')}>
         <div className="small bold">{t('Type')}</div>
         <Chips options={[['', t('Tous')], ['pro', t('Pro')], ['particulier', t('Particulier')]]} value={f.type} onChange={(type) => setFilter({ ...f, type })} />

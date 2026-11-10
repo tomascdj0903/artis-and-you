@@ -1108,3 +1108,22 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .pick-months button { padding: 10px 0; border: 0; border-radius: 10px; background: var(--bg-soft); font: 600 14px Inter, sans-serif; color: var(--text); text-transform: capitalize; cursor: pointer; }
 .pick-months button.on { background: var(--primary); color: #fff; }
 @media (max-width: 640px) { .pick-pop { position: fixed; top: 180px; left: 50%; transform: translateX(-50%); width: calc(100vw - 32px); } }
+
+/* ===== Bouton + en menu (actions selon la page + assistant) ===== */
+.fabm-veil { position: fixed; inset: 0; z-index: 48; background: rgba(43,31,28,.35); }
+.fabm { position: fixed; z-index: 49; right: 18px; bottom: 24px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+@media (max-width: 1023px) { .fabm { bottom: calc(100px + env(safe-area-inset-bottom)); } }
+.fabm .fab { position: static; }
+.fabm-list { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; animation: fabm-in .15s ease-out; }
+@keyframes fabm-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.fabm-list button { display: flex; align-items: center; gap: 10px; border: 0; background: transparent; padding: 0; cursor: pointer; font: inherit; }
+.fabm-list button span { background: var(--surface, #fff); color: var(--text); font-weight: 700; font-size: 14px; padding: 8px 12px; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.15); white-space: nowrap; }
+.fabm-list button i { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--surface, #fff); color: var(--primary); box-shadow: 0 4px 14px rgba(0,0,0,.15); font-size: 20px; }
+.fabm-list button.ai i { background: #2B1F1C; color: #fff; }
+.fabm-list button.ai span { color: #2B1F1C; }
+:root[data-theme="dark"] .fabm-list button.ai span { color: var(--text); }
+.ai-sheet { display: flex; flex-direction: column; gap: 10px; max-height: 80vh; }
+.ai-msgs { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 8px; min-height: 200px; }
+.ai-msg { max-width: 88%; padding: 10px 12px; border-radius: 14px; background: var(--bg-soft); white-space: pre-wrap; font-size: 14px; line-height: 1.4; }
+.ai-msg.me { align-self: flex-end; background: var(--primary); color: #fff; }
+.ai-in { display: flex; gap: 8px; } .ai-in input { flex: 1; }
