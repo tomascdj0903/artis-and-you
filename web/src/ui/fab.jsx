@@ -93,9 +93,9 @@ export function GlobalFab() {
 // qui ouvrent directement la bonne page. Avec l'IA, seules les fiches trouvées ici lui seront envoyées.
 function Assistant({ onClose }) {
   const { path } = useRoute();
-  const { company } = useApp();
+  const { company, profile } = useApp();
   const [q, setQ] = useState('');
-  const [msgs, setMsgs] = useState([{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: [{ id: 'x1', q: 'Mes rendez-vous de demain' }, { id: 'x2', q: 'Factures en retard' }, { id: 'x3', q: 'Ouvrir mon dernier client' }, ...suggestFor(path).slice(0, 2)] }]);
+  const [msgs, setMsgs] = useState([{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: [{ id: 'x1', q: 'Mes rendez-vous de demain' }, { id: 'x2', q: 'Qui me doit de l’argent ?' }, { id: 'x3', q: 'Ouvrir mon dernier client' }, { id: 'x4', q: 'Que sais-tu faire ?' }, ...suggestFor(path).slice(0, 2)] }]);
   const [busy, setBusy] = useState(false);
   // 1) on cherche les fiches d'aide ; 2) l'IA reformule à partir de ces fiches seulement (peu de tokens) ;
   // 3) si l'IA est indisponible ou hors quota, on affiche la fiche telle quelle.
@@ -108,9 +108,9 @@ function Assistant({ onClose }) {
     setMsgs((m) => [...m, { me: true, text }]);
     // 0) Demande sur ses propres données (dernier client, RDV de demain, factures en retard…) : réponse directe, sans IA
     setBusy(true);
-    const act = await runAction(text, { company }).catch(() => null);
+    const act = await runAction(text, { company, profile }).catch((e) => { console.warn('assistant', e); return null; });
     setBusy(false);
-    if (act) { setMsgs((m) => [...m, { me: false, ...act }]); if (act.go && /^(ouvr|affich|montre|va )/.test(nz(text))) setTimeout(() => open(act.go), 900); return; }
+    if (act) { setMsgs((m) => [...m, { me: false, ...act }]); if (act.go && /^(ouvr|affich|montre|va |vas |aller|emmene|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|ajouter|programme|planifie|cale|ecri|redige)/.test(nz(text).replace(/^(peux.?tu|tu peux|pourrais.?tu|stp|svp|s il te plait|merci de|je veux|je voudrais|j aimerais)\s+/, ''))) setTimeout(() => open(act.go), 1100); return; }
     if (OFFLINE) { setMsgs((m) => [...m, fallback]); return; }
     setBusy(true);
     const r = await api.fn('assistant', { question: text, facts: hits.map((e) => ({ q: e.q, a: e.a })), history: history.map((m) => ({ me: m.me, text: m.text })) }).catch(() => ({}));
@@ -129,7 +129,7 @@ function Assistant({ onClose }) {
           {msgs.map((m, i) => (
             <div key={i} className={'ai-msg' + (m.me ? ' me' : '')}>
               {m.text}
-              {m.links?.length > 0 && <div className="ai-links">{m.links.map((l) => <button key={l.to} onClick={() => open(l.to)}>{t(l.label)} ›</button>)}</div>}
+              {m.links?.length > 0 && <div className="ai-links">{m.links.map((l) => l.href ? <a key={l.href} className="ai-link" href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{t(l.label)} ›</a> : <button key={l.to + l.label} onClick={() => open(l.to)}>{t(l.label)} ›</button>)}</div>}
               {m.sugg?.length > 0 && <div className="ai-sugg">{m.sugg.map((e) => <button key={e.id} onClick={() => answer(t(e.q))}>{t(e.q)}</button>)}</div>}
             </div>
           ))}
