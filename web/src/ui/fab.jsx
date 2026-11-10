@@ -5,7 +5,9 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { LuPlus, LuX, LuSparkles, LuCalendarPlus, LuFilePen, LuFileText, LuUserPlus, LuUsers, LuMegaphone, LuMessageSquare, LuSend } from 'react-icons/lu';
 import { t } from '../lib/i18n.js';
 import { navigate, useLocation as useRoute } from '../lib/router.jsx';
-import { searchKB, suggestFor } from '../lib/assistant-kb.js';
+import { searchKB, suggestFor, nz } from '../lib/assistant-kb.js';
+import { runAction } from '../lib/assistant-actions.js';
+import { useApp } from '../lib/store.jsx';
 import { api, OFFLINE } from '../lib/api.js';
 
 // Nombre de pages qui affichent leur propre <Fab> (dans ce cas le bouton global se cache)
@@ -91,8 +93,9 @@ export function GlobalFab() {
 // qui ouvrent directement la bonne page. Avec l'IA, seules les fiches trouvées ici lui seront envoyées.
 function Assistant({ onClose }) {
   const { path } = useRoute();
+  const { company } = useApp();
   const [q, setQ] = useState('');
-  const [msgs, setMsgs] = useState([{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: suggestFor(path) }]);
+  const [msgs, setMsgs] = useState([{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: [{ id: 'x1', q: 'Mes rendez-vous de demain' }, { id: 'x2', q: 'Factures en retard' }, { id: 'x3', q: 'Ouvrir mon dernier client' }, ...suggestFor(path).slice(0, 2)] }]);
   const [busy, setBusy] = useState(false);
   // 1) on cherche les fiches d'aide ; 2) l'IA reformule à partir de ces fiches seulement (peu de tokens) ;
   // 3) si l'IA est indisponible ou hors quota, on affiche la fiche telle quelle.
@@ -103,6 +106,11 @@ function Assistant({ onClose }) {
       : { me: false, text: t('Je n’ai pas trouvé de réponse précise. Reformulez avec d’autres mots, ou écrivez au support.'), links: [{ label: 'Aide et support', to: '/pro/compte/aide' }] };
     const history = msgs.filter((m) => m.text).slice(-4);
     setMsgs((m) => [...m, { me: true, text }]);
+    // 0) Demande sur ses propres données (dernier client, RDV de demain, factures en retard…) : réponse directe, sans IA
+    setBusy(true);
+    const act = await runAction(text, { company }).catch(() => null);
+    setBusy(false);
+    if (act) { setMsgs((m) => [...m, { me: false, ...act }]); if (act.go && /^(ouvr|affich|montre|va )/.test(nz(text))) setTimeout(() => open(act.go), 900); return; }
     if (OFFLINE) { setMsgs((m) => [...m, fallback]); return; }
     setBusy(true);
     const r = await api.fn('assistant', { question: text, facts: hits.map((e) => ({ q: e.q, a: e.a })), history: history.map((m) => ({ me: m.me, text: m.text })) }).catch(() => ({}));
