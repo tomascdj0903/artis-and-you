@@ -23,7 +23,8 @@ export function Chat({ convId, projects = [], banner }) {
   const { profile, company, refreshUnread, toast } = useApp();
   const [msgs, setMsgs] = useState(null);
   const [conv, setConv] = useState(null);
-  const [text, setText] = useState('');
+  // Brouillon préparé par l'assistant (« envoie un message à X pour dire… ») : il attend dans le champ, rien n'est envoyé
+  const [text, setText] = useState(() => { try { const d = JSON.parse(sessionStorage.getItem('ay-draft') || 'null'); if (!d || d.to !== location.pathname) return ''; sessionStorage.removeItem('ay-draft'); return Date.now() - d.at < 120000 ? d.text : ''; } catch { return ''; } });
   const [menu, setMenu] = useState(false);
   const [doneSheet, setDoneSheet] = useState(false);
   const [big, setBig] = useState(null);

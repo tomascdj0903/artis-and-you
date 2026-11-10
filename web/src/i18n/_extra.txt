@@ -1038,3 +1038,5 @@ Un problème est survenu|Something went wrong|Ocorreu um problema|Si è verifica
 Cette page n’a pas pu s’afficher. Vos données ne sont pas perdues.|This page couldn’t be displayed. Your data isn’t lost.|Não foi possível mostrar esta página. Os seus dados não se perderam.|Impossibile mostrare questa pagina. I tuoi dati non sono persi.
 Recharger|Reload|Recarregar|Ricarica
 Retour à l’accueil|Back to home|Voltar ao início|Torna alla home
+Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.|Message for {n} ready: “{m}”. Check it, then tap Send.|Mensagem para {n} pronta: «{m}». Releia e toque em Enviar.|Messaggio per {n} pronto: «{m}». Rileggilo e tocca Invia.
+Je ne trouve pas « {n} » parmi vos clients ni vos pros.|I can’t find “{n}” among your customers or pros.|Não encontro «{n}» entre os seus clientes nem profissionais.|Non trovo «{n}» tra i tuoi clienti né professionisti.

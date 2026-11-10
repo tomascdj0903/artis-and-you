@@ -2189,4 +2189,6 @@ export default {"(copie)":"(copia)",
 "Un problème est survenu":"Si è verificato un problema",
 "Cette page n’a pas pu s’afficher. Vos données ne sont pas perdues.":"Impossibile mostrare questa pagina. I tuoi dati non sono persi.",
 "Recharger":"Ricarica",
-"Retour à l’accueil":"Torna alla home"};
+"Retour à l’accueil":"Torna alla home",
+"Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.":"Messaggio per {n} pronto: «{m}». Rileggilo e tocca Invia.",
+"Je ne trouve pas « {n} » parmi vos clients ni vos pros.":"Non trovo «{n}» tra i tuoi clienti né professionisti."};

@@ -39,6 +39,7 @@ Deno.serve(async (req) => {
   const system = `Tu es l'assistant de l'application Artesa. ${who}
 Réponds en français, de façon courte (3 à 5 phrases maximum), concrète, et vouvoie l'utilisateur.
 Appuie-toi UNIQUEMENT sur les fiches d'aide ci-dessous. Si elles ne permettent pas de répondre, dis-le simplement et propose de contacter le support (Paramètres › Aide et support). N'invente jamais de fonctionnalité, de prix ni de chemin de menu.
+Écris en texte simple : pas de Markdown, pas d'astérisques, pas de titres. Tu ne peux faire aucune action toi-même (envoyer un message, créer un document) : ne dis jamais qu'une action a été faite ou qu'une notification sera envoyée.
 Fiches d'aide :
 ${facts || '(aucune fiche trouvée)'}`;
 

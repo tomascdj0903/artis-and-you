@@ -107,6 +107,21 @@ export async function runClientAction(question) {
     return { text: t('Choisissez d’abord l’artisan, puis « Demander un RDV » sur sa fiche.'), links: [{ label: 'Trouver un artisan', to }, ...d.cos.slice(0, 3).map((c) => ({ label: t('Demander un RDV à {n}', { n: coName(c) }), to: `/client/artisans/${c.id}/demande` }))], go: to };
   }
 
+  // « Écris à Morel pour dire que je serai absent » : la conversation s'ouvre, le texte déjà écrit (rien n'est envoyé)
+  const dm = q.match(/^(?:previens|prevenir|informe|informer)\s+(.+?)\s*(?:\bqu(?:e|') ?|[:,«"“])\s*(.*)$/) || q.match(/^(?:envoie|envoyer|ecris|ecrire|dis|dire|demande|demander|reponds|repondre|message)\b(?: un| le)?(?: petit)?(?: message| mot)?\s+(?:a|au|aux|pour)\s+(.+?)\s*(?:\bpour (?:lui |leur )?(?:dire|demander|prevenir|rappeler)\b|\bqu(?:e|') ?|\bs(?:i|') ?(?=il|elle|c )|[:,«"“])\s*(.*)$/);
+  if (dm && dm[2]) {
+    const raw = String(question).trim();
+    const quoted = raw.match(/["«“]\s*([^"»”]+?)\s*["»”]/);
+    let body = quoted ? quoted[1] : '';
+    if (!body) { const cut = raw.search(/pour (lui |leur )?(dire|demander|prévenir|prevenir|rappeler)|\bqu[e’']|:|,/i); body = cut >= 0 ? raw.slice(cut).replace(/^(pour (lui |leur )?(dire|demander|prévenir|prevenir|rappeler)|qu[e’']|:|,)\s*(que |qu[’'])?/i, '') : dm[2]; }
+    body = body.trim().replace(/^./, (c) => c.toUpperCase());
+    const c = findCo(d.cos, nz(dm[1])) || (/artisan|plombier|electricien|peintre|macon|menuisier/.test(dm[1]) && d.cos.length === 1 ? d.cos[0] : null);
+    if (!c) return { text: t('Je ne trouve pas cet artisan parmi les vôtres.') + (d.cos.length ? ' ' + t('Vos artisans :') : ''), links: d.cos.length ? d.cos.slice(0, 4).map((x) => ({ label: coName(x), to: '/client/artisans/' + x.id })) : [{ label: 'Trouver un artisan', to: '/client/artisans' }] };
+    const id = await api.rpc('start_conversation', { p_company: c.id }), to = '/client/messages/' + id;
+    try { sessionStorage.setItem('ay-draft', JSON.stringify({ text: body, to, at: Date.now() })); } catch {}
+    return { text: t('Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.', { n: coName(c), m: body }), links: [{ label: t('Écrire à {n}', { n: coName(c) }), to }], go: to, act: true };
+  }
+
   // 5) Joindre un de mes artisans : téléphone, appel, message
   if (has(q, /telephone|numero|appeler|appelle|joindre|contacter|ecrire|message|parler/) && !co && !has(q, /\b(mon|ma|mes) (numero|telephone|profil|mail)/) && /\b(de|a|au|chez) [a-z]{3,}/.test(q) && !has(q, /mon artisan|l artisan|mon (plombier|electricien|peintre|macon|menuisier)/)) {
     return { text: t('Je ne trouve pas cet artisan parmi les vôtres.') + (d.cos.length ? ' ' + t('Vos artisans :') : ''), links: d.cos.length ? d.cos.slice(0, 4).map((x) => ({ label: coName(x), to: '/client/artisans/' + x.id })) : [{ label: 'Trouver un artisan', to: '/client/artisans' }] };

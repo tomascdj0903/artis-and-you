@@ -2189,4 +2189,6 @@ export default {"(copie)":"(copy)",
 "Un problème est survenu":"Something went wrong",
 "Cette page n’a pas pu s’afficher. Vos données ne sont pas perdues.":"This page couldn’t be displayed. Your data isn’t lost.",
 "Recharger":"Reload",
-"Retour à l’accueil":"Back to home"};
+"Retour à l’accueil":"Back to home",
+"Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.":"Message for {n} ready: “{m}”. Check it, then tap Send.",
+"Je ne trouve pas « {n} » parmi vos clients ni vos pros.":"I can’t find “{n}” among your customers or pros."};
