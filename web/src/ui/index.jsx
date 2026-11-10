@@ -8,6 +8,7 @@ import { subscribePush } from '../lib/push.js';
 import { t } from '../lib/i18n.js';
 import { initials } from '../lib/format.js';
 import { NotifBell } from './notifbell.jsx';
+import { DictateButton } from './dictate.jsx';
 
 // Chargements en échec : le Loader affiche un message et un bouton « Réessayer » au lieu de tourner sans fin
 const failed = new Set(); const errSubs = new Set();
@@ -54,11 +55,23 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
   );
 }
 
+// Barre de recherche avec dictée : une phrase dictée qui est un ordre (« ouvre la fiche de Rossi »,
+// « fais un devis pour Faure ») est exécutée par l'assistant ; sinon elle sert de recherche.
 export function SearchBar({ placeholder, value, onChange, onFilter, filterActive, onSubmit, onFocus, onBlur }) {
+  const { company, isPro } = useApp();
+  const voice = async (text) => {
+    if (isPro && company && text.trim().split(/\s+/).length >= 2) {
+      const [{ runAction }, { nz }] = await Promise.all([import('../lib/assistant-actions.js'), import('../lib/assistant-kb.js')]);
+      const act = await runAction(text, { company }).catch(() => null);
+      if (act?.go && /^(ouvr|affich|montre|va |vas |aller|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|programme|planifie|cale|ecri)/.test(nz(text))) { navigate(act.go); return; }
+    }
+    onChange(text);
+  };
   return (
     <div className="searchrow">
       <label className="search">
         <input value={value} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur} onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && onSubmit?.()} aria-label={placeholder} />
+        <DictateButton className="link" style={{ color: '#fff' }} onText={voice} />
         {value ? <button className="link" style={{ color: '#fff' }} onClick={() => onChange('')} aria-label={t('Effacer')}><LuX /></button> : <LuSearch />}
       </label>
       {onFilter && <button className="filterbtn" onClick={onFilter} aria-label={t('Filtrer')}><LuSlidersHorizontal />{filterActive && <span className="dot" />}</button>}

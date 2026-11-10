@@ -1,6 +1,9 @@
 // Recherche globale de l'artisan avec propositions en direct (clients, devis, factures, RDV, produits, documents, actions)
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { LuSearch, LuX, LuUser, LuFileText, LuFilePen, LuCalendar, LuPackage, LuFolder, LuZap, LuClock, LuHardHat, LuMessageSquare } from 'react-icons/lu';
+import { runAction } from '../lib/assistant-actions.js';
+import { searchKB, nz } from '../lib/assistant-kb.js';
+import { OFFLINE } from '../lib/api.js';
+import { LuSearch, LuX, LuUser, LuFileText, LuFilePen, LuCalendar, LuPackage, LuFolder, LuZap, LuClock, LuHardHat, LuMessageSquare , LuSparkles } from 'react-icons/lu';
 import { DictateButton } from './dictate.jsx';
 import { api } from '../lib/api.js';
 import { useApp } from '../lib/store.jsx';
@@ -30,6 +33,35 @@ export function SmartSearch({ placeholder, scope }) {
   const [data, setData] = useState(null);
   const [sel, setSel] = useState(0);
   const box = useRef();
+  // Phrase en langage naturel (tapée ou dictée) : l'assistant la comprend et propose l'action directe en tête
+  const [ai, setAi] = useState(null); // { text, links } | { ask: true }
+  const [aiAns, setAiAns] = useState(null);
+  const voice = useRef(false);
+  useEffect(() => {
+    setAiAns(null);
+    const v = q.trim();
+    if (v.split(/\s+/).length < 2 && !/^[a-z]{2}[ -]?\d{4}/i.test(v)) { setAi(null); return; }
+    let live = true;
+    const id = setTimeout(async () => {
+      const act = await runAction(v, { company }).catch(() => null);
+      if (!live) return;
+      if (act) {
+        setAi(act);
+        // Commande dictée à la voix et claire (« ouvre… », « fais un devis pour… ») : on l'exécute directement
+        if (voice.current && act.go && /^(ouvr|affich|montre|va |vas |aller|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|programme|planifie|cale|ecri)/.test(nz(v))) { voice.current = false; setOpen(false); setQ(''); navigate(act.go); }
+        return;
+      }
+      const kb = searchKB(v, '/pro');
+      setAi(kb.length ? { text: t(kb[0].a), links: kb[0].links, kb: kb[0] } : /\?$|^(comment|pourquoi|est.?ce|quel|quelle|combien|ou |peut.?on|puis.?je)/i.test(v) ? { ask: true } : null);
+    }, voice.current ? 0 : 450);
+    return () => { live = false; clearTimeout(id); };
+  }, [q]);
+  const askAI = async () => {
+    setAiAns({ busy: true });
+    const kb = searchKB(q, '/pro');
+    const r = OFFLINE ? {} : await api.fn('assistant', { question: q.trim(), facts: kb.map((e) => ({ q: e.q, a: e.a })) }).catch(() => ({}));
+    setAiAns({ text: r.answer || (kb[0] ? t(kb[0].a) : t('Je n’ai pas de réponse précise. Essayez l’assistant (bouton +) ou le support.')) });
+  };
   useEffect(() => {
     if (!open || data) return;
     (async () => {
@@ -96,11 +128,27 @@ export function SmartSearch({ placeholder, scope }) {
     <div className="searchrow" ref={box} style={{ position: 'relative' }}>
       <label className="search">
         <input value={q} placeholder={placeholder || t('Que recherchez-vous ?')} onFocus={() => setOpen(true)} onChange={(e) => { setQ(e.target.value); setSel(0); setOpen(true); }} onKeyDown={key} aria-label={placeholder || t('Que recherchez-vous ?')} role="combobox" aria-expanded={open} />
-        <DictateButton className="link" style={{ color: '#fff' }} onText={(s) => { setQ(s); setSel(0); setOpen(true); }} />
+        <DictateButton className="link" style={{ color: '#fff' }} onText={(s) => { voice.current = true; setQ(s); setSel(0); setOpen(true); }} />
         {q ? <button className="link" style={{ color: '#fff' }} onClick={() => setQ('')} aria-label={t('Effacer')}><LuX /></button> : <LuSearch />}
       </label>
-      {open && groups.length > 0 && (
+      {open && (groups.length > 0 || (ai && q.trim())) && (
         <div className="suggest" role="listbox" style={{ top: 64 }}>
+          {ai && q.trim() && (
+            <div className="ss-ai">
+              <div className="grp"><LuSparkles /> {t('Assistant')}</div>
+              {ai.ask ? (
+                <div className="ss-ai-body">{aiAns?.text || (aiAns?.busy ? t('Je réfléchis…') : t('C’est une question : je peux y répondre.'))}
+                  {!aiAns && <button type="button" className="ss-ai-btn" onMouseDown={(e) => { e.preventDefault(); askAI(); }}>{t('Répondre avec l’IA')}</button>}</div>
+              ) : (
+                <div className="ss-ai-body">{(aiAns?.text || ai.text).split('\n').slice(0, 6).map((l, k) => <div key={k}>{l}</div>)}
+                  <div className="ai-links">
+                    {(ai.links || []).slice(0, 4).map((l) => l.href ? <a key={l.href} className="ai-link" href={l.href}>{t(l.label)} ›</a> : <button type="button" key={l.to + l.label} onMouseDown={(e) => { e.preventDefault(); if (q.trim()) pushRecent(q.trim()); setOpen(false); navigate(l.to); }}>{t(l.label)} ›</button>)}
+                    {ai.kb && !aiAns && !OFFLINE && <button type="button" className="ghost" onMouseDown={(e) => { e.preventDefault(); askAI(); }}>{t('Préciser avec l’IA')}</button>}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           {groups.map(([g, items]) => (
             <div key={g}>
               <div className="grp">{g}</div>
@@ -112,7 +160,7 @@ export function SmartSearch({ placeholder, scope }) {
           {q.trim() && <button type="button" onMouseDown={(e) => { e.preventDefault(); pick(null); }}><LuSearch /><span><b>{t('Voir tous les résultats pour « {q} »', { q: q.trim() })}</b></span></button>}
         </div>
       )}
-      {open && q.trim() && data && groups.every((g) => g[0] === t('Actions')) && !groups.length && <div className="suggest" style={{ top: 64 }}><div className="grp">{t('Aucun résultat')}</div></div>}
+      {open && q.trim() && data && !ai && groups.every((g) => g[0] === t("Actions")) && !groups.length && <div className="suggest" style={{ top: 64 }}><div className="grp">{t('Aucun résultat')}</div></div>}
     </div>
   );
 }
