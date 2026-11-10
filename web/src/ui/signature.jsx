@@ -5,9 +5,18 @@ import { t } from '../lib/i18n.js';
 
 export const SIG_FONTS = ['Dancing Script', 'Great Vibes', 'Allura', 'Sacramento', 'Caveat', 'Homemade Apple'];
 
+// Les polices manuscrites ne servent qu'ici : on ne les charge qu'à la première signature, pas sur toutes les pages
+let sigFonts = null;
+export const loadSigFonts = () => sigFonts || (sigFonts = new Promise((res) => {
+  const l = document.createElement('link'); l.rel = 'stylesheet';
+  l.href = 'https://fonts.googleapis.com/css2?' + SIG_FONTS.map((f) => 'family=' + f.replace(/ /g, '+') + (f === 'Caveat' || f === 'Dancing Script' ? ':wght@600' : '')).join('&') + '&display=swap';
+  l.onload = res; l.onerror = res; document.head.appendChild(l); setTimeout(res, 4000);
+}));
+
 // Transforme le nom écrit dans la police choisie en image PNG (fond transparent)
 export async function textSignature(name, font, color = '#2B1F1C') {
-  try { await document.fonts.load(`64px "${font}"`); } catch {}
+  await loadSigFonts();
+  try { await document.fonts.load(`64px "${font}"`, name); } catch {}
   const c = document.createElement('canvas'); const x = c.getContext('2d');
   x.font = `64px "${font}"`; const w = Math.ceil(x.measureText(name).width) + 40;
   c.width = Math.max(200, w); c.height = 120;
@@ -47,7 +56,7 @@ export function SignatureEditor({ p, setP, defaultName }) {
     n.signature = (n.sig_use === 'drawn' && n.sig_drawn) ? n.sig_drawn : n.sig_text;
     setP(n);
   };
-  useEffect(() => { if (!p.sig_text && name.trim()) update({}); }, []);
+  useEffect(() => { loadSigFonts(); if (!p.sig_text && name.trim()) update({}); }, []);
   const use = p.sig_use === 'drawn' && p.sig_drawn ? 'drawn' : 'text';
   return (
     <div className="sig-editor">
