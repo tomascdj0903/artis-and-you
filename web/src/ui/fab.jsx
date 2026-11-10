@@ -1,11 +1,11 @@
 // Bouton « + » unique, présent sur toutes les pages pro : un toucher déploie un menu d'actions
 // qui s'adapte à la page (planning, client, documents…) et se termine toujours par « Demander à l'assistant ».
 // Une page peut fournir sa propre action principale avec <Fab primary={…} /> ; sinon le bouton global s'affiche.
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import { LuPlus, LuX, LuSparkles, LuCalendarPlus, LuFilePen, LuFileText, LuUserPlus, LuUsers, LuMegaphone, LuMessageSquare, LuSearch } from 'react-icons/lu';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { LuPlus, LuX, LuSparkles, LuCalendarPlus, LuFilePen, LuFileText, LuUserPlus, LuUsers, LuMegaphone, LuMessageSquare, LuSend } from 'react-icons/lu';
 import { t } from '../lib/i18n.js';
 import { navigate, useLocation as useRoute } from '../lib/router.jsx';
-import { TOURS } from './tour.jsx';
+import { searchKB, suggestFor } from '../lib/assistant-kb.js';
 
 // Nombre de pages qui affichent leur propre <Fab> (dans ce cas le bouton global se cache)
 let owners = 0; const subs = new Set();
@@ -86,28 +86,40 @@ export function GlobalFab() {
   return <Fab />;
 }
 
-// Assistant, étape 1 : répond aux questions sur l'utilisation d'Artesa à partir des tutoriels de l'app.
-// (L'IA branchée sur un serveur viendra remplacer cette recherche, sans changer l'interface.)
-const HELP = Object.values(TOURS).flat().filter((s) => s && s.title && s.text);
-const nz = (x) => String(x || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+// Assistant, étape 1 : répond à partir de la base de connaissances (lib/assistant-kb.js), avec des boutons
+// qui ouvrent directement la bonne page. Avec l'IA, seules les fiches trouvées ici lui seront envoyées.
 function Assistant({ onClose }) {
+  const { path } = useRoute();
   const [q, setQ] = useState('');
-  const [msgs, setMsgs] = useState([{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa : faire signer un devis, déplacer un RDV, inviter un client…') }]);
-  const send = () => {
-    const words = nz(q).split(/\W+/).filter((w) => w.length > 2);
-    if (!words.length) return;
-    const ranked = HELP.map((s) => ({ s, n: words.filter((w) => nz(t(s.title) + ' ' + t(s.text)).includes(w)).length })).filter((x) => x.n).sort((a, b) => b.n - a.n).slice(0, 2);
-    const ans = ranked.length ? ranked.map((x) => '• ' + t(x.s.title) + ' : ' + t(x.s.text)).join('\n\n') : t('Je n’ai pas trouvé de réponse. Essayez d’autres mots, ou écrivez-nous depuis Paramètres › Aide et support.');
-    setMsgs((m) => [...m, { me: true, text: q }, { me: false, text: ans }]); setQ('');
+  const [msgs, setMsgs] = useState([{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: suggestFor(path) }]);
+  const answer = (text) => {
+    const hits = searchKB(text, path);
+    const bot = hits.length
+      ? { me: false, text: t(hits[0].a), links: hits[0].links, sugg: hits.slice(1) }
+      : { me: false, text: t('Je n’ai pas trouvé de réponse précise. Reformulez avec d’autres mots, ou écrivez au support.'), links: [{ label: 'Aide et support', to: '/pro/compte/aide' }] };
+    setMsgs((m) => [...m, { me: true, text }, bot]);
   };
+  const send = () => { if (q.trim()) { answer(q.trim()); setQ(''); } };
+  const open = (to) => { onClose(); navigate(to); };
+  const end = useRef(null);
+  useEffect(() => { end.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs]);
   return (
     <div className="overlay" onClick={onClose}>
       <div className="sheet ai-sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={t('Assistant')}>
         <div className="row" style={{ justifyContent: 'space-between' }}><b className="row" style={{ gap: 8 }}><LuSparkles className="red-t" /> {t('Assistant Artesa')}</b><button className="iconbtn" onClick={onClose} aria-label={t('Fermer')}><LuX /></button></div>
-        <div className="ai-msgs">{msgs.map((m, i) => <div key={i} className={'ai-msg' + (m.me ? ' me' : '')}>{m.text}</div>)}</div>
+        <div className="ai-msgs">
+          {msgs.map((m, i) => (
+            <div key={i} className={'ai-msg' + (m.me ? ' me' : '')}>
+              {m.text}
+              {m.links?.length > 0 && <div className="ai-links">{m.links.map((l) => <button key={l.to} onClick={() => open(l.to)}>{t(l.label)} ›</button>)}</div>}
+              {m.sugg?.length > 0 && <div className="ai-sugg">{m.sugg.map((e) => <button key={e.id} onClick={() => answer(t(e.q))}>{t(e.q)}</button>)}</div>}
+            </div>
+          ))}
+          <div ref={end} />
+        </div>
         <form className="ai-in" onSubmit={(e) => { e.preventDefault(); send(); }}>
           <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('Votre question…')} autoFocus />
-          <button className="btn sm" aria-label={t('Envoyer')}><LuSearch /></button>
+          <button className="btn sm" aria-label={t('Envoyer')}><LuSend /></button>
         </form>
       </div>
     </div>

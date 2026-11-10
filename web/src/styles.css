@@ -1127,3 +1127,12 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .ai-msg { max-width: 88%; padding: 10px 12px; border-radius: 14px; background: var(--bg-soft); white-space: pre-wrap; font-size: 14px; line-height: 1.4; }
 .ai-msg.me { align-self: flex-end; background: var(--primary); color: #fff; }
 .ai-in { display: flex; gap: 8px; } .ai-in input { flex: 1; }
+
+.ai-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ai-links button { border: 0; border-radius: 999px; padding: 7px 12px; background: var(--primary); color: #fff; font: 700 13px Inter, sans-serif; cursor: pointer; }
+.ai-sugg { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.ai-sugg button { text-align: left; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; background: var(--surface, #fff); color: var(--text); font: 600 13px Inter, sans-serif; cursor: pointer; }
+.ai-msg.me .ai-links, .ai-msg.me .ai-sugg { display: none; }
+/* Logo complet en haut sur mobile : la colonne s'élargit, le titre se réduit au lieu de passer dessous */
+.logo-btn.logo-full { width: auto; height: auto; }
+@media (max-width: 1023px) { .topbar h1 { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } }
