@@ -94,7 +94,7 @@ export function mockBackend({ saveSession, getSession }) {
     if (table === 'messages') {
       const c = db.conversations.find((x) => x.id === row.conversation_id);
       if (c) {
-        c.last_message = (row.card?.type === 'demande' ? '📅 ' + row.card.title + (row.body ? ' · ' + row.body : '') : row.body || (row.card ? row.card.title : '📎 Pièce jointe')).slice(0, 140); c.last_at = row.created_at;
+        c.last_message = (row.card?.type === 'demande' ? '📅 ' + row.card.title + (row.body ? ' · ' + row.body : '') : row.body || (row.card ? row.card.title : (row.attachments || []).some((a) => a.kind === 'voice' || /^audio\//.test(a.mime || '')) ? '🎤 Message vocal' : (row.attachments || []).some((a) => /^image\//.test(a.mime || '')) ? '📷 Photo' : '📎 Pièce jointe')).slice(0, 140); c.last_at = row.created_at;
         if (row.sender_id) { const r = db.conversation_reads.find((x) => x.conversation_id === c.id && x.user_id === row.sender_id); if (r) { if (!r.last_read_at || r.last_read_at < row.created_at) r.last_read_at = row.created_at; } else db.conversation_reads.push({ conversation_id: c.id, user_id: row.sender_id, last_read_at: row.created_at }); }
         if (c.client_user_id && c.client_user_id !== row.sender_id) notify(c.client_user_id, 'message', 'Nouveau message', `${row.sender_name} : ${(row.body || row.card?.title || '📎').slice(0, 80)}`, '/client/messages/' + c.id);
       }

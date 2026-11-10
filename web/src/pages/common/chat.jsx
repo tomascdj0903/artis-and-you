@@ -3,7 +3,8 @@ import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuI
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
-import { DictateButton } from '../../ui/dictate.jsx';
+import { VoiceRecorder, VoiceNote, canRecord } from '../../ui/voice.jsx';
+import { LuMic } from 'react-icons/lu';
 import { t } from '../../lib/i18n.js';
 import { hm, dateMed, fullName, clientName } from '../../lib/format.js';
 import { Img, Sheet, pickFiles, openFile, Loader, Lightbox, CameraSheet, isTouch } from '../../ui/index.jsx';
@@ -25,6 +26,8 @@ export function Chat({ convId, projects = [], banner }) {
   const [doneSheet, setDoneSheet] = useState(false);
   const [big, setBig] = useState(null);
   const [cam, setCam] = useState(false);
+  const [rec, setRec] = useState(false);
+  const [sending, setSending] = useState(false);
   const endRef = useRef();
   const lastCount = useRef(0);
 
@@ -71,6 +74,13 @@ export function Chat({ convId, projects = [], banner }) {
       if (atts.length) { await post({ attachments: atts }); await keepPhotos(atts); if (atts.some((a) => (a.mime || '').startsWith('image/')) && conv?.client_id) toast(t('Photos ajoutées dans Documents › Photos')); }
     } catch (x) { toast(x.message, true); }
   };
+  // Message vocal : le fichier audio part dans le stockage privé, la durée et la forme d'onde dans le message
+  const sendVoice = async ({ file, duration, wave }) => {
+    setRec(false); setSending(true);
+    try { const a = await uploadTo(myPrefix(profile) + '/chat/' + convId, file); await post({ attachments: [{ ...a, kind: 'voice', duration, wave }] }); }
+    catch (x) { toast(x.message, true); }
+    setSending(false);
+  };
   const attach = async (accept) => { setMenu(false); sendFiles(await pickFiles({ accept, multiple: true })); };
   const takePhoto = async () => {
     setMenu(false);
@@ -100,7 +110,8 @@ export function Chat({ convId, projects = [], banner }) {
           const showDay = day !== lastDay; lastDay = day;
           const showWho = !mine && (showDay || lastSender !== m.sender_id); lastSender = m.sender_id;
           const photos = (m.attachments || []).filter((a) => (a.mime || '').startsWith('image/'));
-          const files = (m.attachments || []).filter((a) => !(a.mime || '').startsWith('image/'));
+          const voices = (m.attachments || []).filter((a) => a.kind === 'voice' || (a.mime || '').startsWith('audio/'));
+          const files = (m.attachments || []).filter((a) => !(a.mime || '').startsWith('image/') && !voices.includes(a));
           return (
             <div key={m.id} style={{ display: 'contents' }}>
               {showDay && <div className="day">{dateMed(day)}</div>}
@@ -125,7 +136,8 @@ export function Chat({ convId, projects = [], banner }) {
                 </div>
               )}
               {photos.length > 0 && <div className={'photos' + (mine ? ' r' : '')}>{photos.map((p) => <Img key={p.path} path={p.path} onClick={() => setBig(p.path)} />)}</div>}
-              {files.map((f) => <button key={f.path} className={'file' + (mine ? ' r' : '')} onClick={() => openFile(f.path, f.name)}><span className="pill red">PDF</span>{f.name}</button>)}
+              {voices.map((v) => <VoiceNote key={v.path} att={v} mine={mine} />)}
+              {files.map((f) => <button key={f.path} className={'file' + (mine ? ' r' : '')} onClick={() => openFile(f.path, f.name)}><span className="pill red">{(f.name.split('.').pop() || 'PDF').slice(0, 4).toUpperCase()}</span>{f.name}</button>)}
               {m.body && m.card?.type !== 'demande' && <div className={'bubble ' + (mine ? 'out' : 'in')}>{m.body}</div>}
               <div className={'when' + (mine ? ' r' : '')}>{hm(m.created_at)}</div>
             </div>
@@ -133,13 +145,16 @@ export function Chat({ convId, projects = [], banner }) {
         })}
         <div ref={endRef} />
       </div>
-      <form className="composer" onSubmit={send}>
-        <button type="button" className="att" onClick={() => setMenu(true)} aria-label={t('Joindre')}><LuPlus /></button>
-        <button type="button" className="att" onClick={takePhoto} aria-label={t('Prendre une photo')}><LuCamera /></button>
-        <input type="text" value={text} onChange={(e) => setText(e.target.value)} placeholder={t('Écrire un message…')} aria-label={t('Message')} />
-        <DictateButton className="iconbtn" onText={(s) => setText((x) => (x ? x + ' ' : '') + s)} />
-        <button className="send" aria-label={t('Envoyer')}><LuArrowRight /></button>
-      </form>
+      {rec ? <VoiceRecorder onSend={sendVoice} onCancel={() => setRec(false)} onError={(m) => { setRec(false); toast(m, true); }} /> : (
+        <form className="composer" onSubmit={send}>
+          <button type="button" className="att" onClick={() => setMenu(true)} aria-label={t('Joindre')}><LuPlus /></button>
+          {!text.trim() && <button type="button" className="att" onClick={takePhoto} aria-label={t('Prendre une photo')}><LuCamera /></button>}
+          <input type="text" value={text} onChange={(e) => setText(e.target.value)} placeholder={sending ? t('Envoi du vocal…') : t('Écrire un message…')} aria-label={t('Message')} />
+          {text.trim() || !canRecord
+            ? <button className="send" aria-label={t('Envoyer')}><LuArrowRight /></button>
+            : <button type="button" className="send mic" onClick={() => setRec(true)} disabled={sending} aria-label={t('Enregistrer un message vocal')} title={t('Enregistrer un message vocal')}><LuMic /></button>}
+        </form>
+      )}
       <Sheet open={menu} onClose={() => setMenu(false)} title={t('Joindre')}>
         <button className="opt" onClick={takePhoto}><LuCamera /><div><b>{t('Prendre une photo')}</b><small>{t('Rangée aussi dans Documents › Photos')}</small></div></button>
         <button className="opt" onClick={() => attach('image/*')}><LuImage /><div><b>{t('Photos de la galerie')}</b></div></button>

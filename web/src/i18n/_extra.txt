@@ -914,3 +914,18 @@ Nouveau RDV pour ce client|New appointment for this client|Nova marcação para 
 Nouvelle facture pour ce client|New invoice for this client|Nova fatura para este cliente|Nuova fattura per questo cliente
 Ajouter un pro|Add a pro|Adicionar um profissional|Aggiungi un professionista
 Actions|Actions|Ações|Azioni
+Autorisez l’accès au micro pour enregistrer un vocal.|Allow microphone access to record a voice message.|Autorize o acesso ao microfone para gravar uma mensagem de voz.|Consenti l’accesso al microfono per registrare un vocale.
+Micro indisponible sur cet appareil.|Microphone unavailable on this device.|Microfone indisponível neste dispositivo.|Microfono non disponibile su questo dispositivo.
+Vocal trop court : appuyez sur le micro et parlez.|Voice message too short: tap the mic and speak.|Mensagem de voz demasiado curta: toque no microfone e fale.|Vocale troppo breve: tocca il microfono e parla.
+Message vocal|Voice message|Mensagem de voz|Messaggio vocale
+Enregistrement d’un message vocal|Recording a voice message|A gravar uma mensagem de voz|Registrazione di un messaggio vocale
+Annuler le vocal|Cancel voice message|Cancelar mensagem de voz|Annulla vocale
+max. 3 min|max. 3 min|máx. 3 min|max 3 min
+Envoyer le vocal|Send voice message|Enviar mensagem de voz|Invia vocale
+Pause|Pause|Pausa|Pausa
+Écouter le message vocal|Play voice message|Ouvir mensagem de voz|Ascolta il messaggio vocale
+Position|Position|Posição|Posizione
+Lecture impossible|Can’t play|Impossível reproduzir|Riproduzione impossibile
+Vitesse de lecture|Playback speed|Velocidade de reprodução|Velocità di riproduzione
+Envoi du vocal…|Sending voice message…|A enviar mensagem de voz…|Invio del vocale…
+Enregistrer un message vocal|Record a voice message|Gravar uma mensagem de voz|Registra un messaggio vocale

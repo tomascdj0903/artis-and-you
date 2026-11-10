@@ -1157,3 +1157,29 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .ss-ai .ai-links button.ghost { background: var(--bg-soft) !important; color: var(--text) !important; }
 .ss-ai-btn { margin-top: 8px; }
 .ai-in .ai-mic { min-width: 44px; padding: 0 12px; display: grid; place-items: center; }
+
+/* Messages vocaux */
+.composer .send.mic { background: var(--primary); }
+.composer .send:disabled { opacity: .5; }
+.composer.vrec { gap: 10px; }
+.vrec-mid { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--line); background: var(--bordeaux-50); border-radius: var(--pill); padding: 0 16px; height: 48px; overflow: hidden; }
+:root[data-theme="dark"] .vrec-mid { background: var(--row); }
+.vrec-dot { width: 10px; height: 10px; border-radius: 50%; background: #E0352B; flex: none; animation: vblink 1s infinite; }
+@keyframes vblink { 50% { opacity: .25; } }
+.vrec-time { font-variant-numeric: tabular-nums; min-width: 38px; }
+.vrec-wave { flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 2px; height: 28px; overflow: hidden; }
+.vrec-wave i { width: 3px; border-radius: 2px; background: var(--primary); flex: none; transition: height .1s; }
+.vnote { align-self: flex-start; display: flex; align-items: center; gap: 10px; max-width: min(320px, 82%); padding: 8px 12px 8px 8px; border-radius: 22px 22px 22px 6px; background: var(--bordeaux-50); margin: 2px 0; }
+.vnote.r { align-self: flex-end; border-radius: 22px 22px 6px 22px; background: var(--navy); color: #fff; }
+.vplay { width: 42px; height: 42px; flex: none; border-radius: 50%; border: 0; display: grid; place-items: center; font-size: 18px; background: var(--primary); color: #fff; cursor: pointer; }
+.vnote.r .vplay { background: #fff; color: var(--navy); }
+.vbody { flex: 1; min-width: 150px; }
+.vwave { display: flex; align-items: center; gap: 2px; height: 28px; cursor: pointer; touch-action: manipulation; }
+.vwave i { flex: 1; max-width: 4px; min-width: 2px; border-radius: 2px; background: currentColor; opacity: .3; }
+.vwave i.on { opacity: 1; }
+.vnote:not(.r) .vwave i.on { background: var(--primary); }
+.vmeta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; opacity: .8; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.vrate { border: 0; background: rgba(127,127,127,.18); color: inherit; font-size: 11px; font-weight: 700; border-radius: 10px; padding: 1px 7px; cursor: pointer; }
+.vmic { flex: none; opacity: .55; font-size: 16px; }
+@keyframes vspin { to { transform: rotate(360deg); } }
+.vplay .spin { animation: vspin 1s linear infinite; }
