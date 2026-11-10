@@ -80,6 +80,29 @@ async function findClient(company, q) {
   }).filter((x) => x.n).sort((a, b) => b.n - a.n);
   return { match: scored[0]?.c || null, others: scored.slice(1, 4).filter((x) => x.n >= scored[0].n - 1).map((x) => x.c) };
 }
+// Références à un client sans le nommer : « mon dernier client », « le client de mon prochain RDV »,
+// « le client de la dernière facture / du dernier devis », « ce client » (fiche ouverte)
+async function refClient(company, q) {
+  const list = await clients(company);
+  const byId = (id) => list.find((c) => c.id === id) || null;
+  if (/(ce|cette|le|la) (client|cliente|fiche)\b(?! de| du| d )|\b(lui|elle)\b/.test(q) && !/dernier|prochain|precedent/.test(q)) {
+    const m = location.pathname.match(/\/pro\/clients\/([0-9a-f-]{36})/); if (m) return { c: byId(m[1]), how: '' };
+  }
+  if (/(dernier|derniere|nouveau) (client|cliente)|client (le plus recent|ajoute en dernier|cree en dernier)/.test(q)) return { c: list[0] || null, how: t('votre dernier client') };
+  if (/client (de|du) (mon |ma |le |la )?(prochain|prochaine) (rdv|rendez.?vous|intervention|chantier)/.test(q)) {
+    const [a] = await api.select('appointments', { company_id: company.id, 'start_at>=': new Date().toISOString(), status: ['a_valider', 'valide'] }, { order: 'start_at.asc', limit: 5 }).then((r) => r.filter((x) => x.client_id));
+    return { c: a ? byId(a.client_id) : null, how: t('le client de votre prochain RDV') };
+  }
+  const d = q.match(/client (de|du) (ma |mon |la |le )?dern(iere|ier) (facture|devis)/);
+  if (d) { const [doc] = await api.select('documents', { company_id: company.id, kind: d[4] }, { order: 'created_at.desc', limit: 1 }); return { c: doc ? byId(doc.client_id) : null, how: t('le client de votre dernier document') }; }
+  return null;
+}
+// Client visé par la demande : d'abord une référence (« mon dernier client »), sinon un nom
+async function target(company, q) {
+  const r = await refClient(company, q);
+  if (r) return { match: r.c, others: [], ref: true };
+  return findClient(company, q);
+}
 const notFound = () => ({ text: t('Je ne trouve pas ce client. Vérifiez l’orthographe, ou créez sa fiche.'), links: [{ label: 'Clients', to: '/pro/clients' }, { label: 'Nouveau client', to: '/pro/clients/nouveau' }] });
 const apptLine = (a, cm) => `• ${dateShort(a.start_at)} ${hm(a.start_at)} — ${a.personal ? a.title : clientName(cm[a.client_id]) + (a.title ? ' · ' + a.title : '')}${a.status === 'a_valider' ? ' (' + t('à valider') + ')' : ''}`;
 const rest = (d) => Math.max(0, Number(d.totals?.ttc || 0) - Number(d.paid_amount || 0));
@@ -143,7 +166,7 @@ export async function runAction(question, { company, profile }) {
     if (/^ou (est|sont|se trouve|trouver)/.test(q)) { const p = PAGES.find(([re]) => re.test(q)); if (p) return { text: t('C’est ici : {p}.', { p: t(p[2]) }), links: [{ label: p[2], to: p[1] }] }; }
     return null;
   }
-  const create = !howTo && !has(q, /dernier|derniere|derniers/) && (shortFor || has(q, /\b(nouveau|nouvelle|creer|cree|ajoute|ajouter|faire|fais|fait|prepare|preparer|programme|planifie|planifier|cale|caler|prendre|redige|rediger|emettre|etablir)\b/));
+  const create = !howTo && (!has(q, /dernier|derniere|derniers/) || (/(dernier|nouveau) client|client de/.test(q) && has(q, /devis|facture|acompte|avoir|\brdv\b|rendez|message|ecri/))) && (shortFor || has(q, /\b(nouveau|nouvelle|creer|cree|ajoute|ajouter|faire|fais|fait|prepare|preparer|programme|planifie|planifier|cale|caler|prendre|redige|rediger|emettre|etablir)\b/));
   if (create) {
     const ent = has(q, /\bavoir\b/) ? 'avoir' : has(q, /acompte/) ? 'acompte' : has(q, /\bdevis\b|estimation|chiffrage/) ? 'devis' : has(q, /facture/) ? 'facture'
       : has(q, /\brdv\b|rendez.?vous|intervention|visite|passage|chantier le|creneau/) ? 'rdv' : has(q, /\bclient\b|fiche/) ? 'client'
@@ -155,7 +178,7 @@ export async function runAction(question, { company, profile }) {
     if (ent === 'equipe') return { text: t('Créez un code d’invitation dans Mon équipe : votre salarié le saisit à son inscription.'), links: [{ label: 'Mon équipe', to: '/pro/compte/equipe' }], go: '/pro/compte/equipe' };
     if (ent === 'pro') return { text: t('Cherchez le pro et envoyez-lui une demande de connexion.'), links: [{ label: 'Ajouter un pro', to: '/pro/reseau/ajouter' }], go: '/pro/reseau/ajouter' };
     if (ent) {
-      const { match, others } = await findClient(company, q);
+      const { match, others } = await target(company, q);
       const when = parseWhen(q), hour = parseHour(q);
       if (ent === 'message') {
         if (!match) return { text: t('À qui voulez-vous écrire ?'), links: [{ label: 'Messages', to: '/pro/messages' }] };
@@ -181,7 +204,7 @@ export async function runAction(question, { company, profile }) {
   // 3) Infos ou actions sur un client précis
   const aboutClient = !has(q, /qui (me )?doi|me doivent|de l argent|mes clients/) && has(q, /(devis|factures?|documents) (de|du|pour|chez) |rdv avec|rendez.?vous avec|telephone|numero|\btel\b|portable|joindre|appel|adresse|ou habite|\bmail\b|email|courriel|ecri|historique|ses devis|ses factures|ses documents|ses rdv|ses rendez|doit|solde|reste a payer|fiche de|infos? (sur|de)/);
   if (aboutClient && !has(q, /^(mes|mon) /)) {
-    const { match, others } = await findClient(company, q);
+    const { match, others } = await target(company, q);
     if (!match && has(q, / de | a | sur | avec /)) return notFound();
     if (match) {
       const c = match, n = clientName(c), id = c.id;
@@ -193,6 +216,11 @@ export async function runAction(question, { company, profile }) {
       if (has(q, /\bmail\b|email|courriel/) && !has(q, /ecri.*message/)) return c.email ? { text: t('E-mail de {n} : {e}', { n, e: c.email }) + more, links: [{ label: t('Envoyer un e-mail'), href: 'mailto:' + c.email }, { label: t('Fiche de {n}', { n }), to: '/pro/clients/' + id }] } : { text: t('Pas d’e-mail enregistré pour {n}.', { n }), links: [{ label: t('Compléter la fiche'), to: `/pro/clients/${id}/modifier` }] };
       if (has(q, /ecri/)) return { text: t('Je vous ouvre la conversation avec {n}.', { n }), links: [{ label: t('Écrire à {n}', { n }), to: `/pro/clients/${id}/chat` }], go: `/pro/clients/${id}/chat` };
       if (has(q, /historique/)) return { text: t('Historique de {n} : RDV, déplacements, devis, factures et paiements.', { n }), links: [{ label: t('Historique'), to: `/pro/clients/${id}/historique` }], go: `/pro/clients/${id}/historique` };
+      if (has(q, /ses rdv|ses rendez|rdv avec|rendez.?vous avec/) && (parseWhen(q) || parseHour(q))) {
+        const w = parseWhen(q), h = parseHour(q); const st = new Date(w ? w[0] : addDays(startOfDay(new Date()), 1)); st.setHours(h ? h[0] : 9, h ? h[1] : 0, 0, 0);
+        const to = `/pro/planning/nouveau?client=${id}&start=${encodeURIComponent(st.toISOString())}`;
+        return { text: t('Je prépare le rendez-vous : {n} · {d}. Vérifiez et enregistrez.', { n, d: dateShort(st) + ' ' + hm(st) }), links: [{ label: 'Nouveau rendez-vous', to }], go: to };
+      }
       if (has(q, /ses rdv|ses rendez|rdv avec|rendez.?vous avec/)) {
         const ap = await api.select('appointments', { company_id: company.id, client_id: id, 'start_at>=': startOfDay(new Date()).toISOString(), status: ['a_valider', 'valide'] }, { order: 'start_at.asc', limit: 5 });
         return { text: ap.length ? t('Prochains RDV avec {n} :', { n }) + '\n' + ap.map((a) => `• ${dateShort(a.start_at)} ${hm(a.start_at)} — ${a.title || a.type}`).join('\n') : t('Aucun RDV à venir avec {n}.', { n }), links: [...ap.slice(0, 2).map((a) => ({ label: dateShort(a.start_at) + ' ' + hm(a.start_at), to: '/pro/planning/rdv/' + a.id })), { label: t('Nouveau RDV pour {n}', { n }), to: '/pro/planning/nouveau?client=' + id }] };
