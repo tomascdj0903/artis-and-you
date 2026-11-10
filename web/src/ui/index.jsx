@@ -158,7 +158,7 @@ export function Loader() {
       <button className="btn sm" style={{ marginTop: 12 }} onClick={() => { const fs = [...failed]; failed.clear(); emitErr(); fs.forEach((f) => f()); }}>{t('Réessayer')}</button>
     </div>
   );
-  return <div className="loader" aria-label={t('Chargement…')}><div className="spin" /></div>;
+  return <div className="loader" role="status" aria-label={t('Chargement…')}><div className="spin" /></div>;
 }
 
 export function Chips({ options, value, onChange, multi, red, scroll }) {

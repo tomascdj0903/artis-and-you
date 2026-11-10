@@ -114,7 +114,8 @@ export function AppProvider({ children }) {
   return (
     <Ctx.Provider value={value}>
       {children}
-      {toastMsg && <div className={'toast' + (toastMsg.err ? ' err' : '')} role="status">{toastMsg.msg}</div>}
+      {/* Zone toujours présente : VoiceOver et TalkBack lisent le message dès qu'il apparaît */}
+      <div aria-live={toastMsg?.err ? 'assertive' : 'polite'} aria-atomic="true">{toastMsg && <div className={'toast' + (toastMsg.err ? ' err' : '')} role={toastMsg.err ? 'alert' : 'status'}>{toastMsg.msg}</div>}</div>
       {dialog && <Dialog d={dialog} close={() => setDialog(null)} />}
     </Ctx.Provider>
   );

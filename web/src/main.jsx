@@ -89,6 +89,8 @@ function Shell({ tabs, children, path }) {
   const badge = (to) => (to.endsWith('/messages') ? unread.messages : to.endsWith('/notifications') ? unread.notifs : to === '/pro/planning' ? unread.rdv || 0 : 0);
   // Dans une conversation, la barre d'onglets laisse la place à la barre de saisie (comme WhatsApp)
   const hideTabs = /^\/(pro|client)\/messages\/[^/]+$|^\/pro\/clients\/[^/]+\/chat$/.test(path);
+  // Titre de l'onglet = titre de la page (annoncé par les lecteurs d'écran à chaque changement de page)
+  useEffect(() => { const i = setTimeout(() => { const h = document.querySelector('.main h1')?.textContent?.trim(); document.title = (h ? h + ' · ' : '') + 'Artesa'; }, 400); return () => clearTimeout(i); }, [path]);
   const [tour, finishTour] = useTours(path); // Accueil artisan : pas de barre d'onglets (maquette 02)
   return (
     <div className="app">
@@ -132,7 +134,7 @@ function LockScreen({ onUnlock }) {
         <Wordmark size={54} style={{ margin: '0 auto' }} />
         <h1 style={{ fontSize: 22, margin: 0 }}>{t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
         <p className="muted" style={{ margin: 0 }}>{t('Application verrouillée. Utilisez Face ID, Touch ID, votre empreinte ou Windows Hello.')}</p>
-        {err && <div className="error">{err}</div>}
+        {err && <div className="error" role="alert">{err}</div>}
         <button className="btn" onClick={go}>{t('Déverrouiller')}</button>
         <button className="link bold" onClick={async () => { await api.signOut(); location.href = '/connexion'; }}>{t('Utiliser mon mot de passe')}</button>
       </div>
