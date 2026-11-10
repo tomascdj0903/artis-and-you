@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { companyMissing } from '../../lib/docs.js';
 import { HELP, HELP_CATS } from '../../lib/help.js';
 import { bioAvailable, bioEnabled, bioEnable, bioDisable, groupSecret } from '../../lib/security.js';
-import { LuBell, LuCalendar, LuFileText, LuEuro, LuMessageSquare, LuInfo, LuSearch, LuMail, LuPhone, LuCirclePlay, LuBug, LuDownload, LuTrash2, LuMoon, LuSun, LuShieldCheck, LuCheck, LuX } from 'react-icons/lu';
+import { LuBell, LuCalendar, LuFileText, LuEuro, LuMessageSquare, LuInfo, LuMail, LuPhone, LuBug, LuDownload, LuTrash2, LuMoon, LuSun, LuCheck, LuX } from 'react-icons/lu';
 import JSZip from 'jszip';
 import { api, uid, APP_VERSION, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -50,7 +50,7 @@ export function Notifications() {
 }
 
 export function MyProfile() {
-  const { profile, setProfile, run, wip, reload } = useApp();
+  const { profile, setProfile, run } = useApp();
   const [p, setP] = useState(profile);
   const [pw, setPw] = useState('');
   const [crop, setCrop] = useState(null);

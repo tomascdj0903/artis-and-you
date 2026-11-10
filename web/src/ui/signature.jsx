@@ -1,5 +1,5 @@
 // Signature de l'entreprise : une signature « texte » (nom + police manuscrite, obligatoire) et une signature dessinée (facultative)
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { LuEraser, LuPenLine, LuType } from 'react-icons/lu';
 import { t } from '../lib/i18n.js';
 

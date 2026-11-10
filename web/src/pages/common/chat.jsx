@@ -1,7 +1,7 @@
 import { shrinkImage } from '../../lib/image.js';
 import { poll } from '../../lib/poll.js';
 import { useEffect, useRef, useState } from 'react';
-import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
+import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';

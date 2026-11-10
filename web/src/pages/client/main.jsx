@@ -1,14 +1,14 @@
 import { kbd } from '../../lib/a11y.js';
 import { useState, useMemo } from 'react';
-import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuImage, LuStar, LuSearch, LuMessageSquarePlus } from 'react-icons/lu';
+import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
-import { dateLong, dateShort, hm, rel, iso, addDays, fullName, initials, date, dateTime, time } from '../../lib/format.js';
-import { TRADES, ALL_TRADES, clientApptStatus, APPT_TYPES } from '../../lib/docs.js';
+import { dateLong, dateShort, hm, rel, iso, addDays, date, dateTime, time } from '../../lib/format.js';
+import { TRADES, clientApptStatus } from '../../lib/docs.js';
 import { icsFile } from '../../lib/ics.js';
-import { TopBar, SearchBar, Sec, Sheet, Chips, Field, Seg, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
 import { planSettings, freeWindows, MoveSheet } from '../pro/planning.jsx';
 import { CityInput, distanceKm } from '../../ui/address.jsx';
@@ -238,7 +238,7 @@ export function RequestSent({ params }) {
       <div className="center"><div className="big-ico" style={{ width: 86, height: 86, borderRadius: '50%', background: 'var(--bordeaux-100)', display: 'grid', placeItems: 'center', margin: '0 auto' }}><span style={{ width: 62, height: 62, borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'grid', placeItems: 'center', fontSize: 30 }}><LuCheck /></span></div>
         <h2 className="mt" style={{ fontSize: 24 }}>{t('Votre demande est envoyée')}</h2><p className="muted">{t('{n} a reçu votre demande et vos photos. Il répond en général en moins de 2 h.', { n: coName(co) })}</p></div>
       <Sec title={t('Récapitulatif')} />
-      <KV rows={[[t('Besoin'), a.title], [t('Photos'), t('{n} photos', { n: (a.photos || []).length })], [t('Rendez-vous souhaité'), `${a.mode === 'visio' ? t('Visio') : t('Sur place')} · ${dateShort(a.start_at)} · ${time(a.start_at)}`], [t('Statut'), <Pill c="navy-o">{t('En attente de confirmation')}</Pill>]]} />
+      <KV rows={[[t('Besoin'), a.title], [t('Photos'), t('{n} photos', { n: (a.photos || []).length })], [t('Rendez-vous souhaité'), `${a.mode === 'visio' ? t('Visio') : t('Sur place')} · ${dateShort(a.start_at)} · ${time(a.start_at)}`], [t('Statut'), <Pill key="v" c="navy-o">{t('En attente de confirmation')}</Pill>]]} />
       <Sec title={t('Et ensuite ?')} />
       <div className="steps">
         {[[t('{n} confirme le créneau', { n: coName(co) }), t('Vous recevez une notification.')], a.mode === 'visio' ? [t('Vous recevez le lien de la visio'), t('Dans vos messages et dans le détail du RDV.')] : [t('Il vous prévient quand il est en route'), t('Avec son heure d’arrivée.')], [t('Un rappel avant'), t('Pour ne pas oublier le rendez-vous.')]].map(([x, y], i) => <div key={i} className="step cur"><span className="b">{i + 1}</span><div><b>{x}</b><div className="small muted">{y}</div></div></div>)}
@@ -306,7 +306,7 @@ export function ApptDetail({ params }) {
       </div>
       {isEnroute && <div className="alert mt"><LuSend className="red-t" /><div><b>{t('{n} est en route', { n: coName(co) })}</b><div className="small">{t('Arrivée prévue vers {h}', { h: hm(a.eta_at) })}</div></div></div>}
       <Sec title={t('Détails')} />
-      <KV rows={[[t('Type'), t(a.type)], [t('Artisan'), <Link to={'/client/artisans/' + a.company_id}>{coName(co)}</Link>], a.mode === 'site' && [t('Adresse'), a.address], [t('Demandé le'), dateTime(a.created_at)], a.validated_at && [t('Confirmé le'), dateTime(a.validated_at)]]} />
+      <KV rows={[[t('Type'), t(a.type)], [t('Artisan'), <Link key="v" to={'/client/artisans/' + a.company_id}>{coName(co)}</Link>], a.mode === 'site' && [t('Adresse'), a.address], [t('Demandé le'), dateTime(a.created_at)], a.validated_at && [t('Confirmé le'), dateTime(a.validated_at)]]} />
       {(a.request_text || a.photos?.length > 0) && (
         <div className="card mt"><div className="row between"><b>{t('Votre demande')}</b>{a.photos?.length > 0 && <span className="small red-t bold">{t('{n} photos', { n: a.photos.length })}</span>}</div><p className="small wsb">{a.request_text}</p>{a.photos?.length > 0 && <div className="photos-grid">{a.photos.map((p) => <Img key={p.path} path={p.path} onClick={() => setBig(p.path)} />)}</div>}</div>
       )}

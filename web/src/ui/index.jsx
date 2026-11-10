@@ -1,7 +1,7 @@
 // Composants d'interface partagés
 import { kbd, kbdRow } from '../lib/a11y.js';
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { LuSettings, LuChevronLeft, LuChevronRight, LuSlidersHorizontal, LuSearch, LuBell, LuX, LuCamera, LuInbox } from 'react-icons/lu';
+import { LuSettings, LuChevronLeft, LuChevronRight, LuSlidersHorizontal, LuSearch, LuX, LuCamera, LuInbox } from 'react-icons/lu';
 import { navigate, Link } from '../lib/router.jsx';
 import { useApp } from '../lib/store.jsx';
 import { fileUrls, cachedUrl } from '../lib/api.js';
@@ -37,7 +37,7 @@ export function Avatar({ name = '', last = '', path, ring, size = '', onClick, c
 }
 
 export function TopBar({ title, sub, back = true, right, onBack, home, settings }) {
-  const { profile, isPro, unread } = useApp();
+  const { profile, isPro } = useApp();
   const base = isPro ? '/pro' : '/client';
   return (
     <header className={'topbar' + (home ? ' home-top' : '')}>

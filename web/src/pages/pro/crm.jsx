@@ -2,13 +2,13 @@ import { kbd, kbdRow } from '../../lib/a11y.js';
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuPencil, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
+import { LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
 import { starterFor } from '../../lib/starter.js';
-import { money, money0, date, dateShort, clientName, iso, num } from '../../lib/format.js';
+import { money, money0, date, dateShort, clientName, iso } from '../../lib/format.js';
 import { STEPS, autoSteps, stepState, ALL_TRADES, VAT_RATES, kindLabel } from '../../lib/docs.js';
 import { makeXlsx, download } from '../../lib/xlsx.js';
 import { TopBar, SearchBar, Sec, Sheet, Field, Chips, Seg, useData, Loader, Empty, Pill, Table , Picker } from '../../ui/index.jsx';
@@ -16,7 +16,6 @@ import { KpiView } from './kpi.jsx';
 
 export function CrmHome() {
   const { can } = useApp();
-  const [q, setQ] = useState('');
   return (
     <div className="content">
       <TopBar title={t('CRM')} back={false} />

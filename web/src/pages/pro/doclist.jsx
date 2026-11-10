@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuPlus, LuX } from 'react-icons/lu';
+import { LuX } from 'react-icons/lu';
 import { navigate, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, date, clientName, iso } from '../../lib/format.js';

@@ -1,14 +1,14 @@
 import { kbd } from '../../lib/a11y.js';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuMessageSquarePlus, LuMapPin, LuMessageSquare, LuPlus, LuPhone, LuUserPlus, LuChevronRight, LuMail, LuShieldCheck } from 'react-icons/lu';
-import { api, uid } from '../../lib/api.js';
+import { LuMapPin, LuMessageSquare, LuPlus, LuPhone, LuUserPlus, LuChevronRight, LuMail, LuShieldCheck } from 'react-icons/lu';
+import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { clientName, rel, date, initials } from '../../lib/format.js';
 import { TRADES } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, Field , ShareButton } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, ShareButton } from '../../ui/index.jsx';
 import { Chat, convMeta } from '../common/chat.jsx';
 
 async function loadConvCtx(company, teams, members) {

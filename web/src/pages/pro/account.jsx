@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { LuUser, LuCreditCard, LuBuilding2, LuUsers, LuFileText, LuBell, LuPlug, LuShield, LuCircleHelp, LuLogOut, LuChevronRight, LuPalette, LuStar, LuCopy, LuPlus, LuImage, LuCheck, LuShieldCheck, LuDownload, LuLock, LuFilePen } from 'react-icons/lu';
+import { LuUser, LuCreditCard, LuBuilding2, LuUsers, LuFileText, LuBell, LuPlug, LuShield, LuCircleHelp, LuLogOut, LuChevronRight, LuPalette, LuStar, LuCopy, LuPlus, LuImage, LuShieldCheck, LuDownload, LuLock, LuFilePen } from 'react-icons/lu';
 import { api, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { date, fullName, initials, money } from '../../lib/format.js';
-import { PLANS, TRADES, kindLabel, LEGAL_FORMS, SOCIETIES, companyMissing } from '../../lib/docs.js';
+import { date, fullName } from '../../lib/format.js';
+import { PLANS, TRADES, LEGAL_FORMS, SOCIETIES, companyMissing } from '../../lib/docs.js';
 import { AddressFields, CityInput } from '../../ui/address.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 import { siretValid } from '../auth/index.jsx';
-import { TopBar, Sec, KV, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, Img , ShareButton } from '../../ui/index.jsx';
+import { TopBar, Sec, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, ShareButton } from '../../ui/index.jsx';
 import { A4, useLogo } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
 import { SignatureEditor } from '../../ui/signature.jsx';
@@ -20,7 +20,7 @@ export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
 }
 
 export function Account() {
-  const { profile, company, isPro, confirm } = useApp();
+  const { profile, company, confirm } = useApp();
   const ger = profile.member_role === 'gerant';
   // Double demande avant de se déconnecter
   const logout = async () => {
@@ -183,7 +183,7 @@ export function CompanySettings() {
 const ROLE = { gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' };
 const COLORS = ['#2B1F1C', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
 export function TeamSettings() {
-  const { company, teams, setTeams, members, run, profile } = useApp();
+  const { company, teams, setTeams, members, profile } = useApp();
   const ger = profile.member_role === 'gerant';
   const [newTeam, setNewTeam] = useState(false);
   const [invite, setInvite] = useState(false);
@@ -387,7 +387,6 @@ export function NotifSettings() {
   const [n, setN] = useState({ push: true, email: true, sms: false, demande: true, rdv: true, devis: true, paiement: true, message: true, rappel_rdv: true, ...(profile.notif_prefs || {}) });
   const set = async (k, v) => { const x = { ...n, [k]: v }; setN(x); await api.update('profiles', { id: profile.id }, { notif_prefs: x }); setProfile({ ...profile, notif_prefs: x }); };
   const R = ([k, l, sub]) => <SettingToggle key={k} label={t(l)} hint={sub && t(sub)} checked={n[k]} onChange={(v) => set(k, v)} />;
-  const rel = company?.settings?.relances;
   return (
     <div className="content narrow">
       <TopBar title={t('Notifications')} />

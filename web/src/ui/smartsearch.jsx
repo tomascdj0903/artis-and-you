@@ -9,7 +9,7 @@ import { api } from '../lib/api.js';
 import { useApp } from '../lib/store.jsx';
 import { navigate } from '../lib/router.jsx';
 import { t } from '../lib/i18n.js';
-import { clientName, money, date, dateShort, hm } from '../lib/format.js';
+import { clientName, money, dateShort, hm } from '../lib/format.js';
 import { kindLabel, statusPill } from '../lib/docs.js';
 
 const norm = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();

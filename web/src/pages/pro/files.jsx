@@ -1,14 +1,14 @@
 import { kbd } from '../../lib/a11y.js';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuPlus, LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2 } from 'react-icons/lu';
+import { LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2 } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { clientName, dateMed, date, iso, rel } from '../../lib/format.js';
 import { DOC_TYPES, VAULT_TYPES, VAULT_REQUIRED, docTypeLabel, validity } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Sheet, Field, Chips, useData, Loader, Empty, Img, Lightbox, openFile, pickFiles, Toggle, SettingToggle, StatusPill, Pill } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Sheet, Field, Chips, useData, Loader, Empty, Img, openFile, pickFiles, Toggle, SettingToggle, StatusPill, Pill } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
 function useClientsWith(kind) {
@@ -137,7 +137,6 @@ function FileRow({ f, onOpen, types = DOC_TYPES, extra }) {
 }
 
 export function OtherDocsClient({ params }) {
-  const { company } = useApp();
   const [q, setQ] = useState('');
   const [types, setTypes] = useState([]);
   const [open, setOpen] = useState(false);

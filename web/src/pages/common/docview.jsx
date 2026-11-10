@@ -192,7 +192,6 @@ export function A4({ d, company, client, source, logoUrl }) {
         <thead><tr><th>{t('Désignation')}</th><th className="n">{t('Qté')}</th><th className="n">{t('PU HT (€)')}</th>{!franchise && !d.reverse_charge && <th className="n">{t('TVA')}</th>}<th className="n">{t('Total HT (€)')}</th></tr></thead>
         <tbody>
           {d.lines.map((l, i) => {
-            const nextSec = d.lines.slice(i + 1).find((x) => x.kind === 'section');
             const isLastOfSection = l.kind !== 'section' && (i === d.lines.length - 1 || d.lines[i + 1].kind === 'section');
             const secId = [...d.lines.slice(0, i + 1)].reverse().find((x) => x.kind === 'section')?.id;
             const cols = !franchise && !d.reverse_charge ? 5 : 4;

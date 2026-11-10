@@ -49,7 +49,7 @@ export function parseWhen(q) {
   if (/ce mois/.test(q)) { const a = new Date(today.getFullYear(), today.getMonth(), 1); return [a, new Date(a.getFullYear(), a.getMonth() + 1, 1), t('ce mois-ci')]; }
   const dn = DAYS.findIndex((d) => new RegExp('\\b' + d + '\\b').test(q));
   if (dn >= 0) { let diff = (dn - today.getDay() + 7) % 7; if (diff === 0 && /prochain/.test(q)) diff = 7; const a = addDays(today, diff); return [a, addDays(a, 1), DAYS[dn] + ' ' + a.getDate()]; }
-  let m = q.match(/\b(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?\b/);
+  let m = q.match(/\b(\d{1,2})[/.-](\d{1,2})(?:[/.-](\d{2,4}))?\b/);
   if (m) { const y = m[3] ? (m[3].length === 2 ? 2000 + +m[3] : +m[3]) : today.getFullYear(); const a = new Date(y, +m[2] - 1, +m[1]); if (!isNaN(a)) return [a, addDays(a, 1), dateShort(a)]; }
   m = q.match(/\b(?:le )?(\d{1,2})(?:er)? (janvier|fevrier|mars|avril|mai|juin|juillet|aout|septembre|octobre|novembre|decembre)\b/);
   if (m) { let a = new Date(today.getFullYear(), MONTHS.indexOf(m[2]), +m[1]); if (a < addDays(today, -60)) a = new Date(today.getFullYear() + 1, MONTHS.indexOf(m[2]), +m[1]); return [a, addDays(a, 1), dateShort(a)]; }
