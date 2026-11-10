@@ -905,3 +905,4 @@ Aucun RDV|No appointments|Sem marcações|Nessun appuntamento
 Ajouter un rendez-vous|Add an appointment|Adicionar uma marcação|Aggiungi un appuntamento
 Libre {a} – {b}|Free {a} – {b}|Livre {a} – {b}|Libero {a} – {b}
 {n} RDV en même temps|{n} appointments at the same time|{n} marcações ao mesmo tempo|{n} appuntamenti nello stesso momento
+Sem.|Wk|Sem.|Sett.

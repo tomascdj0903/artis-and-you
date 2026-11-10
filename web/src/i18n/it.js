@@ -2063,4 +2063,5 @@ export default {"(copie)":"(copia)",
 "Aucun RDV":"Nessun appuntamento",
 "Ajouter un rendez-vous":"Aggiungi un appuntamento",
 "Libre {a} – {b}":"Libero {a} – {b}",
-"{n} RDV en même temps":"{n} appuntamenti nello stesso momento"};
+"{n} RDV en même temps":"{n} appuntamenti nello stesso momento",
+"Sem.":"Sett."};

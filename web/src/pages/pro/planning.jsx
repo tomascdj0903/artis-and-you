@@ -48,6 +48,7 @@ export function Planning() {
     const st = startOfWeek(anchor); return [st, addDays(st, 7)];
   }, [view, anchor]);
   const [proj, setProj] = useState(query.get('projet') || '');
+  const [pick, setPick] = useState(false);
   const [shared] = useData(() => api.rpc('shared_projects').catch(() => []), []);
   const [data, refetch, loading] = useData(async () => {
     await api.rpc('finish_past_appointments').catch(() => 0);
@@ -106,7 +107,10 @@ export function Planning() {
       <SearchBar placeholder={t('Recherchez un rendez-vous (client, objet, adresse)')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={teamF.length > 0} />
       <div className="cal-head">
         <button className="round" onClick={() => move(-1)} aria-label={t('Précédent')}><LuChevronLeft /></button>
-        <b style={{ minWidth: 110, textAlign: 'center', textTransform: 'capitalize' }}>{label}</b>
+        <span style={{ position: 'relative' }}>
+          <button className="pick-label" onClick={() => setPick(!pick)} aria-expanded={pick}>{label} ▾</button>
+          {pick && <WeekPicker anchor={anchor} view={view} onPick={(d) => { setAnchor(d); setPick(false); }} onClose={() => setPick(false)} />}
+        </span>
         <button className="round" onClick={() => move(1)} aria-label={t('Suivant')}><LuChevronRight /></button>
         <button className="btn xs ghost" onClick={() => setAnchor(new Date())}>{t("Aujourd'hui")}</button>
         <div style={{ flex: 1 }} />
@@ -139,6 +143,35 @@ export function Planning() {
         <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setTeamF([])}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher')}</button></div></div>
       </Sheet>
     </div>
+  );
+}
+
+// Bulle de choix : un mini-calendrier du mois, on touche une semaine (ou un jour) pour y aller
+function WeekPicker({ anchor, view, onPick, onClose }) {
+  const [m, setM] = useState(new Date(anchor.getFullYear(), anchor.getMonth(), 1));
+  const st = startOfWeek(m);
+  const weeks = Array.from({ length: 6 }, (_, w) => Array.from({ length: 7 }, (_, i) => addDays(st, w * 7 + i))).filter((w) => w[0].getMonth() === m.getMonth() || w[6].getMonth() === m.getMonth());
+  const curWeek = iso(startOfWeek(anchor)), today = iso(new Date());
+  const shift = (n) => setM(new Date(m.getFullYear(), m.getMonth() + n, 1));
+  if (view === 'month') return (
+    <><div className="pick-veil" onClick={onClose} /><div className="pick-pop">
+      <div className="pick-head"><button onClick={() => setM(new Date(m.getFullYear() - 1, 0, 1))}>‹</button><b>{m.getFullYear()}</b><button onClick={() => setM(new Date(m.getFullYear() + 1, 0, 1))}>›</button></div>
+      <div className="pick-months">{Array.from({ length: 12 }, (_, i) => new Date(m.getFullYear(), i, 1)).map((d) => <button key={d.getMonth()} className={d.getMonth() === anchor.getMonth() && d.getFullYear() === anchor.getFullYear() ? 'on' : ''} onClick={() => onPick(d)}>{d.toLocaleDateString(locale(), { month: 'short' })}</button>)}</div>
+    </div></>
+  );
+  return (
+    <><div className="pick-veil" onClick={onClose} /><div className="pick-pop">
+      <div className="pick-head"><button onClick={() => shift(-1)} aria-label={t('Précédent')}>‹</button><b style={{ textTransform: 'capitalize' }}>{m.toLocaleDateString(locale(), { month: 'long', year: 'numeric' })}</b><button onClick={() => shift(1)} aria-label={t('Suivant')}>›</button></div>
+      <div className="pick-grid"><span className="wk">{t('Sem.')}</span>{weeks[0].map((d) => <span key={iso(d)} className="dn">{d.toLocaleDateString(locale(), { weekday: 'narrow' })}</span>)}</div>
+      {weeks.map((w) => (
+        <button key={iso(w[0])} className={'pick-grid pick-week' + (view === 'week' && iso(w[0]) === curWeek ? ' on' : '')} onClick={(e) => { if (view === 'week' || !e.target.dataset.day) onPick(w[0]); }}>
+          <span className="wk">{weekNumber(w[0])}</span>
+          {w.map((d) => <span key={iso(d)} data-day={view === 'day' ? '1' : undefined} onClick={view === 'day' ? (e) => { e.stopPropagation(); onPick(d); } : undefined}
+            className={(d.getMonth() !== m.getMonth() ? 'out ' : '') + (iso(d) === today ? 'today ' : '') + (view === 'day' && iso(d) === iso(anchor) ? 'sel' : '')}>{d.getDate()}</span>)}
+        </button>
+      ))}
+      <button className="btn xs ghost" style={{ marginTop: 6, width: '100%' }} onClick={() => onPick(new Date())}>{t("Aujourd'hui")}</button>
+    </div></>
   );
 }
 

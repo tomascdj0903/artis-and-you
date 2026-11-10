@@ -2063,4 +2063,5 @@ export default {"(copie)":"(copy)",
 "Aucun RDV":"No appointments",
 "Ajouter un rendez-vous":"Add an appointment",
 "Libre {a} – {b}":"Free {a} – {b}",
-"{n} RDV en même temps":"{n} appointments at the same time"};
+"{n} RDV en même temps":"{n} appointments at the same time",
+"Sem.":"Wk"};

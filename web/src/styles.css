@@ -1085,3 +1085,26 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .ag-ov-txt b { font-size: 12.5px; display: block; color: var(--text-3); }
 .ag-ov-track { position: relative; flex: 1; height: 14px; border-radius: 7px; background: var(--bg-soft, #F1EBE4); }
 .ag-ov-track i { position: absolute; top: 0; bottom: 0; border-radius: 7px; }
+
+/* Bulle de choix de la semaine / du jour / du mois */
+.pick-label { border: 0; background: transparent; font: 700 16px Inter, sans-serif; color: var(--text); padding: 8px 10px; border-radius: 12px; cursor: pointer; text-transform: capitalize; min-width: 110px; }
+.pick-label:hover { background: var(--bg-soft); }
+.pick-veil { position: fixed; inset: 0; z-index: 60; }
+.pick-pop { position: absolute; z-index: 61; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); width: 300px; max-width: calc(100vw - 24px); background: var(--surface, #fff); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 12px 32px rgba(0,0,0,.18); padding: 12px; }
+.pick-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.pick-head button { width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--bg-soft); font-size: 18px; cursor: pointer; color: var(--text); }
+.pick-grid { display: grid; grid-template-columns: 34px repeat(7, 1fr); align-items: center; text-align: center; font-size: 13px; width: 100%; }
+.pick-grid .wk { font-size: 11px; color: var(--text-3); }
+.pick-grid .dn { font-size: 11px; color: var(--text-3); padding-bottom: 4px; }
+.pick-week { border: 0; background: transparent; color: var(--text); font: inherit; padding: 2px 0; border-radius: 10px; cursor: pointer; }
+.pick-week:hover { background: var(--bordeaux-50, #FBE8E1); }
+.pick-week.on { background: var(--primary); color: #fff; }
+.pick-week.on .wk { color: #fff; }
+.pick-week span { padding: 7px 0; border-radius: 8px; }
+.pick-week span.out { opacity: .4; }
+.pick-week span.today { font-weight: 800; text-decoration: underline; }
+.pick-week span.sel { background: var(--primary); color: #fff; }
+.pick-months { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pick-months button { padding: 10px 0; border: 0; border-radius: 10px; background: var(--bg-soft); font: 600 14px Inter, sans-serif; color: var(--text); text-transform: capitalize; cursor: pointer; }
+.pick-months button.on { background: var(--primary); color: #fff; }
+@media (max-width: 640px) { .pick-pop { position: fixed; top: 180px; left: 50%; transform: translateX(-50%); width: calc(100vw - 32px); } }
