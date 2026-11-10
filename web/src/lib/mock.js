@@ -403,6 +403,17 @@ export function mockBackend({ saveSession, getSession }) {
       const mc = myCompany();
       return db.project_shares.filter((x) => x.company_id === mc && x.status === 'pending').map((x) => { const p = db.projects.find((y) => y.id === x.project_id) || {}; const c = db.companies.find((y) => y.id === p.company_id) || {}; return { project_id: p.id, title: p.title, address: p.address, created_at: x.created_at, from: { id: c.id, name: c.trade_name || c.name } }; });
     },
+    delete_my_account() {
+      const p = profile(); if (!p) throw new Error('Connexion requise.');
+      if (p.company_id && (p.member_role || 'gerant') === 'gerant') {
+        if (db.profiles.some((x) => x.company_id === p.company_id && x.id !== p.id)) throw new Error('Retirez d’abord les membres de votre équipe (Paramètres › Mon équipe), puis recommencez.');
+        const c = db.companies.find((x) => x.id === p.company_id); if (c) { c.archived_at = now(); c.visible_particuliers = false; c.visible_pros = false; }
+      }
+      db.clients.forEach((c) => { if (c.user_id === p.id) c.user_id = null; });
+      db.conversations.forEach((c) => { if (c.client_user_id === p.id) c.client_user_id = null; });
+      db.profiles = db.profiles.filter((x) => x.id !== p.id);
+      return 'ok';
+    },
     referral_stats() { return { count: db.companies.filter((c) => c.referred_by && c.referred_by === myCompany()).length, max: 10 }; },
     siret_status({ p_siret }) { const d = String(p_siret).replace(/\D/g, ''); return db.companies.some((c) => String(c.siret || '').replace(/\D/g, '') === d) ? 'active' : 'new'; },
     finish_past_appointments() {

@@ -2193,4 +2193,10 @@ export default {"(copie)":"(copy)",
 "Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.":"Message for {n} ready: “{m}”. Check it, then tap Send.",
 "Je ne trouve pas « {n} » parmi vos clients ni vos pros.":"I can’t find “{n}” among your customers or pros.",
 "Vous êtes hors ligne : je ne peux pas lire vos données pour le moment.":"You’re offline: I can’t read your data right now.",
-"Je n’arrive pas à lire vos données pour le moment. Réessayez dans un instant.":"I can’t read your data right now. Try again in a moment."};
+"Je n’arrive pas à lire vos données pour le moment. Réessayez dans un instant.":"I can’t read your data right now. Try again in a moment.",
+"Votre compte et vos accès seront supprimés. Les devis et factures restent chez vos artisans, qui doivent les conserver.":"Your account and access will be deleted. Quotes and invoices stay with your tradespeople, who must keep them.",
+"Votre compte sera supprimé et votre entreprise retirée d’Artesa. Vos devis et factures sont conservés 10 ans (obligation légale) et restent consultables par vos clients. Exportez vos données avant.":"Your account will be deleted and your company removed from Artesa. Your quotes and invoices are kept for 10 years (legal requirement) and stay available to your customers. Export your data first.",
+"Votre compte et vos accès seront supprimés. Les données de l’entreprise restent chez votre employeur.":"Your account and access will be deleted. The company’s data stays with your employer.",
+"Suppression définitive":"Permanent deletion",
+"Cette action est immédiate et ne peut pas être annulée. Confirmez-vous la suppression du compte {e} ?":"This is immediate and can’t be undone. Do you confirm deleting the account {e}?",
+"Supprimer définitivement":"Delete permanently"};

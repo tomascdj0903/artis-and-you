@@ -144,7 +144,7 @@ export function Appearance() {
 }
 
 export function DataPrivacy() {
-  const { profile, company, isPro, run, confirm, setProfile } = useApp();
+  const { profile, company, isPro, run, confirm, setProfile, toast } = useApp();
   const [pv, setPv] = useState({ audience: false, news: true, ...(profile.privacy || {}) });
   const set = async (k, v) => { const x = { ...pv, [k]: v }; setPv(x); await api.update('profiles', { id: profile.id }, { privacy: x }); setProfile({ ...profile, privacy: x }); };
   const exportAll = () => run(async () => {
@@ -160,9 +160,25 @@ export function DataPrivacy() {
     zip.file('notifications.json', JSON.stringify(await api.select('notifications', { user_id: profile.id }), null, 2));
     download(await zip.generateAsync({ type: 'blob' }), `artis-and-you-mes-donnees-${new Date().toISOString().slice(0, 10)}.zip`);
   }, t('Export téléchargé'));
+  // Suppression du compte depuis l'app (double confirmation). Tant que la fonction n'existe pas en base, on retombe sur la demande par e-mail.
+  const gerant = isPro && (profile.member_role || 'gerant') === 'gerant';
   const del = async () => {
-    if (!(await confirm({ title: t('Supprimer mon compte ?'), text: t('Votre demande sera traitée sous 30 jours. Les factures émises restent conservées 10 ans (obligation légale).'), ok: t('Demander la suppression'), danger: true }))) return;
-    window.location.href = `mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Suppression de mon compte'))}&body=${encodeURIComponent(t('Bonjour, je souhaite supprimer mon compte Artesa ({e}).', { e: profile.email }))}`;
+    const what = !isPro ? t('Votre compte et vos accès seront supprimés. Les devis et factures restent chez vos artisans, qui doivent les conserver.')
+      : gerant ? t('Votre compte sera supprimé et votre entreprise retirée d’Artesa. Vos devis et factures sont conservés 10 ans (obligation légale) et restent consultables par vos clients. Exportez vos données avant.')
+      : t('Votre compte et vos accès seront supprimés. Les données de l’entreprise restent chez votre employeur.');
+    if (!(await confirm({ title: t('Supprimer mon compte ?'), text: what, ok: t('Continuer'), danger: true }))) return;
+    if (!(await confirm({ title: t('Suppression définitive'), text: t('Cette action est immédiate et ne peut pas être annulée. Confirmez-vous la suppression du compte {e} ?', { e: profile.email }), ok: t('Supprimer définitivement'), danger: true }))) return;
+    try {
+      await api.rpc('delete_my_account');
+    } catch (e) {
+      if (/delete_my_account|PGRST202|Could not find|RPC inconnue/i.test(e.message || '')) {
+        window.location.href = `mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Suppression de mon compte'))}&body=${encodeURIComponent(t('Bonjour, je souhaite supprimer mon compte Artesa ({e}).', { e: profile.email }))}`;
+      } else toast(e.message, true);
+      return;
+    }
+    if (profile.avatar_path) await api.removeFile(profile.avatar_path).catch(() => {});
+    await api.signOut().catch(() => {});
+    location.href = '/';
   };
   return (
     <div className="content narrow">

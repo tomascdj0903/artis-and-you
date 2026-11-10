@@ -2193,4 +2193,10 @@ export default {"(copie)":"(cópia)",
 "Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.":"Mensagem para {n} pronta: «{m}». Releia e toque em Enviar.",
 "Je ne trouve pas « {n} » parmi vos clients ni vos pros.":"Não encontro «{n}» entre os seus clientes nem profissionais.",
 "Vous êtes hors ligne : je ne peux pas lire vos données pour le moment.":"Está offline: não consigo ler os seus dados de momento.",
-"Je n’arrive pas à lire vos données pour le moment. Réessayez dans un instant.":"Não consigo ler os seus dados de momento. Tente novamente daqui a pouco."};
+"Je n’arrive pas à lire vos données pour le moment. Réessayez dans un instant.":"Não consigo ler os seus dados de momento. Tente novamente daqui a pouco.",
+"Votre compte et vos accès seront supprimés. Les devis et factures restent chez vos artisans, qui doivent les conserver.":"A sua conta e os seus acessos serão eliminados. Os orçamentos e faturas ficam com os seus profissionais, que têm de os conservar.",
+"Votre compte sera supprimé et votre entreprise retirée d’Artesa. Vos devis et factures sont conservés 10 ans (obligation légale) et restent consultables par vos clients. Exportez vos données avant.":"A sua conta será eliminada e a sua empresa retirada do Artesa. Os orçamentos e faturas são conservados 10 anos (obrigação legal) e continuam consultáveis pelos seus clientes. Exporte os seus dados antes.",
+"Votre compte et vos accès seront supprimés. Les données de l’entreprise restent chez votre employeur.":"A sua conta e os seus acessos serão eliminados. Os dados da empresa ficam com o seu empregador.",
+"Suppression définitive":"Eliminação definitiva",
+"Cette action est immédiate et ne peut pas être annulée. Confirmez-vous la suppression du compte {e} ?":"Esta ação é imediata e não pode ser anulada. Confirma a eliminação da conta {e}?",
+"Supprimer définitivement":"Eliminar definitivamente"};
