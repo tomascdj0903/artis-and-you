@@ -62,7 +62,7 @@ export function Planning() {
   const [undo, setUndo] = useState(null);
   const moveAppt = async (a, start) => {
     const dur = new Date(a.end_at) - new Date(a.start_at);
-    if (+start === +new Date(a.start_at)) return;
+    if (+start === +new Date(a.start_at) || (a.company && !a.mine)) return;
     const c = data?.cm[a.client_id];
     const ok = await confirm({ title: t('Déplacer ce rendez-vous ?'), text: t('{t} : du {a} au {b}.', { t: a.title || t(a.type), a: `${dateShort(a.start_at)} ${hm(a.start_at)}`, b: `${dateShort(start)} ${hm(start)}` }) + (c?.user_id ? ' ' + t('{n} sera prévenu par notification.', { n: clientName(c) }) : ''), ok: t('Déplacer') });
     if (!ok) return;
@@ -81,7 +81,7 @@ export function Planning() {
   const evs = all.filter((a) => (!teamF.length || teamF.includes(a.team_id))
     && !(a.company ? hide.has('co:' + a.company_id) : a.team_id && hide.has('team:' + a.team_id))
     && !(a.status === 'a_valider' && hide.has('a_valider')) && !(['valide', 'termine'].includes(a.status) && hide.has('valide')) && !(a.mode === 'visio' && hide.has('visio')));
-  const dragOk = !proj && can('planning') && profile.member_role !== 'ouvrier';
+  const dragOk = can('planning') && profile.member_role !== 'ouvrier';
   const sp = (shared || []).find((x) => x.id === proj);
   const L = ({ k, children }) => <button type="button" className={hide.has(k) ? 'off' : ''} aria-pressed={!hide.has(k)} onClick={() => tog(k)}>{children}</button>;
   const move = (n) => { const a = new Date(anchor); if (view === 'day') a.setDate(a.getDate() + n); else if (view === 'month') a.setMonth(a.getMonth() + n); else a.setDate(a.getDate() + 7 * n); setAnchor(a); };
@@ -136,6 +136,21 @@ export function Planning() {
   );
 }
 
+// RDV qui se chevauchent : côte à côte (comme Google Agenda) au lieu de se recouvrir
+function lanes(list) {
+  const ev = list.map((a) => ({ ...a, _s: +new Date(a.start_at), _e: +new Date(a.end_at) })).sort((a, b) => a._s - b._s || b._e - a._e);
+  let group = [], ends = [], groupEnd = 0;
+  const flush = () => { group.forEach((x) => { x._lanes = ends.length; }); group = []; ends = []; groupEnd = 0; };
+  for (const a of ev) {
+    if (group.length && a._s >= groupEnd) flush();
+    let i = ends.findIndex((e) => e <= a._s);
+    if (i < 0) { i = ends.length; ends.push(a._e); } else ends[i] = a._e;
+    a._lane = i; group.push(a); groupEnd = Math.max(groupEnd, a._e);
+  }
+  flush();
+  return ev;
+}
+
 function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove }) {
   const [h0, h1] = s.hours; const H = 46;
   const todayKey = iso(new Date());
@@ -173,7 +188,7 @@ function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove }) {
         <div className="cal-hours">{Array.from({ length: h1 - h0 }, (_, i) => <div key={i}>{h0 + i}h</div>)}</div>
         {days.map((d) => {
           const key = iso(d);
-          const dayEv = evs.filter((a) => iso(new Date(a.start_at)) === key);
+          const dayEv = lanes(evs.filter((a) => iso(new Date(a.start_at)) === key));
           const free = noFree || busy.some((a) => a.company) ? [] : freeWindows(d, busy, s, 30);
           return (
             <div key={key} data-day={key} className={'cal-col' + (s.days.includes(d.getDay()) ? '' : ' off') + (ghost?.day === key ? ' drop' : '')} style={{ height: (h1 - h0) * H }}
@@ -181,9 +196,10 @@ function WeekGrid({ days, s, evs, busy, noFree, color, cm, onNew, onMove }) {
               {free.map(([a, b], i) => <button key={'f' + i} className="ev dispo" style={{ top: top(a), height: Math.max(18, top(b) - top(a) - 2) }} onClick={() => onNew(a)} title={t('Créneau libre')}>{t('Dispo')}</button>)}
               {dayEv.map((a) => {
                 const st = new Date(a.start_at), en = new Date(a.end_at);
-                const fixed = !onMove || (a.recurrence && a.recurrence !== 'none');
+                // Dans un chantier partagé, on ne déplace que ses propres RDV
+                const fixed = !onMove || (a.recurrence && a.recurrence !== 'none') || (a.company && !a.mine);
                 return (
-                  <button key={a.id + (a.occurrence || '')} className={'ev' + (a.status === 'a_valider' ? ' pending' : '') + (a.status === 'termine' ? ' done' : '') + (fixed ? '' : ' draggable') + (ghost?.id === a.id ? ' dragging' : '')} style={{ top: Math.max(0, top(st)), height: Math.max(22, top(en) - top(st) - 2), background: color(a) }}
+                  <button key={a.id + (a.occurrence || '')} className={'ev' + (a.status === 'a_valider' ? ' pending' : '') + (a.status === 'termine' ? ' done' : '') + (fixed ? '' : ' draggable') + (ghost?.id === a.id ? ' dragging' : '')} style={{ top: Math.max(0, top(st)), height: Math.max(22, top(en) - top(st) - 2), background: color(a), left: `calc(${(a._lane / a._lanes) * 100}% + 2px)`, width: `calc(${100 / a._lanes}% - 4px)`, right: 'auto' }}
                     onPointerDown={fixed ? undefined : (e) => down(e, a)} onPointerMove={fixed ? undefined : moveEv} onPointerUp={fixed ? undefined : up} onPointerCancel={() => { drag.current = null; setGhost(null); }}
                     onClick={fixed ? () => (!a.company || a.mine) && navigate('/pro/planning/rdv/' + a.id) : undefined} title={fixed ? undefined : t('Cliquez pour ouvrir, faites glisser pour déplacer')}>
                     <b>{hm(st)}{a.mode === 'visio' && ' 🎥'}</b>{a.company ? a.company : a.personal ? a.title : clientName(cm[a.client_id])}<br />{a.company ? (a.trades?.[0] ? t(a.trades[0]) : a.title) : !a.personal && a.title}
