@@ -1,3 +1,4 @@
+import { shrinkImage } from '../../lib/image.js';
 import { poll } from '../../lib/poll.js';
 import { useEffect, useRef, useState } from 'react';
 import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
@@ -71,7 +72,7 @@ export function Chat({ convId, projects = [], banner }) {
     if (!files.length) return;
     try {
       const atts = [];
-      for (const f of files) { if (f.size > 20e6) { toast(t('Fichier trop lourd (20 Mo max).'), true); continue; } atts.push(await uploadTo(myPrefix(profile) + '/chat/' + convId, f)); }
+      for (const raw of files) { const f = await shrinkImage(raw); if (f.size > 20e6) { toast(t('Fichier trop lourd (20 Mo max).'), true); continue; } atts.push(await uploadTo(myPrefix(profile) + '/chat/' + convId, f)); }
       if (atts.length) { await post({ attachments: atts }); await keepPhotos(atts); if (atts.some((a) => (a.mime || '').startsWith('image/')) && conv?.client_id) toast(t('Photos ajoutées dans Documents › Photos')); }
     } catch (x) { toast(x.message, true); }
   };
