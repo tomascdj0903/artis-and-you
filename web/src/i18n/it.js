@@ -2055,4 +2055,12 @@ export default {"(copie)":"(copia)",
 "Mon intervention":"Il mio intervento",
 "Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.":"Tocca un professionista per mostrarlo o nasconderlo. Solo i tuoi appuntamenti sono modificabili.",
 "Touchez pour afficher ou masquer":"Tocca per mostrare o nascondere",
-"Touchez un jour ou un rendez-vous pour voir le détail.":"Tocca un giorno o un appuntamento per vedere i dettagli."};
+"Touchez un jour ou un rendez-vous pour voir le détail.":"Tocca un giorno o un appuntamento per vedere i dettagli.",
+"Matin":"Mattina",
+"Après-midi":"Pomeriggio",
+"Soir":"Sera",
+"{n} RDV":"{n} appuntamenti",
+"Aucun RDV":"Nessun appuntamento",
+"Ajouter un rendez-vous":"Aggiungi un appuntamento",
+"Libre {a} – {b}":"Libero {a} – {b}",
+"{n} RDV en même temps":"{n} appuntamenti nello stesso momento"};

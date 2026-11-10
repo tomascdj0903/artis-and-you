@@ -43,7 +43,7 @@ export function Planning() {
   const [open, setOpen] = useState(false);
   const [teamF, setTeamF] = useState(profile.member_role === 'ouvrier' && profile.team_id ? [profile.team_id] : []);
   const range = useMemo(() => {
-    if (view === 'day') { const a = new Date(anchor); a.setHours(0, 0, 0, 0); return [a, addDays(a, 1)]; }
+    if (view === 'day' && !narrow) { const a = new Date(anchor); a.setHours(0, 0, 0, 0); return [a, addDays(a, 1)]; }
     if (view === 'month') { const a = new Date(anchor.getFullYear(), anchor.getMonth(), 1); const st = startOfWeek(a); return [st, addDays(st, 42)]; }
     const st = startOfWeek(anchor); return [st, addDays(st, 7)];
   }, [view, anchor]);
@@ -110,7 +110,7 @@ export function Planning() {
         <button className="round" onClick={() => move(1)} aria-label={t('Suivant')}><LuChevronRight /></button>
         <button className="btn xs ghost" onClick={() => setAnchor(new Date())}>{t("Aujourd'hui")}</button>
         <div style={{ flex: 1 }} />
-        <div className="seg" style={{ margin: 0, minWidth: 210 }}>{[['day', t('Jour')], ['week', t('Semaine')], ['month', t('Mois')]].map(([v, l]) => <button key={v} className={view === v ? 'on' : ''} onClick={() => setView(v)} style={{ padding: '6px 8px', fontSize: 13, minHeight: 40 }}>{l}</button>)}</div>
+        <div className="seg" style={{ margin: 0, minWidth: 210 }}>{[['day', narrow ? t('Agenda') : t('Jour')], ['week', t('Semaine')], ['month', t('Mois')]].map(([v, l]) => <button key={v} className={view === v ? 'on' : ''} onClick={() => setView(v)} style={{ padding: '6px 8px', fontSize: 13, minHeight: 40 }}>{l}</button>)}</div>
         {profile.member_role !== 'ouvrier' && <Link to="/pro/planning/reglages" className="btn xs ghost"><LuSettings /> {t('Réglages')}</Link>}
       </div>
       <div className="cal-legend toggles" title={t('Touchez pour afficher ou masquer')}>
@@ -125,17 +125,80 @@ export function Planning() {
       : loading ? <Loader /> : view === 'month' ? (
         <MonthGrid range={range} anchor={anchor} evs={evs} color={color} cm={data.cm} onDay={(d) => { setAnchor(d); setView('day'); }} onMove={dragOk ? moveAppt : null} />
       ) : (<>
+        {narrow && view === 'day' ? <MobileAgenda anchor={anchor} setAnchor={setAnchor} evs={evs} busy={all} noFree={hide.has('dispo') || !!proj} s={s} cm={data.cm} color={color} onNew={newAt} /> : <>
         {narrow && view === 'week' && <p className="small muted" style={{ margin: '0 0 6px' }}>{t('Touchez un jour ou un rendez-vous pour voir le détail.')}</p>}
         <WeekGrid compact={narrow && view !== 'day'} onDay={(d) => { setAnchor(d); setView('day'); }} days={view === 'day' ? [range[0]] : Array.from({ length: weekLength(s) }, (_, i) => addDays(range[0], i))}
           s={s} evs={evs} busy={all} noFree={hide.has('dispo')} color={color} cm={data.cm} onNew={newAt} onMove={dragOk ? moveAppt : null} />
+      </>}
       </>
       )}
-      {dragOk && !q.trim() && view !== 'month' && <p className="small faint" style={{ marginTop: 6 }}>{t('Astuce : faites glisser un rendez-vous pour le déplacer (par pas de 15 min).')}</p>}
+      {dragOk && !q.trim() && view !== 'month' && !narrow && <p className="small faint" style={{ marginTop: 6 }}>{t('Astuce : faites glisser un rendez-vous pour le déplacer (par pas de 15 min).')}</p>}
       {can('planning') && profile.member_role !== 'ouvrier' && <button className="fab" onClick={() => navigate('/pro/planning/nouveau')} aria-label={t('Nouveau rendez-vous')}><LuPlus /></button>}
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer par équipe')}>
         <Chips multi options={teams.map((x) => [x.id, x.name])} value={teamF} onChange={setTeamF} />
         <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setTeamF([])}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher')}</button></div></div>
       </Sheet>
+    </div>
+  );
+}
+
+// Planning sur téléphone : agenda du jour (bandeau de la semaine, puis Matin / Après-midi / Soir).
+// Les RDV qui se chevauchent sont regroupés dans un encadré avec une frise qui montre qui recouvre qui.
+function MobileAgenda({ anchor, setAnchor, evs, busy, noFree, s, cm, color, onNew }) {
+  const st = startOfWeek(anchor);
+  const days = Array.from({ length: 7 }, (_, i) => addDays(st, i));
+  const key = iso(anchor), todayKey = iso(new Date());
+  const count = (d) => evs.filter((a) => iso(new Date(a.start_at)) === iso(d)).length;
+  const dayEv = evs.filter((a) => iso(new Date(a.start_at)) === key).map((a) => ({ ...a, _s: +new Date(a.start_at), _e: +new Date(a.end_at) })).sort((a, b) => a._s - b._s);
+  // Regroupe les RDV qui se recouvrent
+  const groups = []; let g = null;
+  for (const a of dayEv) { if (g && a._s < g.end) { g.items.push(a); g.end = Math.max(g.end, a._e); } else { g = { start: a._s, end: a._e, items: [a] }; groups.push(g); } }
+  const free = noFree ? [] : freeWindows(new Date(anchor), busy, s, 30).map(([a, b]) => ({ free: true, start: +a, end: +b }));
+  const blocks = [...groups, ...free].sort((a, b) => a.start - b.start);
+  const part = (ms) => { const h = new Date(ms).getHours(); return h < 12 ? 0 : h < 18 ? 1 : 2; };
+  const label = [t('Matin'), t('Après-midi'), t('Soir')];
+  const open = (a) => (!a.company || a.mine) && navigate('/pro/planning/rdv/' + a.id);
+  const who = (a) => (a.company ? a.company : a.personal ? t('Perso') : clientName(cm[a.client_id]));
+  const Card = ({ a }) => (
+    <button className="ag-card" onClick={() => open(a)}>
+      <span className="ag-time"><b>{hm(new Date(a._s))}</b><small>{hm(new Date(a._e))}</small></span>
+      <i style={{ background: color(a) }} />
+      <span className="ag-body"><b>{a.personal || a.company ? a.title || who(a) : who(a)}</b><small>{[a.personal || a.company ? who(a) : a.title || t(a.type), a.address].filter(Boolean).join(' · ')}</small></span>
+      {a.status === 'a_valider' && <span className="pill">{t('À valider')}</span>}
+    </button>
+  );
+  let last = -1;
+  return (
+    <div className="agenda">
+      <div className="ag-week">{days.map((d) => { const n = count(d); const on = iso(d) === key; return (
+        <button key={iso(d)} className={(on ? 'on' : '') + (iso(d) === todayKey ? ' today' : '')} onClick={() => setAnchor(d)}>
+          <small>{d.toLocaleDateString(locale(), { weekday: 'short' }).replace('.', '')}</small><b>{d.getDate()}</b>
+          <span className="dots">{Array.from({ length: Math.min(n, 3) }, (_, i) => <i key={i} />)}</span>
+        </button>); })}</div>
+      <div className="ag-day">
+        <div className="ag-head"><b style={{ textTransform: 'capitalize' }}>{anchor.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' })}</b><span>{dayEv.length ? t('{n} RDV', { n: dayEv.length }) : t('Aucun RDV')}</span></div>
+        {!blocks.length && <button className="ag-free" onClick={() => { const x = new Date(anchor); x.setHours(s.slot?.[0] || 8, 0, 0, 0); onNew(x); }}>+ {t('Ajouter un rendez-vous')}</button>}
+        {blocks.map((b, i) => {
+          const p = part(b.start); const head = p !== last ? <div className="ag-part">{label[p]}</div> : null; last = p;
+          if (b.free) return <div key={'f' + i}>{head}<button className="ag-free" onClick={() => onNew(new Date(b.start))}>+ {t('Libre {a} – {b}', { a: hm(new Date(b.start)), b: hm(new Date(b.end)) })}</button></div>;
+          if (b.items.length === 1) return <div key={b.items[0].id}>{head}<Card a={b.items[0]} /></div>;
+          const span = b.end - b.start;
+          return (
+            <div key={'g' + i}>{head}
+              <div className="ag-overlap">
+                <div className="ag-ov-head">⚠ {t('{n} RDV en même temps', { n: b.items.length })} · {hm(new Date(b.start))} – {hm(new Date(b.end))}</div>
+                <div className="ag-ov-scale"><span>{hm(new Date(b.start))}</span><span>{hm(new Date(b.end))}</span></div>
+                {b.items.map((a) => (
+                  <button key={a.id} className="ag-ov-row" onClick={() => open(a)}>
+                    <span className="ag-ov-txt"><b>{hm(new Date(a._s))}–{hm(new Date(a._e))}</b> {a.personal || a.company ? a.title || who(a) : who(a)}</span>
+                    <span className="ag-ov-track"><i style={{ left: ((a._s - b.start) / span) * 100 + '%', width: Math.max(4, ((a._e - a._s) / span) * 100) + '%', background: color(a) }} /></span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

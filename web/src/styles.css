@@ -1051,3 +1051,37 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .ev.compact { font-size: 0 !important; }
 .ev.compact b { font-size: 10px; display: block; white-space: nowrap; overflow: hidden; }
 .ev.compact.slim b { display: none; }
+
+/* ===== Agenda téléphone (A2) ===== */
+.agenda { margin: 0 -16px; }
+.ag-week { display: flex; gap: 2px; padding: 0 10px 10px; }
+.ag-week button { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0; border: 0; border-radius: 14px; background: transparent; color: var(--text); font: inherit; cursor: pointer; }
+.ag-week button small { font-size: 11.5px; color: var(--text-3); }
+.ag-week button b { font-size: 17px; }
+.ag-week button.today b { color: var(--primary); }
+.ag-week button.on { background: var(--primary); color: #fff; }
+.ag-week button.on small, .ag-week button.on b { color: #fff; }
+.ag-week .dots { display: flex; gap: 2px; height: 5px; }
+.ag-week .dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--primary); }
+.ag-week button.on .dots i { background: #fff; }
+.ag-day { background: var(--bg-soft, #F6F2EC); border-radius: 22px 22px 0 0; padding: 14px 14px 30px; display: flex; flex-direction: column; gap: 8px; min-height: 50vh; }
+.ag-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--text-3); }
+.ag-head b { font-size: 16px; color: var(--text); }
+.ag-part { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-3); margin: 6px 2px 4px; }
+.ag-card { display: flex; align-items: stretch; gap: 12px; width: 100%; text-align: left; padding: 12px 14px; border-radius: 16px; background: var(--surface, #fff); border: 1px solid var(--line); color: var(--text); font: inherit; cursor: pointer; }
+.ag-card > i { width: 4px; border-radius: 2px; flex: none; }
+.ag-time { width: 46px; flex: none; display: flex; flex-direction: column; }
+.ag-time b { font-size: 15px; } .ag-time small { font-size: 12px; color: var(--text-3); }
+.ag-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ag-body b { font-size: 15px; } .ag-body small { font-size: 12.5px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-free { width: 100%; text-align: left; padding: 12px 14px; border-radius: 16px; border: 1.5px dashed #9BCDAE; background: #EEF7F1; color: #1D6B43; font: 600 14px Inter, sans-serif; cursor: pointer; }
+:root[data-theme="dark"] .ag-free { background: #0F2A1A; color: #7FD69A; border-color: #2F6B45; }
+.ag-overlap { border-radius: 16px; background: var(--surface, #fff); border: 2px solid #E0A64B; padding: 10px 12px 6px; }
+.ag-ov-head { font-size: 13px; font-weight: 700; color: #8A5600; margin-bottom: 6px; }
+:root[data-theme="dark"] .ag-ov-head { color: #F0B95A; }
+.ag-ov-scale { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-3); margin-left: 46%; padding: 0 2px 2px; }
+.ag-ov-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 8px 0; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.ag-ov-txt { width: 46%; flex: none; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ag-ov-txt b { font-size: 12.5px; display: block; color: var(--text-3); }
+.ag-ov-track { position: relative; flex: 1; height: 14px; border-radius: 7px; background: var(--bg-soft, #F1EBE4); }
+.ag-ov-track i { position: absolute; top: 0; bottom: 0; border-radius: 7px; }
