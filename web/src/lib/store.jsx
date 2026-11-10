@@ -1,4 +1,5 @@
 // État global : session, profil, entreprise, langue, thème, notifications, fenêtres.
+import { poll } from './poll.js';
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { api, onAuth, getSession, uid } from './api.js';
 import { subscribePush } from './push.js';
@@ -79,7 +80,7 @@ export function AppProvider({ children }) {
     } catch {}
   }, [profile?.id, profile?.company_id, profile?.notif_prefs]);
   useEffect(() => { if (profile) subscribePush(); }, [profile?.id]);
-  useEffect(() => { if (!profile) return; seen.current = null; refreshUnread(); const i = setInterval(refreshUnread, 10000); return () => clearInterval(i); }, [profile?.id, refreshUnread]);
+  useEffect(() => { if (!profile) return; seen.current = null; refreshUnread(); return poll(refreshUnread, 10000, navigator.userAgent.includes('Electron') ? 10000 : 60000); }, [profile?.id, refreshUnread]);
 
   function applyTheme(th) {
     setThemeState(th);

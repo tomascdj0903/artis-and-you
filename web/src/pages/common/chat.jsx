@@ -1,3 +1,4 @@
+import { poll } from '../../lib/poll.js';
 import { useEffect, useRef, useState } from 'react';
 import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuMapPin, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
@@ -39,8 +40,8 @@ export function Chat({ convId, projects = [], banner }) {
   useEffect(() => {
     load();
     api.upsert('conversation_reads', { conversation_id: convId, user_id: uid(), last_read_at: new Date().toISOString() }).then(refreshUnread).catch(() => {});
-    const i = setInterval(load, 4000);
-    return () => { clearInterval(i); api.upsert('conversation_reads', { conversation_id: convId, user_id: uid(), last_read_at: new Date().toISOString() }).then(refreshUnread).catch(() => {}); };
+    const stop = poll(load, 4000); // en pause quand l'app n'est pas à l'écran, reprise immédiate au retour
+    return () => { stop(); api.upsert('conversation_reads', { conversation_id: convId, user_id: uid(), last_read_at: new Date().toISOString() }).then(refreshUnread).catch(() => {}); };
   }, [convId]);
 
   const senderName = fullName(profile) || company?.name || '';
