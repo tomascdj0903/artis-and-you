@@ -2,6 +2,7 @@ import './styles.css';
 import { createRoot } from 'react-dom/client';
 import { useEffect, useState } from 'react';
 import { GlobalFab } from './ui/fab.jsx';
+import { ErrorBoundary } from './ui/errors.jsx';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
@@ -167,11 +168,11 @@ function App() {
   const pro = path.startsWith('/pro'), routes = pro ? PRO : CLIENT;
   const hit = find(routes, path);
   const [C, params] = hit || [Common.NotFound, {}];
-  return <Shell tabs={pro ? PRO_TABS : CLI_TABS} path={path}><C params={params} key={path} /></Shell>;
+  return <Shell tabs={pro ? PRO_TABS : CLI_TABS} path={path}><ErrorBoundary key={path} home={pro ? '/pro' : '/client'}><C params={params} key={path} /></ErrorBoundary></Shell>;
 }
 
 // Installation sur téléphone (Android) : service worker minimal + bouton « Installer »
 if ('serviceWorker' in navigator && location.protocol === 'https:' && !navigator.userAgent.includes('Electron')) navigator.serviceWorker.register('/sw.js').catch(() => {});
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); window.__ayInstall = e; window.dispatchEvent(new Event('ay-installable')); });
 
-loadLang(getLang()).catch(() => {}).finally(() => createRoot(document.getElementById('root')).render(<AppProvider><App /></AppProvider>));
+loadLang(getLang()).catch(() => {}).finally(() => createRoot(document.getElementById('root')).render(<ErrorBoundary home="/"><AppProvider><App /></AppProvider></ErrorBoundary>));

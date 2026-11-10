@@ -2185,4 +2185,8 @@ export default {"(copie)":"(cópia)",
 "Profil › Données et confidentialité : ce que nous gardons et pourquoi, et la demande de suppression du compte. Seuls les artisans avec qui vous êtes en relation voient vos informations.":"Perfil › Dados e privacidade: o que guardamos e porquê, e o pedido de eliminação da conta. Só os profissionais com quem está em contacto veem as suas informações.",
 "Parlez-lui d’Artesa : une fois inscrit, il vous envoie ses devis et factures ici. En attendant, vous pouvez trouver un autre pro dans l’annuaire.":"Fale-lhe do Artesa: depois de inscrito, envia-lhe aqui os orçamentos e faturas. Entretanto, pode encontrar outro profissional no diretório.",
 "Profil › Aide et support : questions fréquentes et formulaire pour nous écrire.":"Perfil › Ajuda e suporte: perguntas frequentes e formulário para nos escrever.",
-"Je ne trouve pas cet artisan parmi les vôtres.":"Não encontro este profissional entre os seus."};
+"Je ne trouve pas cet artisan parmi les vôtres.":"Não encontro este profissional entre os seus.",
+"Un problème est survenu":"Ocorreu um problema",
+"Cette page n’a pas pu s’afficher. Vos données ne sont pas perdues.":"Não foi possível mostrar esta página. Os seus dados não se perderam.",
+"Recharger":"Recarregar",
+"Retour à l’accueil":"Voltar ao início"};

@@ -1034,3 +1034,7 @@ Profil › Données et confidentialité : ce que nous gardons et pourquoi, et la
 Parlez-lui d’Artesa : une fois inscrit, il vous envoie ses devis et factures ici. En attendant, vous pouvez trouver un autre pro dans l’annuaire.|Tell them about Artesa: once signed up, they’ll send you their quotes and invoices here. Meanwhile, you can find another pro in the directory.|Fale-lhe do Artesa: depois de inscrito, envia-lhe aqui os orçamentos e faturas. Entretanto, pode encontrar outro profissional no diretório.|Parlagli di Artesa: una volta iscritto, ti invierà qui preventivi e fatture. Nel frattempo puoi trovare un altro professionista nell’elenco.
 Profil › Aide et support : questions fréquentes et formulaire pour nous écrire.|Profile › Help and support: FAQ and a form to write to us.|Perfil › Ajuda e suporte: perguntas frequentes e formulário para nos escrever.|Profilo › Aiuto e assistenza: domande frequenti e modulo per scriverci.
 Je ne trouve pas cet artisan parmi les vôtres.|I can’t find this tradesperson among yours.|Não encontro este profissional entre os seus.|Non trovo questo artigiano tra i tuoi.
+Un problème est survenu|Something went wrong|Ocorreu um problema|Si è verificato un problema
+Cette page n’a pas pu s’afficher. Vos données ne sont pas perdues.|This page couldn’t be displayed. Your data isn’t lost.|Não foi possível mostrar esta página. Os seus dados não se perderam.|Impossibile mostrare questa pagina. I tuoi dati non sono persi.
+Recharger|Reload|Recarregar|Ricarica
+Retour à l’accueil|Back to home|Voltar ao início|Torna alla home

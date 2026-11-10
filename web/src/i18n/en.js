@@ -2185,4 +2185,8 @@ export default {"(copie)":"(copy)",
 "Profil › Données et confidentialité : ce que nous gardons et pourquoi, et la demande de suppression du compte. Seuls les artisans avec qui vous êtes en relation voient vos informations.":"Profile › Data and privacy: what we keep and why, and how to request account deletion. Only the tradespeople you’re in touch with see your information.",
 "Parlez-lui d’Artesa : une fois inscrit, il vous envoie ses devis et factures ici. En attendant, vous pouvez trouver un autre pro dans l’annuaire.":"Tell them about Artesa: once signed up, they’ll send you their quotes and invoices here. Meanwhile, you can find another pro in the directory.",
 "Profil › Aide et support : questions fréquentes et formulaire pour nous écrire.":"Profile › Help and support: FAQ and a form to write to us.",
-"Je ne trouve pas cet artisan parmi les vôtres.":"I can’t find this tradesperson among yours."};
+"Je ne trouve pas cet artisan parmi les vôtres.":"I can’t find this tradesperson among yours.",
+"Un problème est survenu":"Something went wrong",
+"Cette page n’a pas pu s’afficher. Vos données ne sont pas perdues.":"This page couldn’t be displayed. Your data isn’t lost.",
+"Recharger":"Reload",
+"Retour à l’accueil":"Back to home"};
