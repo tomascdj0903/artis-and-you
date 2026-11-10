@@ -2085,4 +2085,6 @@ export default {"(copie)":"(cópia)",
 "Lecture impossible":"Impossível reproduzir",
 "Vitesse de lecture":"Velocidade de reprodução",
 "Envoi du vocal…":"A enviar mensagem de voz…",
-"Enregistrer un message vocal":"Gravar uma mensagem de voz"};
+"Enregistrer un message vocal":"Gravar uma mensagem de voz",
+"Vos questions apparaîtront ici.":"As suas perguntas aparecerão aqui.",
+"Effacer l’historique":"Apagar histórico"};

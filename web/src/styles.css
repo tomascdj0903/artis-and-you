@@ -1183,3 +1183,15 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .vmic { flex: none; opacity: .55; font-size: 16px; }
 @keyframes vspin { to { transform: rotate(360deg); } }
 .vplay .spin { animation: vspin 1s linear infinite; }
+
+/* Assistant : en-tête, historique, bulle d'accueil pleine largeur */
+.ai-head { display: flex; align-items: center; gap: 6px; }
+.ai-head > b { flex: 1; font-size: 17px; }
+.ai-head > svg { flex: none; font-size: 20px; margin-right: 2px; }
+.ai-msg:has(.ai-sugg) { max-width: none; align-self: stretch; }
+.ai-hist { gap: 6px; }
+.ai-hist > button { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; background: var(--surface); color: var(--text); font: 600 14px Inter, sans-serif; cursor: pointer; }
+.ai-hist > button small { font-weight: 500; color: var(--text-3); font-size: 12px; }
+.ai-hist > button.ai-hist-clear { align-self: center; border: 0; background: none; color: var(--text-3); font-weight: 600; font-size: 13px; text-decoration: underline; margin-top: 6px; }
+@media (max-width: 640px) { .ai-sheet { max-height: 86vh; } .ai-in .input { min-width: 0; } }
+.ai-in .input:focus, .ai-in .input:focus-visible { outline: none; box-shadow: none; border-color: var(--primary); }

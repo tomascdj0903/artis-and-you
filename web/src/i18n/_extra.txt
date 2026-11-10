@@ -929,3 +929,7 @@ Lecture impossible|Can’t play|Impossível reproduzir|Riproduzione impossibile
 Vitesse de lecture|Playback speed|Velocidade de reprodução|Velocità di riproduzione
 Envoi du vocal…|Sending voice message…|A enviar mensagem de voz…|Invio del vocale…
 Enregistrer un message vocal|Record a voice message|Gravar uma mensagem de voz|Registra un messaggio vocale
+Historique|History|Histórico|Cronologia
+Nouvelle conversation|New conversation|Nova conversa|Nuova conversazione
+Vos questions apparaîtront ici.|Your questions will appear here.|As suas perguntas aparecerão aqui.|Le tue domande appariranno qui.
+Effacer l’historique|Clear history|Apagar histórico|Cancella cronologia
