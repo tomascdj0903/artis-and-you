@@ -5,7 +5,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 // Seuls le site Artesa (et ses aperçus Vercel) et le développement local peuvent appeler la fonction depuis un navigateur.
 // Le logiciel PC/Mac charge le site : même origine.
-const ALLOWED = /^https:\/\/artis-and-you(-[a-z0-9-]+)?\.vercel\.app$|^http:\/\/localhost(:\d+)?$/;
+const ALLOWED = /^https:\/\/(artis-and-you(-[a-z0-9-]+)?|artesa-pro)\.vercel\.app$|^http:\/\/localhost(:\d+)?$/;
 const cors = (req: Request) => {
   const o = req.headers.get('origin') || '';
   return { 'Access-Control-Allow-Origin': ALLOWED.test(o) ? o : 'https://artis-and-you.vercel.app', Vary: 'Origin', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type', 'Access-Control-Allow-Methods': 'POST, OPTIONS' };
