@@ -383,7 +383,7 @@ export function PdfSettings() {
 }
 
 export function NotifSettings() {
-  const { profile, setProfile, company } = useApp();
+  const { profile, setProfile } = useApp();
   const [n, setN] = useState({ push: true, email: true, sms: false, demande: true, rdv: true, devis: true, paiement: true, message: true, rappel_rdv: true, ...(profile.notif_prefs || {}) });
   const set = async (k, v) => { const x = { ...n, [k]: v }; setN(x); await api.update('profiles', { id: profile.id }, { notif_prefs: x }); setProfile({ ...profile, notif_prefs: x }); };
   const R = ([k, l, sub]) => <SettingToggle key={k} label={t(l)} hint={sub && t(sub)} checked={n[k]} onChange={(v) => set(k, v)} />;
