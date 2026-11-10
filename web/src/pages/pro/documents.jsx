@@ -446,7 +446,7 @@ export function SendModal({ open, b, onClose, onSent, pdfNode }) {
     const x = await finalize();
     onClose(); onSent();
     if (pdfNode?.current) await exportPdf(pdfNode.current, pdfName(x));
-    const body = isQ ? t('Bonjour,\n\nVeuillez trouver ci-joint notre devis {n} pour : {o}.\n\nVous pouvez aussi le consulter et le signer dans votre espace Artesa : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: location.origin, c: b.company.name })
+    const body = isQ ? t('Bonjour,\n\nVeuillez trouver ci-joint notre devis {n} pour : {o}.\n\nVous pouvez aussi le consulter et le signer en ligne (compte gratuit) : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: client.user_id ? location.origin + '/client/documents' : location.origin + '/inscription/particulier?pro=' + b.company.id, c: b.company.name })
       : t('Bonjour,\n\nVeuillez trouver ci-joint notre facture {n} pour : {o}.\n\nVous pouvez la régler par virement (IBAN sur la facture) ou en ligne depuis votre espace Artesa : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: location.origin, c: b.company.name });
     window.location.href = `mailto:${client.email || ''}?subject=${encodeURIComponent((isQ ? t('Devis') : t('Facture')) + ' ' + x.number)}&body=${encodeURIComponent(body)}`;
   }, pdfNode ? t('PDF téléchargé : joignez-le à l’e-mail') : t('Document émis'));

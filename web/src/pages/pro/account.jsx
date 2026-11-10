@@ -181,7 +181,7 @@ export function CompanySettings() {
 }
 
 const ROLE = { gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' };
-const COLORS = ['#2B1F1C', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
+const COLORS = ['#3B2A25', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
 export function TeamSettings() {
   const { company, teams, setTeams, members, run, profile } = useApp();
   const ger = profile.member_role === 'gerant';
@@ -354,9 +354,9 @@ export function PdfSettings() {
   const [kind, setKind] = useState('facture');
   const logoUrl = useLogo(company);
   const sample = { kind, number: kind === 'devis' ? 'DE-2027-0001' : 'FA-2027-0001', issue_date: new Date().toISOString().slice(0, 10), due_date: new Date().toISOString().slice(0, 10), validity_days: 30, object: kind === 'devis' ? t('Exemple de devis') : t('Exemple de facture'), lines: [{ id: 'a', kind: 'section', label: t('Détail fournitures') }, { id: 'b', kind: 'item', label: t('Fourniture'), qty: 1, unit: 'u', price: 100, vat: 20 }, { id: 'c', kind: 'section', label: t('Détail prestations') }, { id: 'd', kind: 'item', label: t('Main-d’œuvre'), qty: 2, unit: 'h', price: 45, vat: 20 }], conditions: {}, totals: {}, operations_nature: 'Biens et services', paid_amount: 0 };
-  const mini = (k) => k === 'moderne' ? <><i style={{ left: 0, right: 0, top: 0, height: 18, background: p.color }} /><i style={{ left: 8, top: 4, width: 14, height: 10, background: '#fff', borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 32, height: 6, background: '#2B1F1C' }} /><i style={{ left: 8, right: 8, top: 42, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 48, height: 3, background: '#E5E7EE' }} /></>
+  const mini = (k) => k === 'moderne' ? <><i style={{ left: 0, right: 0, top: 0, height: 18, background: p.color }} /><i style={{ left: 8, top: 4, width: 14, height: 10, background: '#fff', borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 32, height: 6, background: '#3B2A25' }} /><i style={{ left: 8, right: 8, top: 42, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 48, height: 3, background: '#E5E7EE' }} /></>
     : k === 'epure' ? <><i style={{ left: 8, top: 6, width: 14, height: 10, border: '1.5px solid ' + p.color, borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 22, height: 1.5, background: p.color }} /><i style={{ left: 8, right: 8, top: 32, height: 1.5, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>
-    : <><i style={{ left: 8, top: 6, width: 14, height: 10, background: '#2B1F1C', borderRadius: 2 }} /><i style={{ right: 8, top: 7, width: 22, height: 5, background: p.color }} /><i style={{ left: 8, right: 8, top: 30, height: 6, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>;
+    : <><i style={{ left: 8, top: 6, width: 14, height: 10, background: '#3B2A25', borderRadius: 2 }} /><i style={{ right: 8, top: 7, width: 22, height: 5, background: p.color }} /><i style={{ left: 8, right: 8, top: 30, height: 6, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>;
   return (
     <div className="content">
       <TopBar title={t('Modèle du PDF')} />
