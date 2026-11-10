@@ -169,8 +169,9 @@ function App() {
   // On commence à télécharger le bon espace dès qu'on sait qui est connecté
   useEffect(() => { if (logged) { preload(isPro ? 'pro' : 'cli'); preload('common'); } }, [logged, isPro]);
 
-  if (!ready) return <Loader />;
   const pub = find(PUBLIC, path);
+  // Visiteur non connecté sur une page publique : on l'affiche sans attendre (pas de roue de chargement sur l'accueil pré-rendu)
+  if (!ready) { if (pub && !session) { const [C, params] = pub; return <C params={params} />; } return <Loader />; }
   if (pub) { const [C, params] = pub; return <C params={params} />; }
   if (!logged) return <Loader />;
   if (locked) return <LockScreen onUnlock={() => setLocked(false)} />;

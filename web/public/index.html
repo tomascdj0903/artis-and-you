@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/assets/app.css" />
-<script>try{var t=localStorage.getItem('ay-theme');if(t==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem('ay-theme');if(t==='dark')d.dataset.theme='dark';if(localStorage.getItem('ay-session')||sessionStorage.getItem('ay-session')||/Electron/.test(navigator.userAgent))d.dataset.in='1'}catch(e){}</script>
 </head>
 <body>
 <div id="root"></div>
