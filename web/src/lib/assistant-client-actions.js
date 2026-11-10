@@ -16,14 +16,14 @@ const rest = (d) => Math.max(0, Number(d.totals?.ttc || 0) - Number(d.paid_amoun
 let cache = null;
 async function mine() {
   if (cache && cache.uid === uid() && Date.now() - cache.at < 30000) return cache;
-  const clients = await api.select('clients', { user_id: uid() }).catch(() => []);
+  const clients = await api.select('clients', { user_id: uid() });
   const cids = clients.map((c) => c.id);
   const ids = [...new Set(clients.map((c) => c.company_id))];
   const [cos, appts, docs, projects] = await Promise.all([
-    ids.length ? api.select('companies', { id: ids }).catch(() => []) : [],
-    cids.length ? api.select('appointments', { client_id: cids }, { order: 'start_at.asc' }).catch(() => []) : [],
-    cids.length ? api.select('documents', { client_id: cids }, { order: 'issue_date.desc' }).catch(() => []) : [],
-    cids.length ? api.select('projects', { client_id: cids }, { order: 'created_at.desc' }).catch(() => []) : [],
+    ids.length ? api.select('companies', { id: ids }) : [],
+    cids.length ? api.select('appointments', { client_id: cids }, { order: 'start_at.asc' }) : [],
+    cids.length ? api.select('documents', { client_id: cids }, { order: 'issue_date.desc' }) : [],
+    cids.length ? api.select('projects', { client_id: cids }, { order: 'created_at.desc' }) : [],
   ]);
   cache = { uid: uid(), at: Date.now(), cos, cm: Object.fromEntries(cos.map((c) => [c.id, c])), appts, docs: docs.filter((d) => d.number), projects };
   return cache;

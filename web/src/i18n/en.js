@@ -2191,4 +2191,6 @@ export default {"(copie)":"(copy)",
 "Recharger":"Reload",
 "Retour à l’accueil":"Back to home",
 "Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.":"Message for {n} ready: “{m}”. Check it, then tap Send.",
-"Je ne trouve pas « {n} » parmi vos clients ni vos pros.":"I can’t find “{n}” among your customers or pros."};
+"Je ne trouve pas « {n} » parmi vos clients ni vos pros.":"I can’t find “{n}” among your customers or pros.",
+"Vous êtes hors ligne : je ne peux pas lire vos données pour le moment.":"You’re offline: I can’t read your data right now.",
+"Je n’arrive pas à lire vos données pour le moment. Réessayez dans un instant.":"I can’t read your data right now. Try again in a moment."};

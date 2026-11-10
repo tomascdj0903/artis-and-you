@@ -12,7 +12,7 @@ export async function loadDoc(id) {
   const [companyLive, clientLive, payments, source] = await Promise.all([
     api.one('companies', { id: d.company_id }).catch(() => null),
     d.client_id ? api.one('clients', { id: d.client_id }).catch(() => null) : null,
-    api.select('payments', { document_id: id }, { order: 'paid_on.asc' }).catch(() => []),
+    api.select('payments', { document_id: id }, { order: 'paid_on.asc' }), // pas de repli silencieux : sans les paiements, le reste à payer serait faux
     d.source_id ? api.one('documents', { id: d.source_id }).catch(() => null) : null,
   ]);
   const company = d.snapshot?.company ? { ...companyLive, ...d.snapshot.company, settings: companyLive?.settings || {} } : companyLive || {};

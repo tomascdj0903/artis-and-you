@@ -2191,4 +2191,6 @@ export default {"(copie)":"(copia)",
 "Recharger":"Ricarica",
 "Retour à l’accueil":"Torna alla home",
 "Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.":"Messaggio per {n} pronto: «{m}». Rileggilo e tocca Invia.",
-"Je ne trouve pas « {n} » parmi vos clients ni vos pros.":"Non trovo «{n}» tra i tuoi clienti né professionisti."};
+"Je ne trouve pas « {n} » parmi vos clients ni vos pros.":"Non trovo «{n}» tra i tuoi clienti né professionisti.",
+"Vous êtes hors ligne : je ne peux pas lire vos données pour le moment.":"Sei offline: non posso leggere i tuoi dati per ora.",
+"Je n’arrive pas à lire vos données pour le moment. Réessayez dans un instant.":"Non riesco a leggere i tuoi dati per ora. Riprova tra un attimo."};

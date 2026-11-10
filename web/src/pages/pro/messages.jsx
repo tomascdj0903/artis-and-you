@@ -115,7 +115,7 @@ export function Network() {
     const cos = n.length ? await api.select('companies', { id: n.map((x) => x.pro_id) }) : [];
     const shares = await api.select('project_shares', {});
     const myProjects = new Set((await api.select('projects', { company_id: company.id }, { columns: 'id' })).map((p) => p.id));
-    const [reqs, shared, invites] = await Promise.all([api.rpc('network_requests_list').catch(() => []), api.rpc('shared_projects').catch(() => []), api.rpc('project_invites_list').catch(() => [])]);
+    const [reqs, shared, invites] = await Promise.all([api.rpc('network_requests_list'), api.rpc('shared_projects'), api.rpc('project_invites_list')]);
     const list = n.map((x) => ({ ...x, co: cos.find((c) => c.id === x.pro_id), common: shares.filter((s) => s.company_id === x.pro_id && myProjects.has(s.project_id)).length })).filter((x) => x.co);
     list.reqs = (reqs || []).filter((r) => r.status === 'pending'); list.shared = shared || []; list.invites = invites || [];
     return list;

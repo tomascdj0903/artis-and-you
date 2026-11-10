@@ -179,8 +179,8 @@ export async function runAction(question, { company, profile }) {
     const { match } = await target(company, dm[1]);
     if (match) { const n = clientName(match), to = `/pro/clients/${match.id}/chat`; return { text: t('Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.', { n, m: body }), links: [{ label: t('Écrire à {n}', { n }), to }], go: draft(to), act: true }; }
     // Sinon, un pro de mon réseau
-    const net = await api.select('network', { company_id: company.id }).catch(() => []);
-    const pros = net.length ? await api.select('companies', { id: net.map((x) => x.pro_id) }).catch(() => []) : [];
+    const net = await api.select('network', { company_id: company.id });
+    const pros = net.length ? await api.select('companies', { id: net.map((x) => x.pro_id) }) : [];
     const ws = nz(dm[1]).split(/[^a-z0-9]+/).filter((w) => w.length > 2);
     const pro = pros.find((c) => { const names = nz([c.trade_name, c.name].join(' ')).split(/[^a-z0-9]+/); return ws.some((w) => names.some((x) => x === w || (w.length >= 4 && (x.startsWith(w) || lev(w, x) <= 1)))); });
     if (pro) { const n = pro.trade_name || pro.name, id = await api.rpc('start_conversation', { p_company: pro.id }), to = '/pro/messages/' + id; return { text: t('Message pour {n} prêt : « {m} ». Relisez-le puis appuyez sur Envoyer.', { n, m: body }), links: [{ label: t('Écrire à {n}', { n }), to }], go: draft(to), act: true }; }

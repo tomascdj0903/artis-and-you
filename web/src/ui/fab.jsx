@@ -141,7 +141,7 @@ function Assistant({ onClose }) {
     setMsgs((m) => [...m, { me: true, text }]);
     // 0) Demande sur ses propres données (dernier client, RDV de demain, factures en retard…) : réponse directe, sans IA
     setBusy(true);
-    const act = await (isClient ? runClientAction(text) : runAction(text, { company, profile })).catch((e) => { console.warn('assistant', e); return null; });
+    const act = await (isClient ? runClientAction(text) : runAction(text, { company, profile })).catch((e) => { console.warn('assistant', e); return { text: navigator.onLine === false ? t('Vous êtes hors ligne : je ne peux pas lire vos données pour le moment.') : t('Je n’arrive pas à lire vos données pour le moment. Réessayez dans un instant.') }; });
     setBusy(false);
     if (act) { setMsgs((m) => [...m, { me: false, ...act }]); if (act.go && (act.act || /^(ouvr|affich|montre|va |vas |aller|emmene|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|ajouter|programme|planifie|cale|ecri|redige)/.test(nz(text).replace(/^(peux.?tu|tu peux|pourrais.?tu|stp|svp|s il te plait|merci de|je veux|je voudrais|j aimerais)\s+/, '')))) setTimeout(() => open(act.go), 1100); return; }
     if (OFFLINE) { setMsgs((m) => [...m, fallback]); return; }
