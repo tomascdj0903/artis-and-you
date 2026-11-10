@@ -31,6 +31,8 @@ jobs:
       - run: npm install
       - name: Traductions cohérentes
         run: node scripts/i18n.mjs && git diff --exit-code -- src/i18n
+      - name: Vérificateur de code (ESLint)
+        run: npm install --no-save eslint@9 @eslint/js@9 eslint-plugin-react@7 eslint-plugin-react-hooks@5 globals@15 && npx eslint src scripts tests build.mjs public/sw.js
       - name: Build
         run: npm run build
       - name: Navigateur de test
