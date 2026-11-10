@@ -1136,8 +1136,8 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 /* Logo complet en haut sur mobile : la colonne s'élargit, le titre se réduit au lieu de passer dessous */
 .logo-btn.logo-full { width: auto; height: auto; }
 @media (max-width: 1023px) { .topbar h1 { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } }
-/* Bouton + : blanc, « + » et contour terracotta : visible sur les tuiles terracotta comme sur les fonds clairs */
-.fab, .fabm .fab { background: #FFFFFF !important; color: #B4432A !important; border: 3px solid #B4432A !important; box-shadow: 0 8px 20px rgba(43,31,28,.25) !important; }
-.fab svg { color: #B4432A; stroke-width: 2.6; }
-:root[data-theme="dark"] .fab { background: #1C1C1E !important; color: #E8795C !important; border-color: #E8795C !important; box-shadow: 0 8px 20px rgba(0,0,0,.5) !important; }
-:root[data-theme="dark"] .fab svg { color: #E8795C; }
+/* Bouton + : fond sable, « + » encre, ombre marquée (choix du 10/11) */
+.fab, .fabm .fab { background: #F6F2EC !important; color: #2B1F1C !important; border: 0 !important; box-shadow: 0 8px 22px rgba(43,31,28,.35), 0 0 0 1px rgba(43,31,28,.08) !important; }
+.fab svg { color: #2B1F1C; stroke-width: 2.6; }
+:root[data-theme="dark"] .fab { background: #2C2C2E !important; color: #F5F5F5 !important; box-shadow: 0 8px 22px rgba(0,0,0,.6) !important; }
+:root[data-theme="dark"] .fab svg { color: #F5F5F5; }
