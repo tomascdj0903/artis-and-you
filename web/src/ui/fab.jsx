@@ -7,6 +7,7 @@ import { t } from '../lib/i18n.js';
 import { navigate, useLocation as useRoute } from '../lib/router.jsx';
 import { searchKB, suggestFor, nz } from '../lib/assistant-kb.js';
 import { runAction } from '../lib/assistant-actions.js';
+import { DictateButton } from './dictate.jsx';
 import { useApp } from '../lib/store.jsx';
 import { api, OFFLINE } from '../lib/api.js';
 
@@ -138,6 +139,7 @@ function Assistant({ onClose }) {
         </div>
         <form className="ai-in" onSubmit={(e) => { e.preventDefault(); send(); }}>
           <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('Votre question…')} autoFocus />
+          <DictateButton className="btn sm ghost ai-mic" onText={(v) => { if (v.trim()) { setQ(''); answer(v.trim()); } }} />
           <button className="btn sm" disabled={busy} aria-label={t('Envoyer')}><LuSend /></button>
         </form>
       </div>

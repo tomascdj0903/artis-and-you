@@ -1156,3 +1156,4 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .ss-ai .ai-links button, .ss-ai-btn { width: auto !important; border: 0; border-radius: 999px; padding: 7px 12px !important; background: var(--primary) !important; color: #fff !important; font: 700 13px Inter, sans-serif; cursor: pointer; display: inline-flex !important; }
 .ss-ai .ai-links button.ghost { background: var(--bg-soft) !important; color: var(--text) !important; }
 .ss-ai-btn { margin-top: 8px; }
+.ai-in .ai-mic { min-width: 44px; padding: 0 12px; display: grid; place-items: center; }
