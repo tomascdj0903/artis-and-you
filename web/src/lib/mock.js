@@ -57,7 +57,7 @@ export function mockBackend({ saveSession, getSession }) {
     reviews: { status: 'en_attente' },
     notifications: { read: false, category: 'rdv' },
     projects: { manual: {} },
-    teams: { color: '#3B2A25' },
+    teams: { color: '#2B1F1C' },
   };
 
   function match(row, filters = {}) {
@@ -218,7 +218,7 @@ export function mockBackend({ saveSession, getSession }) {
         settings: { planning: { view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true }, docs: { quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', onlinePayment: true, einvoice: true }, pdf: { color: '#B4432A', footer: '' }, notifications: { push: true, email: true, sms: false } } };
       db.companies.push(c);
       Object.assign(profile(), { kind: 'artisan', company_id: c.id, member_role: 'gerant' });
-      db.teams.push({ id: id(), company_id: c.id, name: 'Équipe principale', color: '#3B2A25', created_at: now() });
+      db.teams.push({ id: id(), company_id: c.id, name: 'Équipe principale', color: '#2B1F1C', created_at: now() });
       db.profiles.filter((x) => ADMIN_EMAILS.includes(String(x.email).toLowerCase())).forEach((x) => notify(x.id, 'systeme', 'Nouvelle entreprise à valider', c.name + ' · SIRET ' + c.siret, '/' + (x.company_id ? 'pro' : 'client') + '/admin'));
       return c;
     },

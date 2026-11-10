@@ -63,7 +63,7 @@ export function CropSheet({ file, round = false, onClose, onDone, size = 512, ti
       </div>
       <div className="row small" style={{ gap: 8, justifyContent: 'space-between' }}>
         <span className="muted">{t('Glissez pour déplacer · molette ou curseur pour zoomer')}</span>
-        <span className="row" style={{ gap: 6 }}>{t('Fond')} {['#FFFFFF', '#3B2A25', '#B4432A', '#F4F1EC'].map((x) => <button type="button" key={x} onClick={() => setBg(x)} aria-label={x} style={{ width: 22, height: 22, borderRadius: 11, background: x, border: bg === x ? '2px solid var(--bordeaux)' : '1px solid var(--line-2)' }} />)}</span>
+        <span className="row" style={{ gap: 6 }}>{t('Fond')} {['#FFFFFF', '#2B1F1C', '#B4432A', '#F4F1EC'].map((x) => <button type="button" key={x} onClick={() => setBg(x)} aria-label={x} style={{ width: 22, height: 22, borderRadius: 11, background: x, border: bg === x ? '2px solid var(--bordeaux)' : '1px solid var(--line-2)' }} />)}</span>
       </div>
       <div className="btns"><div className="two"><button type="button" className="btn ghost" onClick={() => setZ(minZoom)}>{t('Image entière')}</button><button type="button" className="btn" onClick={save} disabled={!img}>{t('Utiliser cette image')}</button></div></div>
     </Sheet>
