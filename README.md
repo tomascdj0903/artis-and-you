@@ -1,45 +1,65 @@
-# Artis & You
+# Artesa (dépôt `artis-and-you`)
 
-L'application des artisans et de leurs clients : une seule webapp avec deux espaces (artisan et particulier), un logiciel PC / Mac qui se met à jour tout seul, et bientôt les apps Android et iPhone.
+L'application des artisans du bâtiment et de leurs clients : devis, factures, planning, messagerie, réseau de pros côté artisan ; recherche d'artisan, rendez-vous, signature de devis et suivi des travaux côté particulier.
+
+Site : https://artis-and-you.vercel.app
 
 ## Ce qu'il y a dans ce dépôt
 
 | Dossier | Contenu |
 |---|---|
-| `web/` | La webapp (React, sans framework lourd). Construite par Vercel à chaque `git push`. |
-| `desktop/` | Le logiciel Windows (.exe) et Mac (.dmg) : une fenêtre Artis & You qui ouvre la webapp, avec mises à jour automatiques. |
-| `supabase/migrations/` | Le schéma de la base de données en ligne (pour quand on quittera le mode local). |
-| `.github/workflows/desktop.yml` | Construit et publie le .exe et le .dmg sur GitHub à chaque nouvelle version. |
+| `web/` | La webapp (React 19, esbuild, sans framework). Une seule application avec deux espaces : `/pro` et `/client`. Installable sur téléphone (PWA). |
+| `desktop/` | Le logiciel Windows (.exe) et Mac (.dmg) : une fenêtre Electron qui charge le site, avec mises à jour automatiques. |
+| `supabase/migrations/` | Le schéma de la base, les règles d'accès (RLS) et les fonctions SQL, dans l'ordre d'application. |
+| `supabase/functions/` | Les Edge Functions : `assistant` (IA), `push` (notifications), `agenda` (flux calendrier). |
+| `.github/workflows/` | `web.yml` : build et tests à chaque envoi. `desktop.yml` : construction et publication du .exe et du .dmg. |
+| `SECURITY_AUDIT.md` | L'audit de sécurité du 9 novembre 2026 et l'état des correctifs. |
 
-## Mode local (actuel)
+Il n'y a pas encore d'application native iPhone ou Android : sur téléphone, c'est la webapp installée.
 
-Tant qu'aucune base Supabase n'est configurée, l'app fonctionne **en mode local** : toutes les données restent dans le navigateur (ou dans le logiciel) de l'appareil. Un bandeau jaune le rappelle. Pensez à faire des sauvegardes : *Paramètres → Données et confidentialité → Sauvegarder*.
+## Architecture
 
-Pour passer en ligne plus tard : créer le projet Supabase, exécuter `supabase/migrations/0001_init.sql` puis `0002_admin.sql`, puis ajouter dans Vercel les variables `SUPABASE_URL` et `SUPABASE_KEY` (clé publique) et redéployer.
+- **Hébergement** : Vercel construit `web/` à chaque envoi sur `main` (production). Les autres branches ont une adresse d'aperçu protégée.
+- **Données** : Supabase (Postgres, authentification, stockage privé `files`). Toute la sécurité repose sur les règles RLS et les fonctions SQL : le navigateur n'a que la clé publique.
+- **Variables Vercel** : `SUPABASE_URL` et `SUPABASE_KEY` (clé publique « publishable »). Sans elles, l'app démarre en **mode démo** : données fictives gardées dans le navigateur, bandeau jaune. C'est ce mode qu'utilisent les tests.
+- **Secrets** : uniquement dans Supabase › Edge Functions › Secrets (par exemple `GROQ_API_KEY`). Aucun secret dans le dépôt ni dans Vercel.
+- **En-têtes de sécurité** (CSP, HSTS…) : `web/vercel.json`.
 
-## Mettre à jour
+### Organisation du code web
 
-- **La webapp** : chaque `git push` sur `main` redéploie le site. Le logiciel PC / Mac affiche directement la nouvelle version (il charge le site).
-- **Le logiciel lui-même** (icône, fenêtre, menus) : depuis votre ordinateur, lancez `./release.sh 1.0.1` (Mac / Linux) ou `.\release.ps1 1.0.1` (Windows). GitHub construit le .exe et le .dmg en ~10 minutes ; les logiciels installés téléchargent la mise à jour en arrière-plan et l'installent au redémarrage (sur Mac, une fenêtre propose de télécharger la nouvelle version tant que l'app n'est pas signée par Apple).
+| Chemin | Rôle |
+|---|---|
+| `src/main.jsx` | Routes et coque de l'app. Les espaces artisan, particulier et les pages communes sont chargés séparément. |
+| `src/pages/pro`, `src/pages/client`, `src/pages/common`, `src/pages/auth` | Les écrans. |
+| `src/ui/` | Composants partagés (barre de recherche, bouton « + » et assistant, messages vocaux, signature…). |
+| `src/lib/api.js` | Accès à Supabase. `src/lib/mock.js` : le même contrat pour le mode démo. |
+| `src/lib/assistant-*.js` | L'assistant : actions sur les données de l'utilisateur, fiches d'aide pro et particulier. |
+| `src/i18n/` | Traductions. Le texte français sert de clé. |
 
-Liens de téléchargement (toujours la dernière version) :
-- Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artis-and-You-Setup.exe`
-- Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artis-and-You.dmg`
-
-La page `/telecharger` de la webapp propose ces deux boutons.
-
-## Développer en local
+## Développer
 
 ```bash
 cd web
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # produit web/dist
-node scripts/i18n.mjs   # régénère les traductions EN / PT / IT
+npm run dev               # http://localhost:5173 (mode démo sans variables Supabase)
+npm run build             # produit web/dist
+node scripts/i18n.mjs     # régénère les traductions EN / PT / IT
+node tests/e2e.mjs        # tests des parcours principaux (après le build ; demande Playwright)
 ```
 
-Traductions : le texte français sert de clé. Les traductions sont dans `web/src/i18n/_en.txt`, `_pt.txt`, `_it.txt` (numéro|traduction) et `_extra.txt`.
+Traductions : ajouter une ligne `français|anglais|portugais|italien` dans `web/src/i18n/_extra.txt`, puis lancer `node scripts/i18n.mjs`.
+
+## Mettre en ligne
+
+- **Webapp** : travailler sur une branche, vérifier l'aperçu Vercel et les tests GitHub, puis fusionner dans `main`. Le logiciel PC / Mac affiche aussitôt la nouvelle version (il charge le site).
+- **Base de données** : ajouter un fichier numéroté dans `supabase/migrations/`, le relire, puis l'appliquer sur le projet Supabase. Une migration ne se modifie plus une fois appliquée : on en écrit une nouvelle.
+- **Edge Functions** : se déploient séparément du site (tableau de bord ou CLI Supabase).
+- **Logiciel PC / Mac** (icône, fenêtre, menus) : `./release.sh 1.2.2` (Mac / Linux) ou `.\release.ps1 1.2.2` (Windows). GitHub construit le .exe et le .dmg en dix minutes environ ; les logiciels installés se mettent à jour au redémarrage. Les installeurs ne sont pas signés (avertissement Windows SmartScreen et macOS Gatekeeper).
+
+Téléchargements (toujours la dernière version) :
+- Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artis-and-You-Setup.exe`
+- Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artis-and-You.dmg`
 
 ## Administration
 
-Pour devenir administrateur (vérifier les SIRET, relire les avis avant publication), une fois en ligne : exécuter dans l'éditeur SQL de Supabase la ligne indiquée à la fin de `0002_admin.sql`. En mode local, l'administration est accessible à tous depuis *Paramètres → Administration*.
+Les administrateurs (validation des SIRET, relecture des avis) sont les comptes inscrits dans la table `admins`, qui n'est modifiable que depuis l'éditeur SQL de Supabase. La ligne à exécuter est à la fin de `supabase/migrations/0002_admin.sql`.
