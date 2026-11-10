@@ -14,6 +14,9 @@ import { kindLabel, statusPill } from '../lib/docs.js';
 
 const norm = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const RKEY = 'ay-recent-search';
+// Phrase impérative (« ouvre… », « fais un devis… ») : on exécute l'action au lieu d'afficher la réponse
+const IMP = /^(ouvr|affich|montre|va |vas |aller|emmene|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|programme|planifie|cale|ecri|redige)/;
+const imperative = (v) => IMP.test(nz(v).replace(/^(peux.?tu|tu peux|pourrais.?tu|stp|svp|s il te plait|merci de|je veux|je voudrais|j aimerais)\s+/, ''));
 const recent = () => { try { return JSON.parse(localStorage.getItem(RKEY) || '[]'); } catch { return []; } };
 const pushRecent = (q) => { try { localStorage.setItem(RKEY, JSON.stringify([q, ...recent().filter((x) => x !== q)].slice(0, 5))); } catch {} };
 
@@ -48,7 +51,7 @@ export function SmartSearch({ placeholder, scope }) {
       if (act) {
         setAi(act);
         // Commande dictée à la voix et claire (« ouvre… », « fais un devis pour… ») : on l'exécute directement
-        if (voice.current && act.go && /^(ouvr|affich|montre|va |vas |aller|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|programme|planifie|cale|ecri)/.test(nz(v))) { voice.current = false; setOpen(false); setQ(''); navigate(act.go); }
+        if (voice.current && act.go && imperative(v)) { voice.current = false; setOpen(false); setQ(''); navigate(act.go); }
         return;
       }
       const kb = searchKB(v, '/pro');
@@ -117,10 +120,27 @@ export function SmartSearch({ placeholder, scope }) {
     if (q.trim()) pushRecent(q.trim());
     setOpen(false); navigate(it.to);
   };
+  // Entrée sur une phrase : l'assistant répond ici même (ou exécute l'ordre), sans quitter la page
+  const submit = async () => {
+    const v = q.trim();
+    if (!v) { pick(flat[sel]); return; }
+    if (v.split(/\s+/).length >= 2 && sel === 0) {
+      const act = await runAction(v, { company }).catch(() => null);
+      if (act) {
+        pushRecent(v);
+        if (act.go && imperative(v)) { setOpen(false); setQ(''); navigate(act.go); return; }
+        setAi(act); setAiAns(null); setOpen(true); return;
+      }
+      const kb = searchKB(v, '/pro');
+      if (kb.length) { setAi({ text: t(kb[0].a), links: kb[0].links, kb: kb[0] }); setOpen(true); return; }
+      if (!flat.some((x) => !x.fill && x.icon !== LuZap)) { setAi({ ask: true }); setOpen(true); if (!OFFLINE) askAI(); else setAiAns({ text: t('Je n’ai pas de réponse précise. Essayez l’assistant (bouton +) ou le support.') }); return; }
+    }
+    pick(flat[sel]);
+  };
   const key = (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); setSel((s) => Math.min(s + 1, flat.length - 1)); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setSel((s) => Math.max(s - 1, 0)); }
-    else if (e.key === 'Enter') { e.preventDefault(); pick(q.trim() ? flat[sel] : flat[sel]); }
+    else if (e.key === 'Enter') { e.preventDefault(); submit(); }
     else if (e.key === 'Escape') setOpen(false);
   };
   let i = -1;
