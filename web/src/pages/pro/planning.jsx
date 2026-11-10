@@ -124,10 +124,11 @@ export function Planning() {
       {q.trim() ? <SearchResults list={(allData || []).filter((a) => match(a)).filter((a) => !teamF.length || teamF.includes(a.team_id))} loading={!allData} cm={data?.cm || {}} color={color} q={q.trim()} />
       : loading ? <Loader /> : view === 'month' ? (
         <MonthGrid range={range} anchor={anchor} evs={evs} color={color} cm={data.cm} onDay={(d) => { setAnchor(d); setView('day'); }} onMove={dragOk ? moveAppt : null} />
-      ) : (
+      ) : (<>
         {narrow && view === 'week' && <p className="small muted" style={{ margin: '0 0 6px' }}>{t('Touchez un jour ou un rendez-vous pour voir le détail.')}</p>}
         <WeekGrid compact={narrow && view !== 'day'} onDay={(d) => { setAnchor(d); setView('day'); }} days={view === 'day' ? [range[0]] : Array.from({ length: weekLength(s) }, (_, i) => addDays(range[0], i))}
           s={s} evs={evs} busy={all} noFree={hide.has('dispo')} color={color} cm={data.cm} onNew={newAt} onMove={dragOk ? moveAppt : null} />
+      </>
       )}
       {dragOk && !q.trim() && view !== 'month' && <p className="small faint" style={{ marginTop: 6 }}>{t('Astuce : faites glisser un rendez-vous pour le déplacer (par pas de 15 min).')}</p>}
       {can('planning') && profile.member_role !== 'ouvrier' && <button className="fab" onClick={() => navigate('/pro/planning/nouveau')} aria-label={t('Nouveau rendez-vous')}><LuPlus /></button>}

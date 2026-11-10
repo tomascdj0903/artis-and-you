@@ -38,21 +38,21 @@
   color-scheme: light;
 }
 :root[data-theme="dark"] {
-  --bg: #16100E;
-  --bg-soft: #1E1613;
-  --surface: #261C19;
-  --row: #2F221E;
-  --text: #F7F1ED;
-  --text-2: #D3C7C1;
-  --text-3: #A89A94;
-  --line: #3B2D28;
-  --line-2: #3B2D28;
+  --bg: #000000;
+  --bg-soft: #0F0F0F;
+  --surface: #1C1C1E;
+  --row: #242426;
+  --text: #F5F5F5;
+  --text-2: #C9C9CC;
+  --text-3: #9A9A9E;
+  --line: #2E2E30;
+  --line-2: #2E2E30;
   --primary: #C9573A;
-  --navy: #3A2A25;
-  --bordeaux-50: #33201B;
+  --navy: #2C2C2E;
+  --bordeaux-50: #2A1A16;
   --bordeaux-100: #432820;
   --bordeaux-200: #553126;
-  --marine-50: #2F2420;
+  --marine-50: #232325;
   --vert-50: #12321F;
   --jaune: #4A4320;
   --overlay: rgba(0, 0, 0, .65);
