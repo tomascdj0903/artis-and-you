@@ -75,8 +75,8 @@ export function Download() {
         <div className="seg" style={{ margin: '6px 0 14px' }}>{[['pc', t('Ordinateur')], ['tel', t('Téléphone et tablette')]].map(([v, l]) => <button key={v} className={tab === v ? 'on' : ''} onClick={() => setTab(v)}>{l}</button>)}</div>
         {tab === 'pc' ? <>
           <p className="center muted">{t('Le logiciel s’ouvre dans sa propre fenêtre, avec son icône, et se met à jour tout seul. Une connexion internet est nécessaire.')}</p>
-          <a className={'opt' + (!isMac ? ' red' : '')} href={base + 'Artis-and-You-Setup.exe'}><LuMonitor /><div><b>{t('Télécharger pour Windows')}</b><small>Windows 10 / 11 · .exe</small></div><LuDownload /></a>
-          <a className={'opt' + (isMac ? ' red' : '')} href={base + 'Artis-and-You.dmg'}><LuApple /><div><b>{t('Télécharger pour Mac')}</b><small>macOS 11+ · Apple Silicon et Intel · .dmg</small></div><LuDownload /></a>
+          <a className={'opt' + (!isMac ? ' red' : '')} href={base + 'Artesa-Setup.exe'}><LuMonitor /><div><b>{t('Télécharger pour Windows')}</b><small>Windows 10 / 11 · .exe</small></div><LuDownload /></a>
+          <a className={'opt' + (isMac ? ' red' : '')} href={base + 'Artesa.dmg'}><LuApple /><div><b>{t('Télécharger pour Mac')}</b><small>macOS 11+ · Apple Silicon et Intel · .dmg</small></div><LuDownload /></a>
           <div className="notice"><LuRefreshCw /><span>{t('Mises à jour automatiques : à chaque nouvelle version, le logiciel la télécharge en arrière-plan et l’installe au prochain démarrage.')}</span></div>
           <p className="small faint">{t('Au premier lancement sur Windows, si SmartScreen s’affiche, cliquez sur « Informations complémentaires » puis « Exécuter quand même » (le logiciel n’est pas encore signé). Sur Mac : clic droit sur l’application puis « Ouvrir ».')}</p>
           {canInstall && <button className="opt" onClick={install}><LuMonitor /><div><b>{t('Ou installer la version web')}</b><small>{t('Sans téléchargement, depuis ce navigateur (Chrome, Edge)')}</small></div></button>}

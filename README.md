@@ -57,8 +57,8 @@ Traductions : ajouter une ligne `français|anglais|portugais|italien` dans `web/
 - **Logiciel PC / Mac** (icône, fenêtre, menus) : `./release.sh 1.2.2` (Mac / Linux) ou `.\release.ps1 1.2.2` (Windows). GitHub construit le .exe et le .dmg en dix minutes environ ; les logiciels installés se mettent à jour au redémarrage. Les installeurs ne sont pas signés (avertissement Windows SmartScreen et macOS Gatekeeper).
 
 Téléchargements (toujours la dernière version) :
-- Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artis-and-You-Setup.exe`
-- Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artis-and-You.dmg`
+- Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artesa-Setup.exe`
+- Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artesa.dmg`
 
 ## Administration
 

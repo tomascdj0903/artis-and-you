@@ -1,7 +1,7 @@
 {
   "name": "artis-and-you-desktop",
   "productName": "Artesa",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Artesa — logiciel PC et Mac",
   "author": "Artesa",
   "main": "main.js",
@@ -15,8 +15,8 @@
     "electron-updater": "^6.3.9"
   },
   "devDependencies": {
-    "electron": "^33.2.1",
-    "electron-builder": "^25.1.8"
+    "electron": "^44.11.1",
+    "electron-builder": "^26.0.0"
   },
   "build": {
     "appId": "fr.artisandyou.app",
@@ -28,7 +28,7 @@
     "win": {
       "target": [{ "target": "nsis", "arch": ["x64"] }],
       "icon": "build/icon.ico",
-      "artifactName": "Artis-and-You-Setup.${ext}"
+      "artifactName": "Artesa-Setup.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -46,7 +46,7 @@
       "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }],
       "icon": "build/icon.png",
       "category": "public.app-category.business",
-      "artifactName": "Artis-and-You.${ext}",
+      "artifactName": "Artesa.${ext}",
       "identity": null
     },
     "dmg": { "title": "Artesa" }
