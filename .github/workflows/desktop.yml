@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Version déjà publiée ?
+      - name: Déjà publié pour ce système ?
         id: check
         shell: bash
         env:
@@ -35,12 +35,28 @@ jobs:
         run: |
           V=$(node -p "require('./package.json').version")
           echo "version=$V" >> $GITHUB_OUTPUT
-          if gh release view "v$V" --repo "$GITHUB_REPOSITORY" --json isDraft -q '.isDraft' 2>/dev/null | grep -q false; then echo "skip=true" >> $GITHUB_OUTPUT; else echo "skip=false" >> $GITHUB_OUTPUT; fi
+          # Chaque système vérifie SES fichiers (latest.yml = Windows, latest-mac.yml = Mac) : une version peut être à moitié publiée
+          MARK=$([ "$RUNNER_OS" = "Windows" ] && echo latest.yml || echo latest-mac.yml)
+          if gh release view "v$V" --repo "$GITHUB_REPOSITORY" --json isDraft,assets -q "select(.isDraft==false) | .assets[].name" 2>/dev/null | grep -qx "$MARK"; then echo "skip=true" >> $GITHUB_OUTPUT; else echo "skip=false" >> $GITHUB_OUTPUT; fi
       - if: steps.check.outputs.skip != 'true'
         run: npm install
-      - name: Construire et publier
+      - name: Construire
         if: steps.check.outputs.skip != 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
-        run: npx electron-builder --publish always
+        run: npx electron-builder --publish never
+      - name: Publier
+        if: steps.check.outputs.skip != 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          V=${{ steps.check.outputs.version }}
+          # Crée la version si elle n'existe pas encore (si les deux systèmes la créent en même temps, un seul gagne : on réessaie)
+          for i in 1 2 3; do
+            gh release view "v$V" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 && break
+            gh release create "v$V" --repo "$GITHUB_REPOSITORY" --title "Artesa $V" --notes "Logiciel PC / Mac Artesa, version $V. Les logiciels installés se mettent à jour tout seuls." 2>/dev/null || sleep 10
+          done
+          shopt -s nullglob
+          ls release/latest*.yml >/dev/null 2>&1 || { echo "Fichier de mise à jour (latest*.yml) absent : la mise à jour automatique ne marcherait pas"; exit 1; }
+          gh release upload "v$V" --repo "$GITHUB_REPOSITORY" --clobber release/*.exe release/*.dmg release/*.zip release/*.blockmap release/latest*.yml
