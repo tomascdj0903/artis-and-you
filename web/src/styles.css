@@ -1203,3 +1203,17 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 
 /* Accueil pré-rendu : masqué pour un utilisateur déjà connecté (ou dans le logiciel PC/Mac), le temps que l'app démarre */
 :root[data-in] #root > .lp { display: none; }
+
+/* Mot de passe : œil « afficher » et jauge de force */
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 46px; }
+.pw-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; color: var(--text-3); width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; }
+.pw-eye:hover { background: var(--surface-2, rgba(127,127,127,.12)); color: var(--text); }
+.pw-meter { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: 12px; color: var(--text-3); }
+.pw-bars { display: flex; gap: 4px; flex: 1; max-width: 160px; }
+.pw-bars i { flex: 1; height: 5px; border-radius: 3px; background: var(--line-2); }
+.pw-meter.s0 .pw-bars i:nth-child(1) { background: #C8432B; }
+.pw-meter.s1 .pw-bars i:nth-child(-n+1) { background: #D98E2B; }
+.pw-meter.s2 .pw-bars i:nth-child(-n+2) { background: #2E9E5B; }
+.pw-meter.s3 .pw-bars i { background: #2E9E5B; }
+.pw-meter.s0 small { color: #C8432B; }

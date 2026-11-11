@@ -1048,3 +1048,11 @@ Votre compte et vos accès seront supprimés. Les données de l’entreprise res
 Suppression définitive|Permanent deletion|Eliminação definitiva|Eliminazione definitiva
 Cette action est immédiate et ne peut pas être annulée. Confirmez-vous la suppression du compte {e} ?|This is immediate and can’t be undone. Do you confirm deleting the account {e}?|Esta ação é imediata e não pode ser anulada. Confirma a eliminação da conta {e}?|Questa azione è immediata e non può essere annullata. Confermi l’eliminazione dell’account {e}?
 Supprimer définitivement|Delete permanently|Eliminar definitivamente|Elimina definitivamente
+Faible|Weak|Fraca|Debole
+Correct|Fair|Razoável|Discreta
+Bon|Good|Boa|Buona
+Fort|Strong|Forte|Forte
+trop facile à deviner|too easy to guess|demasiado fácil de adivinhar|troppo facile da indovinare
+Ce mot de passe est trop facile à deviner : choisissez-en un autre.|This password is too easy to guess: please choose another one.|Esta palavra-passe é demasiado fácil de adivinhar: escolha outra.|Questa password è troppo facile da indovinare: scegline un'altra.
+Masquer le mot de passe|Hide password|Ocultar a palavra-passe|Nascondi la password
+Afficher le mot de passe|Show password|Mostrar a palavra-passe|Mostra la password

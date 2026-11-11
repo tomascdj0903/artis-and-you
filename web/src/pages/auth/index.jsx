@@ -7,6 +7,7 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t, LANGS, getLang } from '../../lib/i18n.js';
 import { Field, Chips, Wordmark } from '../../ui/index.jsx';
+import { PasswordField, pwError } from '../../ui/password.jsx';
 import { TRADES, LEGAL_FORMS } from '../../lib/docs.js';
 
 function AuthLayout({ children, art = true }) {
@@ -123,13 +124,13 @@ function AccountFields({ v, set }) {
       </div>
       <Field label={t('E-mail')}><input type="email" value={v.email} onChange={(e) => set({ ...v, email: e.target.value })} required autoComplete="email" /></Field>
       <Field label={t('Téléphone mobile')}><input type="tel" value={v.phone} onChange={(e) => set({ ...v, phone: e.target.value })} required autoComplete="tel" placeholder="06 12 34 56 78" /></Field>
-      <Field label={t('Mot de passe')} hint={t('8 caractères minimum, dont un chiffre')}><input type="password" value={v.password} onChange={(e) => set({ ...v, password: e.target.value })} required minLength={8} autoComplete="new-password" /></Field>
+      <PasswordField value={v.password} onChange={(e) => set({ ...v, password: e.target.value })} />
     </>
   );
 }
 const checkAccount = (v) => {
   if (!phoneValid(v.phone)) return t('Numéro de téléphone invalide.');
-  if ((v.password || '').length < 8 || !/\d/.test(v.password)) return t('Le mot de passe doit contenir au moins 8 caractères, dont un chiffre.');
+  const pwe = pwError(v.password); if (pwe) return pwe;
   return '';
 };
 
@@ -341,13 +342,14 @@ export function NewPassword() {
   const { reload } = useApp();
   const submit = async (e) => {
     e.preventDefault(); setErr('');
+    const pwe = pwError(pw); if (pwe) { setErr(pwe); return; }
     try { await api.updatePassword(pw); const s = getSession(); if (s) delete s.recovery; await reload(); navigate('/', { replace: true }); } catch (x) { setErr(x.message); }
   };
   return (
     <AuthLayout art={false}>
       <form onSubmit={submit}>
         <h1 style={{ fontSize: 26, margin: '8px 0' }}>{t('Nouveau mot de passe')}</h1>
-        <Field label={t('Mot de passe')} hint={t('6 caractères minimum')}><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} required minLength={6} /></Field>
+        <PasswordField value={pw} onChange={(e) => setPw(e.target.value)} />
         {err && <div className="error" role="alert">{err}</div>}
         <button className="btn block">{t('Enregistrer')}</button>
       </form>

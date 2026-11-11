@@ -2199,4 +2199,12 @@ export default {"(copie)":"(cópia)",
 "Votre compte et vos accès seront supprimés. Les données de l’entreprise restent chez votre employeur.":"A sua conta e os seus acessos serão eliminados. Os dados da empresa ficam com o seu empregador.",
 "Suppression définitive":"Eliminação definitiva",
 "Cette action est immédiate et ne peut pas être annulée. Confirmez-vous la suppression du compte {e} ?":"Esta ação é imediata e não pode ser anulada. Confirma a eliminação da conta {e}?",
-"Supprimer définitivement":"Eliminar definitivamente"};
+"Supprimer définitivement":"Eliminar definitivamente",
+"Faible":"Fraca",
+"Correct":"Razoável",
+"Bon":"Boa",
+"Fort":"Forte",
+"trop facile à deviner":"demasiado fácil de adivinhar",
+"Ce mot de passe est trop facile à deviner : choisissez-en un autre.":"Esta palavra-passe é demasiado fácil de adivinhar: escolha outra.",
+"Masquer le mot de passe":"Ocultar a palavra-passe",
+"Afficher le mot de passe":"Mostrar a palavra-passe"};

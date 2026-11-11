@@ -2199,4 +2199,12 @@ export default {"(copie)":"(copy)",
 "Votre compte et vos accès seront supprimés. Les données de l’entreprise restent chez votre employeur.":"Your account and access will be deleted. The company’s data stays with your employer.",
 "Suppression définitive":"Permanent deletion",
 "Cette action est immédiate et ne peut pas être annulée. Confirmez-vous la suppression du compte {e} ?":"This is immediate and can’t be undone. Do you confirm deleting the account {e}?",
-"Supprimer définitivement":"Delete permanently"};
+"Supprimer définitivement":"Delete permanently",
+"Faible":"Weak",
+"Correct":"Fair",
+"Bon":"Good",
+"Fort":"Strong",
+"trop facile à deviner":"too easy to guess",
+"Ce mot de passe est trop facile à deviner : choisissez-en un autre.":"This password is too easy to guess: please choose another one.",
+"Masquer le mot de passe":"Hide password",
+"Afficher le mot de passe":"Show password"};
