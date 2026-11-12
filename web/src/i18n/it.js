@@ -2211,4 +2211,5 @@ export default {"(copie)":"(copia)",
 "Limite d’e-mails du jour atteinte (60).":"Limite giornaliero di e-mail raggiunto (60).",
 "Cette adresse n’est pas celle d’un de vos clients.":"Questo indirizzo non appartiene a uno dei tuoi clienti.",
 "Envoi de l’e-mail impossible.":"Impossibile inviare l’e-mail.",
-"Relance envoyée par e-mail":"Sollecito inviato per e-mail"};
+"Relance envoyée par e-mail":"Sollecito inviato per e-mail",
+"Factures au format Factur-X (PDF + XML normalisé), le standard de la facturation électronique 2026–2027":"Fatture in formato Factur-X (PDF + XML normalizzato), lo standard della fatturazione elettronica 2026–2027"};

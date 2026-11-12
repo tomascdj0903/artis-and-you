@@ -150,7 +150,7 @@ export function DocPdf({ params }) {
         {isQ && effectiveStatus(d) === 'envoye' && <button className="btn" onClick={() => setSigning(true)}><LuFilePen /> {t('Signer le devis électroniquement')}</button>}
         {!isQ && d.kind !== 'avoir' && ['envoyee', 'partielle', 'retard'].includes(effectiveStatus(d)) && <button className="btn" onClick={() => navigate(`/client/factures/${d.id}/payer`)}>{t('Payer en ligne')}</button>}
         <div className="two">
-          <button className="btn ghost" onClick={() => run(() => exportPdf(ref.current, pdfName(d)), t('PDF téléchargé'))}><LuDownload /> {t('Télécharger')}</button>
+          <button className="btn ghost" onClick={() => run(() => exportPdf(ref.current, pdfName(d), b), t('PDF téléchargé'))}><LuDownload /> {t('Télécharger')}</button>
           <button className="btn ghost" onClick={() => window.print()}><LuPrinter /> {t('Imprimer')}</button>
         </div>
       </div>

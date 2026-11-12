@@ -71,7 +71,7 @@ export function Landing() {
   );
 }
 
-const PRO_PTS = ['Facturation électronique intégrée, prête pour l’obligation 2026–2027', 'Devis et factures conformes, numérotés automatiquement', 'Signature électronique des devis par vos clients', 'Planning d’équipe et demandes de rendez-vous en ligne', 'Relances automatiques des impayés', 'Factures d’acompte, de situation et avoirs', 'Export comptable et suivi de votre chiffre d’affaires'];
+const PRO_PTS = ['Factures au format Factur-X (PDF + XML normalisé), le standard de la facturation électronique 2026–2027', 'Devis et factures conformes, numérotés automatiquement', 'Signature électronique des devis par vos clients', 'Planning d’équipe et demandes de rendez-vous en ligne', 'Relances automatiques des impayés', 'Factures d’acompte, de situation et avoirs', 'Export comptable et suivi de votre chiffre d’affaires'];
 const CLI_PTS = ['Trouvez un artisan vérifié près de chez vous', 'Prenez rendez-vous en ligne, sur site ou en visio', 'Signez vos devis et payez vos factures en ligne', 'Gardez tous les documents de votre logement', 'Échangez avec vos artisans par message'];
 
 // Artisans / particuliers : deux onglets côte à côte, un seul panneau affiché (moins de défilement)

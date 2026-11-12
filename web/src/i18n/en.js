@@ -2211,4 +2211,5 @@ export default {"(copie)":"(copy)",
 "Limite d’e-mails du jour atteinte (60).":"Daily e-mail limit reached (60).",
 "Cette adresse n’est pas celle d’un de vos clients.":"This address does not belong to one of your clients.",
 "Envoi de l’e-mail impossible.":"The e-mail could not be sent.",
-"Relance envoyée par e-mail":"Reminder sent by e-mail"};
+"Relance envoyée par e-mail":"Reminder sent by e-mail",
+"Factures au format Factur-X (PDF + XML normalisé), le standard de la facturation électronique 2026–2027":"Invoices in Factur-X format (PDF + standardised XML), the 2026–2027 e-invoicing standard"};

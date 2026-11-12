@@ -443,7 +443,7 @@ export function SendModal({ open, b, onClose, onSent, pdfNode }) {
   const byMail = () => run(async () => {
     const x = await finalize();
     onClose(); onSent();
-    if (pdfNode?.current) await exportPdf(pdfNode.current, pdfName(x));
+    if (pdfNode?.current) await exportPdf(pdfNode.current, pdfName(x), { ...b, d: x, company: x.snapshot?.company ? { ...b.company, ...x.snapshot.company } : b.company, client: x.snapshot?.client || b.client });
     const body = isQ ? t('Bonjour,\n\nVeuillez trouver ci-joint notre devis {n} pour : {o}.\n\nVous pouvez aussi le consulter et le signer en ligne (compte gratuit) : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: client.user_id ? location.origin + '/client/documents' : location.origin + '/inscription/particulier?pro=' + b.company.id, c: b.company.name })
       : t('Bonjour,\n\nVeuillez trouver ci-joint notre facture {n} pour : {o}.\n\nVous pouvez la régler par virement (IBAN sur la facture) ou en ligne depuis votre espace Artesa : {u}\n\nBien cordialement,\n{c}', { n: x.number, o: x.object, u: location.origin, c: b.company.name });
     window.location.href = `mailto:${client.email || ''}?subject=${encodeURIComponent((isQ ? t('Devis') : t('Facture')) + ' ' + x.number)}&body=${encodeURIComponent(body)}`;
@@ -478,7 +478,7 @@ export function DocPdf({ params }) {
       <div className="btns inline">
         {b.d.status === 'brouillon' || b.d.kind !== 'avoir' ? <button className="btn" onClick={() => setSend(true)}>{t('Envoyer au client')}</button> : null}
         <div className="two">
-          <button className="btn ghost" onClick={() => run(() => exportPdf(ref.current, pdfName(b.d)), t('PDF téléchargé'))}><LuDownload /> {t('Télécharger')}</button>
+          <button className="btn ghost" onClick={() => run(() => exportPdf(ref.current, pdfName(b.d), b), t('PDF téléchargé'))}><LuDownload /> {t('Télécharger')}</button>
           <button className="btn ghost" onClick={() => window.print()}><LuPrinter /> {t('Imprimer')}</button>
         </div>
       </div>

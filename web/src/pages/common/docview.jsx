@@ -1,4 +1,5 @@
 // Affichage d'un devis / d'une facture : détail structuré (écran) + document A4 (PDF)
+import { isInvoice } from '../../lib/facturx.js';
 import { useEffect, useState } from 'react';
 import { api, fileUrls } from '../../lib/api.js';
 import { t } from '../../lib/i18n.js';
@@ -246,8 +247,10 @@ export function useLogo(company) {
 }
 
 // Export PDF : capture de la page A4 puis assemblage avec pdf-lib
-export async function exportPdf(node, filename) {
-  const [{ toCanvas }, { PDFDocument }] = await Promise.all([import('html-to-image'), import('pdf-lib')]);
+// `bundle` ({ d, company, client, source }) : pour une facture finalisée, le XML Factur-X est embarqué (PDF/A-3, profil BASIC)
+export async function exportPdf(node, filename, bundle) {
+  const [{ toCanvas }, pdfLib] = await Promise.all([import('html-to-image'), import('pdf-lib')]);
+  const { PDFDocument } = pdfLib;
   const canvas = await toCanvas(node, { pixelRatio: 2, backgroundColor: '#ffffff', skipFonts: false, cacheBust: true });
   const pdf = await PDFDocument.create();
   const pageW = 595.28, pageH = 841.89;
@@ -259,6 +262,10 @@ export async function exportPdf(node, filename) {
     const page = pdf.addPage([pageW, pageH]);
     const h = (c.height / c.width) * pageW;
     page.drawImage(png, { x: 0, y: pageH - h, width: pageW, height: h });
+  }
+  if (bundle && isInvoice(bundle.d)) {
+    const { facturxXml, attachFacturx } = await import('../../lib/facturx.js');
+    await attachFacturx(pdf, pdfLib, { xml: facturxXml(bundle), title: `${kindLabel(bundle.d.kind)} ${bundle.d.number} · ${bundle.company?.name || ''}` });
   }
   const bytes = await pdf.save();
   const blob = new Blob([bytes], { type: 'application/pdf' });

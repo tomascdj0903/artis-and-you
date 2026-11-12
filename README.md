@@ -37,6 +37,7 @@ Il n'y a pas encore d'application native iPhone ou Android : sur téléphone, c'
 | `src/ui/` | Composants partagés (barre de recherche, bouton « + » et assistant, messages vocaux, signature…). |
 | `src/lib/api.js` | Accès à Supabase. `src/lib/mock.js` : le même contrat pour le mode démo. |
 | `src/lib/assistant-*.js` | L'assistant : actions sur les données de l'utilisateur, fiches d'aide pro et particulier. |
+| `src/lib/facturx.js` | Factur-X : XML CII (profil BASIC, EN 16931) et métadonnées PDF/A-3 embarqués dans le PDF des factures finalisées. La transmission à une plateforme agréée (PDP) n'est pas encore branchée. |
 | `src/i18n/` | Traductions. Le texte français sert de clé. |
 
 ## Développer
