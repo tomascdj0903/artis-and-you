@@ -26,12 +26,12 @@ export function Relances() {
   const planned = b.docs.filter((d) => d.number && d.status !== 'annulee' && !d.reminders_paused && ((['facture', 'acompte'].includes(d.kind) && remaining(d) > 0.005) || (d.kind === 'devis' && d.status === 'envoye')))
     .map((d) => ({ d, n: nextReminder(d, company) })).filter((x) => x.n && !todo.some((r) => r.d.id === x.d.id)).sort((a, b2) => a.n.at.localeCompare(b2.n.at));
   const paused = b.docs.filter((d) => d.reminders_paused && d.number);
-  const history = b.docs.flatMap((d) => (d.reminders || []).map((r) => ({ ...r, d }))).sort((a, b2) => b2.at.localeCompare(a.at));
+  const history = b.docs.flatMap((d) => (d.reminders || []).filter((r) => !r.skipped).map((r) => ({ ...r, d }))).sort((a, b2) => b2.at.localeCompare(a.at));
   const late = b.docs.filter((d) => ['facture', 'acompte'].includes(d.kind) && d.number && d.status !== 'annulee' && d.due_date && d.due_date < iso(new Date()) && remaining(d) > 0.005);
   const open = (r, channel) => setEdit({ r, channel, text: fillTemplate(r.step.text, r.d, b.cm[r.d.client_id], company) });
   const send = async () => {
     const { r, text, channel } = edit; const c = b.cm[r.d.client_id];
-    await run(() => sendReminder({ ...r, client: c, company, profile, text, channel }), channel === 'app' ? t('Relance envoyée dans la messagerie') : t('Relance préparée dans votre messagerie e-mail'));
+    await run(() => sendReminder({ ...r, client: c, company, profile, text, channel }), channel === 'app' ? t('Relance envoyée dans la messagerie') : t('Relance envoyée par e-mail'));
     setEdit(null); reload();
   };
   const sendAllApp = async () => {
@@ -60,7 +60,7 @@ export function Relances() {
               <Pill c={r.kind === 'devis' ? 'navy-o' : r.late > 7 ? 'red' : 'red-o'}>{r.kind === 'devis' ? t('Devis envoyé il y a {n} j', { n: r.late }) : r.late < 0 ? t('Échéance dans {n} j', { n: -r.late }) : t('{n} j de retard', { n: r.late })}</Pill>
             </div>
             <div className="row small" style={{ justifyContent: 'space-between', margin: '8px 0' }}><span><LuBellRing className="red-t" /> {t(r.step.title)}</span><b>{r.kind === 'devis' ? money(r.d.totals?.ttc) : t('{m} restant', { m: money(remaining(r.d)) })}</b></div>
-            {(r.d.reminders || []).length > 0 && <div className="small faint">{t('Déjà relancé {n} fois · dernière le {d}', { n: r.d.reminders.length, d: date(r.d.reminders[r.d.reminders.length - 1].at) })}</div>}
+            {(r.d.reminders || []).some((x) => !x.skipped) && <div className="small faint">{t('Déjà relancé {n} fois · dernière le {d}', { n: r.d.reminders.filter((x) => !x.skipped).length, d: date(r.d.reminders.filter((x) => !x.skipped).slice(-1)[0].at) })}</div>}
             <div className="row" style={{ gap: 6, marginTop: 10, flexWrap: 'wrap' }}>
               <button className="btn sm" disabled={!c?.user_id} title={!c?.user_id ? t('Ce client n’a pas de compte Artesa') : ''} onClick={() => open(r, 'app')}><LuSend /> {t('Messagerie')}</button>
               <button className="btn sm ghost" onClick={() => open(r, 'email')}><LuMail /> {t('E-mail')}</button>

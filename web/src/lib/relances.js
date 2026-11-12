@@ -1,5 +1,5 @@
 // Relances clients (façon Pennylane) : scénarios personnalisables par étape, pour les factures impayées et les devis sans réponse
-import { api, uid } from './api.js';
+import { api, uid, OFFLINE } from './api.js';
 import { t } from './i18n.js';
 import { iso, date, money, clientName, fullName } from './format.js';
 
@@ -87,9 +87,18 @@ export async function sendReminder({ d, step, client, company, profile, text, ch
       card: { type: 'relance', title: t(step.title) + ' · ' + d.number, sub: d.kind === 'devis' ? money(d.totals?.ttc) : t('{m} restant', { m: money(remaining(d)) }) } });
   } else {
     const subject = `${t(step.title)} · ${d.number} · ${company.trade_name || company.name}`;
-    window.location.href = `mailto:${encodeURIComponent(client.email || '')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // E-mail envoyé par Artesa si le service d'envoi est configuré (fonction `mail`), sinon via l'application mail de l'artisan
+    const r = (!OFFLINE && client.email) ? await api.fn('mail', { to: client.email, subject, text: body }).catch(() => ({ error: 'http' })) : { error: 'no_key' };
+    if (!r.ok) {
+      if (r.error && !['no_key', 'http_404', 'http'].includes(r.error)) throw new Error(r.error === 'quota' ? t('Limite d’e-mails du jour atteinte (60).') : r.error === 'not_a_client' ? t('Cette adresse n’est pas celle d’un de vos clients.') : t('Envoi de l’e-mail impossible.'));
+      window.location.href = `mailto:${encodeURIComponent(client.email || '')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
   }
-  const reminders = [...(d.reminders || []), { step: step.id, title: step.title, at: new Date().toISOString(), channel, by: profile.id }];
+  // Les étapes plus anciennes jamais envoyées sont marquées « passées » : on ne les enverra pas après coup
+  const sc = scenarios(company); const all = d.kind === 'devis' ? sc.devis : sc.facture;
+  const done = new Set((d.reminders || []).map((r) => r.step));
+  const skipped = all.filter((s) => s.days < step.days && !done.has(s.id)).map((s) => ({ step: s.id, title: s.title, at: new Date().toISOString(), skipped: true }));
+  const reminders = [...(d.reminders || []), ...skipped, { step: step.id, title: step.title, at: new Date().toISOString(), channel, by: profile.id }];
   await api.update('documents', { id: d.id }, { reminders });
   d.reminders = reminders;
 }
