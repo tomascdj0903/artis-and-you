@@ -2207,4 +2207,8 @@ export default {"(copie)":"(cópia)",
 "trop facile à deviner":"demasiado fácil de adivinhar",
 "Ce mot de passe est trop facile à deviner : choisissez-en un autre.":"Esta palavra-passe é demasiado fácil de adivinhar: escolha outra.",
 "Masquer le mot de passe":"Ocultar a palavra-passe",
-"Afficher le mot de passe":"Mostrar a palavra-passe"};
+"Afficher le mot de passe":"Mostrar a palavra-passe",
+"Limite d’e-mails du jour atteinte (60).":"Limite diário de e-mails atingido (60).",
+"Cette adresse n’est pas celle d’un de vos clients.":"Este endereço não pertence a um dos seus clientes.",
+"Envoi de l’e-mail impossible.":"Não foi possível enviar o e-mail.",
+"Relance envoyée par e-mail":"Lembrete enviado por e-mail"};

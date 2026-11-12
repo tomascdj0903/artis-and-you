@@ -11,7 +11,7 @@ Site : https://artis-and-you.vercel.app
 | `web/` | La webapp (React 19, esbuild, sans framework). Une seule application avec deux espaces : `/pro` et `/client`. Installable sur téléphone (PWA). |
 | `desktop/` | Le logiciel Windows (.exe) et Mac (.dmg) : une fenêtre Electron qui charge le site, avec mises à jour automatiques. |
 | `supabase/migrations/` | Le schéma de la base, les règles d'accès (RLS) et les fonctions SQL, dans l'ordre d'application. |
-| `supabase/functions/` | Les Edge Functions : `assistant` (IA), `push` (notifications), `agenda` (flux calendrier). |
+| `supabase/functions/` | Les Edge Functions : `assistant` (IA), `push` (notifications), `agenda` (flux calendrier), `mail` (e-mails via Resend). |
 | `.github/workflows/` | `web.yml` : build et tests à chaque envoi. `desktop.yml` : construction et publication du .exe et du .dmg. |
 | `SECURITY_AUDIT.md` | L'audit de sécurité du 9 novembre 2026 et l'état des correctifs. |
 
@@ -22,7 +22,10 @@ Il n'y a pas encore d'application native iPhone ou Android : sur téléphone, c'
 - **Hébergement** : Vercel construit `web/` à chaque envoi sur `main` (production). Les autres branches ont une adresse d'aperçu protégée.
 - **Données** : Supabase (Postgres, authentification, stockage privé `files`). Toute la sécurité repose sur les règles RLS et les fonctions SQL : le navigateur n'a que la clé publique.
 - **Variables Vercel** : `SUPABASE_URL` et `SUPABASE_KEY` (clé publique « publishable »). Sans elles, l'app démarre en **mode démo** : données fictives gardées dans le navigateur, bandeau jaune. C'est ce mode qu'utilisent les tests.
-- **Secrets** : uniquement dans Supabase › Edge Functions › Secrets (par exemple `GROQ_API_KEY`). Aucun secret dans le dépôt ni dans Vercel.
+- **Secrets** : uniquement dans Supabase › Edge Functions › Secrets. Aucun secret dans le dépôt ni dans Vercel.
+  - `GROQ_API_KEY` : l'assistant (IA).
+  - `RESEND_API_KEY` et `MAIL_FROM` (ex. `Artesa <notifications@votre-domaine.fr>`, expéditeur vérifié chez Resend) : e-mails envoyés par Artesa (relances). Tant qu'ils sont absents, les relances par e-mail s'ouvrent dans l'application mail de l'artisan.
+- **Tâches planifiées** (pg_cron, migration 0024) : rappel des rendez-vous du lendemain à 18 h, relances automatiques à 8 h (entreprises ayant activé « automatique » dans Paramètres › Relances). Les scénarios par défaut sont dupliqués dans `web/src/lib/relances.js` et `0024_taches_planifiees.sql` : modifier les deux.
 - **En-têtes de sécurité** (CSP, HSTS…) : `web/vercel.json`.
 
 ### Organisation du code web

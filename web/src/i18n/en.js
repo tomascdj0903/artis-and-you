@@ -2207,4 +2207,8 @@ export default {"(copie)":"(copy)",
 "trop facile à deviner":"too easy to guess",
 "Ce mot de passe est trop facile à deviner : choisissez-en un autre.":"This password is too easy to guess: please choose another one.",
 "Masquer le mot de passe":"Hide password",
-"Afficher le mot de passe":"Show password"};
+"Afficher le mot de passe":"Show password",
+"Limite d’e-mails du jour atteinte (60).":"Daily e-mail limit reached (60).",
+"Cette adresse n’est pas celle d’un de vos clients.":"This address does not belong to one of your clients.",
+"Envoi de l’e-mail impossible.":"The e-mail could not be sent.",
+"Relance envoyée par e-mail":"Reminder sent by e-mail"};

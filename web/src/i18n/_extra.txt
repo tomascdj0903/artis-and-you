@@ -1056,3 +1056,7 @@ trop facile à deviner|too easy to guess|demasiado fácil de adivinhar|troppo fa
 Ce mot de passe est trop facile à deviner : choisissez-en un autre.|This password is too easy to guess: please choose another one.|Esta palavra-passe é demasiado fácil de adivinhar: escolha outra.|Questa password è troppo facile da indovinare: scegline un'altra.
 Masquer le mot de passe|Hide password|Ocultar a palavra-passe|Nascondi la password
 Afficher le mot de passe|Show password|Mostrar a palavra-passe|Mostra la password
+Limite d’e-mails du jour atteinte (60).|Daily e-mail limit reached (60).|Limite diário de e-mails atingido (60).|Limite giornaliero di e-mail raggiunto (60).
+Cette adresse n’est pas celle d’un de vos clients.|This address does not belong to one of your clients.|Este endereço não pertence a um dos seus clientes.|Questo indirizzo non appartiene a uno dei tuoi clienti.
+Envoi de l’e-mail impossible.|The e-mail could not be sent.|Não foi possível enviar o e-mail.|Impossibile inviare l’e-mail.
+Relance envoyée par e-mail|Reminder sent by e-mail|Lembrete enviado por e-mail|Sollecito inviato per e-mail
