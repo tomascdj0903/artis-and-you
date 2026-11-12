@@ -1,6 +1,8 @@
 export { Home, GlobalSearch } from './home.jsx';
 export { Clients, ClientEdit, ClientCard, ClientKpi, ClientInvoices, ClientQuotes, ClientChat, ClientHistory } from './clients.jsx';
-export { Planning, ApptDetail, ApptEdit, PlanningSettings } from './planning.jsx';
+export { Planning } from './planning.jsx';
+export { ApptDetail, ApptEdit } from './planning-rdv.jsx';
+export { PlanningSettings } from './planning-settings.jsx';
 export { DocumentsHome, QuotesAll, InvoicesAll, DocEdit, DocDetail, DocPdf } from './documents.jsx';
 export { PhotosClients, PhotosClient, OtherDocsClients, OtherDocsClient, Vault, VaultType } from './files.jsx';
 export { CrmHome, ProjectStatus, CompanyKpi, Export, Library, ItemEdit } from './crm.jsx';

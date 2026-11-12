@@ -10,7 +10,8 @@ import { TRADES, clientApptStatus } from '../../lib/docs.js';
 import { icsFile } from '../../lib/ics.js';
 import { TopBar, SearchBar, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
-import { planSettings, freeWindows, MoveSheet } from '../pro/planning.jsx';
+import { planSettings, freeWindows } from '../pro/planning.jsx';
+import { MoveSheet } from '../pro/planning-rdv.jsx';
 import { CityInput, distanceKm } from '../../ui/address.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
