@@ -5,7 +5,7 @@ import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { clientName, dateShort, dateTime, hm, iso, fullName, date } from '../../lib/format.js';
+import { clientName, dateShort, dateTime, hm, iso, fullName } from '../../lib/format.js';
 import { apptStatus, APPT_TYPES } from '../../lib/docs.js';
 import { TopBar, KV, Sec, Sheet, Field, Chips, Seg, useData, Loader, Empty, StatusPill, Img, Modal, Lightbox, Picker } from '../../ui/index.jsx';
 

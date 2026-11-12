@@ -9,7 +9,7 @@ import { icsFile, rrule } from '../../lib/ics.js';
 import { TopBar, Sec, Sheet, Chips, Seg, SettingToggle, Loader } from '../../ui/index.jsx';
 
 import { planSettings } from './planning.jsx';
-import { DUR_OPTS } from './planning-rdv.jsx';
+import { DUR_OPTS, fmtDur } from './planning-rdv.jsx';
 
 export function PlanningSettings() {
   const { company, setCompany, run, teams } = useApp();

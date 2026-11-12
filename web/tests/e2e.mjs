@@ -42,10 +42,11 @@ await step('Inscription d’un artisan', async () => {
 });
 await step('Le tutoriel d’entrée s’ouvre puis se ferme', async () => { await pg.waitForSelector('.tour-card'); await skipTour(); });
 await step('Toutes les rubriques s’ouvrent sans erreur', async () => {
-  for (const p of ['/pro/clients', '/pro/planning', '/pro/documents', '/pro/crm', '/pro/crm/kpi', '/pro/messages', '/pro/reseau', '/pro/notifications', '/pro/compte', '/pro/relances']) {
+  for (const p of ['/pro/clients', '/pro/planning', '/pro/documents', '/pro/crm', '/pro/crm/kpi', '/pro/messages', '/pro/reseau', '/pro/notifications', '/pro/compte', '/pro/relances', '/pro/planning/reglages', '/pro/documents/nouveau?kind=devis']) {
     await pg.goto(BASE + p); await pg.waitForTimeout(400); await skipTour();
     if (!pg.url().includes(p)) throw new Error('Redirigé depuis ' + p + ' vers ' + pg.url());
     if (await pg.locator('[role=alert]:has-text("Impossible de charger")').count()) throw new Error('Échec de chargement : ' + p);
+    if (await pg.locator('h1:has-text("Un problème est survenu")').count()) throw new Error('Écran d’erreur sur : ' + p);
   }
 });
 await step('Création d’un client', async () => {
