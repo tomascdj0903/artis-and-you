@@ -63,6 +63,13 @@ await step('Création d’un devis', async () => {
   await row.locator('input').nth(2).fill('690');
   await pg.click('button:has-text("Enregistrer le brouillon")'); await pg.waitForURL(/\/pro\/documents\/[0-9a-f-]{8,}/);
 });
+await step('Envoi d’un message au client', async () => {
+  const id = pg.url().match(/clients\/([0-9a-f-]{8,})/)?.[1] || (await pg.evaluate(async () => (await window.__ayApi.select('clients', {}))[0]?.id));
+  await pg.goto(BASE + '/pro/clients/' + id + '/chat'); await pg.waitForTimeout(600); await skipTour();
+  await pg.fill('form.composer input[type=text]', 'Bonjour, votre devis est prêt.');
+  await pg.click('form.composer button.send');
+  await pg.waitForSelector('.bubble.out:has-text("votre devis est prêt")', { timeout: 5000 });
+});
 await step('La recherche globale trouve le client', async () => {
   await pg.goto(BASE + '/pro'); await pg.waitForTimeout(400); await skipTour();
   await pg.fill('.search input', 'faure'); await pg.waitForSelector('.suggest :text("Lucie Faure")');
