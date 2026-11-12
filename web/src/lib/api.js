@@ -1,5 +1,6 @@
 // Couche de données : Supabase (production) ou base locale (tests hors-ligne).
 import { t } from './i18n.js';
+import * as off from './offline.js';
 
 const ENV = typeof __ENV__ !== 'undefined' ? __ENV__ : {};
 const URL_ = (ENV.SUPABASE_URL || '').replace(/\/$/, '');
@@ -18,7 +19,8 @@ function loadSession() {
   try { session = JSON.parse(localStorage.getItem(SKEY) || sessionStorage.getItem(SKEY) || 'null'); } catch { session = null; }
 }
 function saveSession(s, remember = true) {
-  session = s;
+  if (!s && session) off.cacheClear(); // déconnexion : on vide le cache hors ligne
+  session = s; off.setScope(s?.user?.id);
   try {
     localStorage.removeItem(SKEY); sessionStorage.removeItem(SKEY);
     if (s) (remember ? localStorage : sessionStorage).setItem(SKEY, JSON.stringify(s));
@@ -52,7 +54,8 @@ async function http(path, { method = 'GET', body, headers = {}, auth = true, raw
   let res;
   try {
     res = await fetch(URL_ + path, { method, headers: h, body: body === undefined ? undefined : (body instanceof Blob || body instanceof FormData ? body : JSON.stringify(body)) });
-  } catch (e) { throw new ApiError(frMsg(e.message)); }
+  } catch (e) { const err = new ApiError(frMsg(e.message)); if (off.isNetworkError(err)) off.noteFailure(); throw err; }
+  off.noteSuccess();
   if (res.status === 401 && auth && session?.refresh_token && !path.includes('grant_type=refresh_token')) {
     const ok = await refresh();
     if (ok) return http(path, { method, body, headers, auth, raw });
@@ -102,8 +105,19 @@ function qs(filters = {}, { order, limit, columns } = {}) {
   return p.toString();
 }
 
+// Lecture avec cache hors ligne : la dernière réponse est gardée et resservie si le réseau manque
+const NO_CACHE_RPC = /^(create_|delete_|finalize_|join_|network_(answer|remove|request)$|post_|rate_|request_|resubmit_|start_|client_(appointment|quote)_|project_invite($|_answer)|admin_|calendar_token|ensure_)/;
+async function cached(key, fetcher) {
+  try { const r = await fetcher(); off.cachePut(key, r); return r; }
+  catch (e) {
+    if (!off.isNetworkError(e)) throw e;
+    const c = await off.cacheGet(key);
+    if (c) return c.data;
+    throw e;
+  }
+}
 const remote = {
-  async select(table, filters, opts) { return http(`/rest/v1/${table}?${qs(filters, opts)}`); },
+  async select(table, filters, opts) { const path = `/rest/v1/${table}?${qs(filters, opts)}`; return cached(path, () => http(path)); },
   async one(table, filters) { const r = await remote.select(table, filters, { limit: 1 }); return r[0] || null; },
   async insert(table, row) {
     const r = await http(`/rest/v1/${table}`, { method: 'POST', body: row, headers: { Prefer: 'return=representation' } });
@@ -118,7 +132,10 @@ const remote = {
     return r[0];
   },
   async remove(table, filters) { await http(`/rest/v1/${table}?${qs(filters)}`, { method: 'DELETE' }); },
-  async rpc(name, args = {}) { return http(`/rest/v1/rpc/${name}`, { method: 'POST', body: args }); },
+  async rpc(name, args = {}) {
+    const call = () => http(`/rest/v1/rpc/${name}`, { method: 'POST', body: args });
+    return NO_CACHE_RPC.test(name) ? call() : cached(`rpc:${name}:${JSON.stringify(args)}`, call);
+  },
   // Fonction serveur (Edge Function) : renvoie toujours un objet, même en cas d'erreur
   async fn(name, body) { const r = await http(`/functions/v1/${name}`, { method: 'POST', body, raw: true }); return r.json().catch(() => ({ error: 'http_' + r.status })); },
 
@@ -207,6 +224,11 @@ if (!OFFLINE && location.hash.includes('access_token=')) {
 // Toutes les méthodes de l'API sont asynchrones : on peut donc attendre le chargement à chaque appel.
 const lazyBackend = (load) => { let p; return new Proxy({}, { get: (_, k) => (k === 'then' ? undefined : (...a) => (p || (p = load())).then((b) => b[k](...a))) }); };
 export const api = OFFLINE ? lazyBackend(() => import('./mock.js').then((m) => m.mockBackend({ saveSession, getSession: () => session }))) : remote;
+
+// Hors ligne : les messages mis en attente sont envoyés au retour du réseau
+off.setSender((it) => api.insert(it.table, it.row));
+if (!OFFLINE && typeof window !== 'undefined') setTimeout(() => off.flush(), 1500);
+off.setScope(session?.user?.id);
 
 // ─────────────── URLs de fichiers (cache) ───────────────
 const urlCache = new Map();

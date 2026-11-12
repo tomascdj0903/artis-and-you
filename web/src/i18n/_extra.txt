@@ -1061,3 +1061,7 @@ Cette adresse n’est pas celle d’un de vos clients.|This address does not bel
 Envoi de l’e-mail impossible.|The e-mail could not be sent.|Não foi possível enviar o e-mail.|Impossibile inviare l’e-mail.
 Relance envoyée par e-mail|Reminder sent by e-mail|Lembrete enviado por e-mail|Sollecito inviato per e-mail
 Factures au format Factur-X (PDF + XML normalisé), le standard de la facturation électronique 2026–2027|Invoices in Factur-X format (PDF + standardised XML), the 2026–2027 e-invoicing standard|Faturas em formato Factur-X (PDF + XML normalizado), o padrão da faturação eletrónica 2026–2027|Fatture in formato Factur-X (PDF + XML normalizzato), lo standard della fatturazione elettronica 2026–2027
+Hors ligne : vous consultez les dernières données reçues.|Offline: you are viewing the last data received.|Offline: está a ver os últimos dados recebidos.|Offline: stai consultando gli ultimi dati ricevuti.
+Connexion rétablie.|Back online.|Ligação restabelecida.|Connessione ripristinata.
+{n} message(s) en attente d’envoi.|{n} message(s) waiting to be sent.|{n} mensagem(ns) à espera de envio.|{n} messaggio/i in attesa di invio.
+En attente de réseau|Waiting for network|À espera de rede|In attesa di rete

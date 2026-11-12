@@ -2212,4 +2212,8 @@ export default {"(copie)":"(cópia)",
 "Cette adresse n’est pas celle d’un de vos clients.":"Este endereço não pertence a um dos seus clientes.",
 "Envoi de l’e-mail impossible.":"Não foi possível enviar o e-mail.",
 "Relance envoyée par e-mail":"Lembrete enviado por e-mail",
-"Factures au format Factur-X (PDF + XML normalisé), le standard de la facturation électronique 2026–2027":"Faturas em formato Factur-X (PDF + XML normalizado), o padrão da faturação eletrónica 2026–2027"};
+"Factures au format Factur-X (PDF + XML normalisé), le standard de la facturation électronique 2026–2027":"Faturas em formato Factur-X (PDF + XML normalizado), o padrão da faturação eletrónica 2026–2027",
+"Hors ligne : vous consultez les dernières données reçues.":"Offline: está a ver os últimos dados recebidos.",
+"Connexion rétablie.":"Ligação restabelecida.",
+"{n} message(s) en attente d’envoi.":"{n} mensagem(ns) à espera de envio.",
+"En attente de réseau":"À espera de rede"};

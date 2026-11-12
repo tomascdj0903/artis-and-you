@@ -1217,3 +1217,7 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .pw-meter.s2 .pw-bars i:nth-child(-n+2) { background: #2E9E5B; }
 .pw-meter.s3 .pw-bars i { background: #2E9E5B; }
 .pw-meter.s0 small { color: #C8432B; }
+
+/* Hors ligne */
+.offline-bar { background: #2B1F1C; color: #fff; font-size: 12px; text-align: center; padding: 6px 12px; display: flex; gap: 8px; justify-content: center; align-items: center; }
+.bubble.pending { opacity: .6; }

@@ -6,7 +6,7 @@ import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { VoiceRecorder, VoiceNote, canRecord } from '../../ui/voice.jsx';
-import { LuMic } from 'react-icons/lu';
+import { LuMic, LuClock } from 'react-icons/lu';
 import { t } from '../../lib/i18n.js';
 import { hm, dateMed, fullName, clientName } from '../../lib/format.js';
 import { Img, Sheet, pickFiles, openFile, Loader, Lightbox, CameraSheet, isTouch } from '../../ui/index.jsx';
@@ -22,6 +22,7 @@ export const myPrefix = (profile) => (profile.company_id ? profile.company_id : 
 export function Chat({ convId, projects = [], banner }) {
   const { profile, company, refreshUnread, toast } = useApp();
   const [msgs, setMsgs] = useState(null);
+  const [pending, setPending] = useState([]);
   const [conv, setConv] = useState(null);
   // Brouillon préparé par l'assistant (« envoie un message à X pour dire… ») : il attend dans le champ, rien n'est envoyé
   const [text, setText] = useState(() => { try { const d = JSON.parse(sessionStorage.getItem('ay-draft') || 'null'); if (!d || d.to !== location.pathname) return ''; sessionStorage.removeItem('ay-draft'); return Date.now() - d.at < 120000 ? d.text : ''; } catch { return ''; } });
@@ -40,6 +41,11 @@ export function Chat({ convId, projects = [], banner }) {
     if (m.length !== lastCount.current) { lastCount.current = m.length; setTimeout(() => endRef.current?.scrollIntoView({ block: 'end' }), 30); }
   };
   useEffect(() => {
+    loadPending();
+    const offNet = onNetwork((_, info) => { loadPending(); if (info?.flushed) load(); });
+    return offNet;
+  }, [convId]);
+  useEffect(() => {
     load();
     api.upsert('conversation_reads', { conversation_id: convId, user_id: uid(), last_read_at: new Date().toISOString() }).then(refreshUnread).catch(() => {});
     const stop = poll(load, 4000); // en pause quand l'app n'est pas à l'écran, reprise immédiate au retour
@@ -48,9 +54,15 @@ export function Chat({ convId, projects = [], banner }) {
 
   const senderName = fullName(profile) || company?.name || '';
   const post = async (row) => {
-    await api.insert('messages', { conversation_id: convId, sender_id: uid(), sender_name: senderName, sender_company_id: profile.company_id || null, ...row });
+    const msg = { conversation_id: convId, sender_id: uid(), sender_name: senderName, sender_company_id: profile.company_id || null, ...row };
+    // Hors ligne : le message texte est mis en attente et partira au retour du réseau
+    if (!OFFLINE && !row.attachments && (isOffline() || await api.insert('messages', msg).then(() => false, (e) => { if (!isNetworkError(e)) throw e; return true; }))) {
+      await enqueue({ table: 'messages', row: msg }); await loadPending(); return;
+    }
+    if (row.attachments || OFFLINE) await api.insert('messages', msg);
     await load();
   };
+  const loadPending = async () => setPending(await queued((q) => q.table === 'messages' && q.row.conversation_id === convId));
   const send = async (e) => {
     e?.preventDefault();
     const b = text.trim(); if (!b) return;
@@ -106,7 +118,7 @@ export function Chat({ convId, projects = [], banner }) {
     <>
       {banner}
       <div className="chat">
-        {msgs.length === 0 && <div className="day">{t('Démarrez la conversation')}</div>}
+        {msgs.length === 0 && !pending.length && <div className="day">{t('Démarrez la conversation')}</div>}
         {msgs.map((m) => {
           const day = m.created_at.slice(0, 10);
           const mine = m.sender_id === uid();
@@ -146,6 +158,12 @@ export function Chat({ convId, projects = [], banner }) {
             </div>
           );
         })}
+        {pending.map((p) => (
+          <div key={p.id} style={{ display: 'contents' }}>
+            <div className="bubble out pending">{p.row.body}</div>
+            <div className="when r"><LuClock size={11} /> {t('En attente de réseau')}</div>
+          </div>
+        ))}
         <div ref={endRef} />
       </div>
       {rec ? <VoiceRecorder onSend={sendVoice} onCancel={() => setRec(false)} onError={(m) => { setRec(false); toast(m, true); }} /> : (

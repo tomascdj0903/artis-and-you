@@ -1,3 +1,4 @@
+import { OfflineBanner } from './ui/offline.jsx';
 import './styles.css';
 import { createRoot } from 'react-dom/client';
 import { useEffect, useState, lazy, Suspense } from 'react';
@@ -109,6 +110,7 @@ function Shell({ tabs, children, path }) {
         </Link>
       </aside>
       <div className="main">
+        <OfflineBanner />
         {OFFLINE && <div style={{ background: '#FFF1B8', color: '#5C4A00', textAlign: 'center', fontSize: 12, padding: 4 }}>{t('Mode local : les données restent dans ce navigateur.')}</div>}
         {children}
       </div>
