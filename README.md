@@ -12,7 +12,8 @@ Site : https://artis-and-you.vercel.app
 | `desktop/` | Le logiciel Windows (.exe) et Mac (.dmg) : une fenêtre Electron qui charge le site, avec mises à jour automatiques. |
 | `supabase/migrations/` | Le schéma de la base, les règles d'accès (RLS) et les fonctions SQL, dans l'ordre d'application. |
 | `supabase/functions/` | Les Edge Functions : `assistant` (IA), `push` (notifications), `agenda` (flux calendrier), `mail` (e-mails via Resend). |
-| `.github/workflows/` | `web.yml` : build et tests à chaque envoi. `desktop.yml` : construction et publication du .exe et du .dmg. |
+| `.github/workflows/` | `web.yml` : build et tests à chaque envoi. `desktop.yml` : construction et publication du .exe et du .dmg. `backup.yml` : sauvegarde hebdomadaire chiffrée de la base (inactive sans les secrets `SUPABASE_DB_URL` et `BACKUP_PASSPHRASE`, voir l'en-tête du fichier). |
+| `android/` | Emballage Android (Trusted Web Activity) et fiche Play Store : voir `android/README.md`. Aucun coût tant que le compte Google Play n'est pas créé. |
 | `SECURITY_AUDIT.md` | L'audit de sécurité du 9 novembre 2026 et l'état des correctifs. |
 
 Il n'y a pas encore d'application native iPhone ou Android : sur téléphone, c'est la webapp installée.
