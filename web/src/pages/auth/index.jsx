@@ -8,7 +8,8 @@ import { navigate, Link } from '../../lib/router.jsx';
 import { t, LANGS, getLang } from '../../lib/i18n.js';
 import { Field, Chips, Wordmark } from '../../ui/index.jsx';
 import { PasswordField, pwError } from '../../ui/password.jsx';
-import { TRADES, LEGAL_FORMS } from '../../lib/docs.js';
+import { LEGAL_FORMS } from '../../lib/docs.js';
+import { TradePicker } from '../../ui/trades.jsx';
 
 function AuthLayout({ children, art = true }) {
   const { setLang, lang } = useApp();
@@ -296,10 +297,7 @@ export function SignupPro() {
                 <Field label={t('E-mail de l’entreprise')}><input type="email" value={c.email} onChange={(e) => setC({ ...c, email: e.target.value })} required /></Field>
               </div>
               <div className="field"><span>{t('Vos métiers')}</span></div>
-              {Object.entries(TRADES).map(([g, list]) => (
-                <div key={g}><div className="small bold red-t" style={{ margin: '6px 0' }}>{t(g).toUpperCase()}</div>
-                  <Chips multi options={list.map((x) => [x, t(x)])} value={c.trades} onChange={(trades) => setC({ ...c, trades })} /></div>
-              ))}
+              <TradePicker value={c.trades} onChange={(trades) => setC({ ...c, trades })} />
               <Field label={t('Code de parrainage')} hint={t('facultatif — 1 mois offert en plus')}><input value={c.referral} onChange={(e) => setC({ ...c, referral: e.target.value.toUpperCase() })} /></Field>
               <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artesa (SIRET, informations légales) avant d’être visible des clients.')}</p>
             </>

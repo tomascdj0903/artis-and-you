@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { companyMissing } from '../../lib/docs.js';
+import { companyMissing, VAULT_FORM, VAULT_TYPES, docTypeLabel, similarTrades } from '../../lib/docs.js';
+import { useTrades, loadTrades } from '../../ui/trades.jsx';
 import { HELP, HELP_CATS } from '../../lib/help.js';
 import { bioAvailable, bioEnabled, bioEnable, bioDisable, groupSecret } from '../../lib/security.js';
 import { LuBell, LuCalendar, LuFileText, LuEuro, LuMessageSquare, LuInfo, LuMail, LuPhone, LuBug, LuDownload, LuTrash2, LuMoon, LuSun, LuCheck, LuX } from 'react-icons/lu';
@@ -11,7 +12,7 @@ import { resetTours } from '../../ui/tour.jsx';
 import { t, LANGS } from '../../lib/i18n.js';
 import { rel, dateMed, fullName, date } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
-import { TopBar, SearchBar, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet, openFile } from '../../ui/index.jsx';
 import { uploadTo } from './chat.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 
@@ -267,14 +268,83 @@ export function NotFound() {
 }
 
 // ─────────────── Administration Artesa (vérification SIRET, avis) ───────────────
+// Coffre-fort : chaque document déposé par un pro est vérifié avant d'être visible de ses clients
+function AdminVault({ list, cm, reload }) {
+  const { run } = useApp();
+  const [refuse, setRefuse] = useState(null);
+  const decide = (f, status, note = '') => run(() => api.rpc('admin_review_file', { p_id: f.id, p_status: status, p_note: note }), status === 'valide' ? t('Document validé') : t('Document refusé')).then(reload);
+  if (!list.length) return <Empty text={t('Aucun document à vérifier')} />;
+  return (
+    <>
+      {list.map((f) => {
+        const co = cm[f.company_id] || {};
+        const form = VAULT_FORM[f.doc_type] || {};
+        return (
+          <div key={f.id} className="card soft mb">
+            <div className="row between wrap"><b>{co.trade_name || co.name}</b><Pill c="yellow">{docTypeLabel(f.doc_type, VAULT_TYPES)}</Pill></div>
+            <div className="small">{f.name}</div>
+            <div className="small muted">{[t(form.issued || 'Délivré le') + ' ' + (f.issued_at ? date(f.issued_at) : '—'), f.valid_until ? t('Valide jusqu’au {d}', { d: date(f.valid_until) }) : '', ...(form.fields || []).map(([k, l]) => f.meta?.[k] ? t(l) + ' : ' + f.meta[k] : '')].filter(Boolean).join(' · ')}</div>
+            <div className="small muted">{['SIRET ' + (co.siret || '—'), co.insurer && f.doc_type === 'decennale' ? t('Assureur déclaré : {a}', { a: co.insurer }) : '', t('Déposé {d}', { d: rel(f.created_at) })].filter(Boolean).join(' · ')}</div>
+            <div className="row wrap mt">
+              <button className="btn xs ghost" onClick={() => openFile(f.path, f.name)}><LuDownload /> {t('Ouvrir')}</button>
+              <button className="btn xs" onClick={() => decide(f, 'valide')}><LuCheck /> {t('Valider')}</button>
+              <button className="btn xs ghost" onClick={() => setRefuse({ f, note: '' })}><LuX /> {t('Refuser')}</button>
+            </div>
+          </div>
+        );
+      })}
+      <Sheet open={!!refuse} onClose={() => setRefuse(null)} title={t('Refuser le document')}>
+        {refuse && <>
+          <div className="chips mb">{[t('Document illisible'), t('Document expiré'), t('Ce n’est pas le bon document'), t('Le nom ou le SIRET ne correspond pas à l’entreprise')].map((x) => <button key={x} type="button" className="chip" onClick={() => setRefuse({ ...refuse, note: x })}>{x}</button>)}</div>
+          <Field label={t('Motif (envoyé au pro)')}><textarea value={refuse.note} onChange={(e) => setRefuse({ ...refuse, note: e.target.value })} /></Field>
+          <button className="btn block" disabled={!refuse.note.trim()} onClick={() => { decide(refuse.f, 'refuse', refuse.note.trim()); setRefuse(null); }}>{t('Envoyer')}</button></>}
+      </Sheet>
+    </>
+  );
+}
+
+// Métiers proposés par les pros : corriger l'orthographe, fusionner avec un doublon, valider ou refuser
+function AdminTrades({ list, cos, reload }) {
+  const { run } = useApp();
+  const cat = useTrades();
+  const [edit, setEdit] = useState({});
+  if (!list.length) return <Empty text={t('Aucun métier proposé')} />;
+  const decide = (tr, action, name) => run(() => api.rpc('admin_review_trade', { p_id: tr.id, p_action: action, p_name: name || null, p_category: edit[tr.id]?.category || null }), action === 'refuse' ? t('Métier refusé') : t('Métier validé')).then(() => { loadTrades(true); reload(); });
+  return list.map((tr) => {
+    const e = edit[tr.id] || { name: tr.name, category: tr.category };
+    const set = (patch) => setEdit({ ...edit, [tr.id]: { ...e, ...patch } });
+    const near = similarTrades(e.name, cat.all.filter((x) => x !== tr.name));
+    const users = cos.filter((c) => (c.trades || []).includes(tr.name));
+    return (
+      <div key={tr.id} className="card soft mb">
+        <div className="row between wrap"><b>{tr.name}</b><span className="small muted">{t('Proposé {d}', { d: rel(tr.created_at) })} · {t('{n} entreprise(s)', { n: users.length })}{users.length ? ' : ' + users.map((c) => c.trade_name || c.name).join(', ') : ''}</span></div>
+        <div className="form-grid two mt">
+          <Field label={t('Nom corrigé')}><input value={e.name} onChange={(ev) => set({ name: ev.target.value })} /></Field>
+          <Field label={t('Catégorie')}><select value={e.category} onChange={(ev) => set({ category: ev.target.value })}>{[...Object.keys(cat.groups), 'Autres métiers'].filter((x, i, a) => a.indexOf(x) === i).map((c) => <option key={c} value={c}>{t(c)}</option>)}</select></Field>
+        </div>
+        {near.length > 0 && <div className="notice small"><b>{t('Doublon possible :')}</b> {near.map((x) => <button key={x} type="button" className="chip" style={{ marginLeft: 6 }} onClick={() => decide(tr, 'valide', x)} title={t('Fusionner dans « {n} »', { n: x })}>{t('Fusionner dans « {n} »', { n: x })}</button>)}</div>}
+        <div className="row wrap mt">
+          <button className="btn xs" onClick={() => decide(tr, 'valide', e.name)}><LuCheck /> {e.name !== tr.name ? t('Corriger et valider') : t('Valider')}</button>
+          <button className="btn xs ghost" onClick={() => decide(tr, 'refuse')}><LuX /> {t('Refuser')}</button>
+        </div>
+      </div>
+    );
+  });
+}
+
 export function Admin() {
   const { run, profile } = useApp();
-  const [tab, setTab] = useState('siret');
+  const [tab, setTab] = useState(() => new URLSearchParams(location.search).get('tab') || 'siret');
   const [refuse, setRefuse] = useState(null);
   const [b, reload] = useData(async () => {
     if (!profile.is_admin) return null;
-    const [cos, revs] = await Promise.all([api.select('companies', {}, { order: 'created_at.desc', limit: 300 }), api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' })]);
-    return { cos, revs, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
+    const [cos, revs, vault, trades] = await Promise.all([
+      api.select('companies', {}, { order: 'created_at.desc', limit: 300 }),
+      api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' }),
+      api.select('files', { kind: 'vault', review_status: 'en_attente' }, { order: 'created_at.asc' }),
+      api.select('trades', { status: 'en_attente' }, { order: 'created_at.asc' }),
+    ]);
+    return { cos, revs, vault, trades, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
   }, []);
   if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artesa.')} /></div>;
   if (!b) return <div className="content"><TopBar title={t('Administration')} /><Loader /></div>;
@@ -285,8 +355,8 @@ export function Admin() {
   return (
     <div className="content">
       <TopBar title={t('Administration')} sub="Artesa" />
-      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })]]} value={tab} onChange={setTab} />
-      {tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
+      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })]]} value={tab} onChange={setTab} />
+      {tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
         <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>
           <div className="row mt"><button className="btn xs" onClick={() => run(() => api.update('reviews', { id: r.id }, { status: 'publie' }), t('Avis publié')).then(reload)}><LuCheck /> {t('Publier')}</button><button className="btn xs ghost" onClick={() => run(() => api.update('reviews', { id: r.id }, { status: 'refuse' }), t('Avis refusé')).then(reload)}><LuX /> {t('Refuser')}</button></div></div>
       ))) : (

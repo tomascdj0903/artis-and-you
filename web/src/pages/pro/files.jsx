@@ -1,13 +1,13 @@
 import { kbd } from '../../lib/a11y.js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2 } from 'react-icons/lu';
+import { LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2, LuUpload } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { clientName, dateMed, date, iso, rel } from '../../lib/format.js';
-import { DOC_TYPES, VAULT_TYPES, VAULT_REQUIRED, docTypeLabel, validity } from '../../lib/docs.js';
+import { DOC_TYPES, VAULT_TYPES, VAULT_REQUIRED, VAULT_FORM, addMonths, reviewPill, docTypeLabel, validity } from '../../lib/docs.js';
 import { TopBar, SearchBar, Sec, Sheet, Field, Chips, useData, Loader, Empty, Img, openFile, pickFiles, Toggle, SettingToggle, StatusPill, Pill } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
@@ -165,26 +165,57 @@ export function OtherDocsClient({ params }) {
   );
 }
 
-function UploadSheet({ open, onClose, kind, types, clientId, onDone, presetType }) {
+function UploadSheet({ open, onClose, kind, types, clientId, onDone, presetType, presetFile }) {
   const { company, run } = useApp();
-  const vp = kind === 'vault' ? vaultPrefs(company, presetType || types[0][0]) : null;
-  const [v, setV] = useState({ doc_type: presetType || types[0][0], name: '', issued_at: iso(new Date()), valid_until: '', shared_with_client: kind === 'doc' || !!vp?.shared });
   const [file, setFile] = useState(null);
-  if (!open) return null;
-  const save = () => run(async () => {
-    if (!file) throw new Error(t('Choisissez un fichier.'));
-    const up = await uploadTo(`${company.id}/${kind}/${clientId || 'entreprise'}`, file);
-    await api.insert('files', { company_id: company.id, client_id: clientId || null, kind, doc_type: v.doc_type, name: v.name || file.name.replace(/\.[^.]+$/, ''), path: up.path, mime: file.type, size: file.size, issued_at: v.issued_at || null, valid_until: v.valid_until || null, shared_with_client: v.shared_with_client, ...(kind === 'vault' ? { remind_days: vaultPrefs(company, v.doc_type).remind } : {}) });
-    onDone();
-  }, t('Document ajouté'));
+  const [v, setV] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const blank = (type, f) => {
+    const form = kind === 'vault' ? VAULT_FORM[type] || {} : {};
+    const today = iso(new Date());
+    const meta = Object.fromEntries((form.fields || []).map(([k, , from]) => [k, from === 'company.insurer' ? company.insurer || '' : from === 'company.insurance_contract' ? company.insurance_contract || '' : from === 'company.trades' ? (company.trades || []).join(', ') : '']));
+    return { doc_type: type, name: f ? f.name.replace(/\.[^.]+$/, '') : '', issued_at: today, valid_until: addMonths(today, form.months), meta, shared_with_client: kind === 'doc' || (kind === 'vault' && vaultPrefs(company, type).shared), auto: true };
+  };
+  // À l'ouverture : type pré-rempli, fichier déjà choisi le cas échéant (bouton « Déposer » d'un dossier)
+  useEffect(() => {
+    if (!open) { setV(null); setFile(null); setBusy(false); return; }
+    const type = presetType || types[0][0];
+    setFile(presetFile || null); setV(blank(type, presetFile));
+  }, [open, presetType, presetFile]);
+  if (!open || !v) return null;
+  const form = kind === 'vault' ? VAULT_FORM[v.doc_type] || {} : {};
+  const typeLabel = docTypeLabel(v.doc_type, types);
+  const setType = (type) => setV({ ...blank(type, file), name: v.auto ? '' : v.name });
+  const setIssued = (d) => setV({ ...v, issued_at: d, valid_until: form.months ? addMonths(d, form.months) : v.valid_until });
+  const save = () => {
+    if (busy) return; // un seul envoi, même si on reclique pendant le téléversement
+    setBusy(true);
+    run(async () => {
+      if (!file) throw new Error(t('Choisissez un fichier.'));
+      if (form.needEnd && !v.valid_until) throw new Error(t('Indiquez la date de fin de validité.'));
+      if (form.needName && !v.name.trim()) throw new Error(t('Donnez un nom au document.'));
+      for (const [k, l] of form.fields || []) if (!String(v.meta[k] || '').trim()) throw new Error(t('Renseignez : {l}.', { l: t(l) }));
+      const up = await uploadTo(`${company.id}/${kind}/${clientId || 'entreprise'}`, file);
+      const name = (v.name || '').trim() || (kind === 'vault' ? `${typeLabel} · ${date(v.issued_at)}` : file.name.replace(/\.[^.]+$/, ''));
+      await api.insert('files', { company_id: company.id, client_id: clientId || null, kind, doc_type: v.doc_type, name, path: up.path, mime: file.type, size: file.size, issued_at: v.issued_at || null, valid_until: v.valid_until || null, shared_with_client: v.shared_with_client, meta: v.meta, ...(kind === 'vault' ? { remind_days: vaultPrefs(company, v.doc_type).remind } : {}) });
+      onDone();
+    }, kind === 'vault' ? t('Document déposé : l’équipe Artesa le vérifie') : t('Document ajouté')).finally(() => setBusy(false));
+  };
+  const choose = async () => { const [f] = await pickFiles({ multiple: false, accept: 'application/pdf,image/*,.doc,.docx,.xls,.xlsx' }); if (f) setFile(f); };
   return (
-    <Sheet open onClose={onClose} title={t('Ajouter un document')}>
-      <button className="btn ghost block mb" onClick={async () => { const [f] = await pickFiles({ multiple: false, accept: 'application/pdf,image/*,.doc,.docx,.xls,.xlsx' }); if (f) { setFile(f); if (!v.name) setV({ ...v, name: f.name.replace(/\.[^.]+$/, '') }); } }}>{file ? '📎 ' + file.name : t('Choisir le fichier')}</button>
-      <Field label={t('Type')}><select value={v.doc_type} onChange={(e) => setV({ ...v, doc_type: e.target.value, ...(kind === 'vault' ? { shared_with_client: vaultPrefs(company, e.target.value).shared } : {}) })}>{types.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></Field>
-      <Field label={t('Nom')}><input value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} /></Field>
-      <div className="form-grid two"><Field label={t('Délivré le')}><input type="date" value={v.issued_at} onChange={(e) => setV({ ...v, issued_at: e.target.value })} /></Field><Field label={t('Valide jusqu’au')}><input type="date" value={v.valid_until} onChange={(e) => setV({ ...v, valid_until: e.target.value })} /></Field></div>
+    <Sheet open onClose={busy ? () => {} : onClose} title={kind === 'vault' ? t('Déposer : {l}', { l: typeLabel }) : t('Ajouter un document')}>
+      <button type="button" className={'btn block mb ' + (file ? 'light' : 'ghost')} onClick={choose} disabled={busy}><LuFileText /> {file ? file.name : t('Choisir le fichier (PDF ou photo)')}</button>
+      {!presetType && <Field label={t('Type')}><select value={v.doc_type} onChange={(e) => setType(e.target.value)}>{types.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></Field>}
+      {form.hint && <p className="small faint" style={{ marginTop: -4 }}>{t(form.hint)}</p>}
+      {(form.fields || []).map(([k, l, , ph]) => <Field key={k} label={t(l)} req><input value={v.meta[k] || ''} placeholder={ph ? t(ph) : ''} onChange={(e) => setV({ ...v, meta: { ...v.meta, [k]: e.target.value } })} /></Field>)}
+      <div className="form-grid two">
+        <Field label={t(form.issued || 'Délivré le')}><input type="date" value={v.issued_at} onChange={(e) => setIssued(e.target.value)} /></Field>
+        <Field label={t('Valide jusqu’au')} req={form.needEnd} hint={form.months ? t('calculée, modifiable') : t('facultatif')}><input type="date" value={v.valid_until} onChange={(e) => setV({ ...v, valid_until: e.target.value })} /></Field>
+      </div>
+      <Field label={t('Nom')} req={form.needName} hint={kind === 'vault' && !form.needName ? t('facultatif') : ''}><input value={v.name} placeholder={kind === 'vault' ? `${typeLabel} · ${date(v.issued_at)}` : ''} onChange={(e) => setV({ ...v, name: e.target.value, auto: false })} /></Field>
       <label className="check"><input type="checkbox" checked={v.shared_with_client} onChange={(e) => setV({ ...v, shared_with_client: e.target.checked })} />{kind === 'vault' ? t('Partager avec mes clients (visible dans leur espace)') : t('Partager avec le client')}</label>
-      <button className="btn block mt" onClick={save}>{t('Enregistrer')}</button>
+      {kind === 'vault' && <p className="small faint">{t('L’équipe Artesa vérifie chaque document avant qu’il soit visible de vos clients. Vous êtes prévenu dès qu’il est validé.')}</p>}
+      <button className="btn block mt" onClick={save} disabled={busy}>{busy ? t('Envoi en cours…') : t('Enregistrer')}</button>
     </Sheet>
   );
 }
@@ -213,7 +244,9 @@ export function Vault() {
   const [open, setOpen] = useState(false);
   const [f, setF] = useState({ st: [], types: [] });
   const [add, setAdd] = useState(false);
+  const [dep, setDep] = useState(null); // dépôt direct depuis un dossier : { type, file }
   const [files, reload] = useData(() => api.select('files', { company_id: company.id, kind: 'vault' }, { order: 'created_at.desc' }), []);
+  const deposit = async (e, type) => { e.stopPropagation(); const [file] = await pickFiles({ multiple: false, accept: 'application/pdf,image/*' }); if (file) setDep({ type, file }); };
   if (!files) return <div className="content"><TopBar title={t('Mon coffre-fort')} /><Loader /></div>;
   const stKey = (x) => ({ [t('À jour')]: 'ok', [t('Expire bientôt')]: 'soon', [t('Expiré')]: 'exp' }[validity(x)[1]]);
   // statut d'un type = le document le plus récent
@@ -232,13 +265,14 @@ export function Vault() {
       <p className="small faint" style={{ marginTop: -6 }}><b className="req-star">*</b> {t('document obligatoire pour exercer (à présenter sur demande d’un client ou d’un donneur d’ordre)')}</p>
       <div className="list">
         {shown.map((x) => (
-          <button key={x.k} className="li click" onClick={() => navigate('/pro/coffre-fort/' + x.k)}>
+          <div key={x.k} className="li click" role="link" tabIndex={0} onClick={() => navigate('/pro/coffre-fort/' + x.k)} onKeyDown={kbd(() => navigate('/pro/coffre-fort/' + x.k))}>
             <div className="ficon navy"><LuFolder /></div>
             <div className="grow"><div className="t1"><span>{t(x.l)}{VAULT_REQUIRED.includes(x.k) && <b className="req-star" title={t('Obligatoire')}>{'\u00a0*'}</b>}</span></div>
-              <div className="row small">{t('{n} doc', { n: x.fs.length })}{x.cur ? <StatusPill s={validity(x.cur)} /> : <Pill c="grey">{t('À ajouter')}</Pill>}</div>
+              <div className="row small">{t('{n} doc', { n: x.fs.length })}{x.cur ? <StatusPill s={reviewPill(x.cur) || validity(x.cur)} /> : <Pill c="grey">{t('À ajouter')}</Pill>}</div>
               {x.cur?.valid_until && <div className="t2">{t('Valide jusqu’au {d}', { d: date(x.cur.valid_until) })}</div>}</div>
+            <button type="button" className="btn xs ghost" onClick={(e) => deposit(e, x.k)} aria-label={t('Déposer : {l}', { l: t(x.l) })}><LuUpload /> {t('Déposer')}</button>
             <LuChevronRight />
-          </button>
+          </div>
         ))}
       </div>
       <PageFab primary={{ label: t('Ajouter un document'), onClick: () => setAdd(true) }} />
@@ -250,6 +284,7 @@ export function Vault() {
         <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setF({ st: [], types: [] })}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} documents', { n: shown.reduce((s, x) => s + x.fs.length, 0) })}</button></div></div>
       </Sheet>
       <UploadSheet open={add} onClose={() => setAdd(false)} kind="vault" types={VAULT_TYPES} onDone={() => { setAdd(false); reload(); }} />
+      <UploadSheet open={!!dep} onClose={() => setDep(null)} kind="vault" types={VAULT_TYPES} presetType={dep?.type} presetFile={dep?.file} onDone={() => { setDep(null); reload(); }} />
     </div>
   );
 }
@@ -294,12 +329,13 @@ export function VaultType({ params }) {
   return (
     <div className="content narrow">
       <TopBar title={t('Mon coffre-fort')} sub={docTypeLabel(params.type, VAULT_TYPES)} />
+      <button className="btn block mb" onClick={() => setAdd(true)}><LuUpload /> {t('Déposer un document')}</button>
       <Sec title={t('Documents')} meta={t('{n} documents', { n: files.length })} />
       {!files.length ? <Empty text={t('Aucun document de ce type.')} /> : (
         <div className="list">{files.map((f) => (
           <div key={f.id} className="li">
             <div className="ficon"><LuFileText /></div>
-            <div className="grow"><div className="t1">{f.name}</div><div className="t2">{t('Délivrée le {d}', { d: date(f.issued_at) })}</div><div className="row small" style={{ marginTop: 4 }}><StatusPill s={validity(f)} /><span className="faint">{f.valid_until ? (validity(f)[1] === t('Expiré') ? t('Expirée le {d}', { d: date(f.valid_until) }) : t('Valide jusqu’au {d}', { d: date(f.valid_until) })) : t('Sans date de fin')}</span></div></div>
+            <div className="grow"><div className="t1">{f.name}</div><div className="t2">{t('Délivrée le {d}', { d: date(f.issued_at) })}</div>{f.review_status === 'refuse' && f.review_note && <div className="small red-t">{t('Motif : {m}', { m: f.review_note })}</div>}<div className="row small" style={{ marginTop: 4 }}><StatusPill s={reviewPill(f) || validity(f)} /><span className="faint">{f.valid_until ? (validity(f)[1] === t('Expiré') ? t('Expirée le {d}', { d: date(f.valid_until) }) : t('Valide jusqu’au {d}', { d: date(f.valid_until) })) : t('Sans date de fin')}</span></div></div>
             <button className="round" onClick={() => openFile(f.path, f.name)} aria-label={t('Télécharger')}><LuDownload /></button>
             <button className="iconbtn" onClick={() => run(async () => { await api.remove('files', { id: f.id }); }, t('Document supprimé')).then(reload)} aria-label={t('Supprimer')}><LuTrash2 /></button>
           </div>

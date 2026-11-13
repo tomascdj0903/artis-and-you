@@ -1,12 +1,13 @@
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', '_users'];
+const TABLES = ['profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
 
 import { ADMIN_EMAILS } from './api.js';
+import { ALL_TRADES, tradeNorm } from './docs.js';
 import { newSecret, checkTotp, otpauthUri } from './security.js';
 export function mockBackend({ saveSession, getSession }) {
   // Stockage dans IndexedDB : les tables dans « kv », les fichiers (photos, PDF) dans « blobs ».
@@ -51,7 +52,7 @@ export function mockBackend({ saveSession, getSession }) {
     clients: { type: 'particulier', status: 'actif', payment_terms: '30 jours fin de mois', payment_mode: 'Virement', max_outstanding: 0, note: '' },
     documents: { status: 'brouillon', lines: [], totals: {}, conditions: {}, paid_amount: 0, locked: false, validity_days: 30, intervention_type: 'Chantier', operations_nature: 'Biens et services', vat_on_debits: false, reverse_charge: false, deposit_pct: 0, issue_date: today() },
     appointments: { status: 'a_valider', mode: 'site', recurrence: 'none', personal: false, type: 'Chantier' },
-    files: { doc_type: 'autre', shared_with_client: false, shared_with_pros: false, remind_days: 15 },
+    files: { doc_type: 'autre', shared_with_client: false, shared_with_pros: false, remind_days: 15, review_status: 'valide', review_note: '', meta: {} },
     items: { kind: 'article', trades: [], unit: 'pièce', purchase_price: 0, coef: 1, sale_price: 0, vat_rate: 20, components: [] },
     messages: { attachments: [], body: '' },
     reviews: { status: 'en_attente' },
@@ -86,6 +87,7 @@ export function mockBackend({ saveSession, getSession }) {
     if (!userId) return;
     db.notifications.push({ id: id(), user_id: userId, category, title, body, link, read: false, created_at: now() });
   }
+  function notifyAdmins(cat, title, body, path) { db.profiles.filter((x) => ADMIN_EMAILS.includes(String(x.email).toLowerCase())).forEach((x) => notify(x.id, cat, title, body, '/' + (x.company_id ? 'pro' : 'client') + '/' + path)); }
   function notifyCompany(cid, cat, title, body, link) { db.profiles.filter((p) => p.company_id === cid).forEach((p) => notify(p.id, cat, title, body, link)); }
   const fmtDT = (s) => new Date(s).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 
@@ -175,7 +177,8 @@ export function mockBackend({ saveSession, getSession }) {
       case 'clients': return r.company_id === mc || r.user_id === me();
       case 'documents': return r.company_id === mc || (r.number && mine.includes(r.client_id));
       case 'appointments': case 'projects': return r.company_id === mc || mine.includes(r.client_id);
-      case 'files': return r.company_id === mc || (mine.includes(r.client_id) && (r.shared_with_client || r.kind === 'photo')) || (r.kind === 'vault' && r.shared_with_client && db.clients.some((c) => c.user_id === me() && c.company_id === r.company_id));
+      case 'trades': return r.status === 'valide' || r.created_by === me() || isAdmin();
+      case 'files': return r.company_id === mc || (r.kind === 'vault' && isAdmin()) || (mine.includes(r.client_id) && (r.shared_with_client || r.kind === 'photo')) || (r.kind === 'vault' && r.shared_with_client && r.review_status === 'valide' && db.clients.some((c) => c.user_id === me() && c.company_id === r.company_id));
       case 'payments': case 'purchases': case 'items': case 'teams': case 'company_invites': case 'network': return r.company_id === mc;
       case 'network_requests': return r.from_company === mc || r.to_company === mc;
       case 'ratings': return r.author_company === mc;
@@ -186,6 +189,37 @@ export function mockBackend({ saveSession, getSession }) {
   }
   const rpcs = {
     is_admin() { return isAdmin(); },
+    admin_review_file({ p_id, p_status, p_note = '' }) {
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      const f = db.files.find((x) => x.id === p_id && x.kind === 'vault'); if (!f) throw new Error('Document introuvable');
+      Object.assign(f, { review_status: p_status, review_note: p_note, reviewed_at: now() });
+      db.profiles.filter((p) => p.company_id === f.company_id && p.member_role === 'gerant').forEach((p) => notify(p.id, 'documents', p_status === 'valide' ? 'Document validé' : 'Document refusé', f.name + (p_status === 'refuse' && p_note ? ' · ' + p_note : ''), '/pro/coffre-fort/' + f.doc_type));
+      return f;
+    },
+    propose_trade({ p_name, p_category = 'Autres métiers' }) {
+      let nm = String(p_name || '').trim().replace(/\s+/g, ' '); nm = nm.charAt(0).toUpperCase() + nm.slice(1);
+      if (nm.length < 3 || nm.length > 60 || !/\p{L}{3}/u.test(nm)) throw new Error('Nom de métier invalide (3 à 60 caractères).');
+      const n = tradeNorm(nm);
+      const built = ALL_TRADES.find((x) => tradeNorm(x) === n); if (built) return { name: built, status: 'valide', existing: true };
+      const ex = db.trades.find((x) => x.norm === n);
+      if (ex) { if (ex.status === 'refuse') throw new Error('Ce métier a été refusé par l’équipe Artesa. Choisissez-en un dans la liste.'); return { name: ex.name, status: ex.status, existing: true }; }
+      if (db.trades.filter((x) => x.created_by === me() && x.status === 'en_attente').length >= 5) throw new Error('Vous avez déjà 5 métiers en attente de validation.');
+      db.trades.push({ id: id(), name: nm, category: p_category || 'Autres métiers', norm: n, status: 'en_attente', builtin: false, created_by: me(), created_at: now() });
+      notifyAdmins('systeme', 'Nouveau métier proposé', nm + ' (' + p_category + ')', 'admin?tab=metiers');
+      return { name: nm, status: 'en_attente', existing: false };
+    },
+    admin_review_trade({ p_id, p_action, p_name = null, p_category = null }) {
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      const tr = db.trades.find((x) => x.id === p_id); if (!tr) throw new Error('Métier introuvable');
+      const swap = (from, to) => db.companies.forEach((c) => { if ((c.trades || []).includes(from)) c.trades = [...new Set(c.trades.map((x) => (x === from ? to : x)).filter(Boolean))]; });
+      if (p_action === 'refuse') { tr.status = 'refuse'; swap(tr.name, null); if (tr.created_by) notify(tr.created_by, 'systeme', 'Métier non retenu', tr.name + ' : choisissez le métier le plus proche dans la liste.', '/pro/compte/entreprise'); return { status: 'refuse' }; }
+      const nm = String(p_name || tr.name).trim().replace(/\s+/g, ' '); const n = tradeNorm(nm);
+      const target = ALL_TRADES.find((x) => tradeNorm(x) === n) || db.trades.find((x) => x.norm === n && x.id !== tr.id)?.name;
+      if (target) { swap(tr.name, target); db.trades = db.trades.filter((x) => x.id !== tr.id); }
+      else { swap(tr.name, nm); Object.assign(tr, { name: nm, norm: n, category: p_category || tr.category, status: 'valide', reviewed_at: now() }); }
+      if (tr.created_by) notify(tr.created_by, 'systeme', 'Métier validé', (target || nm) + ' est maintenant proposé à tous les pros et aux particuliers.', '/pro/compte/entreprise');
+      return { status: 'valide', name: target || nm, merged: !!target };
+    },
     admin_review_company({ p_id, p_status, p_note = '' }) {
       if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
       const c = db.companies.find((x) => x.id === p_id); if (!c) throw new Error('Entreprise introuvable');
@@ -443,6 +477,8 @@ export function mockBackend({ saveSession, getSession }) {
         const x = { ...(defaults[table] || {}), id: id(), created_at: now(), ...r };
         if (table === 'messages' && !x.sender_id) x.sender_id = me();
         if (table === 'files' && !x.uploaded_by) x.uploaded_by = me();
+        if (table === 'files' && !isAdmin()) { x.review_status = x.kind === 'vault' ? 'en_attente' : 'valide'; x.review_note = ''; }
+        if (table === 'files' && x.review_status === 'en_attente') notifyAdmins('documents', 'Document à vérifier', (db.companies.find((c) => c.id === x.company_id)?.name || '') + ' · ' + x.name, 'admin?tab=coffre');
         if (table === 'documents' && !x.created_by) x.created_by = me();
         db[table].push(x); afterInsert(table, x); return x;
       });
@@ -459,6 +495,11 @@ export function mockBackend({ saveSession, getSession }) {
       for (const r of db[table].filter((x) => match(x, filters))) {
         if (table === 'companies' && !isAdmin() && ('verified' in patch || 'verification_status' in patch)) return fail('Seule l’équipe Artesa peut valider une entreprise.');
         if (table === 'documents' && r.locked && ('lines' in patch || 'totals' in patch || 'client_id' in patch)) return fail('Cette facture est émise : elle ne peut plus être modifiée. Créez un avoir.');
+        if (table === 'files' && !isAdmin()) {
+          const p2 = { ...patch }; delete p2.review_status; delete p2.review_note; delete p2.reviewed_at;
+          if (r.kind === 'vault' && ['path', 'doc_type', 'issued_at', 'valid_until', 'meta'].some((k) => k in p2 && JSON.stringify(p2[k]) !== JSON.stringify(r[k]))) Object.assign(p2, { review_status: 'en_attente', review_note: '' });
+          patch = p2;
+        }
         const old = { ...r }; Object.assign(r, patch); afterUpdate(table, old, r); last = r;
       }
       await persist(); return wait(last);

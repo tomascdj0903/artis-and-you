@@ -2,12 +2,12 @@ import { kbd, kbdRow } from '../../lib/a11y.js';
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
+import { LuBookOpen, LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
-import { starterFor } from '../../lib/starter.js';
+import { starterFor, starterOf, STARTER } from '../../lib/starter.js';
 import { money, money0, date, dateShort, clientName, iso } from '../../lib/format.js';
 import { STEPS, autoSteps, stepState, ALL_TRADES, VAT_RATES, kindLabel } from '../../lib/docs.js';
 import { makeXlsx, download } from '../../lib/xlsx.js';
@@ -333,12 +333,42 @@ function PurchaseSheet({ open, onClose, onDone }) {
   );
 }
 
+// Catalogue : ouvrages et articles courants de chaque métier du site, à parcourir et importer (prix indicatifs à ajuster)
+function TradeCatalog({ items, onClose, onDone }) {
+  const { company, run } = useApp();
+  const trades = [...(company.trades || []).filter((x) => STARTER[x]), ...Object.keys(STARTER).filter((x) => !(company.trades || []).includes(x))];
+  const [trade, setTrade] = useState(trades[0]);
+  const list = starterOf(trade);
+  const have = (x) => items.some((i) => i.name === x.name);
+  const [sel, setSel] = useState(() => new Set());
+  const pick = (tr) => { setTrade(tr); setSel(new Set()); };
+  const fresh = list.filter((x) => !have(x));
+  const chosen = fresh.filter((x) => sel.has(x.name));
+  const add = () => run(async () => { for (const x of chosen) await api.insert('items', { ...x, company_id: company.id }); onDone(); }, t('{n} produits ajoutés', { n: chosen.length }));
+  return (
+    <Sheet open onClose={onClose} title={t('Catalogue par métier')}>
+      <Field label={t('Métier')}><select value={trade} onChange={(e) => pick(e.target.value)}>{trades.map((x) => <option key={x} value={x}>{t(x)}{(company.trades || []).includes(x) ? ' ★' : ''}</option>)}</select></Field>
+      <p className="small faint">{t('Prix HT indicatifs (moyennes constatées en France), à ajuster à vos tarifs après l’import.')}</p>
+      <div className="row between small mb"><span>{t('{n} produits', { n: list.length })}</span>{fresh.length > 0 && <button type="button" className="link" onClick={() => setSel(sel.size === fresh.length ? new Set() : new Set(fresh.map((x) => x.name)))}>{sel.size === fresh.length ? t('Tout désélectionner') : t('Tout sélectionner')}</button>}</div>
+      <div className="checklist">{list.map((x) => (
+        <label key={x.name} className="check" style={{ opacity: have(x) ? 0.55 : 1 }}>
+          <input type="checkbox" disabled={have(x)} checked={have(x) || sel.has(x.name)} onChange={(e) => { const n = new Set(sel); e.target.checked ? n.add(x.name) : n.delete(x.name); setSel(n); }} />
+          <span className="grow"><b>{x.name}</b><span className="small muted"> · {x.kind === 'ouvrage' ? t('Ouvrage') : t('Article')} · {x.family}{have(x) ? ' · ' + t('déjà dans votre bibliothèque') : ''}</span></span>
+          <span className="small bold" style={{ whiteSpace: 'nowrap' }}>{money(x.sale_price)} <span className="muted">/ {x.unit}</span></span>
+        </label>
+      ))}</div>
+      <button className="btn block mt" disabled={!chosen.length} onClick={add}>{t('Ajouter {n} produits', { n: chosen.length })}</button>
+    </Sheet>
+  );
+}
+
 // ─────────────── Bibliothèque ───────────────
 export function Library() {
   const { company } = useApp();
   const [tab, setTab] = useState('article');
   const [fam, setFam] = useState('');
   const [q, setQ] = useState('');
+  const [cat, setCat] = useState(false);
   const { run } = useApp();
   const [items, reload] = useData(() => api.select('items', { company_id: company.id }, { order: 'name.asc' }), []);
   if (!items) return <div className="content"><TopBar title={t('Ma bibliothèque')} /><Loader /></div>;
@@ -351,6 +381,8 @@ export function Library() {
       <TopBar title={t('Ma bibliothèque')} sub={(company.trades || []).slice(0, 2).map(t).join(' · ')} />
       <SearchBar placeholder={t('Recherchez un produit')} value={q} onChange={setQ} />
       <Seg options={[['article', t('Articles · {n}', { n: items.filter((i) => i.kind === 'article').length })], ['ouvrage', t('Ouvrages · {n}', { n: items.filter((i) => i.kind === 'ouvrage').length })]]} value={tab} onChange={(v) => { setTab(v); setFam(''); }} />
+      <button className="btn ghost sm mb" onClick={() => setCat(true)}><LuBookOpen /> {t('Catalogue par métier')}</button>
+      {cat && <TradeCatalog items={items} onClose={() => setCat(false)} onDone={() => { setCat(false); reload(); }} />}
       {items.length < 8 && starter.length > 0 && <div className="card soft mb"><b>{t('Démarrez plus vite')}</b><div className="small muted" style={{ margin: '4px 0 10px' }}>{t('Ajoutez {n} ouvrages et articles courants de votre métier, avec des prix indicatifs à ajuster.', { n: starter.length })}</div><button className="btn sm" onClick={addStarter}>{t('Ajouter la bibliothèque de démarrage')}</button></div>}
       {families.length > 0 && <Chips scroll options={[['', t('Tout')], ...families.map((f) => [f, f])]} value={fam} onChange={setFam} />}
       {!list.length ? <Empty text={tab === 'article' ? t('Ajoutez vos produits (fournitures) avec leur prix d’achat et de vente.') : t('Un ouvrage regroupe des articles et de la main-d’œuvre (ex. « Pose d’un chauffe-eau »).')} /> : (

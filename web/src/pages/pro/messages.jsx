@@ -7,7 +7,8 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { clientName, rel, date, initials } from '../../lib/format.js';
-import { TRADES } from '../../lib/docs.js';
+import { useTrades } from '../../ui/trades.jsx';
+
 import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, ShareButton } from '../../ui/index.jsx';
 import { Chat, convMeta } from '../common/chat.jsx';
 
@@ -105,6 +106,7 @@ export function Conversation({ params }) {
 
 // ─────────────── Mon réseau ───────────────
 export function Network() {
+  const tradeGroups = useTrades().groups;
   const { company } = useApp();
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
@@ -176,7 +178,7 @@ export function Network() {
         ))}</div>
       )}
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer par métier')} right={<span className="red-t bold small">{t('{n} sélectionnés', { n: trades.length })}</span>}>
-        {Object.entries(TRADES).map(([g, ls]) => <div key={g}><div className="small bold red-t mt">{t(g).toUpperCase()}</div><div className="checklist">{ls.map((x) => <label key={x} className="check"><input type="checkbox" checked={trades.includes(x)} onChange={(e) => setTrades(e.target.checked ? [...trades, x] : trades.filter((y) => y !== x))} />{t(x)}</label>)}</div></div>)}
+        {Object.entries(tradeGroups).map(([g, ls]) => <div key={g}><div className="small bold red-t mt">{t(g).toUpperCase()}</div><div className="checklist">{ls.map((x) => <label key={x} className="check"><input type="checkbox" checked={trades.includes(x)} onChange={(e) => setTrades(e.target.checked ? [...trades, x] : trades.filter((y) => y !== x))} />{t(x)}</label>)}</div></div>)}
         <div className="btns"><div className="two"><button className="btn ghost" onClick={() => setTrades([])}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} pros', { n: list.length })}</button></div></div>
       </Sheet>
     </div>

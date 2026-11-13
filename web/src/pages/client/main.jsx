@@ -6,7 +6,8 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
 import { dateLong, dateShort, hm, rel, iso, addDays, date, dateTime, time } from '../../lib/format.js';
-import { TRADES, clientApptStatus } from '../../lib/docs.js';
+import { useTrades } from '../../ui/trades.jsx';
+import { clientApptStatus } from '../../lib/docs.js';
 import { icsFile } from '../../lib/ics.js';
 import { TopBar, SearchBar, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
@@ -73,6 +74,7 @@ export function Home() {
 
 // ─────────────── Recherche d'artisans ───────────────
 export function Search() {
+  const tradeGroups = useTrades().groups;
   const { query } = useLocation();
   const [q, setQ] = useState(query.get('q') || '');
   const [term, setTerm] = useState(q);
@@ -114,7 +116,7 @@ export function Search() {
         <Field label={t('Ville des travaux')}><CityInput value={city} onChange={(v) => { setCity(v); setPlace(null); }} onPick={(s) => setPlace(s)} placeholder={t('ex. Nice, Antibes…')} /></Field>
         {place && <p className="small faint" style={{ marginTop: -6 }}>{t('Artisans qui interviennent à {v} (selon leur zone d’intervention).', { v: place.city })}</p>}
         <div className="small bold mb">{t('Métier')}</div>
-        {Object.entries(TRADES).map(([g, ls]) => <div key={g}><div className="small red-t bold">{t(g).toUpperCase()}</div><Chips options={ls.map((x) => [x, t(x)])} value={trade} onChange={(v) => setTrade(v === trade ? '' : v)} /></div>)}
+        {Object.entries(tradeGroups).map(([g, ls]) => <div key={g}><div className="small red-t bold">{t(g).toUpperCase()}</div><Chips options={ls.map((x) => [x, t(x)])} value={trade} onChange={(v) => setTrade(v === trade ? '' : v)} /></div>)}
         <div className="btns"><div className="two"><button className="btn ghost" onClick={() => { setTrade(''); setCity(''); setPlace(null); }}>{t('Réinitialiser')}</button><button className="btn" onClick={() => setOpen(false)}>{t('Afficher {n} artisans', { n: list.length })}</button></div></div>
       </Sheet>
     </div>

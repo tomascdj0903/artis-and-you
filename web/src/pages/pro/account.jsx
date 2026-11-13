@@ -5,7 +5,8 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { date, fullName } from '../../lib/format.js';
-import { PLANS, TRADES, LEGAL_FORMS, SOCIETIES, companyMissing } from '../../lib/docs.js';
+import { PLANS, LEGAL_FORMS, SOCIETIES, companyMissing } from '../../lib/docs.js';
+import { TradePicker } from '../../ui/trades.jsx';
 import { AddressFields, CityInput } from '../../ui/address.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 import { siretValid } from '../auth/index.jsx';
@@ -158,7 +159,7 @@ export function CompanySettings() {
         </div>
         <div>
           <Sec title={<>{t('Activité')}{missKeys.has('trades') && <span className="small red-t"> · {t('choisissez au moins un métier')}</span>}</>} />
-          {Object.entries(TRADES).map(([g, ls]) => <div key={g}><div className="small bold red-t">{t(g).toUpperCase()}</div><Chips multi options={ls.map((x) => [x, t(x)])} value={c.trades || []} onChange={(trades) => setC({ ...c, trades })} /></div>)}
+          <TradePicker value={c.trades || []} onChange={(trades) => setC({ ...c, trades })} />
           <Sec title={t("Zone d'intervention")} />
           <Field label={t('Ville de départ')}><CityInput value={c.zone_city ?? c.city ?? ''} placeholder={t('ex. Antibes')} onChange={(v) => setC({ ...c, zone_city: v, zone: zoneText(v, km) })} onPick={(s) => setC((x) => ({ ...x, zone_city: s.city, zone_lat: s.lat, zone_lon: s.lon, zone: zoneText(s.city, km) }))} /></Field>
           <div className="range-row"><span className="small">{t('Rayon')}</span><input type="range" min={5} max={150} step={5} value={km} onChange={(e) => setC({ ...c, zone_km: +e.target.value, zone: zoneText(c.zone_city || c.city, +e.target.value) })} aria-label={t('Rayon')} /><b>{km} km</b></div>

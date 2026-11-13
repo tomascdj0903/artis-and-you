@@ -133,6 +133,24 @@ export const VAULT_TYPES = [
   ['kbis', 'Kbis'], ['urssaf', 'Attestation de vigilance URSSAF'], ['decennale', 'Attestation décennale'], ['rcpro', 'Assurance RC Pro'],
   ['fiscale', 'Attestation de régularité fiscale'], ['certification', 'Certifications (RGE, Qualibat)'], ['btp', 'Cartes BTP'], ['contrat', 'Contrats'], ['autre', 'Autres documents'],
 ];
+// Formulaire de dépôt adapté à chaque type de document du coffre-fort :
+//   issued : libellé de la date de délivrance / début ; months : validité par défaut (fin calculée, modifiable) ;
+//   needEnd : date de fin obligatoire ; fields : champs propres au document (enregistrés dans files.meta) ; hint : rappel affiché
+export const VAULT_FORM = {
+  kbis: { issued: 'Date de l’extrait', months: 3, hint: 'Un extrait Kbis est accepté s’il a moins de 3 mois.' },
+  urssaf: { issued: 'Date de délivrance', months: 6, hint: 'L’attestation de vigilance est valable 6 mois (à fournir à vos donneurs d’ordre).' },
+  decennale: { issued: 'Début de validité', months: 12, needEnd: true, fields: [['insurer', 'Assureur', 'company.insurer'], ['contract', 'N° de contrat', 'company.insurance_contract'], ['activities', 'Activités couvertes', 'company.trades']], hint: 'Vérifiez que les activités couvertes correspondent à vos métiers.' },
+  rcpro: { issued: 'Début de validité', months: 12, needEnd: true, fields: [['insurer', 'Assureur'], ['contract', 'N° de contrat']] },
+  fiscale: { issued: 'Date de délivrance', months: 6, hint: 'À télécharger depuis votre espace professionnel impots.gouv.fr.' },
+  certification: { issued: 'Date d’obtention', months: 48, needEnd: true, fields: [['label', 'Certification', '', 'ex. RGE Qualibat, Qualifelec'], ['number', 'N° de certificat']] },
+  btp: { issued: 'Date de délivrance', months: 60, needEnd: true, fields: [['worker', 'Salarié', '', 'Prénom Nom'], ['number', 'N° de carte']] },
+  contrat: { issued: 'Date de signature', months: 0, fields: [['party', 'Avec', '', 'ex. client, fournisseur, sous-traitant']] },
+  autre: { issued: 'Date du document', months: 0, needName: true },
+};
+export const addMonths = (isoDate, m) => { if (!isoDate || !m) return ''; const d = new Date(isoDate + 'T12:00:00'); d.setMonth(d.getMonth() + m); d.setDate(d.getDate() - 1); return d.toISOString().slice(0, 10); };
+// Statut de vérification d'un document du coffre-fort (équipe Artesa)
+export const reviewPill = (f) => f?.kind === 'vault' && f.review_status === 'en_attente' ? ['yellow', t('En vérification')] : f?.kind === 'vault' && f.review_status === 'refuse' ? ['red', t('Refusé')] : null;
+
 // Documents légalement exigés d'un artisan (BTP) : Kbis / immatriculation, vigilance URSSAF (sous-traitance > 5 000 €), décennale
 export const VAULT_REQUIRED = ['kbis', 'urssaf', 'decennale'];
 export const docTypeLabel = (k, list = DOC_TYPES) => t((list.find((x) => x[0] === k) || [k, k])[1]);
@@ -152,6 +170,29 @@ export const TRADES = {
   'Services': ['Nettoyage', 'Déménagement', 'Informatique', 'Électroménager', 'Ramonage', 'Multiservice'],
 };
 export const ALL_TRADES = Object.values(TRADES).flat();
+// Forme normalisée d'un métier (même règle que private.trade_norm en base) : repère « Plombier » / « plombiers » / « Plombér »
+export const tradeNorm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/œ/g, 'oe').replace(/æ/g, 'ae')
+  .replace(/[^a-z0-9]+/g, ' ').replace(/\b([a-z]{3,})(s|x)\b/g, '$1').replace(/\s+/g, ' ').trim();
+// Distance d'édition (fautes de frappe) entre deux formes normalisées
+export function editDistance(a, b) {
+  if (a === b) return 0; if (!a.length) return b.length; if (!b.length) return a.length;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+// Métiers proches d'une saisie : même forme, faute de frappe (≤ 2 lettres, ou 20 %), ou l'un contient l'autre
+export function similarTrades(input, list) {
+  const n = tradeNorm(input); if (n.length < 3) return [];
+  return list.map((x) => {
+    const m = tradeNorm(x); const d = editDistance(n, m);
+    const score = m === n ? 0 : d <= Math.max(2, Math.floor(Math.max(n.length, m.length) * 0.2)) ? d : (m.includes(n) || n.includes(m) || m.split(' ').some((w) => w.length > 3 && n.split(' ').some((v) => editDistance(v, w) <= 1))) ? 3 + d / 100 : 99;
+    return [x, score];
+  }).filter(([, s]) => s < 99).sort((a, b) => a[1] - b[1]).map(([x]) => x).slice(0, 4);
+}
 
 export const PLANS = [
   { id: 'solo', name: 'Solo', price: 19, users: 1, desc: 'Pour l’artisan seul', features: ['Clients, devis et factures illimités', 'Planning et prise de RDV en ligne', 'Messagerie clients', 'Coffre-fort et documents', 'Export comptable Excel et FEC'] },
