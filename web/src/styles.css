@@ -869,7 +869,7 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 /* Barre d'onglets : icône + libellé */
 .tabbar { padding: 6px 2px calc(6px + env(safe-area-inset-bottom)); }
 .tabbar a { width: auto; flex: 1 1 0; min-width: 0; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 21px; border-radius: 12px; text-decoration: none; }
-.tabbar a small { font-size: 10.5px; font-weight: 600; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.tabbar a small { font-size: 11.5px; font-weight: 600; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .tabbar a.on { background: none; color: var(--bordeaux); }
 .tabbar a.on small { font-weight: 800; }
 .tabbar .dot { top: 2px; right: calc(50% - 20px); }
@@ -1221,3 +1221,12 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 /* Hors ligne */
 .offline-bar { background: #2B1F1C; color: #fff; font-size: 12px; text-align: center; padding: 6px 12px; display: flex; gap: 8px; justify-content: center; align-items: center; }
 .bubble.pending { opacity: .6; }
+
+/* Petits écrans : libellé masqué, l'icône suffit (le libellé reste lu par les lecteurs d'écran via aria-label) */
+@media (max-width: 480px) { .hide-sm { display: none; } .dep-btn { width: 40px; height: 40px; padding: 0; justify-content: center; border-radius: 50%; flex: none; } }
+
+/* Téléphones et tablettes : 16 px minimum dans les champs, sinon iOS zoome à chaque saisie (recherche, assistant, formulaires)
+   et il faut dézoomer à la main ensuite */
+@media (max-width: 900px), (pointer: coarse) {
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), select, textarea { font-size: 16px !important; }
+}

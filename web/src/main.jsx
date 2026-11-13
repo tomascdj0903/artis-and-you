@@ -118,7 +118,7 @@ function Shell({ tabs, children, path }) {
       <GlobalFab />
       {!hideTabs && (
         <nav className="tabbar" aria-label={t('Navigation')}>
-          {tabs.map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t(label === 'Mon réseau' ? 'Réseau' : label === 'Notifications' ? 'Alertes' : label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
+          {tabs.map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t({ 'Mon réseau': 'Réseau', Notifications: 'Alertes', Documents: 'Docs', 'Mes documents': 'Docs', 'Mes rendez-vous': 'RDV', 'Mes artisans': 'Artisans' }[label] || label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
         </nav>
       )}
     </div>

@@ -1065,3 +1065,261 @@ Hors ligne : vous consultez les dernières données reçues.|Offline: you are vi
 Connexion rétablie.|Back online.|Ligação restabelecida.|Connessione ripristinata.
 {n} message(s) en attente d’envoi.|{n} message(s) waiting to be sent.|{n} mensagem(ns) à espera de envio.|{n} messaggio/i in attesa di invio.
 En attente de réseau|Waiting for network|À espera de rede|In attesa di rete
+Docs|Docs|Docs|Documenti
+Un compte existe déjà avec cette adresse e-mail. Connectez-vous, ou utilisez une autre adresse : une adresse ne peut servir qu’à un seul compte.|An account already exists with this e-mail address. Sign in, or use another address: one address can only be used for one account.|Já existe uma conta com este endereço de e-mail. Inicie sessão ou utilize outro endereço: um endereço só pode servir para uma conta.|Esiste già un account con questo indirizzo e-mail. Accedi oppure usa un altro indirizzo: un indirizzo può servire per un solo account.
+après-demain|the day after tomorrow|depois de amanhã|dopodomani
+demain|tomorrow|amanhã|domani
+hier|yesterday|ontem|ieri
+aujourd’hui|today|hoje|oggi
+la semaine prochaine|next week|na próxima semana|la prossima settimana
+la semaine dernière|last week|na semana passada|la settimana scorsa
+cette semaine|this week|esta semana|questa settimana
+le mois prochain|next month|no próximo mês|il mese prossimo
+ce mois-ci|this month|este mês|questo mese
+votre dernier client|your latest client|o seu último cliente|il tuo ultimo cliente
+le client de votre prochain RDV|the client of your next appointment|o cliente da sua próxima marcação|il cliente del tuo prossimo appuntamento
+le client de votre dernier document|the client of your latest document|o cliente do seu último documento|il cliente del tuo ultimo documento
+Je ne trouve pas ce client. Vérifiez l’orthographe, ou créez sa fiche.|I can’t find this client. Check the spelling, or create their record.|Não encontro este cliente. Verifique a ortografia ou crie a ficha.|Non trovo questo cliente. Controlla l’ortografia o crea la sua scheda.
+à valider|to approve|a validar|da confermare
+Bonjour ! Que puis-je faire pour vous ?|Hello! What can I do for you?|Olá! Em que posso ajudar?|Ciao! Cosa posso fare per te?
+Avec plaisir ! Autre chose ?|You’re welcome! Anything else?|Com todo o gosto! Mais alguma coisa?|Con piacere! Altro?
+Je suis l’assistant Artesa. Je peux ouvrir une page, retrouver un client, préparer un devis ou un RDV, vous donner vos RDV, vos factures à encaisser, votre chiffre d’affaires, et répondre à vos questions sur l’app. Essayez :|I’m the Artesa assistant. I can open a page, find a client, prepare a quote or an appointment, give you your appointments, invoices to collect and revenue, and answer your questions about the app. Try:|Sou o assistente Artesa. Posso abrir uma página, encontrar um cliente, preparar um orçamento ou uma marcação, indicar as suas marcações, faturas por receber e volume de negócios, e responder às suas perguntas sobre a app. Experimente:|Sono l’assistente Artesa. Posso aprire una pagina, trovare un cliente, preparare un preventivo o un appuntamento, darti i tuoi appuntamenti, le fatture da incassare e il fatturato, e rispondere alle tue domande sull’app. Prova:
+C’est ici : {p}.|It’s here: {p}.|É aqui: {p}.|È qui: {p}.
+Je vous ouvre le formulaire : nom, téléphone et adresse du chantier suffisent.|I’m opening the form: name, phone and site address are enough.|Abro o formulário: nome, telefone e morada da obra chegam.|Ti apro il modulo: bastano nome, telefono e indirizzo del cantiere.
+Ajoutez le produit ou l’ouvrage à votre bibliothèque pour le réutiliser dans vos devis.|Add the product or work item to your library to reuse it in your quotes.|Adicione o produto ou o trabalho à sua biblioteca para o reutilizar nos orçamentos.|Aggiungi il prodotto o la lavorazione alla tua libreria per riutilizzarlo nei preventivi.
+Les projets se créent depuis le CRM (statut des projets).|Projects are created from the CRM (project status).|Os projetos criam-se a partir do CRM (estado dos projetos).|I progetti si creano dal CRM (stato dei progetti).
+Créez un code d’invitation dans Mon équipe : votre salarié le saisit à son inscription.|Create an invitation code in My team: your employee enters it when signing up.|Crie um código de convite em A minha equipa: o seu funcionário introdu-lo ao registar-se.|Crea un codice d’invito in Il mio team: il tuo dipendente lo inserisce all’iscrizione.
+Cherchez le pro et envoyez-lui une demande de connexion.|Find the pro and send them a connection request.|Procure o profissional e envie-lhe um pedido de ligação.|Cerca il professionista e inviagli una richiesta di collegamento.
+Je vous ouvre la conversation avec {n}.|I’m opening the conversation with {n}.|Abro a conversa com {n}.|Ti apro la conversazione con {n}.
+Je prépare le rendez-vous : {b}. Vérifiez et enregistrez.|I’m preparing the appointment: {b}. Check and save.|Preparo a marcação: {b}. Verifique e guarde.|Preparo l’appuntamento: {b}. Controlla e salva.
+Je vous ouvre un nouveau rendez-vous.|I’m opening a new appointment.|Abro uma nova marcação.|Ti apro un nuovo appuntamento.
+C’est prêt : le client {n} est déjà rempli.|Done: client {n} is already filled in.|Está pronto: o cliente {n} já está preenchido.|Fatto: il cliente {n} è già compilato.
+Je vous ouvre le formulaire. Choisissez le client en tapant son nom.|I’m opening the form. Choose the client by typing their name.|Abro o formulário. Escolha o cliente escrevendo o nome.|Ti apro il modulo. Scegli il cliente digitando il nome.
+(Autres clients proches : {l})|(Other similar clients: {l})|(Outros clientes parecidos: {l})|(Altri clienti simili: {l})
+Appeler {n} : {p}|Call {n}: {p}|Ligar a {n}: {p}|Chiama {n}: {p}
+Fiche de {n}|{n}’s record|Ficha de {n}|Scheda di {n}
+Pas de numéro enregistré pour {n}.|No phone number saved for {n}.|Nenhum número registado para {n}.|Nessun numero salvato per {n}.
+Compléter la fiche|Complete the record|Completar a ficha|Completa la scheda
+Adresse de {n} : {a}|{n}’s address: {a}|Morada de {n}: {a}|Indirizzo di {n}: {a}
+Pas d’adresse enregistrée pour {n}.|No address saved for {n}.|Nenhuma morada registada para {n}.|Nessun indirizzo salvato per {n}.
+E-mail de {n} : {e}|{n}’s e-mail: {e}|E-mail de {n}: {e}|E-mail di {n}: {e}
+Envoyer un e-mail|Send an e-mail|Enviar um e-mail|Invia un’e-mail
+Pas d’e-mail enregistré pour {n}.|No e-mail saved for {n}.|Nenhum e-mail registado para {n}.|Nessuna e-mail salvata per {n}.
+Historique de {n} : RDV, déplacements, devis, factures et paiements.|{n}’s history: appointments, trips, quotes, invoices and payments.|Histórico de {n}: marcações, deslocações, orçamentos, faturas e pagamentos.|Cronologia di {n}: appuntamenti, spostamenti, preventivi, fatture e pagamenti.
+Je prépare le rendez-vous : {n} · {d}. Vérifiez et enregistrez.|I’m preparing the appointment: {n} · {d}. Check and save.|Preparo a marcação: {n} · {d}. Verifique e guarde.|Preparo l’appuntamento: {n} · {d}. Controlla e salva.
+Prochains RDV avec {n} :|Upcoming appointments with {n}:|Próximas marcações com {n}:|Prossimi appuntamenti con {n}:
+Aucun RDV à venir avec {n}.|No upcoming appointment with {n}.|Nenhuma marcação prevista com {n}.|Nessun appuntamento in programma con {n}.
+Nouveau RDV pour {n}|New appointment for {n}|Nova marcação para {n}|Nuovo appuntamento per {n}
+{n} : {q} devis, {f} facture(s). Reste à payer : {m}.|{n}: {q} quote(s), {f} invoice(s). Left to pay: {m}.|{n}: {q} orçamento(s), {f} fatura(s). Por pagar: {m}.|{n}: {q} preventivo/i, {f} fattura/e. Da pagare: {m}.
+Ses devis|Their quotes|Os orçamentos|I suoi preventivi
+Ses factures|Their invoices|As faturas|Le sue fatture
+Voici la fiche de {n}.|Here is {n}’s record.|Aqui está a ficha de {n}.|Ecco la scheda di {n}.
+Ouvrir la fiche de {n}|Open {n}’s record|Abrir a ficha de {n}|Apri la scheda di {n}
+Vous n’avez encore aucun client.|You don’t have any clients yet.|Ainda não tem clientes.|Non hai ancora clienti.
+Vos derniers clients :|Your latest clients:|Os seus últimos clientes:|I tuoi ultimi clienti:
+Votre dernier client créé : {n}.|Your latest client created: {n}.|O último cliente criado: {n}.|Il tuo ultimo cliente creato: {n}.
+{n} demande(s) de RDV à valider :|{n} appointment request(s) to approve:|{n} pedido(s) de marcação por validar:|{n} richiesta/e di appuntamento da confermare:
+Aucune demande de RDV à valider.|No appointment requests to approve.|Nenhum pedido de marcação por validar.|Nessuna richiesta di appuntamento da confermare.
+Voir dans le planning|See in the schedule|Ver na agenda|Vedi nell’agenda
+{w}, vous avez {n} RDV :|{w}, you have {n} appointment(s):|{w}, tem {n} marcação(ões):|{w}, hai {n} appuntamento/i:
+Les créneaux libres apparaissent en vert dans le planning.|Free slots appear in green in the schedule.|Os horários livres aparecem a verde na agenda.|Le fasce libere appaiono in verde nell’agenda.
+Rien de prévu {w} : vous êtes libre.|Nothing planned {w}: you’re free.|Nada previsto {w}: está livre.|Niente in programma {w}: sei libero.
+Aucun rendez-vous prévu dans les 3 prochains mois.|No appointment planned in the next 3 months.|Nenhuma marcação prevista nos próximos 3 meses.|Nessun appuntamento nei prossimi 3 mesi.
+Votre prochain rendez-vous :|Your next appointment:|A sua próxima marcação:|Il tuo prossimo appuntamento:
+{n} RDV {w} :|{n} appointment(s) {w}:|{n} marcação(ões) {w}:|{n} appuntamento/i {w}:
+… et {n} autres.|… and {n} more.|… e mais {n}.|… e altri {n}.
+{k} {n} — {m} TTC.|{k} {n} — {m} incl. VAT.|{k} {n} — {m} c/ IVA.|{k} {n} — {m} IVA incl.
+Ouvrir|Open|Abrir|Apri
+Je ne trouve pas le document {n}.|I can’t find document {n}.|Não encontro o documento {n}.|Non trovo il documento {n}.
+Aucune facture à encaisser : tout est réglé. 👍|No invoices to collect: everything is paid. 👍|Nenhuma fatura por receber: está tudo pago. 👍|Nessuna fattura da incassare: è tutto pagato. 👍
+échue le {d}|due on {d}|vencida a {d}|scaduta il {d}
+Reste à encaisser : {m} sur {n} facture(s). En retard : {l} facture(s), {lm}.|Left to collect: {m} over {n} invoice(s). Overdue: {l} invoice(s), {lm}.|Por receber: {m} em {n} fatura(s). Em atraso: {l} fatura(s), {lm}.|Da incassare: {m} su {n} fattura/e. In ritardo: {l} fattura/e, {lm}.
+Aucun devis {s}.|No {s} quotes.|Nenhum orçamento {s}.|Nessun preventivo {s}.
+{n} devis {s} ({m} HT) :|{n} {s} quote(s) ({m} excl. VAT):|{n} orçamento(s) {s} ({m} s/ IVA):|{n} preventivo/i {s} ({m} IVA escl.):
+{n} brouillon(s) pas encore envoyé(s).|{n} draft(s) not sent yet.|{n} rascunho(s) ainda por enviar.|{n} bozza/e non ancora inviata/e.
+Aucun brouillon.|No drafts.|Nenhum rascunho.|Nessuna bozza.
+Aucun document de ce type pour l’instant.|No document of this type yet.|Ainda não há documentos deste tipo.|Ancora nessun documento di questo tipo.
+brouillon|draft|rascunho|bozza
+{k} {n} — {m}.|{k} {n} — {m}.|{k} {n} — {m}.|{k} {n} — {m}.
+Dernier devis|Latest quote|Último orçamento|Ultimo preventivo
+Dernière facture|Latest invoice|Última fatura|Ultima fattura
+le mois dernier|last month|no mês passado|il mese scorso
+cette année|this year|este ano|quest’anno
+ce trimestre|this quarter|este trimestre|questo trimestre
+Chiffre d’affaires facturé {l} : {m} HT ({n} document(s)). Déjà encaissé : {p} TTC.|Revenue invoiced {l}: {m} excl. VAT ({n} document(s)). Already collected: {p} incl. VAT.|Volume faturado {l}: {m} s/ IVA ({n} documento(s)). Já recebido: {p} c/ IVA.|Fatturato {l}: {m} IVA escl. ({n} documento/i). Già incassato: {p} IVA incl.
+Vous avez {n} clients, dont {m} ajoutés ce mois-ci.|You have {n} clients, {m} of them added this month.|Tem {n} clientes, dos quais {m} adicionados este mês.|Hai {n} clienti, di cui {m} aggiunti questo mese.
+{o} devis signés sur {n} envoyés, soit {p} % de signature ({k} refusés ou expirés).|{o} quotes signed out of {n} sent: a {p} % signature rate ({k} declined or expired).|{o} orçamentos assinados em {n} enviados, ou seja {p} % de assinatura ({k} recusados ou expirados).|{o} preventivi firmati su {n} inviati, cioè il {p} % di firme ({k} rifiutati o scaduti).
+Pas encore de devis envoyé.|No quote sent yet.|Ainda nenhum orçamento enviado.|Ancora nessun preventivo inviato.
+Il vous reste {n} jour(s) d’essai gratuit.|You have {n} day(s) of free trial left.|Restam-lhe {n} dia(s) de teste gratuito.|Ti restano {n} giorno/i di prova gratuita.
+Formule actuelle : {p}.|Current plan: {p}.|Plano atual: {p}.|Piano attuale: {p}.
+essai|trial|teste|prova
+Votre code de parrainage : {c}. Votre filleul a 1 mois offert en plus de l’essai, vous gagnez 15 jours.|Your referral code: {c}. Your referee gets 1 extra month on top of the trial, you earn 15 days.|O seu código de convite: {c}. O seu afilhado ganha 1 mês extra além do teste, e você ganha 15 dias.|Il tuo codice invito: {c}. Il tuo invitato ha 1 mese in più oltre alla prova, tu guadagni 15 giorni.
+Votre code de parrainage est dans Abonnement et parrainage.|Your referral code is in Subscription and referral.|O seu código de convite está em Subscrição e convites.|Il tuo codice invito è in Abbonamento e inviti.
+Vos messages et notifications non lus sont signalés par une pastille rouge.|Your unread messages and notifications are marked with a red dot.|As mensagens e notificações por ler têm um ponto vermelho.|I messaggi e le notifiche non letti hanno un pallino rosso.
+Je vous ouvre : {p}.|Opening: {p}.|A abrir: {p}.|Apro: {p}.
+C’est par ici :|This way:|É por aqui:|Da questa parte:
+En vérification|Under review|Em verificação|In verifica
+RDV|Appts|Marcações|Appunt.
+{n} vous invite sur Artesa.|{n} invites you to Artesa.|{n} convida-o para a Artesa.|{n} ti invita su Artesa.
+Créez votre compte gratuit : vous retrouverez vos devis, factures et rendez-vous, et pourrez écrire directement à votre artisan.|Create your free account: you’ll find your quotes, invoices and appointments, and can write directly to your tradesperson.|Crie a sua conta gratuita: encontrará os seus orçamentos, faturas e marcações, e poderá escrever diretamente ao seu profissional.|Crea il tuo account gratuito: ritroverai preventivi, fatture e appuntamenti e potrai scrivere direttamente al tuo artigiano.
+Code invalide ou déjà utilisé|Invalid or already used code|Código inválido ou já utilizado|Codice non valido o già usato
+Ce SIRET est déjà inscrit sur Artesa. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.|This SIRET is already registered on Artesa. Sign in with the existing account, or contact us if you no longer have access.|Este SIRET já está registado na Artesa. Inicie sessão com a conta existente ou contacte-nos se já não tiver acesso.|Questo SIRET è già registrato su Artesa. Accedi con l’account esistente o contattaci se non hai più accesso.
+Ce SIRET a déjà utilisé Artesa par le passé. Vous pouvez recréer votre compte, mais sans essai gratuit ni avantage de parrainage.|This SIRET has used Artesa before. You can create your account again, but without a free trial or referral bonus.|Este SIRET já utilizou a Artesa. Pode recriar a conta, mas sem teste gratuito nem vantagem de convite.|Questo SIRET ha già usato Artesa. Puoi ricreare l’account, ma senza prova gratuita né vantaggi dell’invito.
+facultatif — 1 mois offert en plus|optional — 1 extra month free|opcional — 1 mês grátis a mais|facoltativo — 1 mese gratis in più
+Artesa · Facturation électronique, devis et rendez-vous pour artisans du bâtiment|Artesa · E-invoicing, quotes and appointments for building tradespeople|Artesa · Faturação eletrónica, orçamentos e marcações para profissionais da construção|Artesa · Fatturazione elettronica, preventivi e appuntamenti per artigiani dell’edilizia
+Artesa réunit les artisans et leurs clients : prise de rendez-vous, devis signés en ligne, factures électroniques conformes à la réforme 2026, messages et documents du logement, au même endroit.|Artesa brings tradespeople and their clients together: appointment booking, quotes signed online, electronic invoices compliant with the 2026 reform, messages and home documents, all in one place.|A Artesa junta os profissionais e os seus clientes: marcações, orçamentos assinados online, faturas eletrónicas conformes à reforma de 2026, mensagens e documentos da casa, no mesmo sítio.|Artesa riunisce gli artigiani e i loro clienti: prenotazione degli appuntamenti, preventivi firmati online, fatture elettroniche conformi alla riforma 2026, messaggi e documenti della casa, nello stesso posto.
+Je suis artisan|I’m a tradesperson|Sou profissional|Sono un artigiano
+Je cherche un artisan|I’m looking for a tradesperson|Procuro um profissional|Cerco un artigiano
+30 jours d’essai pour les artisans, sans carte bancaire. Gratuit pour les particuliers.|30-day trial for tradespeople, no credit card. Free for homeowners.|30 dias de teste para profissionais, sem cartão bancário. Gratuito para particulares.|30 giorni di prova per gli artigiani, senza carta di credito. Gratis per i privati.
+Demande de RDV|Appointment request|Pedido de marcação|Richiesta di appuntamento
+Lucie F. · Fuite sous évier · jeudi 14:00|Lucie F. · Leak under the sink · Thursday 2:00 pm|Lucie F. · Fuga debaixo do lava-loiça · quinta 14:00|Lucie F. · Perdita sotto il lavello · giovedì 14:00
+Devis DE-2026-0042 signé|Quote DE-2026-0042 signed|Orçamento DE-2026-0042 assinado|Preventivo DE-2026-0042 firmato
+Rénovation salle de bain · 4 860,00 € TTC|Bathroom renovation · €4,860.00 incl. VAT|Renovação de casa de banho · 4 860,00 € c/ IVA|Ristrutturazione bagno · 4.860,00 € IVA incl.
+Message de Tiago B.|Message from Tiago B.|Mensagem de Tiago B.|Messaggio da Tiago B.
+« Je vous envoie les photos du chauffe-eau »|“I’m sending you photos of the water heater”|«Envio-lhe as fotos do esquentador»|«Le invio le foto dello scaldabagno»
+Facture FA-2026-0107 payée|Invoice FA-2026-0107 paid|Fatura FA-2026-0107 paga|Fattura FA-2026-0107 pagata
+Virement reçu · 1 290,00 €|Transfer received · €1,290.00|Transferência recebida · 1 290,00 €|Bonifico ricevuto · 1.290,00 €
+Pour les artisans|For tradespeople|Para profissionais|Per gli artigiani
+Essayer gratuitement|Try for free|Experimentar grátis|Prova gratis
+Pour les particuliers|For homeowners|Para particulares|Per i privati
+Des artisans de tous les métiers du bâtiment|Tradespeople from every building trade|Profissionais de todas as áreas da construção|Artigiani di tutti i mestieri dell’edilizia
+Partout en France|All over France|Em toda a França|In tutta la Francia
+Artesa est née à Nice et se développe dans toute la France : {c}…|Artesa was born in Nice and is growing across France: {c}…|A Artesa nasceu em Nice e está a crescer em toda a França: {c}…|Artesa è nata a Nizza e si sta diffondendo in tutta la Francia: {c}…
+30 jours d’essai gratuit pour toutes les formules, sans carte bancaire. Toujours gratuit pour les particuliers.|30-day free trial on every plan, no credit card. Always free for homeowners.|30 dias de teste gratuito em todos os planos, sem cartão bancário. Sempre gratuito para particulares.|30 giorni di prova gratuita su tutti i piani, senza carta di credito. Sempre gratis per i privati.
+Tarifs pour|Prices for|Preços para|Prezzi per
+Gratuit|Free|Grátis|Gratis
+~ : selon l’offre ou en option payante. Comparaison indicative avec les catégories de solutions courantes sur le marché français, novembre 2026.|~ : depending on the plan or as a paid option. Indicative comparison with the usual categories of solutions on the French market, November 2026.|~ : consoante a oferta ou como opção paga. Comparação indicativa com as categorias de soluções habituais no mercado francês, novembro de 2026.|~ : a seconda dell’offerta o come opzione a pagamento. Confronto indicativo con le categorie di soluzioni comuni sul mercato francese, novembre 2026.
+Info|Info|Info|Info
+Document validé|Document approved|Documento validado|Documento convalidato
+Document refusé|Document rejected|Documento recusado|Documento rifiutato
+Aucun document à vérifier|No documents to review|Nenhum documento por verificar|Nessun documento da verificare
+Assureur déclaré : {a}|Declared insurer: {a}|Seguradora declarada: {a}|Assicuratore dichiarato: {a}
+Déposé {d}|Uploaded {d}|Enviado {d}|Caricato {d}
+Refuser le document|Reject the document|Recusar o documento|Rifiuta il documento
+Document illisible|Unreadable document|Documento ilegível|Documento illeggibile
+Document expiré|Expired document|Documento expirado|Documento scaduto
+Ce n’est pas le bon document|This is not the right document|Não é o documento certo|Non è il documento giusto
+Le nom ou le SIRET ne correspond pas à l’entreprise|The name or SIRET does not match the company|O nome ou o SIRET não corresponde à empresa|Il nome o il SIRET non corrisponde all’azienda
+Motif (envoyé au pro)|Reason (sent to the pro)|Motivo (enviado ao profissional)|Motivo (inviato al professionista)
+Aucun métier proposé|No trades proposed|Nenhuma profissão proposta|Nessun mestiere proposto
+Métier refusé|Trade rejected|Profissão recusada|Mestiere rifiutato
+Métier validé|Trade approved|Profissão validada|Mestiere convalidato
+Proposé {d}|Proposed {d}|Proposta {d}|Proposto {d}
+{n} entreprise(s)|{n} company(ies)|{n} empresa(s)|{n} azienda/e
+Nom corrigé|Corrected name|Nome corrigido|Nome corretto
+Catégorie|Category|Categoria|Categoria
+Doublon possible :|Possible duplicate:|Possível duplicado:|Possibile doppione:
+Fusionner dans « {n} »|Merge into “{n}”|Juntar a «{n}»|Unisci a «{n}»
+Corriger et valider|Correct and approve|Corrigir e validar|Correggi e convalida
+Entreprises à valider ({n})|Companies to approve ({n})|Empresas por validar ({n})|Aziende da convalidare ({n})
+Toutes les entreprises ({n})|All companies ({n})|Todas as empresas ({n})|Tutte le aziende ({n})
+Documents à vérifier ({n})|Documents to review ({n})|Documentos por verificar ({n})|Documenti da verificare ({n})
+Métiers proposés ({n})|Proposed trades ({n})|Profissões propostas ({n})|Mestieri proposti ({n})
+Validée|Approved|Validada|Convalidata
+À compléter|To complete|A completar|Da completare
+Les applications App Store et Google Play arrivent ensuite ; vos données seront les mêmes.|App Store and Google Play apps come next; your data will be the same.|As apps da App Store e do Google Play chegam a seguir; os seus dados serão os mesmos.|Le app su App Store e Google Play arriveranno dopo; i tuoi dati saranno gli stessi.
+Partagez votre code : votre filleul gagne 1 mois offert en plus de son essai (2 mois en tout), et vous gagnez 15 jours offerts. Jusqu’à 10 filleuls.|Share your code: your referee gets 1 extra month on top of the trial (2 months in total), and you earn 15 free days. Up to 10 referees.|Partilhe o seu código: o seu afilhado ganha 1 mês extra além do teste (2 meses no total), e você ganha 15 dias grátis. Até 10 afilhados.|Condividi il tuo codice: il tuo invitato ha 1 mese in più oltre alla prova (2 mesi in tutto) e tu guadagni 15 giorni gratis. Fino a 10 invitati.
+{n} filleuls sur 10|{n} referees out of 10|{n} afilhados em 10|{n} invitati su 10
+Maximum atteint : votre code ne donne plus d’avantage.|Maximum reached: your code no longer gives a bonus.|Máximo atingido: o seu código já não dá vantagens.|Massimo raggiunto: il tuo codice non dà più vantaggi.
+Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert en plus de l’essai.|Sign up on {u} with my code {c}: 1 extra month free on top of the trial.|Registe-se em {u} com o meu código {c}: 1 mês grátis a mais além do teste.|Iscriviti su {u} con il mio codice {c}: 1 mese gratis in più oltre alla prova.
+Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.|I manage my quotes, invoices and appointments with Artesa. Sign up with my code {c}: 1 extra month free on top of the trial.|Faço a gestão dos meus orçamentos, faturas e marcações com a Artesa. Regista-te com o meu código {c}: 1 mês grátis a mais além do teste.|Gestisco preventivi, fatture e appuntamenti con Artesa. Iscriviti con il mio codice {c}: 1 mese gratis in più oltre alla prova.
+mention obligatoire sur les devis et factures (et pour la facture électronique)|mandatory on quotes and invoices (and for e-invoicing)|menção obrigatória nos orçamentos e faturas (e para a fatura eletrónica)|dicitura obbligatoria su preventivi e fatture (e per la fattura elettronica)
+Votre logo apparaît en haut à gauche ; la mention « Document réalisé avec Artesa » en bas de page.|Your logo appears at the top left; the note “Document made with Artesa” at the bottom of the page.|O seu logótipo aparece em cima à esquerda; a menção «Documento feito com a Artesa» no fundo da página.|Il tuo logo appare in alto a sinistra; la dicitura «Documento realizzato con Artesa» in fondo alla pagina.
+Classique|Classic|Clássico|Classico
+Moderne|Modern|Moderno|Moderno
+Gratuit pour eux : ils retrouvent leurs documents et vous écrivent directement.|Free for them: they find their documents and write to you directly.|Gratuito para eles: encontram os seus documentos e escrevem-lhe diretamente.|Gratis per loro: ritrovano i loro documenti e ti scrivono direttamente.
+Ce client n’a pas encore de compte. Invitez-le : c’est gratuit pour lui, il retrouve ses devis et factures et peut vous écrire directement.|This client doesn’t have an account yet. Invite them: it’s free for them, they find their quotes and invoices and can write to you directly.|Este cliente ainda não tem conta. Convide-o: é gratuito para ele, encontra os orçamentos e faturas e pode escrever-lhe diretamente.|Questo cliente non ha ancora un account. Invitalo: è gratis per lui, ritrova preventivi e fatture e può scriverti direttamente.
+Catalogue par métier|Catalogue by trade|Catálogo por profissão|Catalogo per mestiere
+Prix HT indicatifs (moyennes constatées en France), à ajuster à vos tarifs après l’import.|Indicative prices excl. VAT (averages observed in France), to adjust to your rates after import.|Preços indicativos s/ IVA (médias observadas em França), a ajustar às suas tarifas após a importação.|Prezzi indicativi IVA escl. (medie rilevate in Francia), da adattare alle tue tariffe dopo l’importazione.
+{n} produits|{n} products|{n} produtos|{n} prodotti
+Tout désélectionner|Deselect all|Desmarcar tudo|Deseleziona tutto
+Tout sélectionner|Select all|Selecionar tudo|Seleziona tutto
+déjà dans votre bibliothèque|already in your library|já está na sua biblioteca|già nella tua libreria
+Ajouter {n} produits|Add {n} products|Adicionar {n} produtos|Aggiungi {n} prodotti
+Relancé {n} fois (dernière le {d}).|Reminded {n} time(s) (last on {d}).|Lembrado {n} vez(es) (última a {d}).|Sollecitato {n} volta/e (ultima il {d}).
+Prochaine relance prévue le {d} ({s}).|Next reminder planned on {d} ({s}).|Próximo lembrete previsto a {d} ({s}).|Prossimo sollecito previsto il {d} ({s}).
+Bonjour,\n\nVeuillez trouver ci-joint notre devis {n} pour : {o}.\n\nVous pouvez aussi le consulter et le signer en ligne (compte gratuit) : {u}\n\nBien cordialement,\n{c}|Hello,\n\nPlease find attached our quote {n} for: {o}.\n\nYou can also view and sign it online (free account): {u}\n\nKind regards,\n{c}|Olá,\n\nEnvio em anexo o nosso orçamento {n} para: {o}.\n\nPode também consultá-lo e assiná-lo online (conta gratuita): {u}\n\nCom os melhores cumprimentos,\n{c}|Buongiorno,\n\nin allegato il nostro preventivo {n} per: {o}.\n\nPuò anche consultarlo e firmarlo online (account gratuito): {u}\n\nCordiali saluti,\n{c}
+Donnez un nom au document.|Give the document a name.|Dê um nome ao documento.|Dai un nome al documento.
+Renseignez : {l}.|Fill in: {l}.|Preencha: {l}.|Compila: {l}.
+Document déposé : l’équipe Artesa le vérifie|Document uploaded: the Artesa team is reviewing it|Documento enviado: a equipa Artesa vai verificá-lo|Documento caricato: il team Artesa lo sta verificando
+Déposer : {l}|Upload: {l}|Enviar: {l}|Carica: {l}
+Choisir le fichier (PDF ou photo)|Choose the file (PDF or photo)|Escolher o ficheiro (PDF ou foto)|Scegli il file (PDF o foto)
+calculée, modifiable|calculated, editable|calculada, editável|calcolata, modificabile
+L’équipe Artesa vérifie chaque document avant qu’il soit visible de vos clients. Vous êtes prévenu dès qu’il est validé.|The Artesa team checks every document before your clients can see it. You’ll be notified as soon as it’s approved.|A equipa Artesa verifica cada documento antes de ficar visível para os seus clientes. É avisado assim que for validado.|Il team Artesa verifica ogni documento prima che sia visibile ai tuoi clienti. Ti avvisiamo appena viene convalidato.
+Envoi en cours…|Sending…|A enviar…|Invio in corso…
+document obligatoire pour exercer (à présenter sur demande d’un client ou d’un donneur d’ordre)|document required to work (to show on request from a client or contractor)|documento obrigatório para exercer (a apresentar a pedido de um cliente ou contratante)|documento obbligatorio per esercitare (da presentare su richiesta di un cliente o committente)
+Déposer|Upload|Enviar|Carica
+Déposer un document|Upload a document|Enviar um documento|Carica un documento
+Motif : {m}|Reason: {m}|Motivo: {m}|Motivo: {m}
+L’équipe Artesa vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.|The Artesa team checks your SIRET and details. You can already use the app; your profile will be visible to clients after approval.|A equipa Artesa verifica o seu SIRET e as suas informações. Já pode usar a app; o seu perfil ficará visível para os clientes após a validação.|Il team Artesa verifica il tuo SIRET e i tuoi dati. Puoi già usare l’app; il tuo profilo sarà visibile ai clienti dopo la convalida.
+Parrainez un artisan : 1 mois offert pour lui, 15 jours pour vous|Refer a tradesperson: 1 month free for them, 15 days for you|Convide um profissional: 1 mês grátis para ele, 15 dias para si|Invita un artigiano: 1 mese gratis per lui, 15 giorni per te
+Bonjour, je vous invite à me rejoindre sur Artesa pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert en plus de l’essai : {u}|Hello, I’m inviting you to join me on Artesa so we can talk about our sites. With my code {c}, you get 1 extra month free on top of the trial: {u}|Olá, convido-o a juntar-se a mim na Artesa para falarmos das nossas obras. Com o meu código {c}, tem 1 mês grátis a mais além do teste: {u}|Ciao, ti invito a raggiungermi su Artesa per parlare dei nostri cantieri. Con il mio codice {c} hai 1 mese gratis in più oltre alla prova: {u}
+Le pro reçoit une invitation en message privé et doit l’accepter. Il verra ensuite le nom, l’adresse et le planning du chantier, mais ni vos prix ni l’historique du client.|The pro receives an invitation by private message and must accept it. They will then see the name, address and schedule of the site, but neither your prices nor the client’s history.|O profissional recebe um convite por mensagem privada e tem de o aceitar. Verá depois o nome, a morada e a agenda da obra, mas nem os seus preços nem o histórico do cliente.|Il professionista riceve un invito in messaggio privato e deve accettarlo. Vedrà poi nome, indirizzo e programma del cantiere, ma né i tuoi prezzi né lo storico del cliente.
+Bonjour {p}, je gère désormais mes devis, factures et rendez-vous sur Artesa. Créez votre compte gratuit pour retrouver vos documents, prendre rendez-vous et m’écrire directement : {u} — {n}|Hello {p}, I now manage my quotes, invoices and appointments on Artesa. Create your free account to find your documents, book appointments and write to me directly: {u} — {n}|Olá {p}, passei a gerir os meus orçamentos, faturas e marcações na Artesa. Crie a sua conta gratuita para encontrar os seus documentos, marcar e escrever-me diretamente: {u} — {n}|Buongiorno {p}, ora gestisco preventivi, fatture e appuntamenti su Artesa. Crei il suo account gratuito per ritrovare i documenti, prenotare e scrivermi direttamente: {u} — {n}
+Votre espace client sur Artesa|Your client area on Artesa|O seu espaço de cliente na Artesa|La tua area clienti su Artesa
+Vos clients créent leur compte gratuit en un clic depuis le lien : ils retrouvent leurs devis, factures et rendez-vous, et votre conversation s’ouvre directement. Plus ils sont nombreux sur Artesa, plus on vous recommande.|Your clients create their free account in one click from the link: they find their quotes, invoices and appointments, and your conversation opens directly. The more of them are on Artesa, the more you get recommended.|Os seus clientes criam a conta gratuita num clique a partir do link: encontram os orçamentos, faturas e marcações, e a vossa conversa abre-se diretamente. Quanto mais estiverem na Artesa, mais é recomendado.|I tuoi clienti creano il loro account gratuito in un clic dal link: ritrovano preventivi, fatture e appuntamenti, e la vostra conversazione si apre subito. Più sono su Artesa, più vieni consigliato.
+Tous vos clients particuliers ont déjà un compte Artesa.|All your private clients already have an Artesa account.|Todos os seus clientes particulares já têm conta Artesa.|Tutti i tuoi clienti privati hanno già un account Artesa.
+Chaque année|Every year|Todos os anos|Ogni anno
+iPhone / Mac|iPhone / Mac|iPhone / Mac|iPhone / Mac
+Mon planning · tapez un chantier|My schedule · type a site|A minha agenda · escreva uma obra|La mia agenda · digita un cantiere
+Perso|Personal|Pessoal|Personale
+Tout envoyer par la messagerie ({n})|Send everything by message ({n})|Enviar tudo por mensagem ({n})|Invia tutto via messaggio ({n})
+Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :|Hello! Ask me a question about Artesa, or pick a suggestion:|Olá! Faça-me uma pergunta sobre a Artesa ou escolha uma sugestão:|Ciao! Fammi una domanda su Artesa o scegli un suggerimento:
+Je n’ai pas trouvé de réponse précise. Reformulez avec d’autres mots, ou écrivez au support.|I couldn’t find a precise answer. Rephrase with other words, or write to support.|Não encontrei uma resposta precisa. Reformule com outras palavras ou escreva ao apoio.|Non ho trovato una risposta precisa. Riformula con altre parole o scrivi all’assistenza.
+Assistant|Assistant|Assistente|Assistente
+Je n’ai pas de réponse précise. Essayez l’assistant (bouton +) ou le support.|I don’t have a precise answer. Try the assistant (+ button) or support.|Não tenho uma resposta precisa. Experimente o assistente (botão +) ou o apoio.|Non ho una risposta precisa. Prova l’assistente (pulsante +) o l’assistenza.
+Je réfléchis…|Thinking…|A pensar…|Sto pensando…
+C’est une question : je peux y répondre.|This is a question: I can answer it.|É uma pergunta: posso responder.|È una domanda: posso rispondere.
+Répondre avec l’IA|Answer with AI|Responder com IA|Rispondi con l’IA
+Préciser avec l’IA|Refine with AI|Precisar com IA|Precisa con l’IA
+Mes métiers ajoutés|My added trades|As minhas profissões adicionadas|I miei mestieri aggiunti
+En attente de validation par l’équipe Artesa : visible des particuliers et des autres pros après validation.|Awaiting approval by the Artesa team: visible to homeowners and other pros after approval.|A aguardar validação pela equipa Artesa: visível para particulares e outros profissionais após validação.|In attesa di convalida da parte del team Artesa: visibile ai privati e agli altri professionisti dopo la convalida.
+Mon métier n’est pas dans la liste|My trade isn’t in the list|A minha profissão não está na lista|Il mio mestiere non è nell’elenco
+Ajouter mon métier|Add my trade|Adicionar a minha profissão|Aggiungi il mio mestiere
+Nom du métier|Trade name|Nome da profissão|Nome del mestiere
+au singulier, ex. « Ferronnerie d’art »|singular, e.g. “Art metalwork”|no singular, ex. «Serralharia artística»|al singolare, es. «Ferro battuto artistico»
+Ce métier existe déjà :|This trade already exists:|Esta profissão já existe:|Questo mestiere esiste già:
+Vouliez-vous dire :|Did you mean:|Queria dizer:|Intendevi:
+Votre métier est ajouté à votre fiche tout de suite. L’équipe Artesa le relit (orthographe, doublons) avant de le proposer aux autres pros et aux particuliers.|Your trade is added to your profile right away. The Artesa team checks it (spelling, duplicates) before offering it to other pros and homeowners.|A sua profissão é adicionada à sua ficha de imediato. A equipa Artesa revê-a (ortografia, duplicados) antes de a propor a outros profissionais e particulares.|Il tuo mestiere viene aggiunto subito alla tua scheda. Il team Artesa lo ricontrolla (ortografia, doppioni) prima di proporlo agli altri professionisti e ai privati.
+Envoi…|Sending…|A enviar…|Invio…
+Choisir « {n} »|Choose “{n}”|Escolher «{n}»|Scegli «{n}»
+Ajouter « {n} »|Add “{n}”|Adicionar «{n}»|Aggiungi «{n}»
+Date de l’extrait|Extract date|Data do extrato|Data della visura
+Un extrait Kbis est accepté s’il a moins de 3 mois.|A Kbis extract is accepted if it is less than 3 months old.|Um extrato Kbis é aceite se tiver menos de 3 meses.|Una visura Kbis è accettata se ha meno di 3 mesi.
+Date de délivrance|Issue date|Data de emissão|Data di rilascio
+L’attestation de vigilance est valable 6 mois (à fournir à vos donneurs d’ordre).|The URSSAF vigilance certificate is valid for 6 months (to give to your contractors).|O certificado de vigilância URSSAF é válido 6 meses (a entregar aos seus contratantes).|L’attestato di regolarità URSSAF è valido 6 mesi (da fornire ai tuoi committenti).
+Début de validité|Start of validity|Início de validade|Inizio validità
+Vérifiez que les activités couvertes correspondent à vos métiers.|Check that the activities covered match your trades.|Verifique se as atividades cobertas correspondem às suas profissões.|Verifica che le attività coperte corrispondano ai tuoi mestieri.
+Activités couvertes|Activities covered|Atividades cobertas|Attività coperte
+À télécharger depuis votre espace professionnel impots.gouv.fr.|Download it from your professional area on impots.gouv.fr.|A descarregar no seu espaço profissional em impots.gouv.fr.|Da scaricare dalla tua area professionale su impots.gouv.fr.
+Date d’obtention|Date obtained|Data de obtenção|Data di ottenimento
+ex. RGE Qualibat, Qualifelec|e.g. RGE Qualibat, Qualifelec|ex. RGE Qualibat, Qualifelec|es. RGE Qualibat, Qualifelec
+N° de certificat|Certificate no.|N.º do certificado|N. del certificato
+Salarié|Employee|Funcionário|Dipendente
+N° de carte|Card no.|N.º do cartão|N. della tessera
+Date de signature|Signature date|Data de assinatura|Data di firma
+Avec|With|Com|Con
+ex. client, fournisseur, sous-traitant|e.g. client, supplier, subcontractor|ex. cliente, fornecedor, subempreiteiro|es. cliente, fornitore, subappaltatore
+Date du document|Document date|Data do documento|Data del documento
+Autres métiers|Other trades|Outras profissões|Altri mestieri
+Devis et factures conformes, numérotés automatiquement|Compliant quotes and invoices, numbered automatically|Orçamentos e faturas conformes, numerados automaticamente|Preventivi e fatture conformi, numerati automaticamente
+Signature électronique des devis par vos clients|Electronic signature of quotes by your clients|Assinatura eletrónica dos orçamentos pelos seus clientes|Firma elettronica dei preventivi da parte dei clienti
+Planning d’équipe et demandes de rendez-vous en ligne|Team schedule and online appointment requests|Agenda de equipa e pedidos de marcação online|Agenda del team e richieste di appuntamento online
+Relances automatiques des impayés|Automatic reminders for unpaid invoices|Lembretes automáticos de faturas por pagar|Solleciti automatici dei mancati pagamenti
+Factures d’acompte, de situation et avoirs|Deposit and progress invoices, and credit notes|Faturas de adiantamento, de situação e notas de crédito|Fatture di acconto, di avanzamento e note di credito
+Export comptable et suivi de votre chiffre d’affaires|Accounting export and revenue tracking|Exportação contabilística e acompanhamento do volume de negócios|Esportazione contabile e monitoraggio del fatturato
+Trouvez un artisan vérifié près de chez vous|Find a verified tradesperson near you|Encontre um profissional verificado perto de si|Trova un artigiano verificato vicino a te
+Prenez rendez-vous en ligne, sur site ou en visio|Book appointments online, on site or by video|Faça marcações online, no local ou por vídeo|Prenota appuntamenti online, in loco o in video
+Signez vos devis et payez vos factures en ligne|Sign your quotes and pay your invoices online|Assine os orçamentos e pague as faturas online|Firma i preventivi e paga le fatture online
+Gardez tous les documents de votre logement|Keep all your home documents|Guarde todos os documentos da sua casa|Conserva tutti i documenti della tua casa
+Échangez avec vos artisans par message|Message your tradespeople|Troque mensagens com os seus profissionais|Scrivi ai tuoi artigiani
+Signature électronique des devis|Electronic signature of quotes|Assinatura eletrónica dos orçamentos|Firma elettronica dei preventivi
+Factures d’acompte et de situation|Deposit and progress invoices|Faturas de adiantamento e de situação|Fatture di acconto e di avanzamento
+Planning d’équipe|Team schedule|Agenda de equipa|Agenda del team
+Prise de rendez-vous en ligne par vos clients|Online appointment booking by your clients|Marcações online pelos seus clientes|Prenotazione online da parte dei clienti
+Espace client : devis, factures, documents du logement|Client area: quotes, invoices, home documents|Espaço de cliente: orçamentos, faturas, documentos da casa|Area clienti: preventivi, fatture, documenti della casa
+Messagerie avec vos clients et votre équipe|Messaging with your clients and your team|Mensagens com os seus clientes e a sua equipa|Messaggi con i clienti e il team
+Réseau de pros et chantiers partagés|Pro network and shared sites|Rede de profissionais e obras partilhadas|Rete di professionisti e cantieri condivisi
+Notifications sur téléphone et ordinateur|Notifications on phone and computer|Notificações no telemóvel e no computador|Notifiche su telefono e computer
+Sans commission sur vos chantiers|No commission on your jobs|Sem comissão nas suas obras|Nessuna commissione sui tuoi lavori
+Gratuit pour vos clients|Free for your clients|Gratuito para os seus clientes|Gratis per i tuoi clienti

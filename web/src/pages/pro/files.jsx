@@ -1,5 +1,5 @@
 import { kbd } from '../../lib/a11y.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
 import { LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2, LuUpload } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
@@ -170,11 +170,12 @@ function UploadSheet({ open, onClose, kind, types, clientId, onDone, presetType,
   const [file, setFile] = useState(null);
   const [v, setV] = useState(null);
   const [busy, setBusy] = useState(false);
+  const lock = useRef(false); // verrou immédiat : plusieurs clics rapides avant le rafraîchissement de l'écran
   const blank = (type, f) => {
     const form = kind === 'vault' ? VAULT_FORM[type] || {} : {};
     const today = iso(new Date());
     const meta = Object.fromEntries((form.fields || []).map(([k, , from]) => [k, from === 'company.insurer' ? company.insurer || '' : from === 'company.insurance_contract' ? company.insurance_contract || '' : from === 'company.trades' ? (company.trades || []).join(', ') : '']));
-    return { doc_type: type, name: f ? f.name.replace(/\.[^.]+$/, '') : '', issued_at: today, valid_until: addMonths(today, form.months), meta, shared_with_client: kind === 'doc' || (kind === 'vault' && vaultPrefs(company, type).shared), auto: true };
+    return { doc_type: type, name: f && kind !== 'vault' ? f.name.replace(/\.[^.]+$/, '') : '', issued_at: today, valid_until: addMonths(today, form.months), meta, shared_with_client: kind === 'doc' || (kind === 'vault' && vaultPrefs(company, type).shared), auto: true };
   };
   // À l'ouverture : type pré-rempli, fichier déjà choisi le cas échéant (bouton « Déposer » d'un dossier)
   useEffect(() => {
@@ -188,8 +189,8 @@ function UploadSheet({ open, onClose, kind, types, clientId, onDone, presetType,
   const setType = (type) => setV({ ...blank(type, file), name: v.auto ? '' : v.name });
   const setIssued = (d) => setV({ ...v, issued_at: d, valid_until: form.months ? addMonths(d, form.months) : v.valid_until });
   const save = () => {
-    if (busy) return; // un seul envoi, même si on reclique pendant le téléversement
-    setBusy(true);
+    if (lock.current) return; // un seul envoi, même si on reclique pendant le téléversement
+    lock.current = true; setBusy(true);
     run(async () => {
       if (!file) throw new Error(t('Choisissez un fichier.'));
       if (form.needEnd && !v.valid_until) throw new Error(t('Indiquez la date de fin de validité.'));
@@ -199,7 +200,7 @@ function UploadSheet({ open, onClose, kind, types, clientId, onDone, presetType,
       const name = (v.name || '').trim() || (kind === 'vault' ? `${typeLabel} · ${date(v.issued_at)}` : file.name.replace(/\.[^.]+$/, ''));
       await api.insert('files', { company_id: company.id, client_id: clientId || null, kind, doc_type: v.doc_type, name, path: up.path, mime: file.type, size: file.size, issued_at: v.issued_at || null, valid_until: v.valid_until || null, shared_with_client: v.shared_with_client, meta: v.meta, ...(kind === 'vault' ? { remind_days: vaultPrefs(company, v.doc_type).remind } : {}) });
       onDone();
-    }, kind === 'vault' ? t('Document déposé : l’équipe Artesa le vérifie') : t('Document ajouté')).finally(() => setBusy(false));
+    }, kind === 'vault' ? t('Document déposé : l’équipe Artesa le vérifie') : t('Document ajouté')).finally(() => { lock.current = false; setBusy(false); });
   };
   const choose = async () => { const [f] = await pickFiles({ multiple: false, accept: 'application/pdf,image/*,.doc,.docx,.xls,.xlsx' }); if (f) setFile(f); };
   return (
@@ -265,12 +266,12 @@ export function Vault() {
       <p className="small faint" style={{ marginTop: -6 }}><b className="req-star">*</b> {t('document obligatoire pour exercer (à présenter sur demande d’un client ou d’un donneur d’ordre)')}</p>
       <div className="list">
         {shown.map((x) => (
-          <div key={x.k} className="li click" role="link" tabIndex={0} onClick={() => navigate('/pro/coffre-fort/' + x.k)} onKeyDown={kbd(() => navigate('/pro/coffre-fort/' + x.k))}>
+          <div key={x.k} className="li click" {...kbd} onClick={() => navigate('/pro/coffre-fort/' + x.k)}>
             <div className="ficon navy"><LuFolder /></div>
             <div className="grow"><div className="t1"><span>{t(x.l)}{VAULT_REQUIRED.includes(x.k) && <b className="req-star" title={t('Obligatoire')}>{'\u00a0*'}</b>}</span></div>
               <div className="row small">{t('{n} doc', { n: x.fs.length })}{x.cur ? <StatusPill s={reviewPill(x.cur) || validity(x.cur)} /> : <Pill c="grey">{t('À ajouter')}</Pill>}</div>
               {x.cur?.valid_until && <div className="t2">{t('Valide jusqu’au {d}', { d: date(x.cur.valid_until) })}</div>}</div>
-            <button type="button" className="btn xs ghost" onClick={(e) => deposit(e, x.k)} aria-label={t('Déposer : {l}', { l: t(x.l) })}><LuUpload /> {t('Déposer')}</button>
+            <button type="button" className="btn xs ghost dep-btn" onClick={(e) => deposit(e, x.k)} aria-label={t('Déposer : {l}', { l: t(x.l) })}><LuUpload /> <span className="hide-sm">{t('Déposer')}</span></button>
             <LuChevronRight />
           </div>
         ))}

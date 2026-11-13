@@ -1,6 +1,6 @@
 // Liste des métiers : ceux de l'application + ceux proposés par les pros et validés par l'équipe Artesa.
 // TradePicker : choix multiple par catégorie, avec « Ajouter mon métier » (anti-doublons, validation par l'équipe).
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LuPlus, LuClock } from 'react-icons/lu';
 import { api, OFFLINE } from '../lib/api.js';
 import { t } from '../lib/i18n.js';
@@ -61,18 +61,19 @@ function AddTrade({ cat, onClose, onPick }) {
   const cats = [...Object.keys(cat.groups), 'Autres métiers'].filter((x, i, a) => a.indexOf(x) === i);
   const [v, setV] = useState({ name: '', category: cats[0] });
   const [busy, setBusy] = useState(false);
+  const lock = useRef(false);
   const [err, setErr] = useState('');
   const near = similarTrades(v.name, [...cat.all, ...cat.pending]);
   const exact = near.find((x) => tradeNorm(x) === tradeNorm(v.name));
   const submit = async () => {
-    if (busy) return; setErr('');
+    if (lock.current) return; setErr('');
     if (exact) return onPick(exact);
-    setBusy(true);
+    lock.current = true; setBusy(true);
     try {
       const r = await api.rpc('propose_trade', { p_name: v.name, p_category: v.category });
       await loadTrades(true);
       onPick(r.name);
-    } catch (e) { setErr(e.message); } finally { setBusy(false); }
+    } catch (e) { setErr(e.message); } finally { lock.current = false; setBusy(false); }
   };
   return (
     <Sheet open onClose={onClose} title={t('Ajouter mon métier')}>
