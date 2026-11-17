@@ -37,7 +37,7 @@ export function IdentityCard({ purpose = 'client', title }) {
   const st = last?.status;
   const send = () => run(async () => {
     const path = `${profile.id}/${Date.now().toString(36)}-${safeName(f.file)}`;
-    await api.upload(path, f.file, BUCKET);
+    await api.upload(path, f.file, BUCKET, { upsert: false });
     try { await api.rpc('identity_submit', { p_purpose: purpose, p_doc_type: f.doc, p_path: path, p_holder: f.holder.trim() }); }
     catch (e) { await api.removeFile(path, BUCKET).catch(() => {}); throw e; }
     setOpen(false); setF({ ...f, file: null, ok: false }); reload();

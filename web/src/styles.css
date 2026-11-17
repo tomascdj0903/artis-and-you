@@ -1293,3 +1293,17 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 
 .req-card.artesa { border-style: solid; }
 .req-card .btn.sm { justify-self: start; }
+
+/* Barre d'onglets du téléphone en « verre » : capsule flottante, translucide et floutée (mobile uniquement) */
+@media (max-width: 1023px) {
+  .tabbar { left: 12px; right: 12px; bottom: max(10px, env(safe-area-inset-bottom)); padding: 6px 4px; border-radius: 28px; border: 1px solid rgba(255,255,255,.7);
+    background: rgba(255,255,255,.58); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 10px 30px rgba(43,31,28,.16); }
+  .tabbar a { border-radius: 20px; }
+  .tabbar a.on { background: rgba(180,67,42,.12); }
+  :root[data-theme="dark"] .tabbar { background: rgba(28,22,20,.62); border-color: rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.45); }
+  :root[data-theme="dark"] .tabbar a.on { background: rgba(255,158,160,.12); }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (max-width: 1023px) { .tabbar { background: var(--surface); } }
+}

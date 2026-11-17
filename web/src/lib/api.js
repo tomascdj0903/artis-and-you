@@ -140,8 +140,10 @@ const remote = {
   async fn(name, body) { const r = await http(`/functions/v1/${name}`, { method: 'POST', body, raw: true }); return r.json().catch(() => ({ error: 'http_' + r.status })); },
 
   // Fichiers
-  async upload(path, file, bucket = 'files') {
-    await http(`/storage/v1/object/${bucket}/${encodeURI(path)}`, { method: 'POST', body: file, headers: { 'x-upsert': 'true', 'Content-Type': file.type || 'application/octet-stream' } });
+  // upsert = false pour les espaces où l'utilisateur ne peut pas relire ses fichiers (ex. pièces d'identité) :
+  // un « upsert » exige aussi le droit de lecture et serait refusé par la sécurité du stockage.
+  async upload(path, file, bucket = 'files', { upsert = true } = {}) {
+    await http(`/storage/v1/object/${bucket}/${encodeURI(path)}`, { method: 'POST', body: file, headers: { 'x-upsert': upsert ? 'true' : 'false', 'Content-Type': file.type || 'application/octet-stream' } });
     return path;
   },
   async signedUrls(paths, bucket = 'files', expiresIn = 3600) {
