@@ -1238,3 +1238,24 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 @media (max-width: 900px), (pointer: coarse) {
   input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]), select, textarea { font-size: 16px !important; }
 }
+
+/* Espace administrateur */
+.atiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-bottom: 8px; }
+.atile { position: relative; border: 0; border-radius: var(--radius-lg); min-height: 112px; padding: 16px 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; background: var(--primary); color: #fff; font-size: 15px; cursor: pointer; box-shadow: 0 6px 16px rgba(180,67,42,.18); transition: transform .12s, filter .12s; }
+.atile:hover { filter: brightness(1.07); transform: translateY(-1px); }
+.atile svg { font-size: 26px; }
+.atile small { font-size: 12px; opacity: .85; font-weight: 600; }
+.atile.navy { background: var(--navy); box-shadow: 0 6px 16px rgba(30,30,40,.18); }
+.atile.light { background: var(--surface); color: var(--text); border: 1.5px solid var(--line); box-shadow: none; }
+.atile.light svg { color: var(--primary); }
+.atile-badge { position: absolute; top: 8px; right: 8px; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 12px; background: #fff; color: var(--primary); font-weight: 800; font-size: 13px; display: grid; place-items: center; }
+.kpi > small { display: block; font-size: 13px; color: var(--text-2); font-weight: 600; }
+.kpi > b { display: block; font-size: 24px; font-weight: 800; margin: 2px 0; }
+@media (min-width: 900px) { .kpis { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } }
+.abars { display: flex; align-items: flex-end; gap: 6px; height: 160px; }
+.abars .bar { flex: 1; height: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 2px; position: relative; padding-bottom: 18px; }
+.abars .bar span { flex: 1; max-width: 22px; background: var(--primary); border-radius: 4px 4px 0 0; min-height: 2px; }
+.abars .bar span.b2 { background: var(--navy); }
+.abars .bar small { position: absolute; bottom: 0; font-size: 11px; color: var(--text-2); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--primary); vertical-align: middle; }
+.dot.b2 { background: var(--navy); }

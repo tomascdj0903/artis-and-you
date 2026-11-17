@@ -110,7 +110,7 @@ export function AppProvider({ children }) {
   };
 
   const value = { session, profile, setProfile, company, setCompany, teams, setTeams, members, setMembers, ready, reload: load, lang, setLang, theme, setTheme,
-    toast, confirm, wip, run, can, unread, refreshUnread, isPro: profile?.kind === 'artisan' && !!profile?.company_id };
+    toast, confirm, wip, run, can, unread, refreshUnread, isPro: (profile?.kind === 'artisan' || profile?.kind === 'admin') && !!profile?.company_id, isAdminSpace: profile?.kind === 'admin' };
   return (
     <Ctx.Provider value={value}>
       {children}

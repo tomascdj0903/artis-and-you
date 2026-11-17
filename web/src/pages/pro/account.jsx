@@ -40,7 +40,7 @@ export function Account() {
       <Sec title={t('Compte')} />
       <div className="list">
         <MenuRow to="/pro/compte/profil" icon={LuUser} label={t('Mon profil')} sub={profile.email} />
-        {ger && <MenuRow to="/pro/compte/abonnement" icon={LuCreditCard} label={t('Abonnement et parrainage')} sub={t('Formule {p}', { p: PLANS.find((p) => p.id === company.plan)?.name })} />}
+        {ger && !company.is_platform && <MenuRow to="/pro/compte/abonnement" icon={LuCreditCard} label={t('Abonnement et parrainage')} sub={t('Formule {p}', { p: PLANS.find((p) => p.id === company.plan)?.name })} />}
       </div>
       <Sec title={t('Entreprise')} />
       <div className="list">
@@ -57,7 +57,7 @@ export function Account() {
         {ger && <MenuRow to="/pro/compte/integrations" icon={LuPlug} label={t('Intégrations')} sub={t('Agenda, comptable, paiement')} />}
         <MenuRow to="/pro/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />
         <MenuRow to="/telecharger" icon={LuDownload} label={t('Logiciel PC / Mac et application mobile')} />
-        {profile.is_admin && <MenuRow to="/pro/admin" icon={LuShieldCheck} label={t('Administration Artesa')} />}
+        {profile.is_admin && <MenuRow to={profile.kind === 'admin' ? '/admin' : '/pro/admin'} icon={LuShieldCheck} label={t('Administration Artesa')} />}
       </div>
       <Sec title={t('Aide')} />
       <div className="list">
@@ -144,7 +144,7 @@ export function CompanySettings() {
               <ul className="req-list">{companyMissing(c).length ? companyMissing(c).map(([k, l]) => <li key={k} className="ko">✕ {t(l)}</li>) : <li className="ok">✓ {t('Toutes les informations obligatoires sont renseignées')}</li>}</ul>
             </div>
           )}
-          {company.owner_id === profile.id && <div className="mt"><IdentityCard purpose="dirigeant" /></div>}
+          {company.owner_id === profile.id && !company.is_platform && <div className="mt"><IdentityCard purpose="dirigeant" /></div>}
           {!(company.verified || company.verification_status === 'approved') && <p className="small muted">{t('Avant la validation, votre fiche n’apparaît pas dans la recherche et vos devis et factures ne sont pas transmis aux particuliers inscrits sur Artesa. Vous pouvez déjà tout préparer.')}</p>}
           <Sec title={t('Identité')} />
           <p className="small faint" style={{ marginTop: -6 }}><b className="red-t">*</b> {t('obligatoire pour la validation du compte')}</p>

@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { GlobalFab } from './ui/fab.jsx';
 import { ErrorBoundary } from './ui/errors.jsx';
-import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell } from 'react-icons/lu';
+import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
 import { Landing } from './pages/auth/landing.jsx';
@@ -20,7 +20,7 @@ import * as Legal from './pages/common/legal.jsx';
 
 // L'espace artisan, l'espace particulier et les pages communes (compte, admin…) sont téléchargés séparément,
 // à la première visite : un particulier ne charge pas le code des devis, du CRM ou du planning des pros.
-const loaders = { pro: () => import('./pages/pro/index.js'), cli: () => import('./pages/client/index.js'), common: () => import('./pages/common/index.jsx') };
+const loaders = { adm: () => import('./pages/admin/index.jsx'), pro: () => import('./pages/pro/index.js'), cli: () => import('./pages/client/index.js'), common: () => import('./pages/common/index.jsx') };
 const cache = {};
 const L = (mod, name) => cache[mod + name] || (cache[mod + name] = lazy(() => loaders[mod]().then((m) => ({ default: m[name] }))));
 export const preload = (mod) => loaders[mod]().catch(() => {});
@@ -73,6 +73,15 @@ const PRO_TABS = [
   ['/pro', LuHouse, 'Accueil', true], ['/pro/clients', LuUsers, 'Clients'], ['/pro/planning', LuCalendar, 'Planning'], ['/pro/documents', LuFileText, 'Documents'],
   ['/pro/crm', LuChartColumn, 'CRM'], ['/pro/messages', LuMessageSquare, 'Messages'], ['/pro/reseau', LuNetwork, 'Mon réseau'],
 ];
+// Espace administrateur Artesa (compte « admin » : ni artisan, ni particulier)
+const ADMIN = [
+  ['/admin', L('adm', 'AdminHome')], ['/admin/gestion/:tab', L('common', 'Admin')], ['/admin/comptes', L('adm', 'AdminAccounts')], ['/admin/stats', L('adm', 'AdminStats')],
+  ['/admin/compta', L('adm', 'AdminCompta')], ['/admin/facturation-electronique', L('adm', 'AdminEInvoice')], ['/admin/legal', L('adm', 'AdminLegal')],
+];
+const ADMIN_TABS = [
+  ['/admin', LuLayoutGrid, 'Tableau de bord', true], ['/pro/clients', LuUsers, 'Clients'], ['/pro/documents', LuFileText, 'Documents'],
+  ['/admin/compta', LuCalculator, 'Comptabilité'], ['/pro/messages', LuMessageSquare, 'Messages'], ['/admin/comptes', LuUserCog, 'Comptes'],
+];
 const CLI_TABS = [
   ['/client', LuHouse, 'Accueil', true], ['/client/rdv', LuCalendar, 'Mes RDV'], ['/client/messages', LuMessageSquare, 'Messages'],
   ['/client/notifications', LuBell, 'Notifications'], ['/client/documents', LuFileText, 'Documents'],
@@ -104,9 +113,9 @@ function Shell({ tabs, children, path }) {
           {isPro && <Link to="/pro/notifications" className={active('/pro/notifications') ? 'on' : ''}><LuBell />{t('Notifications')}{unread.notifs > 0 && <span className="dot">{unread.notifs}</span>}</Link>}
         </nav>
         <div className="spacer" />
-        <Link to={(isPro ? '/pro' : '/client') + '/compte'} className="me">
+        <Link to={profile?.kind === 'admin' ? '/pro/compte' : (isPro ? '/pro' : '/client') + '/compte'} className="me">
           <Avatar name={profile?.first_name} last={profile?.last_name} path={profile?.avatar_path} size="sm" />
-          <div><b>{fullName(profile) || t('Mon compte')}</b><small>{company?.name || t('Particulier')}</small></div>
+          <div><b>{fullName(profile) || t('Mon compte')}</b><small>{profile?.kind === 'admin' ? t('Administrateur Artesa') : company?.name || t('Particulier')}</small></div>
         </Link>
       </aside>
       <div className="main">
@@ -148,6 +157,8 @@ function App() {
   const { path } = useLocation();
   const { ready, session, profile, isPro } = useApp();
   const logged = !!session && !!profile;
+  // Compte administrateur : type « admin », ou admin qui n'a pas encore d'entreprise (mise en place automatique)
+  const adminUser = logged && (profile.kind === 'admin' || (profile.is_admin && profile.kind === 'artisan' && !profile.company_id));
   // Verrouillage Face ID / empreinte (si activé sur cet appareil)
   const [locked, setLocked] = useState(false);
   useEffect(() => { if (logged) setLocked(isLocked(profile.id)); }, [logged, profile?.id]);
@@ -161,15 +172,18 @@ function App() {
     if (!ready) return;
     if (session?.recovery && path !== '/nouveau-mot-de-passe') { navigate('/nouveau-mot-de-passe', { replace: true }); return; }
     const isPublic = !!find(PUBLIC, path);
-    if ((path === '/' && (logged || navigator.userAgent.includes('Electron'))) || (!logged && !isPublic)) { navigate(logged ? (isPro ? '/pro' : '/client') : '/connexion', { replace: true }); return; }
-    if (logged && ['/connexion', '/inscription', '/inscription/particulier'].includes(path)) { navigate(isPro ? '/pro' : '/client', { replace: true }); return; }
-    if (logged && profile.kind === 'artisan' && !profile.company_id && path !== '/inscription/artisan') { navigate('/inscription/artisan', { replace: true }); return; }
+    const home = adminUser ? '/admin' : isPro ? '/pro' : '/client';
+    if ((path === '/' && (logged || navigator.userAgent.includes('Electron'))) || (!logged && !isPublic)) { navigate(logged ? home : '/connexion', { replace: true }); return; }
+    if (logged && ['/connexion', '/inscription', '/inscription/particulier', '/inscription/artisan'].includes(path) && (adminUser || path !== '/inscription/artisan')) { navigate(home, { replace: true }); return; }
+    if (logged && !adminUser && profile.kind === 'artisan' && !profile.company_id && path !== '/inscription/artisan') { navigate('/inscription/artisan', { replace: true }); return; }
+    if (logged && path.startsWith('/admin') && !adminUser) { navigate(home, { replace: true }); return; }
+    if (logged && adminUser && (path === '/pro' || path.startsWith('/client') || (path.startsWith('/pro') && !isPro))) { navigate('/admin', { replace: true }); return; }
     if (logged && path.startsWith('/pro') && !isPro) navigate('/client', { replace: true });
     if (logged && path.startsWith('/client') && isPro) navigate('/pro', { replace: true });
-  }, [ready, logged, path, isPro]);
+  }, [ready, logged, path, isPro, adminUser]);
 
   // On commence à télécharger le bon espace dès qu'on sait qui est connecté
-  useEffect(() => { if (logged) { preload(isPro ? 'pro' : 'cli'); preload('common'); } }, [logged, isPro]);
+  useEffect(() => { if (logged) { if (adminUser) preload('adm'); preload(isPro ? 'pro' : 'cli'); preload('common'); } }, [logged, isPro, adminUser]);
 
   const pub = find(PUBLIC, path);
   // Visiteur non connecté sur une page publique : on l'affiche sans attendre (pas de roue de chargement sur l'accueil pré-rendu)
@@ -177,10 +191,10 @@ function App() {
   if (pub) { const [C, params] = pub; return <C params={params} />; }
   if (!logged) return <Loader />;
   if (locked) return <LockScreen onUnlock={() => setLocked(false)} />;
-  const pro = path.startsWith('/pro'), routes = pro ? PRO : CLIENT;
+  const adm = path.startsWith('/admin'), pro = path.startsWith('/pro'), routes = adm ? ADMIN : pro ? PRO : CLIENT;
   const hit = find(routes, path);
   const [C, params] = hit || [L('common', 'NotFound'), {}];
-  return <Shell tabs={pro ? PRO_TABS : CLI_TABS} path={path}><ErrorBoundary key={path} home={pro ? '/pro' : '/client'}><Suspense fallback={<Loader />}><C params={params} key={path} /></Suspense></ErrorBoundary></Shell>;
+  return <Shell tabs={adminUser ? ADMIN_TABS : pro ? PRO_TABS : CLI_TABS} path={path}><ErrorBoundary key={path} home={adminUser ? '/admin' : pro ? '/pro' : '/client'}><Suspense fallback={<Loader />}><C params={params} key={path} /></Suspense></ErrorBoundary></Shell>;
 }
 
 // Installation sur téléphone (Android) : service worker minimal + bouton « Installer »

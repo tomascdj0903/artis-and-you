@@ -185,12 +185,42 @@ export function mockBackend({ saveSession, getSession }) {
       case 'network_requests': return r.from_company === mc || r.to_company === mc;
       case 'ratings': return r.author_company === mc;
       case 'project_shares': return r.company_id === mc || db.projects.some((p) => p.id === r.project_id && p.company_id === mc);
-      case 'profiles': return r.id === me() || (mc && r.company_id === mc);
+      case 'profiles': return r.id === me() || (mc && r.company_id === mc) || isAdmin();
       default: return true;
     }
   }
   const rpcs = {
     is_admin() { return isAdmin(); },
+    admin_setup_platform() {
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      let c = db.companies.find((x) => x.is_platform);
+      if (!c) { c = { ...defaults.companies, id: id(), owner_id: me(), name: 'Artesa', trade_name: 'Artesa', legal_form: '', country: 'France', email: '', verification_status: 'approved', verified: true, verified_at: now(), visible_particuliers: false, visible_pros: false, is_platform: true, trades: [], trial_ends_at: null, created_at: now() }; db.companies.push(c); }
+      const p = db.profiles.find((x) => x.id === me()); Object.assign(p, { kind: 'admin', company_id: c.id, member_role: 'gerant', permissions: { planning: true, clients: true, devis: true, prix: true, kpi: true } });
+      return c;
+    },
+    admin_stats() {
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      const co = db.companies.filter((c) => !c.is_platform), pr = db.profiles.filter((p) => p.kind !== 'admin'), ago = (d) => new Date(Date.now() - d * 864e5).toISOString(), nowS = now();
+      const cids = new Set(co.map((c) => c.id));
+      const plans = {}; co.filter((c) => c.trial_ends_at && c.trial_ends_at <= nowS && c.verification_status === 'approved').forEach((c) => { plans[c.plan || 'solo'] = (plans[c.plan || 'solo'] || 0) + 1; });
+      const weeks = {}; pr.filter((p) => (p.created_at || '') > ago(84)).forEach((p) => { const d = new Date(p.created_at); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); const k = d.toISOString().slice(0, 10); weeks[k] = (weeks[k] || 0) + 1; });
+      return {
+        users: pr.length, artisans: pr.filter((p) => p.kind === 'artisan').length, particuliers: pr.filter((p) => p.kind === 'particulier').length,
+        new_30d: pr.filter((p) => (p.created_at || '') > ago(30)).length, new_7d: pr.filter((p) => (p.created_at || '') > ago(7)).length,
+        companies: co.length, approved: co.filter((c) => c.verification_status === 'approved').length, pending: co.filter((c) => c.verification_status === 'pending').length, rejected: co.filter((c) => c.verification_status === 'rejected').length,
+        in_trial: co.filter((c) => c.trial_ends_at > nowS).length,
+        trial_ending_7d: co.filter((c) => c.trial_ends_at > nowS && c.trial_ends_at < new Date(Date.now() + 7 * 864e5).toISOString()).map((c) => ({ id: c.id, name: c.name, ends: c.trial_ends_at, plan: c.plan })),
+        after_trial: co.filter((c) => c.trial_ends_at && c.trial_ends_at <= nowS && c.verification_status === 'approved').length, plans,
+        quotes: db.documents.filter((d) => cids.has(d.company_id) && d.kind === 'devis' && d.number).length,
+        invoices: db.documents.filter((d) => cids.has(d.company_id) && d.kind === 'facture' && d.number).length,
+        appointments_30d: db.appointments.filter((a) => cids.has(a.company_id) && (a.created_at || '') > ago(30)).length,
+        reviews: db.reviews.filter((r) => cids.has(r.company_id) && r.status === 'publie').length,
+        signups_by_week: Object.entries(weeks).sort().map(([week, n]) => ({ week, n })),
+        todo: { companies: co.filter((c) => c.verification_status === 'pending').length, identities: db.identity_checks.filter((i) => i.status === 'en_attente').length,
+          vault: db.files.filter((f) => cids.has(f.company_id) && f.kind === 'vault' && f.review_status === 'en_attente').length, reviews: db.reviews.filter((r) => r.status === 'en_attente').length,
+          reports: db.content_reports.filter((r) => r.status === 'recu').length, trades: db.trades.filter((x) => x.status === 'en_attente').length },
+      };
+    },
     identity_submit({ p_purpose, p_doc_type, p_path, p_holder }) {
       const uid = me(); if (!uid) throw new Error('Connectez-vous.');
       if (!String(p_path || '').startsWith(uid + '/')) throw new Error('Fichier invalide');

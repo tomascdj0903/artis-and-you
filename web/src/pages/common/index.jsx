@@ -365,15 +365,15 @@ function AdminTrades({ list, cos, reload }) {
   });
 }
 
-export function Admin() {
+export function Admin({ params }) {
   const { run, profile } = useApp();
-  const [tab, setTab] = useState(() => new URLSearchParams(location.search).get('tab') || 'siret');
+  const [tab, setTab] = useState(() => params?.tab || new URLSearchParams(location.search).get('tab') || 'siret');
   const [refuse, setRefuse] = useState(null);
   const [revRefuse, setRevRefuse] = useState(null);
   const [b, reload] = useData(async () => {
     if (!profile.is_admin) return null;
     const [cos, revs, vault, trades, reports, idc] = await Promise.all([
-      api.select('companies', {}, { order: 'created_at.desc', limit: 300 }),
+      api.select('companies', {}, { order: 'created_at.desc', limit: 300 }).then((l) => l.filter((c) => !c.is_platform)),
       api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' }),
       api.select('files', { kind: 'vault', review_status: 'en_attente' }, { order: 'created_at.asc' }),
       api.select('trades', { status: 'en_attente' }, { order: 'created_at.asc' }),
