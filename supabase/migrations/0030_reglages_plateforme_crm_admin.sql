@@ -36,6 +36,7 @@ begin
   return new;
 end $$;
 create trigger companies_0_trial before insert on public.companies for each row execute function public.on_company_trial();
+revoke execute on function public.on_company_trial() from public, anon, authenticated;
 
 -- Prospection : artisans à convaincre, partenaires, fournisseurs…
 create table if not exists public.admin_deals (
