@@ -1307,3 +1307,5 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   @media (max-width: 1023px) { .tabbar { background: var(--surface); } }
 }
+/* 7 onglets (pro, admin) : libellés un peu plus serrés pour éviter « Messa… » */
+@media (max-width: 1023px) { .tabbar:has(> a:nth-child(7)) a small { font-size: 10.5px; letter-spacing: -.15px; } .tabbar:has(> a:nth-child(7)) { padding-left: 2px; padding-right: 2px; } }

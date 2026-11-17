@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { GlobalFab } from './ui/fab.jsx';
 import { ErrorBoundary } from './ui/errors.jsx';
-import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog, LuKanban } from 'react-icons/lu';
+import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog, LuKanban, LuListChecks } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
 import { Landing } from './pages/auth/landing.jsx';
@@ -83,7 +83,7 @@ const ADMIN = [
 // 5e valeur « true » : seulement dans la barre de gauche (la barre du bas du téléphone garde l'essentiel)
 const ADMIN_TABS = [
   ['/admin', LuLayoutGrid, 'Tableau de bord', true], ['/admin/prospection', LuKanban, 'Prospection'], ['/admin/agenda', LuCalendar, 'Agenda'],
-  ['/pro/messages', LuMessageSquare, 'Messages'], ['/pro/clients', LuUsers, 'Clients', false, true], ['/pro/documents', LuFileText, 'Documents', false, true],
+  ['/admin/taches', LuListChecks, 'Tâches'], ['/pro/messages', LuMessageSquare, 'Messages'], ['/pro/clients', LuUsers, 'Clients'], ['/pro/documents', LuFileText, 'Documents'],
   ['/admin/compta', LuCalculator, 'Comptabilité', false, true], ['/admin/comptes', LuUserCog, 'Comptes', false, true],
 ];
 const CLI_TABS = [
@@ -131,7 +131,7 @@ function Shell({ tabs, children, path }) {
       <GlobalFab />
       {!hideTabs && (
         <nav className="tabbar" aria-label={t('Navigation')}>
-          {tabs.filter((x) => !x[4]).map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t({ 'Mon réseau': 'Réseau', Notifications: 'Alertes', Documents: 'Docs', 'Mes documents': 'Docs', 'Mes rendez-vous': 'RDV', 'Mes artisans': 'Artisans' }[label] || label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
+          {tabs.filter((x) => !x[4]).map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t({ 'Tableau de bord': 'Accueil', Prospection: 'Prospects', 'Mon réseau': 'Réseau', Notifications: 'Alertes', Documents: 'Docs', 'Mes documents': 'Docs', 'Mes rendez-vous': 'RDV', 'Mes artisans': 'Artisans' }[label] || label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
         </nav>
       )}
     </div>
