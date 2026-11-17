@@ -1,7 +1,7 @@
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
+const TABLES = ['identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
@@ -167,6 +167,7 @@ export function mockBackend({ saveSession, getSession }) {
   const reviewsOf = (cid) => db.reviews.filter((r) => r.company_id === cid && r.status === 'publie');
   const avg = (rs) => (rs.length ? Math.round((rs.reduce((s, r) => s + r.rating, 0) / rs.length) * 10) / 10 : null);
 
+  const approvedCo = (cid) => { const c = db.companies.find((x) => x.id === cid); return !!c && (c.verification_status === 'approved' || c.verified); };
   function visible(table, r) {
     const mc = myCompany(), mine = myClientIds();
     const convOk = (c) => c && ((mc && (c.company_id === mc || c.other_company_id === mc)) || c.client_user_id === me());
@@ -175,7 +176,8 @@ export function mockBackend({ saveSession, getSession }) {
       case 'messages': return convOk(db.conversations.find((c) => c.id === r.conversation_id));
       case 'notifications': case 'conversation_reads': return r.user_id === me();
       case 'clients': return r.company_id === mc || r.user_id === me();
-      case 'documents': return r.company_id === mc || (r.number && mine.includes(r.client_id));
+      case 'documents': return r.company_id === mc || (r.number && mine.includes(r.client_id) && approvedCo(r.company_id));
+      case 'identity_checks': return r.user_id === me() || isAdmin();
       case 'appointments': case 'projects': return r.company_id === mc || mine.includes(r.client_id);
       case 'trades': return r.status === 'valide' || r.created_by === me() || isAdmin();
       case 'files': return r.company_id === mc || (r.kind === 'vault' && isAdmin()) || (mine.includes(r.client_id) && (r.shared_with_client || r.kind === 'photo')) || (r.kind === 'vault' && r.shared_with_client && r.review_status === 'valide' && db.clients.some((c) => c.user_id === me() && c.company_id === r.company_id));
@@ -189,6 +191,38 @@ export function mockBackend({ saveSession, getSession }) {
   }
   const rpcs = {
     is_admin() { return isAdmin(); },
+    identity_submit({ p_purpose, p_doc_type, p_path, p_holder }) {
+      const uid = me(); if (!uid) throw new Error('Connectez-vous.');
+      if (!String(p_path || '').startsWith(uid + '/')) throw new Error('Fichier invalide');
+      if (String(p_holder || '').trim().length < 3) throw new Error('Indiquez le nom tel qu’il figure sur la pièce.');
+      let co = null;
+      if (p_purpose === 'dirigeant') { co = db.companies.find((c) => c.owner_id === uid)?.id; if (!co) throw new Error('Seul le dirigeant qui a créé l’entreprise peut envoyer sa pièce.'); }
+      if (db.identity_checks.some((i) => i.user_id === uid && i.purpose === p_purpose && i.status === 'verifie')) throw new Error('Votre identité est déjà vérifiée.');
+      db.identity_checks.filter((i) => i.user_id === uid && i.purpose === p_purpose && i.status === 'en_attente').forEach((i) => { i.status = 'annule'; });
+      const r = { id: id(), user_id: uid, purpose: p_purpose, company_id: co, doc_type: p_doc_type, holder_name: String(p_holder).trim(), file_path: p_path, status: 'en_attente', note: '', created_at: now() };
+      db.identity_checks.push(r); return r.id;
+    },
+    admin_identity_review({ p_id, p_status, p_note = '' }) {
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa');
+      if (p_status === 'refuse' && !String(p_note).trim()) throw new Error('Indiquez le motif du refus.');
+      const r = db.identity_checks.find((x) => x.id === p_id && x.status === 'en_attente'); if (!r) throw new Error('Demande déjà traitée');
+      Object.assign(r, { status: p_status, note: String(p_note).trim(), reviewed_by: me(), reviewed_at: now() });
+      notify(r.user_id, 'systeme', p_status === 'verifie' ? 'Identité vérifiée' : 'Pièce d’identité refusée', p_status === 'verifie' ? 'Votre identité est vérifiée. La copie de votre pièce a été supprimée.' : 'Motif : ' + String(p_note).trim() + '. La copie a été supprimée ; vous pouvez en envoyer une nouvelle.', r.purpose === 'dirigeant' ? '/pro/compte/entreprise' : '/client/compte');
+      return r.file_path;
+    },
+    identity_file_deleted({ p_id }) {
+      const r = db.identity_checks.find((x) => x.id === p_id && (isAdmin() || (x.user_id === me() && ['en_attente', 'annule'].includes(x.status))));
+      if (r) Object.assign(r, { file_path: null, file_deleted_at: now() });
+    },
+    identity_cancel({ p_id }) {
+      const r = db.identity_checks.find((x) => x.id === p_id && x.user_id === me() && x.status === 'en_attente'); if (!r) return null;
+      r.status = 'annule'; return r.file_path;
+    },
+    client_certified({ p_client }) {
+      const c = db.clients.find((x) => x.id === p_client && x.company_id === myCompany()); if (!c?.user_id) return null;
+      const v = db.identity_checks.filter((i) => i.user_id === c.user_id && i.purpose === 'client' && i.status === 'verifie').map((i) => i.reviewed_at).sort().pop();
+      return v || null;
+    },
     admin_review_file({ p_id, p_status, p_note = '' }) {
       if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
       const f = db.files.find((x) => x.id === p_id && x.kind === 'vault'); if (!f) throw new Error('Document introuvable');
@@ -223,6 +257,7 @@ export function mockBackend({ saveSession, getSession }) {
     admin_review_company({ p_id, p_status, p_note = '' }) {
       if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
       const c = db.companies.find((x) => x.id === p_id); if (!c) throw new Error('Entreprise introuvable');
+      if (p_status === 'approved' && !db.identity_checks.some((i) => i.user_id === c.owner_id && i.purpose === 'dirigeant' && i.status === 'verifie')) throw new Error('La pièce d’identité du dirigeant n’est pas encore vérifiée.');
       Object.assign(c, { verification_status: p_status, verified: p_status === 'approved', verification_note: p_note, verified_at: now() });
       notifyCompany(c.id, 'systeme', p_status === 'approved' ? 'Votre entreprise est validée' : 'Votre inscription est à compléter', p_status === 'approved' ? 'Votre profil est maintenant visible des clients.' : p_note, '/pro/compte/entreprise');
       return c;

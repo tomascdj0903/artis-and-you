@@ -1436,3 +1436,55 @@ Vérifier auprès de l’Union européenne (VIES)|Check with the European Union 
 Numéro valide|Valid number|Número válido|Numero valido
 Numéro inconnu du registre européen : vérifiez-le avec votre client.|Number not found in the EU register: check it with your client.|Número desconhecido no registo europeu: confirme-o com o seu cliente.|Numero sconosciuto al registro europeo: verificalo con il cliente.
 Format correct. Le registre européen ne répond pas pour le moment, réessayez plus tard.|Format is correct. The EU register is not responding right now, try again later.|Formato correto. O registo europeu não responde de momento, tente mais tarde.|Formato corretto. Il registro europeo non risponde al momento, riprova più tardi.
+Pièce envoyée : elle sera vérifiée sous 48 h ouvrées|ID sent: it will be checked within 2 working days|Documento enviado: será verificado em 48 h úteis|Documento inviato: sarà verificato entro 48 ore lavorative
+Demande annulée, la copie est supprimée|Request cancelled, the copy has been deleted|Pedido anulado, a cópia foi eliminada|Richiesta annullata, la copia è stata eliminata
+Identité du dirigeant|Manager’s identity|Identidade do gerente|Identità del titolare
+Compte certifié|Certified account|Conta certificada|Account certificato
+Identité vérifiée le {d}. La copie de la pièce a été supprimée.|Identity verified on {d}. The copy of the document has been deleted.|Identidade verificada em {d}. A cópia do documento foi eliminada.|Identità verificata il {d}. La copia del documento è stata eliminata.
+Pièce reçue {r}, vérification en cours (48 h ouvrées). Elle sera supprimée dès le contrôle fait.|Document received {r}, check in progress (2 working days). It will be deleted as soon as it is checked.|Documento recebido {r}, verificação em curso (48 h úteis). Será eliminado logo após a verificação.|Documento ricevuto {r}, verifica in corso (48 ore lavorative). Sarà eliminato appena verificato.
+Annuler et supprimer la copie|Cancel and delete the copy|Anular e eliminar a cópia|Annulla ed elimina la copia
+Pièce refusée : {n}|Document rejected: {n}|Documento recusado: {n}|Documento rifiutato: {n}
+Obligatoire pour valider votre entreprise : elle garantit aux clients que le compte appartient bien au dirigeant inscrit au registre.|Required to approve your company: it assures clients the account really belongs to the manager listed in the company register.|Obrigatório para validar a sua empresa: garante aos clientes que a conta pertence mesmo ao gerente inscrito no registo.|Obbligatorio per convalidare l’azienda: garantisce ai clienti che l’account appartiene davvero al titolare iscritto al registro.
+Facultatif. Les artisans voient un badge « Compte certifié » sur votre fiche : ils savent que vous êtes bien la personne indiquée.|Optional. Tradespeople see a “Certified account” badge on your record: they know you are who you say you are.|Facultativo. Os profissionais veem o selo «Conta certificada» na sua ficha: sabem que é mesmo a pessoa indicada.|Facoltativo. Gli artigiani vedono il badge «Account certificato» sulla tua scheda: sanno che sei davvero la persona indicata.
+Envoyer ma pièce d’identité|Send my ID|Enviar o meu documento de identificação|Invia il mio documento d’identità
+Vérification d’identité|Identity check|Verificação de identidade|Verifica d’identità
+Nom et prénom tels qu’ils figurent sur la pièce|First and last name as shown on the document|Nome e apelido como constam do documento|Nome e cognome come sul documento
+Photo ou scan (recto, et verso pour une carte)|Photo or scan (front, and back for a card)|Foto ou digitalização (frente, e verso para um cartão)|Foto o scansione (fronte, e retro per una carta)
+JPG, PNG ou PDF, 10 Mo max.|JPG, PNG or PDF, 10 MB max.|JPG, PNG ou PDF, máx. 10 MB.|JPG, PNG o PDF, max 10 MB.
+Ce que nous faisons de votre pièce|What we do with your document|O que fazemos com o seu documento|Cosa facciamo con il tuo documento
+Elle est rangée dans un espace privé, séparé de vos autres fichiers, visible seulement par l’équipe de vérification.|It is stored in a private area, separate from your other files, visible only to the verification team.|Fica guardado num espaço privado, separado dos seus outros ficheiros, visível apenas pela equipa de verificação.|Viene conservato in uno spazio privato, separato dagli altri file, visibile solo al team di verifica.
+Nous vérifions que le nom correspond à votre compte{x}, puis nous la supprimons définitivement.|We check that the name matches your account{x}, then delete it permanently.|Verificamos que o nome corresponde à sua conta{x} e depois eliminamo-lo definitivamente.|Verifichiamo che il nome corrisponda al tuo account{x}, poi lo eliminiamo definitivamente.
+ et au dirigeant inscrit au registre des entreprises| and the manager listed in the company register| e ao gerente inscrito no registo das empresas| e al titolare iscritto al registro delle imprese
+Nous gardons seulement : « identité vérifiée », la date et qui a vérifié. Ni copie, ni numéro de la pièce.|We keep only “identity verified”, the date and who checked it. No copy, no document number.|Guardamos apenas «identidade verificada», a data e quem verificou. Nem cópia, nem número do documento.|Conserviamo solo «identità verificata», la data e chi ha verificato. Né copia, né numero del documento.
+Vous pouvez masquer votre numéro de document et votre photo n’est pas utilisée.|You may hide your document number; your photo is not used.|Pode ocultar o número do documento; a sua fotografia não é usada.|Puoi coprire il numero del documento; la tua foto non viene usata.
+Pourquoi nous ne conservons pas la pièce|Why we do not keep the document|Porque não guardamos o documento|Perché non conserviamo il documento
+J’envoie ma propre pièce d’identité, en cours de validité.|I am sending my own valid ID.|Envio o meu próprio documento de identificação, válido.|Invio il mio documento d’identità, in corso di validità.
+Envoyer pour vérification|Send for verification|Enviar para verificação|Invia per la verifica
+Identité vérifiée, copie supprimée|Identity verified, copy deleted|Identidade verificada, cópia eliminada|Identità verificata, copia eliminata
+Refusée, copie supprimée|Rejected, copy deleted|Recusado, cópia eliminada|Rifiutato, copia eliminata
+{n} copie(s) de pièce d’identité déjà traitée(s) restent à supprimer.|{n} already-processed ID copies still need deleting.|{n} cópia(s) de documento já tratada(s) por eliminar.|{n} copia/e di documenti già trattate da eliminare.
+Copies supprimées|Copies deleted|Cópias eliminadas|Copie eliminate
+Supprimer maintenant|Delete now|Eliminar agora|Elimina ora
+Aucune pièce d’identité en attente|No ID waiting|Nenhum documento pendente|Nessun documento in attesa
+Dirigeant|Manager|Gerente|Titolare
+Contrôler|Check|Verificar|Verifica
+Contrôle d’identité|Identity check|Controlo de identidade|Controllo d’identità
+Nom déclaré|Declared name|Nome declarado|Nome dichiarato
+Voir les dirigeants inscrits (Annuaire des entreprises)|See registered managers (company directory)|Ver os gerentes registados (diretório de empresas)|Vedi i titolari iscritti (elenco imprese)
+Fichier introuvable.|File not found.|Ficheiro não encontrado.|File non trovato.
+La copie sera supprimée automatiquement dès votre décision. Ne la téléchargez pas.|The copy will be deleted automatically once you decide. Do not download it.|A cópia será eliminada automaticamente após a sua decisão. Não a descarregue.|La copia sarà eliminata automaticamente dopo la tua decisione. Non scaricarla.
+Motif en cas de refus|Reason if rejected|Motivo em caso de recusa|Motivo in caso di rifiuto
+Identité vérifiée|Identity verified|Identidade verificada|Identità verificata
+Avant la validation, votre fiche n’apparaît pas dans la recherche et vos devis et factures ne sont pas transmis aux particuliers inscrits sur Artesa. Vous pouvez déjà tout préparer.|Until approval, your profile does not appear in search and your quotes and invoices are not sent to private clients registered on Artesa. You can already prepare everything.|Antes da validação, a sua ficha não aparece na pesquisa e os seus orçamentos e faturas não são enviados aos particulares inscritos na Artesa. Já pode preparar tudo.|Prima della convalida, la tua scheda non appare nella ricerca e i tuoi preventivi e fatture non vengono inviati ai privati iscritti su Artesa. Puoi già preparare tutto.
+Compte certifié : identité vérifiée par Artesa le {d}|Certified account: identity verified by Artesa on {d}|Conta certificada: identidade verificada pela Artesa em {d}|Account certificato: identità verificata da Artesa il {d}
+Identités ({n})|Identities ({n})|Identidades ({n})|Identità ({n})
+Carte nationale d’identité|National identity card|Cartão de identidade nacional|Carta d’identità
+Passeport|Passport|Passaporte|Passaporto
+Titre de séjour|Residence permit|Título de residência|Permesso di soggiorno
+Permis de conduire (format carte)|Driving licence (card format)|Carta de condução (formato cartão)|Patente di guida (formato tessera)
+Pièce illisible ou incomplète|Document unreadable or incomplete|Documento ilegível ou incompleto|Documento illeggibile o incompleto
+Pièce expirée|Document expired|Documento caducado|Documento scaduto
+Le nom ne correspond pas au compte|Name does not match the account|O nome não corresponde à conta|Il nome non corrisponde all’account
+Le nom ne correspond pas au dirigeant inscrit|Name does not match the registered manager|O nome não corresponde ao gerente registado|Il nome non corrisponde al titolare iscritto
+Document non accepté|Document not accepted|Documento não aceite|Documento non accettato
+Particulier|Private client|Particular|Privato

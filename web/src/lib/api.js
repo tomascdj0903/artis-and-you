@@ -106,7 +106,7 @@ function qs(filters = {}, { order, limit, columns } = {}) {
 }
 
 // Lecture avec cache hors ligne : la dernière réponse est gardée et resservie si le réseau manque
-const NO_CACHE_RPC = /^(create_|delete_|finalize_|join_|network_(answer|remove|request)$|post_|rate_|request_|resubmit_|start_|client_(appointment|quote)_|project_invite($|_answer)|admin_|calendar_token|ensure_)/;
+const NO_CACHE_RPC = /^(identity_|report_|create_|delete_|finalize_|join_|network_(answer|remove|request)$|post_|rate_|request_|resubmit_|start_|client_(appointment|quote)_|project_invite($|_answer)|admin_|calendar_token|ensure_)/;
 async function cached(key, fetcher) {
   try { const r = await fetcher(); off.cachePut(key, r); return r; }
   catch (e) {
@@ -140,18 +140,18 @@ const remote = {
   async fn(name, body) { const r = await http(`/functions/v1/${name}`, { method: 'POST', body, raw: true }); return r.json().catch(() => ({ error: 'http_' + r.status })); },
 
   // Fichiers
-  async upload(path, file) {
-    await http(`/storage/v1/object/files/${encodeURI(path)}`, { method: 'POST', body: file, headers: { 'x-upsert': 'true', 'Content-Type': file.type || 'application/octet-stream' } });
+  async upload(path, file, bucket = 'files') {
+    await http(`/storage/v1/object/${bucket}/${encodeURI(path)}`, { method: 'POST', body: file, headers: { 'x-upsert': 'true', 'Content-Type': file.type || 'application/octet-stream' } });
     return path;
   },
-  async signedUrls(paths) {
+  async signedUrls(paths, bucket = 'files', expiresIn = 3600) {
     if (!paths.length) return {};
-    const r = await http('/storage/v1/object/sign/files', { method: 'POST', body: { expiresIn: 3600, paths } });
+    const r = await http(`/storage/v1/object/sign/${bucket}`, { method: 'POST', body: { expiresIn, paths } });
     const out = {};
     (r || []).forEach((x) => { if (x.signedURL) out[x.path] = URL_ + '/storage/v1' + x.signedURL; });
     return out;
   },
-  async removeFile(path) { await http('/storage/v1/object/files', { method: 'DELETE', body: { prefixes: [path] } }); },
+  async removeFile(path, bucket = 'files') { await http(`/storage/v1/object/${bucket}`, { method: 'DELETE', body: { prefixes: [path] } }); },
 
   // Authentification
   async signUp(email, password, data) {

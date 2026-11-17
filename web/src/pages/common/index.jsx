@@ -3,6 +3,7 @@ import { companyMissing, VAULT_FORM, VAULT_TYPES, docTypeLabel, similarTrades } 
 import { useTrades, loadTrades } from '../../ui/trades.jsx';
 import { HELP, HELP_CATS } from '../../lib/help.js';
 import { LawRefs } from '../../ui/lawref.jsx';
+import { AdminIdentities } from '../../ui/identity.jsx';
 import { bioAvailable, bioEnabled, bioEnable, bioDisable, groupSecret } from '../../lib/security.js';
 import { LuBell, LuCalendar, LuFileText, LuEuro, LuMessageSquare, LuInfo, LuMail, LuPhone, LuBug, LuDownload, LuTrash2, LuMoon, LuSun, LuCheck, LuX } from 'react-icons/lu';
 import JSZip from 'jszip';
@@ -371,14 +372,18 @@ export function Admin() {
   const [revRefuse, setRevRefuse] = useState(null);
   const [b, reload] = useData(async () => {
     if (!profile.is_admin) return null;
-    const [cos, revs, vault, trades, reports] = await Promise.all([
+    const [cos, revs, vault, trades, reports, idc] = await Promise.all([
       api.select('companies', {}, { order: 'created_at.desc', limit: 300 }),
       api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' }),
       api.select('files', { kind: 'vault', review_status: 'en_attente' }, { order: 'created_at.asc' }),
       api.select('trades', { status: 'en_attente' }, { order: 'created_at.asc' }),
       api.select('content_reports', { status: 'recu' }, { order: 'created_at.asc' }).catch(() => []),
+      api.select('identity_checks', {}, { order: 'created_at.asc' }).catch(() => []),
     ]);
-    return { cos, revs, vault, trades, reports, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
+    const coById = Object.fromEntries(cos.map((c) => [c.id, c]));
+    const ids = idc.filter((r) => r.status === 'en_attente').map((r) => ({ ...r, company_name: coById[r.company_id]?.name, siren: coById[r.company_id]?.siren }));
+    const idLeft = idc.filter((r) => r.status !== 'en_attente' && r.file_path);
+    return { ids, idLeft, cos, revs, vault, trades, reports, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
   }, []);
   if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artesa.')} /></div>;
   if (!b) return <div className="content"><TopBar title={t('Administration')} /><Loader /></div>;
@@ -389,8 +394,8 @@ export function Admin() {
   return (
     <div className="content">
       <TopBar title={t('Administration')} sub="Artesa" />
-      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })], ['signal', t('Signalements ({n})', { n: b.reports.length })]]} value={tab} onChange={setTab} />
-      {tab === 'signal' ? <AdminReports list={b.reports} cm={b.cm} reload={reload} /> : tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
+      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })], ['signal', t('Signalements ({n})', { n: b.reports.length })], ['identite', t('Identités ({n})', { n: b.ids.length })]]} value={tab} onChange={setTab} />
+      {tab === 'identite' ? <AdminIdentities list={b.ids} leftovers={b.idLeft} reload={reload} /> : tab === 'signal' ? <AdminReports list={b.reports} cm={b.cm} reload={reload} /> : tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
         <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>
           <div className="row mt"><button className="btn xs" onClick={() => run(() => api.rpc('admin_moderate_review', { p_id: r.id, p_status: 'publie', p_reason: '' }), t('Avis publié')).then(reload)}><LuCheck /> {t('Publier')}</button><button className="btn xs ghost" onClick={() => setRevRefuse({ r, note: '' })}><LuX /> {t('Refuser')}</button></div></div>
       ))) : (

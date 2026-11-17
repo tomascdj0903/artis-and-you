@@ -1,8 +1,8 @@
 import { kbd } from '../../lib/a11y.js';
 import { RateBox, InviteClientButtons } from './messages.jsx';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuChartColumn, LuMessageSquare, LuHistory, LuPlus, LuPencil, LuEuro, LuFileText, LuFilePen, LuX, LuCamera, LuCalendarCheck, LuHardHat, LuFolderOpen, LuMail } from 'react-icons/lu';
+import { LuChartColumn, LuMessageSquare, LuHistory, LuPlus, LuPencil, LuEuro, LuFileText, LuFilePen, LuX, LuCamera, LuCalendarCheck, LuHardHat, LuFolderOpen, LuMail, LuShieldCheck } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation } from '../../lib/router.jsx';
@@ -222,6 +222,7 @@ export function ClientCard({ params }) {
             [t('Statut client'), <Pill key="v" c={c.status === 'actif' ? 'green' : 'grey'}>{t({ actif: 'Actif', prospect: 'Prospect', inactif: 'Inactif' }[c.status])}</Pill>],
             c.type === 'pro' && [t('Date de création'), date(c.creation_date)], [t('Compte Artesa'), c.user_id ? t('Oui') : t('Non')],
           ]} />
+          {c.user_id && <CertifiedBadge clientId={c.id} />}
           <Sec title={t('Coordonnées')} />
           <KV rows={[
             [t('E-mail'), c.email, { href: c.email && 'mailto:' + c.email }], [t('Tél. fixe'), c.phone, { href: c.phone && 'tel:' + c.phone }], [t('Tél. mobile'), c.mobile, { href: c.mobile && 'tel:' + c.mobile }],
@@ -366,4 +367,12 @@ function ClientRating({ id }) {
   const { run } = useApp();
   const [score, reload] = useData(() => api.rpc('client_score', { p_client: id }).catch(() => null), [id]);
   return <RateBox score={score} label={t('Client sérieux ? Ponctuel, paie à temps ? Notez-le (une seule fois, visible des autres pros).')} onRate={(r, cm) => run(() => api.rpc('rate_client', { p_client: id, p_rating: r, p_comment: cm }), t('Merci pour votre note')).then(reload)} />;
+}
+
+// Badge « Compte certifié » : le particulier a fait vérifier sa pièce d'identité (la copie n'est pas conservée)
+function CertifiedBadge({ clientId }) {
+  const [at, setAt] = useState(null);
+  useEffect(() => { let on = true; api.rpc('client_certified', { p_client: clientId }).then((d) => on && setAt(d || null)).catch(() => {}); return () => { on = false; }; }, [clientId]);
+  if (!at) return null;
+  return <div className="mb"><Pill c="green"><LuShieldCheck /> {t('Compte certifié : identité vérifiée par Artesa le {d}', { d: date(at) })}</Pill></div>;
 }

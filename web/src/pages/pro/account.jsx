@@ -15,6 +15,7 @@ import { A4, useLogo } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
 import { SignatureEditor } from '../../ui/signature.jsx';
 import { VatCheck, RgeCard } from '../../ui/checks.jsx';
+import { IdentityCard } from '../../ui/identity.jsx';
 
 export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
   const C = to ? Link : 'button';
@@ -106,7 +107,7 @@ export function Subscription() {
 }
 
 export function CompanySettings() {
-  const { company, setCompany, run, toast } = useApp();
+  const { company, setCompany, run, toast, profile } = useApp();
   const [c, setC] = useState(company);
   const [crop, setCrop] = useState(null);
   const [tried, setTried] = useState(false);
@@ -143,6 +144,8 @@ export function CompanySettings() {
               <ul className="req-list">{companyMissing(c).length ? companyMissing(c).map(([k, l]) => <li key={k} className="ko">✕ {t(l)}</li>) : <li className="ok">✓ {t('Toutes les informations obligatoires sont renseignées')}</li>}</ul>
             </div>
           )}
+          {company.owner_id === profile.id && <div className="mt"><IdentityCard purpose="dirigeant" /></div>}
+          {!(company.verified || company.verification_status === 'approved') && <p className="small muted">{t('Avant la validation, votre fiche n’apparaît pas dans la recherche et vos devis et factures ne sont pas transmis aux particuliers inscrits sur Artesa. Vous pouvez déjà tout préparer.')}</p>}
           <Sec title={t('Identité')} />
           <p className="small faint" style={{ marginTop: -6 }}><b className="red-t">*</b> {t('obligatoire pour la validation du compte')}</p>
           <div className="form-grid two">

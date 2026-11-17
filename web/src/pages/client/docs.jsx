@@ -11,6 +11,7 @@ import { TopBar, SearchBar, Sec, Chips, Field, SettingToggle, DeviceNotif, useDa
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
 import { MenuRow } from '../pro/account.jsx';
 import { RetractationInfo, RetractationBox } from '../../ui/retractation.jsx';
+import { IdentityCard } from '../../ui/identity.jsx';
 import { loadMine, coName } from './main.jsx';
 
 export function DocumentsHome() {
@@ -282,6 +283,7 @@ export function Account() {
     <div className="content narrow">
       <TopBar title={t('Profil et réglages')} />
       <div className="card navy row" style={{ gap: 14 }}><Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} size="lg" ring /><div><b style={{ fontSize: 19 }}>{profile.first_name} {profile.last_name}</b><div className="muted">{profile.email}</div></div></div>
+      <div className="mt"><IdentityCard purpose="client" /></div>
       <Sec title={t('Compte')} />
       <div className="list"><MenuRow to="/client/compte/profil" icon={LuUser} label={t('Mon profil')} /><MenuRow to="/client/compte/logement" icon={LuHouse} label={t('Mon logement')} sub={[profile.home?.address, profile.home?.city].filter(Boolean).join(', ')} /><MenuRow to="/client/compte/artisans" icon={LuUsers} label={t('Mes artisans')} /></div>
       <Sec title={t('Application')} />

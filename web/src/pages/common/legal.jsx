@@ -65,11 +65,12 @@ export function CGU() {
         <li>Artesa <b>n’est pas partie</b> aux contrats conclus entre un particulier et un artisan : le devis, les travaux, la facture et les garanties engagent uniquement l’artisan.</li>
         <li>Les professionnels inscrits sont des <b>professionnels</b> au sens du Code de la consommation : vous bénéficiez donc des droits des consommateurs (information, rétractation quand elle s’applique, garanties légales).</li>
         <li>Artesa est <b>gratuit pour les particuliers</b>. Les artisans paient un abonnement mensuel. Artesa ne perçoit <b>aucune commission</b> sur les travaux et <b>aucune rémunération</b> qui influencerait le classement.</li>
-        <li>Les artisans sont vérifiés à l’inscription (existence du SIRET dans le répertoire Sirene, identité de l’entreprise). Les attestations (assurance décennale, Kbis…) déposées par l’artisan sont contrôlées avant d’être affichées. Artesa ne garantit pas la qualité des travaux.</li>
+        <li>Les artisans sont vérifiés avant d’être visibles : SIRET actif, informations de l’entreprise, <b>pièce d’identité du dirigeant</b> (la copie est supprimée après contrôle), et attestations (Kbis, URSSAF, assurance décennale) contrôlées. La mention RGE est vérifiée sur la liste officielle de l’ADEME. Artesa ne garantit pas la qualité des travaux.</li>
       </ul><L id="conso-L111-7" /> <L id="conso-D111-7" /> <L id="conso-D111-8" /></div>
 
       <h3>2. Comptes</h3>
       <p>L’inscription est réservée aux personnes majeures. Le compte particulier est gratuit. Chaque utilisateur garde ses identifiants confidentiels ; la double authentification est disponible. Un compte peut être supprimé à tout moment depuis <i>Données et confidentialité</i>.</p>
+      <p><b>Validation des professionnels</b> : tant que l’entreprise n’est pas validée par l’équipe Artesa, sa fiche n’apparaît pas dans la recherche et ses devis et factures ne sont pas transmis aux particuliers inscrits. <b>Compte certifié</b> : un particulier peut faire vérifier sa pièce d’identité ; les artisans dont il est client voient alors un badge « Compte certifié ». Dans les deux cas, la copie de la pièce est supprimée dès la vérification faite. <L id="rgpd-5" /> <L id="cnil-identite" /></p>
 
       <h3>3. Référencement et classement des artisans</h3>
       <p><b>Critères pour être référencé</b> : entreprise immatriculée avec un SIRET actif, fiche entreprise complète (métier, zone d’intervention, assurance déclarée), acceptation des présentes conditions et abonnement actif ou en période d’essai.</p>
@@ -140,6 +141,7 @@ export function Privacy() {
         <tr><td>Mettre en relation, rendez-vous, messagerie, photos</td><td>Adresse des travaux, messages, photos, fichiers, rendez-vous</td><td>Contrat</td><td>Durée du compte</td></tr>
         <tr><td>Devis, factures, paiements</td><td>Montants, lignes, signature, historique</td><td>Obligation légale (comptabilité)</td><td>10 ans <L id="com-L123-22" /></td></tr>
         <tr><td>Vérifier les artisans</td><td>SIRET, attestations, assurance</td><td>Intérêt légitime (sécurité des clients) et obligation légale <L id="conso-L111-7" /></td><td>Durée du compte</td></tr>
+        <tr><td>Vérifier l’identité (dirigeant : obligatoire ; particulier : compte certifié facultatif)</td><td>Copie de la pièce d’identité, nom indiqué</td><td>Intérêt légitime (sécurité des clients et des artisans, lutte contre les faux comptes)</td><td><b>Copie supprimée dès le contrôle</b> (en général sous 48 h ouvrées, ou dès l’annulation). Seuls le résultat, la date et la personne qui a vérifié sont gardés, le temps du compte. <L id="rgpd-5" /> <L id="rgpd-25" /> <L id="cnil-identite" /></td></tr>
         <tr><td>Avis</td><td>Note, texte, prénom, date</td><td>Intérêt légitime</td><td>Durée d’affichage de l’avis</td></tr>
         <tr><td>Sécurité, prévention des fraudes, traces de connexion</td><td>Journaux techniques, adresse IP</td><td>Obligation légale et intérêt légitime</td><td>1 an</td></tr>
         <tr><td>Assistant intelligent (questions posées)</td><td>Texte de la question</td><td>Contrat (fonction demandée)</td><td>Non conservé après la réponse</td></tr>
