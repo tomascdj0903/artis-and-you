@@ -255,6 +255,14 @@ table.t .strong { font-weight: 700; }
 .chip { border: 2px solid var(--text); background: var(--surface); color: var(--text); border-radius: var(--pill); padding: 8px 16px; font-weight: 700; font-size: 15px; white-space: nowrap; }
 .chip.on { background: var(--navy); border-color: var(--navy); color: #fff; }
 .chip.red.on { background: var(--primary); border-color: var(--primary); }
+.chip.law { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; font-size: 13px; border-width: 1.5px; border-color: var(--navy); color: var(--navy); white-space: normal; text-align: left; cursor: pointer; }
+.chip.law:hover { background: var(--navy); color: #fff; }
+.chips.wrap { flex-wrap: wrap; }
+.legal h3 { margin-top: 22px; }
+.legal h4 { margin: 14px 0 4px; font-size: 15px; }
+.legal ul { padding-left: 20px; }
+.legal table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.legal td, .legal th { border: 1px solid var(--line, #ddd); padding: 6px 8px; vertical-align: top; text-align: left; }
 .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 2px solid var(--text); border-radius: var(--pill); overflow: hidden; margin: 6px 0 12px; }
 .seg button { border: 0; background: var(--surface); color: var(--text); font-weight: 700; padding: 11px 8px; font-size: 15px; }
 .seg button.on { background: var(--navy); color: #fff; }

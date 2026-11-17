@@ -1,7 +1,7 @@
 // Factur-X (norme EN 16931, syntaxe UN/CEFACT CII, profil BASIC) : le XML embarqué dans le PDF des factures,
 // qui rend la facture lisible par les logiciels comptables et les plateformes de dématérialisation (PDP).
 // Référence : spécification Factur-X 1.0.07 (FNFE-MPE). Les montants sont ceux de `document.totals` (computeTotals).
-import { computeTotals } from './docs.js';
+import { computeTotals, franchiseMention } from './docs.js';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const n2 = (x) => (Math.round(Number(x || 0) * 100) / 100).toFixed(2);
@@ -11,10 +11,10 @@ const UNIT = { u: 'C62', h: 'HUR', j: 'DAY', m: 'MTR', 'm²': 'MTK', m2: 'MTK', 
 // Type de document (UNTDID 1001) : 380 facture, 381 avoir, 386 facture d'acompte
 const TYPE = { facture: '380', avoir: '381', acompte: '386' };
 
-// Catégorie de TVA (UNTDID 5305) : S taux normal, E exonéré (franchise 293 B), AE autoliquidation
+// Catégorie de TVA (UNTDID 5305) : S taux normal, E exonéré (franchise : art. 293 B du CGI, puis L. 233-3 du CIBS en 2027), AE autoliquidation
 function vatCategory(d, company) {
   if (d.reverse_charge) return { code: 'AE', reason: 'Autoliquidation de la TVA, art. 283-2 nonies du CGI' };
-  if (company.vat_regime === 'franchise') return { code: 'E', reason: 'TVA non applicable, art. 293 B du CGI' };
+  if (company.vat_regime === 'franchise') return { code: 'E', reason: franchiseMention(d.issue_date) };
   return { code: 'S' };
 }
 

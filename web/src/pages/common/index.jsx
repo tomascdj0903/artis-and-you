@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { companyMissing, VAULT_FORM, VAULT_TYPES, docTypeLabel, similarTrades } from '../../lib/docs.js';
 import { useTrades, loadTrades } from '../../ui/trades.jsx';
 import { HELP, HELP_CATS } from '../../lib/help.js';
+import { LawRefs } from '../../ui/lawref.jsx';
 import { bioAvailable, bioEnabled, bioEnable, bioDisable, groupSecret } from '../../lib/security.js';
 import { LuBell, LuCalendar, LuFileText, LuEuro, LuMessageSquare, LuInfo, LuMail, LuPhone, LuBug, LuDownload, LuTrash2, LuMoon, LuSun, LuCheck, LuX } from 'react-icons/lu';
 import JSZip from 'jszip';
@@ -219,9 +220,9 @@ export function Help() {
   const [art, setArt] = useState(null);
   const [vote, setVote] = useState(() => { try { return JSON.parse(localStorage.getItem('ay-help-votes') || '{}'); } catch { return {}; } });
   const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  const all = HELP[who].map((a, i) => ({ i, cat: a[0], title: t(a[1]), sum: t(a[2]), steps: a[3].map((x) => t(x)), to: a[4], kw: a[5] || '' }));
+  const all = HELP[who].map((a, i) => ({ i, cat: a[0], title: t(a[1]), sum: t(a[2]), steps: a[3].map((x) => t(x)), to: a[4], kw: a[5] || '', laws: a[6] || [] }));
   const words = nz(q).trim().split(/\s+/).filter(Boolean);
-  const score = (a) => { const hay = nz([a.title, a.sum, a.steps.join(' '), a.kw].join(' ')); const ti = nz(a.title + ' ' + a.kw); return words.every((w) => hay.includes(w)) ? words.reduce((s, w) => s + (ti.includes(w) ? 3 : 1), 0) : 0; };
+  const score = (a) => { const hay = nz([a.title, a.sum, a.steps.join(' '), a.kw, a.laws.join(' ')].join(' ')); const ti = nz(a.title + ' ' + a.kw); return words.every((w) => hay.includes(w)) ? words.reduce((s, w) => s + (ti.includes(w) ? 3 : 1), 0) : 0; };
   const list = words.length ? all.map((a) => [a, score(a)]).filter((x) => x[1]).sort((a, b) => b[1] - a[1]).map((x) => x[0]) : all.filter((a) => !cat || a.cat === cat);
   const cats = HELP_CATS[who];
   const setV = (i, v) => { const x = { ...vote, [who + i]: v }; setVote(x); try { localStorage.setItem('ay-help-votes', JSON.stringify(x)); } catch {} };
@@ -233,7 +234,8 @@ export function Help() {
       <h2 style={{ fontSize: 22, margin: '6px 0' }}>{a.title}</h2>
       <p className="muted">{a.sum}</p>
       <div className="steps" style={{ margin: '16px 0' }}>{a.steps.map((st, i) => <div key={i} className="step done"><div className="b">{i + 1}</div><div className="grow" style={{ paddingTop: 5 }}>{st}</div></div>)}</div>
-      {a.to && <button className="btn block" onClick={() => navigate(a.to)}>{t('Y aller')} ›</button>}
+      <LawRefs ids={a.laws} title={t('Textes de loi (touchez pour lire)')} />
+      {a.to && <button className="btn block mt" onClick={() => navigate(a.to)}>{t('Y aller')} ›</button>}
       <div className="card soft center mt">
         {vote[who + a.i] ? <span className="small">{t('Merci pour votre retour !')}</span> : <><div className="small bold mb">{t('Cet article vous a-t-il aidé ?')}</div><div className="row" style={{ gap: 8, justifyContent: 'center' }}><button className="btn xs ghost" onClick={() => setV(a.i, 'oui')}>👍 {t('Oui')}</button><button className="btn xs ghost" onClick={() => setV(a.i, 'non')}>👎 {t('Non')}</button></div></>}
         {vote[who + a.i] === 'non' && <a className="small bold red-t" style={{ display: 'block', marginTop: 6 }} href={`mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Aide : {a}', { a: a.title }))}`}>{t('Écrire au support')}</a>}
@@ -268,6 +270,36 @@ export function NotFound() {
 }
 
 // ─────────────── Administration Artesa (vérification SIRET, avis) ───────────────
+// Signalements de contenus (DSA art. 16-17) : décision motivée, envoyée à l'auteur du signalement
+const REPORT_REASONS = { illicite: 'Contenu illicite', injure: 'Injure, menace, harcèlement', fraude: 'Arnaque ou fraude', vie_privee: 'Atteinte à la vie privée', droit_auteur: 'Droit d’auteur ou marque', faux_avis: 'Faux avis', autre: 'Autre' };
+function AdminReports({ list, reload }) {
+  const { run } = useApp();
+  const [dec, setDec] = useState(null);
+  if (!list.length) return <Empty text={t('Aucun signalement en attente')} />;
+  return (
+    <>
+      {list.map((r) => (
+        <div key={r.id} className="card soft mb">
+          <div className="row between wrap"><b>{t(REPORT_REASONS[r.reason] || r.reason)}</b><Pill c="yellow">{r.target_type}</Pill></div>
+          <p style={{ margin: '6px 0' }}>{r.explanation}</p>
+          <div className="small muted">{[r.target_url && <a key="u" href={r.target_url} className="bold">{t('Voir le contenu')}</a>, r.reporter_name || r.reporter_email || t('Utilisateur connecté'), rel(r.created_at)].filter(Boolean).map((x, i) => <span key={i}>{i ? ' · ' : ''}{x}</span>)}</div>
+          <div className="row wrap mt">
+            <button className="btn xs" onClick={() => setDec({ r, status: 'retire', note: '' })}><LuCheck /> {t('Retirer le contenu')}</button>
+            <button className="btn xs ghost" onClick={() => setDec({ r, status: 'rejete', note: '' })}><LuX /> {t('Maintenir')}</button>
+          </div>
+        </div>
+      ))}
+      <Sheet open={!!dec} onClose={() => setDec(null)} title={dec?.status === 'retire' ? t('Retirer le contenu') : t('Maintenir le contenu')}>
+        {dec && <>
+          <p className="small muted">{t('Expliquez la décision : les faits, la règle appliquée (loi ou CGU) et la possibilité de la contester. Pensez à retirer ou masquer vous-même le contenu concerné.')}</p>
+          <Field label={t('Décision motivée (envoyée à l’auteur du signalement)')}><textarea value={dec.note} onChange={(e) => setDec({ ...dec, note: e.target.value })} /></Field>
+          <button className="btn block" disabled={!dec.note.trim()} onClick={() => { run(() => api.rpc('admin_decide_report', { p_id: dec.r.id, p_status: dec.status, p_decision: dec.note.trim() }), t('Décision envoyée')).then(reload); setDec(null); }}>{t('Envoyer')}</button>
+        </>}
+      </Sheet>
+    </>
+  );
+}
+
 // Coffre-fort : chaque document déposé par un pro est vérifié avant d'être visible de ses clients
 function AdminVault({ list, cm, reload }) {
   const { run } = useApp();
@@ -336,15 +368,17 @@ export function Admin() {
   const { run, profile } = useApp();
   const [tab, setTab] = useState(() => new URLSearchParams(location.search).get('tab') || 'siret');
   const [refuse, setRefuse] = useState(null);
+  const [revRefuse, setRevRefuse] = useState(null);
   const [b, reload] = useData(async () => {
     if (!profile.is_admin) return null;
-    const [cos, revs, vault, trades] = await Promise.all([
+    const [cos, revs, vault, trades, reports] = await Promise.all([
       api.select('companies', {}, { order: 'created_at.desc', limit: 300 }),
       api.select('reviews', { status: 'en_attente' }, { order: 'created_at.asc' }),
       api.select('files', { kind: 'vault', review_status: 'en_attente' }, { order: 'created_at.asc' }),
       api.select('trades', { status: 'en_attente' }, { order: 'created_at.asc' }),
+      api.select('content_reports', { status: 'recu' }, { order: 'created_at.asc' }).catch(() => []),
     ]);
-    return { cos, revs, vault, trades, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
+    return { cos, revs, vault, trades, reports, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
   }, []);
   if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artesa.')} /></div>;
   if (!b) return <div className="content"><TopBar title={t('Administration')} /><Loader /></div>;
@@ -355,10 +389,10 @@ export function Admin() {
   return (
     <div className="content">
       <TopBar title={t('Administration')} sub="Artesa" />
-      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })]]} value={tab} onChange={setTab} />
-      {tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
+      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })], ['signal', t('Signalements ({n})', { n: b.reports.length })]]} value={tab} onChange={setTab} />
+      {tab === 'signal' ? <AdminReports list={b.reports} cm={b.cm} reload={reload} /> : tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
         <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>
-          <div className="row mt"><button className="btn xs" onClick={() => run(() => api.update('reviews', { id: r.id }, { status: 'publie' }), t('Avis publié')).then(reload)}><LuCheck /> {t('Publier')}</button><button className="btn xs ghost" onClick={() => run(() => api.update('reviews', { id: r.id }, { status: 'refuse' }), t('Avis refusé')).then(reload)}><LuX /> {t('Refuser')}</button></div></div>
+          <div className="row mt"><button className="btn xs" onClick={() => run(() => api.rpc('admin_moderate_review', { p_id: r.id, p_status: 'publie', p_reason: '' }), t('Avis publié')).then(reload)}><LuCheck /> {t('Publier')}</button><button className="btn xs ghost" onClick={() => setRevRefuse({ r, note: '' })}><LuX /> {t('Refuser')}</button></div></div>
       ))) : (
         (tab === 'siret' ? pending : b.cos).length === 0 ? <Empty text={t('Aucune entreprise en attente')} /> : (tab === 'siret' ? pending : b.cos).map((c) => {
           const m = missing(c);
@@ -378,6 +412,12 @@ export function Admin() {
           );
         })
       )}
+      <Sheet open={!!revRefuse} onClose={() => setRevRefuse(null)} title={t('Refuser l’avis')}>
+        {revRefuse && <>
+          <div className="chips wrap mb" style={{ gap: 6 }}>{[t('Propos injurieux ou diffamatoires'), t('Hors sujet : ne concerne pas la prestation'), t('Contient des données personnelles'), t('Conflit d’intérêts'), t('Contenu illicite')].map((x) => <button key={x} type="button" className="chip" onClick={() => setRevRefuse({ ...revRefuse, note: x })}>{x}</button>)}</div>
+          <Field label={t('Motif (envoyé à l’auteur)')}><textarea value={revRefuse.note} onChange={(e) => setRevRefuse({ ...revRefuse, note: e.target.value })} /></Field>
+          <button className="btn block" disabled={!revRefuse.note.trim()} onClick={() => { run(() => api.rpc('admin_moderate_review', { p_id: revRefuse.r.id, p_status: 'refuse', p_reason: revRefuse.note.trim() }), t('Avis refusé, l’auteur est informé du motif')).then(reload); setRevRefuse(null); }}>{t('Envoyer')}</button></>}
+      </Sheet>
       <Sheet open={!!refuse} onClose={() => setRefuse(null)} title={t('Demander des compléments')}>
         {refuse && <><Field label={t('Message à l’entreprise')}><textarea value={refuse.note} onChange={(e) => setRefuse({ ...refuse, note: e.target.value })} /></Field>
           <button className="btn block" onClick={() => { review(refuse.c, 'rejected', refuse.note); setRefuse(null); }}>{t('Envoyer')}</button></>}

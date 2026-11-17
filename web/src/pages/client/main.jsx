@@ -13,6 +13,7 @@ import { TopBar, SearchBar, Sec, Sheet, Chips, Field, useData, Loader, Empty, Av
 import { Chat, uploadTo } from '../common/chat.jsx';
 import { planSettings, freeWindows } from '../pro/planning.jsx';
 import { MoveSheet } from '../pro/planning-rdv.jsx';
+import { InfoBubble } from '../../ui/lawref.jsx';
 import { CityInput, distanceKm } from '../../ui/address.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
@@ -99,6 +100,15 @@ export function Search() {
         <button className={'chip' + (visio ? ' on' : '')} onClick={() => setVisio(!visio)}><LuVideo /> {t('Visio')}</button>
         <button className={'chip' + (good ? ' on' : '')} onClick={() => setGood(!good)}>★ 4+ {t('avis')}</button>
       </div>
+      <div className="row between wrap" style={{ margin: '4px 0 8px' }}><span className="small muted">{list?.length ? (list.length > 1 ? t('{n} artisans', { n: list.length }) : t('{n} artisan', { n: list.length })) : ''}</span>
+        <InfoBubble label={t('Comment sont classés les résultats ?')} laws={['conso-L111-7', 'conso-D111-7']}>
+          <p>{t('Les artisans sont affichés dans cet ordre :')}</p>
+          <ol><li>{t('les artisans avec qui vous avez déjà travaillé ;')}</li><li>{t('puis du plus proche au plus éloigné de la ville des travaux ;')}</li><li>{t('parmi ceux qui correspondent au métier ou au nom recherché et qui interviennent dans votre ville.')}</li></ol>
+          <p>{t('Aucun artisan ne paie pour être mieux classé et Artesa ne touche aucune commission sur les travaux. Une éventuelle mise en avant payante serait signalée par la mention « Annonce ».')}</p>
+          <p>{t('Les artisans sont des professionnels : vous bénéficiez des droits des consommateurs. Artesa n’est pas partie au contrat que vous concluez avec eux.')}</p>
+          <Link to="/cgu" className="bold">{t('Lire les conditions d’utilisation')}</Link>
+        </InfoBubble>
+      </div>
       {!res ? <Loader /> : !list.length ? <Empty icon={LuSearch} text={t('Aucun artisan trouvé. Essayez un autre métier ou une autre ville.')} /> : (
         <div className="grid2">{list.map((a) => (
           <button key={a.id} className="card row" style={{ textAlign: 'left', background: 'var(--surface)', color: 'inherit', borderColor: a.is_mine ? 'var(--bordeaux)' : 'var(--line)', borderWidth: a.is_mine ? 2 : 1 }} onClick={() => navigate('/client/artisans/' + a.id)}>
@@ -145,9 +155,15 @@ export function ArtisanCard({ params }) {
       </div>
       {p.photos?.length > 0 && <><Sec title={t('Réalisations')} /><div className="photos-grid">{p.photos.map((x) => <Img key={x} path={x} onClick={() => setBig(x)} />)}</div></>}
       <Sec title={t('Avis vérifiés')} meta={total ? t('{n} avis', { n: total }) : ''} />
+      <div className="mb"><InfoBubble label={t('Comment les avis sont-ils contrôlés ?')} laws={['conso-L111-7-2', 'conso-D111-17']}>
+        <p>{t('Seul un client qui a eu un rendez-vous avec cet artisan via Artesa peut donner un avis : chaque avis correspond à une vraie prestation.')}</p>
+        <p>{t('Chaque avis est relu par l’équipe Artesa avant publication (sous 48 h ouvrées). Il est refusé s’il est injurieux, hors sujet, contient des données personnelles ou en cas de conflit d’intérêts ; son auteur est informé du motif.')}</p>
+        <p>{t('Les avis sont affichés du plus récent au plus ancien, avec leur date. Artesa ne les modifie pas et ne reçoit aucune contrepartie. L’artisan peut répondre.')}</p>
+      </InfoBubble></div>
       {!total ? <Empty icon={LuStar} text={t('Pas encore d’avis.')} /> : p.reviews.map((r, i) => (
-        <div key={i} className="card soft mb"><div className="row between"><Stars n={r.rating} /><span className="small faint">{date(r.created_at)}</span></div><p style={{ margin: '6px 0' }}>{r.comment}</p><div className="small bold red-t">{r.author}</div>{r.reply && <div className="notice small"><b>{t('Réponse de l’artisan')} :</b> {r.reply}</div>}</div>
+        <div key={i} className="card soft mb"><div className="row between"><Stars n={r.rating} /><span className="small faint">{date(r.created_at)}</span></div><p style={{ margin: '6px 0' }}>{r.comment}</p><div className="small bold red-t">{r.author}</div>{r.reply && <div className="notice small"><b>{t('Réponse de l’artisan')} :</b> {r.reply}</div>}<Link className="small faint" to={`/signaler?type=avis&id=${p.id}-${i}&url=${encodeURIComponent(location.href)}`}>{t('Signaler cet avis')}</Link></div>
       ))}
+      <p className="center mt"><Link className="small faint" to={`/signaler?type=fiche&id=${p.id}&url=${encodeURIComponent(location.href)}`}>{t('Signaler cette fiche')}</Link></p>
       <Lightbox path={big} onClose={() => setBig(null)} />
     </div>
   );

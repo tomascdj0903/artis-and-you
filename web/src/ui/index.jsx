@@ -1,6 +1,7 @@
 // Composants d'interface partagés
 import { kbd, kbdRow } from '../lib/a11y.js';
 import { useEffect, useState, useCallback, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { LuSettings, LuChevronLeft, LuChevronRight, LuSlidersHorizontal, LuSearch, LuX, LuCamera, LuInbox } from 'react-icons/lu';
 import { navigate, Link } from '../lib/router.jsx';
 import { useApp } from '../lib/store.jsx';
@@ -124,22 +125,26 @@ export function Table({ cols, rows, onRow, empty }) {
 export const Pill = ({ c = 'grey', children }) => <span className={'pill ' + c}>{children}</span>;
 export const StatusPill = ({ s }) => <Pill c={s[0]}>{s[1]}</Pill>;
 
+// Les feuilles sont rendues à la racine du document : une feuille ouverte depuis une autre (ex. un texte de loi
+// depuis la signature d'un devis) s'affiche bien au-dessus, et Échap ne ferme que la plus haute.
+const sheetStack = [];
 export function Sheet({ open, onClose, title, right, children }) {
+  const close = useRef(onClose); close.current = onClose;
   useEffect(() => {
     if (!open) return;
-    const f = (e) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', f); return () => window.removeEventListener('keydown', f);
+    const me = {}; sheetStack.push(me);
+    const f = (e) => { if (e.key === 'Escape' && sheetStack[sheetStack.length - 1] === me) { e.stopImmediatePropagation(); close.current(); } };
+    window.addEventListener('keydown', f); return () => { window.removeEventListener('keydown', f); sheetStack.splice(sheetStack.indexOf(me), 1); };
   }, [open]);
   if (!open) return null;
-  return (
-    <div className="overlay" onClick={onClose}>
+  return createPortal(
+    <div className="overlay" onClick={(e) => { e.stopPropagation(); onClose(); }}>
       <div className="sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={title}>
         <div className="grab" />
         {title && <div className="row between mb"><h3>{title}</h3>{right || <button className="iconbtn" onClick={onClose} aria-label={t('Fermer')}><LuX /></button>}</div>}
         {children}
       </div>
-    </div>
-  );
+    </div>, document.body);
 }
 
 export function Modal({ open, onClose, children }) {

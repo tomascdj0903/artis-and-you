@@ -6,7 +6,7 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, iso, clientName, date } from '../../lib/format.js';
-import { computeTotals, newLine, defaultLines, VAT_RATES, kindLabel, statusPill, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
+import { computeTotals, franchiseMention, newLine, defaultLines, VAT_RATES, kindLabel, statusPill, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
 import { TopBar, Sec, Field, Seg, Chips, Sheet, useData, Loader, Empty, StatusPill , Picker } from '../../ui/index.jsx';
 import { DocList } from './doclist.jsx';
 import { LuBellRing } from 'react-icons/lu';
@@ -245,7 +245,7 @@ export function DocEdit({ params }) {
             </div>
           )}
           {!franchise && <label className="check"><input type="checkbox" checked={d.reverse_charge} onChange={(e) => upd({ reverse_charge: e.target.checked })} />{t('Autoliquidation (sous-traitance BTP)')}</label>}
-          {franchise && <div className="notice">{t('TVA non applicable, art. 293 B du CGI (réglage de votre entreprise).')}</div>}
+          {franchise && <div className="notice">{t('{m} (réglage de votre entreprise).', { m: franchiseMention() })}</div>}
         </div>
       </div>
       <div>

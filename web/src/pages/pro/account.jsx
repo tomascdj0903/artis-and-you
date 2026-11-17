@@ -150,7 +150,7 @@ export function CompanySettings() {
             {F('capital', t('Capital'), { placeholder: '10 000 €', req: SOCIETIES.includes(c.legal_form) ? 1 : 0 })}
             {F('siret', 'SIRET', { req: 1, inputMode: 'numeric', onBlur: () => { const d = String(c.siret || '').replace(/\D/g, ''); if (d.length === 14) setC((x) => ({ ...x, siren: d.slice(0, 9) })); } })}{F('siren', 'SIREN', { req: 1 })}{F('vat_number', t('N° TVA intracom.'))}{F('rm', t('N° RM (Répertoire des métiers)'))}
           </div>
-          <Field label={t('Régime de TVA')}><select value={c.vat_regime} onChange={(e) => setC({ ...c, vat_regime: e.target.value })}><option value="normal">{t('Assujetti à la TVA')}</option><option value="franchise">{t('Franchise en base (art. 293 B du CGI, micro-entreprise)')}</option></select></Field>
+          <Field label={t('Régime de TVA')}><select value={c.vat_regime} onChange={(e) => setC({ ...c, vat_regime: e.target.value })}><option value="normal">{t('Assujetti à la TVA')}</option><option value="franchise">{t('Franchise en base (art. 293 B du CGI, L. 233-3 du CIBS dès 2027)')}</option></select></Field>
           <div className={missKeys.has('address') || missKeys.has('city') || missKeys.has('zip') ? 'missing-block' : ''}><AddressFields value={c} onChange={setC} required /></div>
           <div className="form-grid two">{F('phone', t('Téléphone'), { req: 1, type: 'tel' })}{F('email', t('E-mail'), { req: 1, type: 'email' })}{F('website', t('Site web'))}</div>
           <p className="small muted">{t('Ces informations figurent sur les devis et factures.')}</p>

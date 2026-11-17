@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { api, fileUrls } from '../../lib/api.js';
 import { t } from '../../lib/i18n.js';
 import { money, date, dateTime, clientName, fullName } from '../../lib/format.js';
-import { computeTotals, sectionSubtotals, kindLabel, statusPill, effectiveStatus } from '../../lib/docs.js';
+import { computeTotals, franchiseMention, franchiseArticle, sectionSubtotals, kindLabel, statusPill, effectiveStatus } from '../../lib/docs.js';
 import { KV, Sec, StatusPill } from '../../ui/index.jsx';
 
 export async function loadDoc(id) {
@@ -111,7 +111,7 @@ export function DocSections({ d, company, client, payments = [], source, forClie
         <Sec title={t('Totaux')} />
         <KV rows={[
           [t('Total HT'), money(tot.ht)],
-          ...(franchise ? [[t('TVA'), t('Non applicable, art. 293 B du CGI')]] : d.reverse_charge ? [[t('TVA'), t('Autoliquidation')]] : tot.vat.filter((v) => v.base).map((v) => [t('TVA {r} %', { r: String(v.rate).replace('.', ',') }), money(v.amount)])),
+          ...(franchise ? [[t('TVA'), t('Non applicable, {a}', { a: franchiseArticle(d.issue_date) })]] : d.reverse_charge ? [[t('TVA'), t('Autoliquidation')]] : tot.vat.filter((v) => v.base).map((v) => [t('TVA {r} %', { r: String(v.rate).replace('.', ',') }), money(v.amount)])),
           [t('Total TTC'), money(tot.ttc)],
           ...(tot.deductions || []).map((x) => [t('Acompte déduit {n}', { n: x.number || '' }), '− ' + money(x.ttc)]),
           !isQuote && payments.length > 0 && [t('Déjà réglé'), '− ' + money(d.paid_amount)],
@@ -129,8 +129,10 @@ export function DocSections({ d, company, client, payments = [], source, forClie
           <>
             <Sec title={t('Bon pour accord')} />
             <div className="card soft">{d.status === 'accepte' ? <span className="green-t bold">✓ {t('Signé par {n} le {d}', { n: d.signed_name || clientName(client), d: dateTime(d.accepted_at) })}</span>
+              : d.status === 'retracte' ? <span className="bold">{t('Signé le {s}, puis rétractation du client le {d}', { s: dateTime(d.accepted_at), d: dateTime(d.conditions?.retractation?.withdrawn_at) })}{d.conditions?.retractation?.reason ? ' · ' + d.conditions.retractation.reason : ''}</span>
               : d.status === 'refuse' ? <span className="bold">{t('Refusé le {d}', { d: dateTime(d.refused_at) })}{d.conditions?.refusal_reason ? ' · ' + d.conditions.refusal_reason : ''}</span>
-              : <span className="muted">{t('Signature du client : en attente')}</span>}</div>
+              : <span className="muted">{t('Signature du client : en attente')}</span>}
+              {d.status === 'accepte' && d.conditions?.retractation?.applicable && <div className="small muted" style={{ marginTop: 4 }}>{d.conditions.retractation.start_early ? t('Client particulier : délai de rétractation jusqu’au {d}. Il a demandé à commencer les travaux avant cette date.', { d: date(d.conditions.retractation.until) }) : t('Client particulier : délai de rétractation jusqu’au {d}. Attendez cette date avant de commencer, sauf demande écrite du client.', { d: date(d.conditions.retractation.until) })}</div>}</div>
           </>
         ) : d.kind !== 'avoir' && (
           <>
@@ -215,7 +217,7 @@ export function A4({ d, company, client, source, logoUrl }) {
         <div className="g"><span>{isQuote ? t('Total TTC') : d.kind === 'avoir' ? t('Montant de l’avoir') : t('Net à payer')}</span><span>{money(isQuote ? tot.ttc : d.kind === 'avoir' ? tot.net : rest)}</span></div>
       </div>
       <div style={{ marginTop: 14 }} className="small">
-        {franchise && <div><b>{t('TVA non applicable, art. 293 B du CGI.')}</b></div>}
+        {franchise && <div><b>{franchiseMention(d.issue_date)}.</b></div>}
         {d.reverse_charge && <div><b>{t('Autoliquidation : TVA due par le preneur, art. 283-2 nonies du CGI.')}</b></div>}
         <div><b>{t('Conditions de règlement')} :</b> {cond.paymentTerms}{!isQuote && d.due_date ? ', ' + t('au plus tard le {d}', { d: date(d.due_date) }) : ''}. {cond.deposit && isQuote ? t('Acompte') + ' : ' + cond.deposit + '. ' : ''}{t('Escompte')} : {cond.discount}. {t('Pénalités de retard')} : {cond.penalties}. {client.type === 'pro' ? t('Indemnité forfaitaire pour frais de recouvrement : 40 €.') : ''}</div>
         {company.insurer && <div><b>{t('Assurance décennale')} :</b> {company.insurer}{company.insurance_contract ? ', ' + t('contrat {n}', { n: company.insurance_contract }) : ''}, {t('couverture')} {company.insurance_coverage}.</div>}

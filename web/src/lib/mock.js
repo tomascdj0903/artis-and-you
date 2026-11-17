@@ -1,7 +1,7 @@
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
+const TABLES = ['content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
@@ -339,7 +339,7 @@ export function mockBackend({ saveSession, getSession }) {
       if (!d) throw new Error('Devis introuvable');
       if (p_action === 'refuse') { Object.assign(d, { status: 'refuse', refused_at: now() }); d.conditions = { ...d.conditions, refusal_reason: p_reason }; notifyCompany(d.company_id, 'documents', 'Devis refusé', d.number, '/pro/documents/' + d.id); }
     },
-    async client_quote_sign({ p_id, p_name, p_image = '', p_agent = '' }) {
+    async client_quote_sign({ p_id, p_name, p_image = '', p_agent = '', p_start_early = false }) {
       const d = db.documents.find((x) => x.id === p_id && x.kind === 'devis' && x.number && myClientIds().includes(x.client_id));
       if (!d) throw new Error('Devis introuvable');
       if (d.status !== 'envoye') throw new Error('Ce devis ne peut plus être signé.');
@@ -348,7 +348,43 @@ export function mockBackend({ saveSession, getSession }) {
       const hash = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
       Object.assign(d, { status: 'accepte', accepted_at: now(), signed_name: p_name.trim() });
       d.conditions = { ...d.conditions, signature: { image: p_image, at: now(), by: me(), hash, agent: p_agent, mention: 'Bon pour accord' } };
-      notifyCompany(d.company_id, 'documents', 'Devis signé', d.number + ' · ' + p_name.trim(), '/pro/documents/' + d.id);
+      const consumer = (db.clients.find((c) => c.id === d.client_id)?.type || 'particulier') === 'particulier';
+      if (consumer) { const u = new Date(); u.setHours(23, 59, 59, 0); u.setDate(u.getDate() + 14); d.conditions.retractation = { applicable: true, until: u.toISOString(), start_early: !!p_start_early, informed_at: now() }; }
+      notifyCompany(d.company_id, 'documents', 'Devis signé', d.number + ' · ' + p_name.trim() + (consumer ? (p_start_early ? ' · le client demande à commencer avant 14 jours' : ' · délai de rétractation de 14 jours en cours') : ''), '/pro/documents/' + d.id);
+    },
+    client_quote_withdraw({ p_id, p_reason = '' }) {
+      const d = db.documents.find((x) => x.id === p_id && x.kind === 'devis' && myClientIds().includes(x.client_id));
+      if (!d) throw new Error('Devis introuvable');
+      const r = d.conditions?.retractation;
+      if (d.status !== 'accepte' || !r?.applicable) throw new Error("Ce devis ne peut pas faire l'objet d'une rétractation en ligne.");
+      if (new Date() > new Date(r.until)) throw new Error('Le délai de rétractation de 14 jours est dépassé.');
+      d.status = 'retracte'; d.conditions = { ...d.conditions, retractation: { ...r, withdrawn_at: now(), reason: p_reason } };
+      notifyCompany(d.company_id, 'documents', 'Rétractation du client', d.number + ' : le client a exercé son droit de rétractation.', '/pro/documents/' + d.id);
+      notify(me(), 'documents', 'Accusé de réception de votre rétractation', 'Votre rétractation du devis ' + (d.number || '') + ' a bien été enregistrée le ' + new Date().toLocaleString('fr-FR') + ". L'artisan doit vous rembourser les sommes versées au plus tard 14 jours après cette date.", '/client/documents/' + d.id);
+      return { at: now(), by: me(), reason: p_reason, number: d.number };
+    },
+    report_content({ p_type, p_target = '', p_url = '', p_reason, p_explanation, p_name = '', p_email = '', p_good_faith = false }) {
+      if (!p_good_faith) throw new Error('Merci de confirmer que votre signalement est fait de bonne foi.');
+      if (String(p_explanation || '').trim().length < 10) throw new Error('Expliquez en quelques mots pourquoi ce contenu pose problème.');
+      if (!me() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p_email || '')) throw new Error('Indiquez votre e-mail pour recevoir notre réponse.');
+      const r = { id: id(), reporter_id: me() || null, reporter_name: p_name, reporter_email: p_email, target_type: p_type, target_id: p_target, target_url: p_url, reason: p_reason, explanation: p_explanation, good_faith: true, status: 'recu', decision: '', created_at: now() };
+      db.content_reports.push(r);
+      if (me()) notify(me(), 'systeme', 'Signalement reçu', 'Nous avons bien reçu votre signalement. Vous recevrez notre décision motivée.', '');
+      return r.id;
+    },
+    admin_decide_report({ p_id, p_status, p_decision }) {
+      if (!isAdmin()) throw new Error("Réservé à l'équipe Artesa");
+      if (!['retire', 'rejete'].includes(p_status) || !String(p_decision || '').trim()) throw new Error('Indiquez la décision et son motif.');
+      const r = db.content_reports.find((x) => x.id === p_id); if (!r) return;
+      Object.assign(r, { status: p_status, decision: p_decision.trim(), decided_at: now() });
+      if (r.reporter_id) notify(r.reporter_id, 'systeme', p_status === 'retire' ? 'Contenu retiré suite à votre signalement' : 'Signalement examiné : contenu maintenu', p_decision.trim(), '');
+    },
+    admin_moderate_review({ p_id, p_status, p_reason = '' }) {
+      if (!isAdmin()) throw new Error("Réservé à l'équipe Artesa");
+      if (p_status === 'refuse' && !String(p_reason).trim()) throw new Error('Indiquez le motif du refus.');
+      const r = db.reviews.find((x) => x.id === p_id); if (!r) return;
+      Object.assign(r, { status: p_status, refusal_reason: p_reason.trim() || null, decided_at: now() });
+      if (r.author_id) notify(r.author_id, 'systeme', p_status === 'publie' ? 'Votre avis est publié' : "Votre avis n'a pas été publié", p_status === 'publie' ? 'Merci pour votre avis !' : 'Motif : ' + p_reason.trim() + '. Vous pouvez contester cette décision en écrivant à support@artisandyou.fr.', '');
     },
     network_request({ p_to, p_message = '' }) {
       const mc = myCompany(); if (!mc || p_to === mc) throw new Error('Demande impossible');
@@ -512,7 +548,7 @@ export function mockBackend({ saveSession, getSession }) {
       await persist(); return wait(null);
     },
     async rpc(name, args = {}) { await ready;
-      try { if (!rpcs[name]) throw new Error('RPC inconnue ' + name); const r = rpcs[name](args); await persist(); return wait(r); }
+      try { if (!rpcs[name]) throw new Error('RPC inconnue ' + name); const r = await rpcs[name](args); await persist(); return wait(r); }
       catch (e) { return fail(e.message); }
     },
     async upload(path, file) { await ready;

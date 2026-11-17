@@ -51,7 +51,7 @@ export function effectiveStatus(d) {
 export function statusPill(d) {
   const s = effectiveStatus(d);
   const map = {
-    brouillon: ['grey', t('Brouillon')], envoye: ['navy-o', t('En attente')], accepte: ['green', t('Accepté')], refuse: ['grey', t('Refusé')], expire: ['grey', t('Expiré')],
+    brouillon: ['grey', t('Brouillon')], envoye: ['navy-o', t('En attente')], accepte: ['green', t('Accepté')], refuse: ['grey', t('Refusé')], expire: ['grey', t('Expiré')], retracte: ['grey', t('Rétracté')],
     envoyee: ['navy-o', t('En attente')], partielle: ['yellow', t('Partielle')], payee: ['green', t('Payée')], retard: ['red', t('En retard')], annulee: ['grey', t('Annulée')],
   };
   if (d.kind === 'avoir' && s === 'envoyee') return ['green', t('Émis')];
@@ -220,3 +220,8 @@ export function companyMissing(c) {
   return out;
 }
 export const LEGAL_FORMS = ['Entrepreneur individuel (EI)', 'Micro-entreprise', 'EURL', 'SARL', 'SASU', 'SAS', 'SA', 'SNC', 'SCI', 'SCOP', 'Association', 'Autre'];
+
+// Mention de franchise en base de TVA : art. 293 B du CGI jusqu'au 31/12/2026,
+// puis art. L. 233-3 du CIBS (recodification de la TVA, ordonnance du 17/12/2025 reportée au 1/1/2027 par l'ordonnance du 27/07/2026).
+export const franchiseArticle = (on) => ((on ? String(on).slice(0, 10) : new Date().toISOString().slice(0, 10)) >= '2027-01-01' ? 'art. L. 233-3 du CIBS' : 'art. 293 B du CGI');
+export const franchiseMention = (on) => 'TVA non applicable, ' + franchiseArticle(on);

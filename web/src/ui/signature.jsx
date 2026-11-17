@@ -9,7 +9,8 @@ export const SIG_FONTS = ['Dancing Script', 'Great Vibes', 'Allura', 'Sacramento
 let sigFonts = null;
 export const loadSigFonts = () => sigFonts || (sigFonts = new Promise((res) => {
   const l = document.createElement('link'); l.rel = 'stylesheet';
-  l.href = 'https://fonts.googleapis.com/css2?' + SIG_FONTS.map((f) => 'family=' + f.replace(/ /g, '+') + (f === 'Caveat' || f === 'Dancing Script' ? ':wght@600' : '')).join('&') + '&display=swap';
+  // Polices hébergées chez nous (RGPD : aucune adresse IP envoyée à Google)
+  l.href = '/fonts/sig/sig.css';
   l.onload = res; l.onerror = res; document.head.appendChild(l); setTimeout(res, 4000);
 }));
 

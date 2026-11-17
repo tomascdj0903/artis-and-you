@@ -28,7 +28,7 @@ export const preload = (mod) => loaders[mod]().catch(() => {});
 const PUBLIC = [
   ['/', Landing], ['/connexion', Auth.Login], ['/inscription', Auth.SignupChoice], ['/inscription/artisan', Auth.SignupPro], ['/inscription/particulier', Auth.SignupClient],
   ['/mot-de-passe-oublie', Auth.Forgot], ['/verification', Auth.Verify], ['/nouveau-mot-de-passe', Auth.NewPassword], ['/telecharger', Legal.Download],
-  ['/mentions-legales', Legal.Mentions], ['/cgu', Legal.CGU], ['/confidentialite', Legal.Privacy],
+  ['/mentions-legales', Legal.Mentions], ['/cgu', Legal.CGU], ['/confidentialite', Legal.Privacy], ['/cgv', Legal.CGV], ['/sous-traitance', Legal.DPA], ['/signaler', Legal.Report],
 ];
 const PRO = [
   ['/pro', L('pro', 'Home')], ['/pro/recherche', L('pro', 'GlobalSearch')],

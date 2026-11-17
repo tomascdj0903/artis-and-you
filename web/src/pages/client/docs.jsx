@@ -10,6 +10,7 @@ import { statusPill, effectiveStatus, kindLabel, clientProgress, DOC_TYPES, VAUL
 import { TopBar, SearchBar, Sec, Chips, Field, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet } from '../../ui/index.jsx';
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
 import { MenuRow } from '../pro/account.jsx';
+import { RetractationInfo, RetractationBox } from '../../ui/retractation.jsx';
 import { loadMine, coName } from './main.jsx';
 
 export function DocumentsHome() {
@@ -125,6 +126,7 @@ export function DocDetail({ params }) {
         {isQ && st === 'envoye' && <button className="btn light sm" onClick={() => setRefuse(true)}>{t('Refuser')}</button>}
         {d.status === 'payee' && <button className="btn ghost sm" onClick={() => navigate('/client/avis/' + d.company_id)}><LuStar /> {t('Donner mon avis')}</button>}
       </div>
+      {isQ && <RetractationBox d={d} company={b.company} client={b.clientLive || b.client} onDone={reload} />}
       <DocSections {...b} forClient />
       <Sheet open={refuse} onClose={() => setRefuse(false)} title={t('Refuser le devis')}>
         <Field label={t('Raison (facultatif)')}><textarea value={reason} onChange={(e) => setReason(e.target.value)} /></Field>
@@ -144,7 +146,7 @@ export function DocPdf({ params }) {
   return (
     <div className="content">
       <TopBar title={t('Aperçu PDF')} sub={pdfName(d)} />
-      <QuoteSignSheet open={signing} d={d} onClose={() => setSigning(false)} onDone={() => { setSigning(false); reload(); }} />
+      <QuoteSignSheet open={signing} d={d} company={b.company} client={b.clientLive || b.client} onClose={() => setSigning(false)} onDone={() => { setSigning(false); reload(); }} />
       <A4Preview bundle={b} innerRef={ref} />
       <div className="btns inline">
         {isQ && effectiveStatus(d) === 'envoye' && <button className="btn" onClick={() => setSigning(true)}><LuFilePen /> {t('Signer le devis électroniquement')}</button>}
@@ -358,15 +360,16 @@ export function NotifSettings() {
 }
 
 // Signature électronique du devis : nom (obligatoire), signature dessinée (facultative), mention « Bon pour accord »
-function QuoteSignSheet({ open, d, onClose, onDone }) {
+function QuoteSignSheet({ open, d, company, client, onClose, onDone }) {
   const { profile, run } = useApp();
   const [name, setName] = useState(fullName(profile));
   const [img, setImg] = useState('');
   const [ok, setOk] = useState(false);
+  const [early, setEarly] = useState(false);
   if (!open) return null;
   const sign = () => run(async () => {
     const image = img || await textSignature(name.trim(), 'Dancing Script');
-    await api.rpc('client_quote_sign', { p_id: d.id, p_name: name.trim(), p_image: image, p_agent: navigator.userAgent.slice(0, 300) });
+    await api.rpc('client_quote_sign', { p_id: d.id, p_name: name.trim(), p_image: image, p_agent: navigator.userAgent.slice(0, 300), p_start_early: early });
     onDone();
   }, t('Devis signé, l’artisan est prévenu'));
   return (
@@ -376,6 +379,7 @@ function QuoteSignSheet({ open, d, onClose, onDone }) {
       <div className="small bold mb">{t('Votre signature')} <span className="faint">({t('facultatif')})</span></div>
       <DrawPad value={img} onChange={setImg} />
       <label className="check" style={{ marginTop: 14 }}><input type="checkbox" checked={ok} onChange={(e) => setOk(e.target.checked)} /><span>{t('Bon pour accord. J’ai lu le devis et j’accepte les travaux, le prix et les conditions.')}</span></label>
+      <RetractationInfo d={d} company={company} client={client} startEarly={early} setStartEarly={setEarly} />
       <button className="btn block" style={{ marginTop: 14 }} disabled={!ok || !name.trim()} onClick={sign}><LuFilePen /> {t('Signer')}</button>
       <p className="small faint" style={{ marginTop: 8 }}>{t('Nous enregistrons la date, l’heure et une empreinte du devis pour prouver la signature.')}</p>
     </Sheet>
