@@ -61,8 +61,8 @@ export function Home() {
           {b.appts.length ? <div className="carousel">{b.appts.map((a, i) => <RdvCard key={a.id} a={a} co={b.cm[a.company_id]} dark={i === 0} />)}</div>
             : <Empty icon={LuCalendarPlus} text={t('Aucun rendez-vous à venir.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button></Empty>}
           <Sec title={t('Mes messages')} to="/client/messages" />
-          {b.convs.length ? <div className="carousel">{b.convs.map((c) => { const co = b.cm[c.company_id]; return (
-            <Link key={c.id} to={'/client/messages/' + c.id} className="rdvcard"><div className="row"><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} size="sm" /><div><b>{coName(co)}</b><div className="small muted">{(co?.trades || [])[0] ? t(co.trades[0]) : ''}</div></div></div><div className="small" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{c.mine ? <b>{t('Vous')} : </b> : null}{c.last_message}</div><div className="row small faint" style={{ gap: 6 }}><SentTag mine={c.mine} /><span>{whenMsg(c.last_at)}</span></div></Link>
+          {b.convs.length ? <div className="carousel">{b.convs.map((c) => { const co = c.kind === 'support' ? { name: 'Artesa', is_platform: true } : b.cm[c.company_id]; return (
+            <Link key={c.id} to={'/client/messages/' + c.id} className="rdvcard"><div className="row"><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} size="sm" /><div><b>{coName(co)}</b><div className="small muted">{(co?.trades || [])[0] ? t(co.trades[0]) : ''}</div></div></div><div className="small" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{c.mine ? <b>{t('Vous')} : </b> : null}{c.last_message}</div><div className="row small faint" style={{ gap: 6 }}><SentTag mine={c.mine} /><span>{whenMsg(c.last_at)}</span></div></Link>
           ); })}</div> : <Empty text={t('Pas encore de message.')} />}
           <Sec title={t('Mes notifications')} to="/client/notifications" />
           {b.notifs.length ? <div className="carousel">{b.notifs.map((n) => (
@@ -113,7 +113,7 @@ export function Search() {
       {!res ? <Loader /> : !list.length ? <Empty icon={LuSearch} text={t('Aucun artisan trouvé. Essayez un autre métier ou une autre ville.')} /> : (
         <div className="grid2">{list.map((a) => (
           <button key={a.id} className="card row" style={{ textAlign: 'left', background: 'var(--surface)', color: 'inherit', borderColor: a.is_mine ? 'var(--bordeaux)' : 'var(--line)', borderWidth: a.is_mine ? 2 : 1 }} onClick={() => navigate('/client/artisans/' + a.id)}>
-            <Avatar name={coName(a).split(' ')[0]} last={coName(a).split(' ')[1]} path={a.logo_path} size="lg" />
+            <Avatar name={coName(a).split(' ')[0]} last={coName(a).split(' ')[1]} path={a.logo_path} src={a.is_platform ? '/favicon.svg' : undefined} size="lg" />
             <div className="grow">
               <div className="bold" style={{ fontSize: 17 }}>{coName(a)}</div>
               <div className="small muted">{(a.trades || []).slice(0, 2).map(t).join(' · ')} · {a.city}{a.dist != null ? ' · ' + t('à {n} km', { n: a.dist }) : ''}</div>
@@ -144,7 +144,7 @@ export function ArtisanCard({ params }) {
     <div className="content narrow">
       <TopBar title={coName(p)} sub={(p.trades || [])[0] ? t(p.trades[0]) : ''} />
       <div className="hero row" style={{ gap: 16 }}>
-        <Avatar name={coName(p).split(' ')[0]} last={coName(p).split(' ')[1]} path={p.logo_path} size="lg" />
+        <Avatar name={coName(p).split(' ')[0]} last={coName(p).split(' ')[1]} path={p.logo_path} src={p.is_platform ? '/favicon.svg' : undefined} size="lg" />
         <div><h2>{coName(p)}</h2><div className="l2">{p.name} · {p.city}</div><div className="row wrap mt" style={{ gap: 6 }}>{p.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}{p.rating && <Pill c="white">★ {String(p.rating).replace('.', ',')} · {t('{n} avis', { n: total })}</Pill>}</div></div>
       </div>
       <Sec title={t('Présentation')} />
@@ -288,7 +288,7 @@ export function Appointments() {
         <div className="grid2">{list.map((a) => { const co = b.cm[a.company_id]; return (
           <Link key={a.id} to={'/client/rdv/' + a.id} className="rdvcard">
             <div className="top"><span style={{ textTransform: 'capitalize' }}>{dateLong(a.start_at)}</span><span>{a.status === 'a_valider' && !a.validated_at ? hm(a.start_at) : hm(a.start_at)}</span></div>
-            <div className="row"><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} /><div><b style={{ fontSize: 17 }}>{coName(co)}</b><div className="small muted">{(co?.trades || [])[0] ? t(co.trades[0]) : ''} · {a.mode === 'visio' ? t('en visio') : t('chez vous')}</div></div></div>
+            <div className="row"><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} /><div><b style={{ fontSize: 17 }}>{coName(co)}</b><div className="small muted">{(co?.trades || [])[0] ? t(co.trades[0]) : ''} · {a.mode === 'visio' ? t('en visio') : t('chez vous')}</div></div></div>
             <div className="row between"><b>{a.title}</b><StatusPill s={clientApptStatus(a)} /></div>
           </Link>
         ); })}</div>
@@ -377,7 +377,7 @@ export function Messages() {
       {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation.')} /> : (
         <div className="list">{list.map((c) => { const co = b.cm[c.company_id]; const un = !reads[c.id] || reads[c.id] < c.last_at; return (
           <button key={c.id} className="li click" onClick={() => navigate('/client/messages/' + c.id)}>
-            {c.kind === 'support' ? <ArtesaAvatar /> : <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} />}
+            {c.kind === 'support' ? <ArtesaAvatar /> : <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} />}
             <div className="grow"><div className="t1">{c.kind === 'support' ? <>Artesa <Pill c="navy">{t('Administrateur')}</Pill></> : <>{coName(co)} {(co?.trades || [])[0] && <Pill c="grey">{t(co.trades[0])}</Pill>}</>}</div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.mine ? t('Vous') + ' : ' : ''}{c.last_message}</div></div>
             <div className="side-r"><SentTag mine={c.mine} /><span className={un ? 'red-t bold' : ''}>{whenMsg(c.last_at)}</span>{un && <span className="badge-n">1</span>}</div>
           </button>
@@ -385,7 +385,7 @@ export function Messages() {
       )}
       <button className="fab" onClick={() => setNw(true)} aria-label={t('Nouvelle conversation')}><LuMessageSquarePlus /></button>
       <Sheet open={nw} onClose={() => setNw(false)} title={t('À qui voulez-vous écrire ?')}>
-        <div className="list">{Object.values(b.cm).map((co) => <button key={co.id} className="li click" onClick={async () => { const id = await api.rpc('start_conversation', { p_company: co.id }); navigate('/client/messages/' + id); }}><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co.logo_path} size="sm" /><div className="grow"><div className="t1">{coName(co)}</div><div className="t2">{(co.trades || [])[0] ? t(co.trades[0]) : ''}</div></div><LuChevronRight /></button>)}</div>
+        <div className="list">{Object.values(b.cm).filter((co) => !co.is_platform).map((co) => <button key={co.id} className="li click" onClick={async () => { const id = await api.rpc('start_conversation', { p_company: co.id }); navigate('/client/messages/' + id); }}><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co.logo_path} src={co.is_platform ? '/favicon.svg' : undefined} size="sm" /><div className="grow"><div className="t1">{coName(co)}</div><div className="t2">{(co.trades || [])[0] ? t(co.trades[0]) : ''}</div></div><LuChevronRight /></button>)}</div>
         {!Object.keys(b.cm).length && <p className="muted">{t('Vous n’avez pas encore d’artisan.')}</p>}
         <button className="btn ghost block mt" onClick={() => navigate('/client/artisans')}>{t('Trouver un autre artisan')}</button>
       </Sheet>

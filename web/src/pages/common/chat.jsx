@@ -1,6 +1,7 @@
 import { shrinkImage } from '../../lib/image.js';
 import { poll } from '../../lib/poll.js';
 import { useEffect, useRef, useState } from 'react';
+import { RdvSupportCard, RdvProposeSheet, RdvRequestSheet } from './rdvsupport.jsx';
 import { LuPlus, LuArrowRight, LuVideo, LuCircleCheck, LuFileText, LuImage, LuPaperclip, LuHardHat, LuCalendarCheck, LuCamera } from 'react-icons/lu';
 import { api, uid, OFFLINE } from '../../lib/api.js';
 import { isOffline, isNetworkError, enqueue, queued, onNetwork } from '../../lib/offline.js';
@@ -29,6 +30,7 @@ export function Chat({ convId, projects = [], banner }) {
   const [text, setText] = useState(() => { try { const d = JSON.parse(sessionStorage.getItem('ay-draft') || 'null'); if (!d || d.to !== location.pathname) return ''; sessionStorage.removeItem('ay-draft'); return Date.now() - d.at < 120000 ? d.text : ''; } catch { return ''; } });
   const [menu, setMenu] = useState(false);
   const [doneSheet, setDoneSheet] = useState(false);
+  const [rdvSheet, setRdvSheet] = useState(false);
   const [big, setBig] = useState(null);
   const [cam, setCam] = useState(false);
   const [rec, setRec] = useState(false);
@@ -132,7 +134,7 @@ export function Chat({ convId, projects = [], banner }) {
             <div key={m.id} style={{ display: 'contents' }}>
               {showDay && <div className="day">{dateMed(day)}</div>}
               {showWho && <div className="who">{m.sender_name}</div>}
-              {m.card?.type === 'demande' ? (
+              {m.card?.type === 'artesa_rdv' ? <RdvSupportCard m={m} mine={mine} onDone={load} /> : m.card?.type === 'demande' ? (
                 <div className={'req-card' + (mine ? ' r' : '')}>
                   <div className="row" style={{ gap: 8 }}><LuCalendarCheck size={20} /><b>{t(m.card.title)}</b></div>
                   <div className="small">{m.card.sub}</div>
@@ -181,12 +183,16 @@ export function Chat({ convId, projects = [], banner }) {
         <button className="opt" onClick={takePhoto}><LuCamera /><div><b>{t('Prendre une photo')}</b><small>{t('Rangée aussi dans Documents › Photos')}</small></div></button>
         <button className="opt" onClick={() => attach('image/*')}><LuImage /><div><b>{t('Photos de la galerie')}</b></div></button>
         <button className="opt" onClick={() => attach('application/pdf,image/*,.doc,.docx,.xls,.xlsx,.dwg')}><LuPaperclip /><div><b>{t('Fichier (PDF, plan…)')}</b></div></button>
+        {conv?.kind === 'support' && <button className="opt" onClick={() => { setMenu(false); setRdvSheet(true); }}><LuCalendarCheck /><div><b>{company?.is_platform ? t('Proposer un rendez-vous') : t('Demander un rendez-vous')}</b><small>{t('Téléphone, WhatsApp, visio… il s’ajoute au planning')}</small></div></button>}
         {conv?.kind === 'team' && <button className="opt" onClick={() => { setMenu(false); setDoneSheet(true); }}><LuHardHat /><div><b>{t('Chantier terminé')}</b><small>{t('Met à jour le statut projet')}</small></div></button>}
       </Sheet>
       <Sheet open={doneSheet} onClose={() => setDoneSheet(false)} title={t('Quel chantier est terminé ?')}>
         <div className="list">{projects.filter((p) => !p.finished_at).map((p) => <button key={p.id} className="li click" onClick={() => markDone(p)}><div className="grow"><div className="t1">{p.title}</div><div className="t2">{p.address}</div></div></button>)}</div>
         {!projects.filter((p) => !p.finished_at).length && <p className="muted">{t('Aucun chantier en cours.')}</p>}
       </Sheet>
+      {conv?.kind === 'support' && (company?.is_platform
+        ? <RdvProposeSheet open={rdvSheet} onClose={() => setRdvSheet(false)} onSend={async (card) => { setRdvSheet(false); await post({ body: '', card }); }} />
+        : <RdvRequestSheet open={rdvSheet} onClose={() => setRdvSheet(false)} onSend={async (card) => { setRdvSheet(false); await post({ body: '', card }); }} />)}
       <Lightbox path={big} onClose={() => setBig(null)} />
       <CameraSheet open={cam} onClose={() => setCam(false)} onShot={sendFiles} />
     </>

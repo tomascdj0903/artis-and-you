@@ -115,7 +115,7 @@ export function AdminCalendar() {
   const ev = (d) => {
     const k = iso(d);
     return [
-      ...b.appts.filter((a) => String(a.start_at).slice(0, 10) === k).map((a) => ({ c: 'navy', l: new Date(a.start_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + ' ' + (a.title || a.type || t('RDV')), to: '/pro/planning/rdv/' + a.id })),
+      ...b.appts.filter((a) => String(a.start_at).slice(0, 10) === k).map((a) => ({ c: 'navy', l: new Date(a.start_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + ' ' + (a.title || a.type || t('RDV')) + (a.contact_name && a.contact_name !== 'Artesa' ? ' · ' + a.contact_name : ''), to: '/pro/planning/rdv/' + a.id })),
       ...b.tasks.filter((x) => x.due_date === k).map((x) => ({ c: 'red', l: '☐ ' + (x.assignee ? x.assignee + ' : ' : '') + x.title, to: '/admin/taches' })),
       ...b.deals.filter((x) => x.next_date === k && !['client', 'perdu'].includes(x.stage)).map((x) => ({ c: 'green', l: '→ ' + (x.owner ? x.owner + ' : ' : '') + x.title, to: '/admin/prospection' })),
     ];

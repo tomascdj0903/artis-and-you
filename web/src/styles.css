@@ -1290,3 +1290,6 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .tl { display: flex; gap: 8px; align-items: flex-start; }
 .tl > svg { margin-top: 3px; flex: none; color: var(--text-3); }
 .btn.red { background: #B42318; border-color: #B42318; color: #fff; }
+
+.req-card.artesa { border-style: solid; }
+.req-card .btn.sm { justify-self: start; }

@@ -227,6 +227,36 @@ export function mockBackend({ saveSession, getSession }) {
       if (!c) { c = { id: id(), kind: 'support', company_id: plat.id, other_company_id: null, client_user_id: p_user, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(c); }
       return c.id;
     },
+    support_rdv_book({ p_msg, p_start, p_mode, p_contact, p_platform, p_note }) {
+      const m = db.messages.find((x) => x.id === p_msg); if (!m || m.card?.type !== 'artesa_rdv') throw new Error('Demande introuvable.');
+      const c = db.conversations.find((x) => x.id === m.conversation_id); const plat = c.company_id; const team = myCompany() === plat;
+      const st = m.card.status;
+      if (st === 'propose') { if (team || m.sender_company_id !== plat) throw new Error('C’est à la personne contactée de choisir.'); }
+      else if (st === 'demande') { if (!team) throw new Error('L’équipe Artesa doit confirmer.'); }
+      else throw new Error('Ce rendez-vous a déjà été traité.');
+      if (!String(p_contact || '').trim()) throw new Error('Indiquez où vous joindre.');
+      const lbl = { telephone: 'Téléphone', whatsapp: 'WhatsApp', visio: 'Visio' }[p_mode] || p_platform || 'Autre';
+      const fin = new Date(new Date(p_start).getTime() + (m.card.duration || 30) * 6e4).toISOString();
+      let cid, pname;
+      if (c.other_company_id) {
+        const co = db.companies.find((x) => x.id === c.other_company_id); pname = co.trade_name || co.name;
+        let cl = db.clients.find((x) => x.company_id === plat && x.type === 'pro' && x.company_name === co.name);
+        if (!cl) { cl = { ...defaults.clients, id: id(), company_id: plat, type: 'pro', company_name: co.name, email: co.email || '', created_at: now() }; db.clients.push(cl); }
+        cid = cl.id;
+      } else {
+        const pr = db.profiles.find((x) => x.id === c.client_user_id); pname = [pr.first_name, pr.last_name].join(' ');
+        let cl = db.clients.find((x) => x.company_id === plat && x.user_id === pr.id);
+        if (!cl) { cl = { ...defaults.clients, id: id(), company_id: plat, user_id: pr.id, type: 'particulier', first_name: pr.first_name, last_name: pr.last_name, email: pr.email, created_at: now() }; db.clients.push(cl); }
+        cid = cl.id;
+      }
+      const base = { ...defaults.appointments, type: 'Rendez-vous Artesa', title: 'Rendez-vous Artesa · ' + lbl, start_at: p_start, end_at: fin, mode: 'visio', status: 'valide', notes: lbl + ' · ' + p_contact, contact_phone: p_contact, validated_at: now(), created_at: now() };
+      const appt = { ...base, id: id(), company_id: plat, client_id: cid, contact_name: pname }; db.appointments.push(appt);
+      let pro = null; if (c.other_company_id) { pro = { ...base, id: id(), company_id: c.other_company_id, contact_name: 'Artesa' }; db.appointments.push(pro); }
+      m.card = { ...m.card, status: 'confirme', start: p_start, end: fin, mode: p_mode, contact: p_contact, platform: p_platform || '', note: p_note || '', appointment_id: appt.id, pro_appointment_id: pro?.id || null };
+      const msg = { ...defaults.messages, id: id(), conversation_id: c.id, sender_id: me(), sender_company_id: myCompany(), sender_name: team ? 'Artesa' : pname, body: '', card: { type: 'rdv', title: 'Rendez-vous confirmé', sub: lbl + ' · ' + p_contact }, created_at: now() };
+      db.messages.push(msg); c.last_message = 'Rendez-vous confirmé'; c.last_at = now();
+      return { appointment_id: appt.id, pro_appointment_id: pro?.id || null };
+    },
     admin_stats() {
       if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
       const co = db.companies.filter((c) => !c.is_platform), pr = db.profiles.filter((p) => p.kind !== 'admin'), ago = (d) => new Date(Date.now() - d * 864e5).toISOString(), nowS = now();

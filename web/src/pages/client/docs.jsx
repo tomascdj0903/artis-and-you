@@ -323,7 +323,7 @@ export function MyArtisans() {
   return (
     <div className="content narrow">
       <TopBar title={t('Mes artisans')} />
-      {!Object.keys(b.cm).length ? <Empty text={t('Les artisans avec qui vous travaillez apparaîtront ici.')} /> : Object.values(b.cm).map((co) => {
+      {!Object.values(b.cm).filter((co) => !co.is_platform).length ? <Empty text={t('Les artisans avec qui vous travaillez apparaîtront ici.')} /> : Object.values(b.cm).filter((co) => !co.is_platform).map((co) => {
         const mine = b.appts.filter((a) => a.company_id === co.id);
         const next = mine.filter((a) => a.start_at >= now && ['valide', 'a_valider'].includes(a.status)).slice(-1)[0];
         const last = mine.find((a) => a.start_at < now);
