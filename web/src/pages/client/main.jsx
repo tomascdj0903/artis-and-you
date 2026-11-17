@@ -15,6 +15,7 @@ import { planSettings, freeWindows } from '../pro/planning.jsx';
 import { MoveSheet } from '../pro/planning-rdv.jsx';
 import { InfoBubble } from '../../ui/lawref.jsx';
 import { CityInput, distanceKm } from '../../ui/address.jsx';
+import { RgeBadge } from '../../ui/checks.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
 export async function loadMine() {
@@ -148,6 +149,7 @@ export function ArtisanCard({ params }) {
       </div>
       <Sec title={t('Présentation')} />
       {p.description && <p className="wsb">{p.description}</p>}
+      <RgeBadge siren={p.siren} />
       <KV rows={[[t('Métier'), (p.trades || []).map(t).join(', ')], [t("Zone d'intervention"), p.zone || p.city], [t('Téléphone'), p.phone, { href: p.phone && 'tel:' + p.phone }], [t('Visio possible'), p.planning?.visio !== false ? t('Oui, sur WhatsApp') : t('Non')], p.certifications && [t('Certifications'), p.certifications]]} />
       <div className="btns">
         <button className="btn" onClick={() => navigate(`/client/artisans/${p.id}/demande`)}>{t('Demander un RDV')}</button>

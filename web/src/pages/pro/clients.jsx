@@ -15,6 +15,7 @@ import { KpiView } from './kpi.jsx';
 import { DocList } from './doclist.jsx';
 import { Chat } from '../common/chat.jsx';
 import { clientAddress } from '../common/docview.jsx';
+import { VatCheck } from '../../ui/checks.jsx';
 
 export const typePill = (c) => (c.type === 'pro' ? <Pill c="navy">{t('Pro')}</Pill> : <Pill c="red-o">{t('Particulier')}</Pill>);
 
@@ -153,7 +154,7 @@ export function ClientEdit({ params }) {
         <Sec title={t('Adresse de livraison (lieu du chantier)')} />
         {F('site_name', t('Nom du chantier'), { placeholder: t('ex. Villa Les Lauriers') })}
         <AddressFields value={c} onChange={(x) => setC({ ...c, ...x })} keys={{ address: 'site_address', zip: 'site_zip', city: 'site_city', country: null }} />
-        {c.type === 'pro' && <><Sec title={t('Informations légales')} /><div className="form-grid two">{F('siret', t('SIRET'))}{F('siren', t('SIREN'))}{F('vat_number', t('N° TVA'))}{F('rcs', t('RCS'))}</div></>}
+        {c.type === 'pro' && <><Sec title={t('Informations légales')} /><div className="form-grid two">{F('siret', t('SIRET'))}{F('siren', t('SIREN'))}{F('vat_number', t('N° TVA'))}{F('rcs', t('RCS'))}</div><VatCheck value={c.vat_number} siren={c.siren || String(c.siret || '').slice(0, 9)} onFill={(v) => setC((x) => ({ ...x, vat_number: v }))} /></>}
         <Sec title={t('Paiement')} />
         <div className="form-grid three">
           {F('payment_terms', t('Conditions de paiement'))}

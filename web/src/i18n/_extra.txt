@@ -1412,3 +1412,27 @@ Confidentialité|Privacy|Privacidade|Privacy
 Sous-traitance RGPD|GDPR processing|Subcontratação RGPD|Trattamento GDPR
 Droit et obligations|Law and obligations|Direito e obrigações|Diritto e obblighi
 Vos droits|Your rights|Os seus direitos|I tuoi diritti
+Artisan RGE|RGE-certified tradesperson|Profissional RGE|Artigiano RGE
+vérifié sur la liste officielle de l’ADEME|checked on the official ADEME list|verificado na lista oficial da ADEME|verificato sull’elenco ufficiale ADEME
+Avec un artisan RGE, ces travaux peuvent ouvrir droit aux aides de l’État (MaPrimeRénov’, CEE, éco-prêt à taux zéro).|With an RGE-certified tradesperson, this work may qualify for French state grants (MaPrimeRénov’, CEE, zero-rate eco-loan).|Com um profissional RGE, estes trabalhos podem dar direito a apoios do Estado francês (MaPrimeRénov’, CEE, eco-empréstimo a taxa zero).|Con un artigiano RGE, questi lavori possono dare diritto agli aiuti dello Stato francese (MaPrimeRénov’, CEE, eco-prestito a tasso zero).
+Qualifications RGE|RGE qualifications|Qualificações RGE|Qualifiche RGE
+liste officielle de l’ADEME|official ADEME list|lista oficial da ADEME|elenco ufficiale ADEME
+Vérification…|Checking…|A verificar…|Verifica in corso…
+La liste de l’ADEME ne répond pas pour le moment. Réessayez plus tard.|The ADEME list is not responding right now. Try again later.|A lista da ADEME não responde de momento. Tente mais tarde.|L’elenco ADEME non risponde al momento. Riprova più tardi.
+Aucune qualification RGE en cours trouvée pour votre SIREN. Si vous êtes RGE, la liste de l’ADEME peut avoir quelques semaines de retard. Le badge « Artisan RGE » apparaîtra automatiquement sur votre fiche.|No current RGE qualification found for your SIREN. If you are RGE-certified, the ADEME list can be a few weeks behind. The “RGE-certified” badge will appear on your profile automatically.|Nenhuma qualificação RGE em vigor encontrada para o seu SIREN. Se é RGE, a lista da ADEME pode ter algumas semanas de atraso. O selo «Profissional RGE» aparecerá automaticamente na sua ficha.|Nessuna qualifica RGE in corso trovata per il tuo SIREN. Se sei RGE, l’elenco ADEME può avere qualche settimana di ritardo. Il badge «Artigiano RGE» apparirà automaticamente sulla tua scheda.
+Le badge « Artisan RGE » est affiché sur votre fiche publique.|The “RGE-certified” badge is shown on your public profile.|O selo «Profissional RGE» é apresentado na sua ficha pública.|Il badge «Artigiano RGE» è mostrato sulla tua scheda pubblica.
+jusqu’au {d}|until {d}|até {d}|fino al {d}
+attestation|certificate|certificado|attestato
+Annuaire officiel France Rénov’|Official France Rénov’ directory|Diretório oficial France Rénov’|Elenco ufficiale France Rénov’
+Numéro vide|Empty number|Número vazio|Numero vuoto
+Code pays inconnu (les 2 premières lettres)|Unknown country code (first 2 letters)|Código de país desconhecido (as 2 primeiras letras)|Codice paese sconosciuto (prime 2 lettere)
+Format incorrect pour ce pays|Wrong format for this country|Formato incorreto para este país|Formato errato per questo paese
+La clé (2 chiffres après FR) ne correspond pas au SIREN|The key (2 digits after FR) does not match the SIREN|A chave (2 dígitos após FR) não corresponde ao SIREN|La chiave (2 cifre dopo FR) non corrisponde al SIREN
+Ce numéro ne correspond pas au SIREN indiqué|This number does not match the SIREN entered|Este número não corresponde ao SIREN indicado|Questo numero non corrisponde al SIREN indicato
+Numéro incorrect|Incorrect number|Número incorreto|Numero errato
+Calculer depuis le SIREN : {v}|Calculate from SIREN: {v}|Calcular a partir do SIREN: {v}|Calcola dal SIREN: {v}
+Corriger en {v}|Correct to {v}|Corrigir para {v}|Correggi in {v}
+Vérifier auprès de l’Union européenne (VIES)|Check with the European Union (VIES)|Verificar junto da União Europeia (VIES)|Verifica presso l’Unione europea (VIES)
+Numéro valide|Valid number|Número válido|Numero valido
+Numéro inconnu du registre européen : vérifiez-le avec votre client.|Number not found in the EU register: check it with your client.|Número desconhecido no registo europeu: confirme-o com o seu cliente.|Numero sconosciuto al registro europeo: verificalo con il cliente.
+Format correct. Le registre européen ne répond pas pour le moment, réessayez plus tard.|Format is correct. The EU register is not responding right now, try again later.|Formato correto. O registo europeu não responde de momento, tente mais tarde.|Formato corretto. Il registro europeo non risponde al momento, riprova più tardi.

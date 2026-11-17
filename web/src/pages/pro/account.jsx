@@ -14,6 +14,7 @@ import { TopBar, Sec, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, She
 import { A4, useLogo } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
 import { SignatureEditor } from '../../ui/signature.jsx';
+import { VatCheck, RgeCard } from '../../ui/checks.jsx';
 
 export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
   const C = to ? Link : 'button';
@@ -150,6 +151,7 @@ export function CompanySettings() {
             {F('capital', t('Capital'), { placeholder: '10 000 €', req: SOCIETIES.includes(c.legal_form) ? 1 : 0 })}
             {F('siret', 'SIRET', { req: 1, inputMode: 'numeric', onBlur: () => { const d = String(c.siret || '').replace(/\D/g, ''); if (d.length === 14) setC((x) => ({ ...x, siren: d.slice(0, 9) })); } })}{F('siren', 'SIREN', { req: 1 })}{F('vat_number', t('N° TVA intracom.'))}{F('rm', t('N° RM (Répertoire des métiers)'))}
           </div>
+          {c.vat_regime !== 'franchise' && <VatCheck value={c.vat_number} siren={c.siren || String(c.siret || '').slice(0, 9)} onFill={(v) => setC((x) => ({ ...x, vat_number: v }))} />}
           <Field label={t('Régime de TVA')}><select value={c.vat_regime} onChange={(e) => setC({ ...c, vat_regime: e.target.value })}><option value="normal">{t('Assujetti à la TVA')}</option><option value="franchise">{t('Franchise en base (art. 293 B du CGI, L. 233-3 du CIBS dès 2027)')}</option></select></Field>
           <div className={missKeys.has('address') || missKeys.has('city') || missKeys.has('zip') ? 'missing-block' : ''}><AddressFields value={c} onChange={setC} required /></div>
           <div className="form-grid two">{F('phone', t('Téléphone'), { req: 1, type: 'tel' })}{F('email', t('E-mail'), { req: 1, type: 'email' })}{F('website', t('Site web'))}</div>
@@ -165,6 +167,7 @@ export function CompanySettings() {
           <div className="range-row"><span className="small">{t('Rayon')}</span><input type="range" min={5} max={150} step={5} value={km} onChange={(e) => setC({ ...c, zone_km: +e.target.value, zone: zoneText(c.zone_city || c.city, +e.target.value) })} aria-label={t('Rayon')} /><b>{km} km</b></div>
           <p className="small faint">{c.zone_lat ? t('Les particuliers qui cherchent une ville à moins de {n} km de {v} vous trouveront.', { n: km, v: c.zone_city }) : t('Choisissez la ville dans la liste proposée pour activer la recherche par distance.')}</p>
           {F('certifications', t('Certifications'), { placeholder: 'RGE, Qualibat, Qualifelec…' })}
+          <RgeCard siren={c.siren || String(c.siret || '').slice(0, 9)} />
           <Field label={t('Présentation')}><textarea value={c.description || ''} onChange={(e) => setC({ ...c, description: e.target.value })} /></Field>
           <Sec title={t('Profil public')} />
           <div className="card soft"><b>{c.trade_name || c.name}</b><div className="small muted">{(c.trades || []).slice(0, 2).map(t).join(' · ')} · {c.zone || c.city}</div><p className="small">{c.description}</p></div>
