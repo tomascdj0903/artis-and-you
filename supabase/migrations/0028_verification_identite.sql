@@ -134,7 +134,8 @@ begin
 end $$;
 
 -- Tant que l'entreprise n'est pas validée, ses devis et factures ne sont pas transmis aux particuliers inscrits
-drop policy if exists documents_client on public.documents;
-create policy documents_client on public.documents for select using (
-  number is not null and client_id in (select public.my_client_ids())
-  and company_id in (select id from public.companies where verification_status = 'approved'));
+-- (la politique de lecture en vigueur s'appelle documents_sel, issue d'une migration précédente)
+alter policy documents_sel on public.documents using (
+  (company_id = (select public.my_company()))
+  or (number is not null and client_id in (select public.my_client_ids())
+      and company_id in (select id from public.companies where verification_status = 'approved')));
