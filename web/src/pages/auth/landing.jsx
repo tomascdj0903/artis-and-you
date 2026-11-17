@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { LuCheck, LuX, LuHardHat, LuHouse, LuCalendarCheck, LuFilePen, LuMessageSquare, LuShieldCheck } from 'react-icons/lu';
 import { Link } from '../../lib/router.jsx';
 import { Wordmark } from '../../ui/index.jsx';
-import { PLANS } from '../../lib/docs.js';
+import { usePlans } from '../../lib/platform.js';
 import { t } from '../../lib/i18n.js';
 
 const TRADES = ['Plombier', 'Électricien', 'Peintre', 'Carreleur', 'Menuisier', 'Maçon', 'Couvreur', 'Chauffagiste', 'Serrurier', 'Paysagiste', 'Climaticien', 'Plaquiste'];
@@ -113,8 +113,9 @@ const Mark = ({ v }) => (v === 1 ? <span className="cm yes" aria-label={t('Oui')
 function Pricing() {
   const [who, setWho] = useState('pro');
   const [plan, setPlan] = useState('equipe');
-  const fmt = (n) => n.toLocaleString('fr-FR');
-  const p = PLANS.find((x) => x.id === plan);
+  const PLANS = usePlans();
+  const fmt = (n) => Number(n).toLocaleString('fr-FR');
+  const p = PLANS.find((x) => x.id === plan) || PLANS[0];
   return (
     <section className="lp-price" id="tarifs">
       <div className="lp-price-head">

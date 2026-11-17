@@ -1,7 +1,8 @@
+import { PLANS } from './docs.js';
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
+const TABLES = ['platform_settings', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
@@ -30,6 +31,7 @@ export function mockBackend({ saveSession, getSession }) {
     } catch { try { db = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { db = {}; } }
     delete db._blobs;
     TABLES.forEach((t) => { db[t] = db[t] || []; });
+    if (!db.platform_settings.length) db.platform_settings.push({ id: 'main', plans: PLANS, trial_days: 30, banner: '', support_email: 'support@artisandyou.fr', team: ['Tomas', 'Clément'] });
   })();
   const persist = async () => {
     try { const d = await idb(); const tx = d.transaction('kv', 'readwrite'); tx.objectStore('kv').put(db, KEY); await done(tx); try { localStorage.removeItem(KEY); } catch {} }
@@ -56,6 +58,10 @@ export function mockBackend({ saveSession, getSession }) {
     items: { kind: 'article', trades: [], unit: 'pièce', purchase_price: 0, coef: 1, sale_price: 0, vat_rate: 20, components: [] },
     messages: { attachments: [], body: '' },
     reviews: { status: 'en_attente' },
+    admin_deals: { stage: 'prospect', plan: 'solo', value: 0, owner: '', worked_by: [], tags: [], priority: 'normale', notes: '', contact_name: '', company_name: '', email: '', phone: '', city: '', source: '', next_action: '' },
+    admin_tasks: { done: false, details: '', assignee: '' },
+    admin_deal_events: { kind: 'note', who: '', content: '' },
+    admin_notes: { folder: 'Général', pinned: false, content: '' },
     notifications: { read: false, category: 'rdv' },
     projects: { manual: {} },
     teams: { color: '#2B1F1C' },
@@ -178,6 +184,8 @@ export function mockBackend({ saveSession, getSession }) {
       case 'clients': return r.company_id === mc || r.user_id === me();
       case 'documents': return r.company_id === mc || (r.number && mine.includes(r.client_id) && approvedCo(r.company_id));
       case 'identity_checks': return r.user_id === me() || isAdmin();
+      case 'admin_deals': case 'admin_deal_events': case 'admin_tasks': case 'admin_notes': return isAdmin();
+      case 'platform_settings': return true;
       case 'appointments': case 'projects': return r.company_id === mc || mine.includes(r.client_id);
       case 'trades': return r.status === 'valide' || r.created_by === me() || isAdmin();
       case 'files': return r.company_id === mc || (r.kind === 'vault' && isAdmin()) || (mine.includes(r.client_id) && (r.shared_with_client || r.kind === 'photo')) || (r.kind === 'vault' && r.shared_with_client && r.review_status === 'valide' && db.clients.some((c) => c.user_id === me() && c.company_id === r.company_id));
@@ -197,6 +205,20 @@ export function mockBackend({ saveSession, getSession }) {
       if (!c) { c = { ...defaults.companies, id: id(), owner_id: me(), name: 'Artesa', trade_name: 'Artesa', legal_form: '', country: 'France', email: '', verification_status: 'approved', verified: true, verified_at: now(), visible_particuliers: false, visible_pros: false, is_platform: true, trades: [], trial_ends_at: null, created_at: now() }; db.companies.push(c); }
       const p = db.profiles.find((x) => x.id === me()); Object.assign(p, { kind: 'admin', company_id: c.id, member_role: 'gerant', permissions: { planning: true, clients: true, devis: true, prix: true, kpi: true } });
       return c;
+    },
+    support_conversation() {
+      const plat = db.companies.find((x) => x.is_platform); if (!plat) throw new Error('Le support n’est pas encore disponible.');
+      const mc = myCompany(); if (mc === plat.id) throw new Error('Impossible');
+      let c = mc ? db.conversations.find((x) => x.kind === 'support' && x.company_id === plat.id && x.other_company_id === mc)
+        : db.conversations.find((x) => x.kind === 'support' && x.company_id === plat.id && x.client_user_id === me());
+      if (!c) { c = { id: id(), kind: 'support', company_id: plat.id, other_company_id: mc || null, client_user_id: mc ? null : me(), last_message: '', last_at: now(), created_at: now() }; db.conversations.push(c); }
+      return c.id;
+    },
+    admin_support_start({ p_company }) {
+      const plat = db.companies.find((x) => x.id === myCompany() && x.is_platform); if (!isAdmin() || !plat) throw new Error('Réservé à l’équipe Artesa.');
+      let c = db.conversations.find((x) => x.kind === 'support' && x.company_id === plat.id && x.other_company_id === p_company);
+      if (!c) { c = { id: id(), kind: 'support', company_id: plat.id, other_company_id: p_company, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(c); }
+      return c.id;
     },
     admin_stats() {
       if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
@@ -313,7 +335,7 @@ export function mockBackend({ saveSession, getSession }) {
       if (ref && db.companies.filter((c) => c.referred_by === ref.id).length >= 10) ref = null;
       if (ref) { ref.trial_ends_at = new Date(Math.max(Date.now(), +new Date(ref.trial_ends_at || 0)) + 15 * 864e5).toISOString(); notifyCompany(ref.id, 'systeme', 'Parrainage réussi 🎁', p.name + ' a rejoint Artesa avec votre code : 15 jours offerts pour vous.', '/pro/compte/abonnement'); }
       const c = { ...defaults.companies, id: id(), owner_id: me(), name: p.name, siret: p.siret || '', siren: (p.siret || '').replace(/\D/g, '').slice(0, 9), trades: p.trades || [], city: p.city || '', zip: p.zip || '', address: p.address || '', country: p.country || 'France', legal_form: p.legal_form || '', phone: p.phone || '', email: p.email || '', verification_status: 'pending', verified: false,
-        referred_by: ref?.id || null, referral_code: Math.random().toString(36).slice(2, 10).toUpperCase(), trial_ends_at: new Date(Date.now() + (ref ? 60 : 30) * 864e5).toISOString(), created_at: now(),
+        referred_by: ref?.id || null, referral_code: Math.random().toString(36).slice(2, 10).toUpperCase(), trial_ends_at: new Date(Date.now() + (ref ? 60 : (db.platform_settings[0]?.trial_days ?? 30)) * 864e5).toISOString(), created_at: now(),
         settings: { planning: { view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true }, docs: { quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', onlinePayment: true, einvoice: true }, pdf: { color: '#B4432A', footer: '' }, notifications: { push: true, email: true, sms: false } } };
       db.companies.push(c);
       Object.assign(profile(), { kind: 'artisan', company_id: c.id, member_role: 'gerant' });

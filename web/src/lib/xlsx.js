@@ -24,3 +24,53 @@ export function download(blob, name) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
+
+// Lecture d'un fichier Excel (.xlsx, première feuille) ou CSV → tableau de lignes (chaînes)
+export async function readSheet(file) {
+  const name = (file.name || '').toLowerCase();
+  if (name.endsWith('.csv') || name.endsWith('.txt') || file.type === 'text/csv') return parseCsv(await readText(file));
+  const zip = await JSZip.loadAsync(file);
+  const xml = async (p) => { const f = zip.file(p); return f ? new DOMParser().parseFromString(await f.async('string'), 'application/xml') : null; };
+  const ss = await xml('xl/sharedStrings.xml');
+  const shared = ss ? [...ss.getElementsByTagName('si')].map((si) => [...si.getElementsByTagName('t')].map((t) => t.textContent).join('')) : [];
+  // Première feuille selon le classeur (sinon sheet1)
+  let target = 'xl/worksheets/sheet1.xml';
+  const wb = await xml('xl/workbook.xml'), rels = await xml('xl/_rels/workbook.xml.rels');
+  const first = wb?.getElementsByTagName('sheet')[0];
+  const rid = first?.getAttribute('r:id') || first?.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id');
+  const rel = rid && rels && [...rels.getElementsByTagName('Relationship')].find((r) => r.getAttribute('Id') === rid);
+  if (rel) { const t = rel.getAttribute('Target').replace(/^\//, ''); target = t.startsWith('xl/') ? t : 'xl/' + t; }
+  const sh = await xml(target); if (!sh) throw new Error('Feuille introuvable dans ce fichier');
+  const colIdx = (ref) => { let n = 0; for (const ch of ref.replace(/\d+/g, '')) n = n * 26 + ch.charCodeAt(0) - 64; return n - 1; };
+  const out = [];
+  for (const row of sh.getElementsByTagName('row')) {
+    const r = [];
+    for (const c of row.getElementsByTagName('c')) {
+      const t = c.getAttribute('t'), v = c.getElementsByTagName('v')[0]?.textContent ?? '';
+      const val = t === 's' ? shared[+v] ?? '' : t === 'inlineStr' ? [...c.getElementsByTagName('t')].map((x) => x.textContent).join('') : v;
+      r[c.getAttribute('r') ? colIdx(c.getAttribute('r')) : r.length] = String(val).trim();
+    }
+    out.push(Array.from(r, (x) => x ?? ''));
+  }
+  return out.filter((r) => r.some(Boolean));
+}
+async function readText(file) {
+  const buf = await file.arrayBuffer();
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch { return new TextDecoder('windows-1252').decode(buf); } // Excel FR exporte souvent en ANSI
+}
+export function parseCsv(text) {
+  text = text.replace(/^﻿/, '');
+  const head = text.split(/\r?\n/)[0] || '';
+  const sep = [';', ',', '\t'].sort((a, b) => head.split(b).length - head.split(a).length)[0];
+  const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"' && text[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === sep) { row.push(cur.trim()); cur = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; row.push(cur.trim()); rows.push(row); row = []; cur = ''; }
+    else cur += ch;
+  }
+  if (cur || row.length) { row.push(cur.trim()); rows.push(row); }
+  return rows.filter((r) => r.some(Boolean));
+}

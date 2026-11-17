@@ -213,8 +213,9 @@ export function companyMissing(c) {
   need(c.city, 'city', 'Ville');
   need(c.phone, 'phone', 'Téléphone');
   need(c.email, 'email', 'E-mail');
-  need((c.trades || []).length, 'trades', 'Au moins un métier');
   if (SOCIETIES.includes(c.legal_form)) need(c.capital, 'capital', 'Capital social');
+  if (c.is_platform) return out; // Artesa elle-même : pas de métier ni d'assurance décennale
+  need((c.trades || []).length, 'trades', 'Au moins un métier');
   need(c.insurer, 'insurer', 'Assureur décennale');
   need(c.insurance_contract, 'insurance_contract', 'N° de contrat décennale');
   return out;

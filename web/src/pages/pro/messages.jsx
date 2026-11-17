@@ -14,7 +14,7 @@ import { Chat, convMeta } from '../common/chat.jsx';
 
 async function loadConvCtx(company, teams, members) {
   const [convs, clients] = await Promise.all([api.select('conversations', {}, { order: 'last_at.desc', limit: 300 }), api.select('clients', { company_id: company.id })]);
-  const others = [...new Set(convs.filter((c) => c.kind === 'pro').map((c) => (c.company_id === company.id ? c.other_company_id : c.company_id)))];
+  const others = [...new Set(convs.filter((c) => c.kind === 'pro' || c.kind === 'support').map((c) => (c.company_id === company.id ? c.other_company_id : c.company_id)).filter(Boolean))];
   const cos = others.length ? await api.select('companies', { id: others }) : [];
   return { convs, ctx: { mine: company.id, clients: Object.fromEntries(clients.map((c) => [c.id, c])), teams: Object.fromEntries(teams.map((x) => [x.id, x])), companies: Object.fromEntries(cos.map((c) => [c.id, c])), members }, clients };
 }

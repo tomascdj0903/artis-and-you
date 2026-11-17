@@ -5,7 +5,8 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { date, fullName } from '../../lib/format.js';
-import { PLANS, LEGAL_FORMS, SOCIETIES, companyMissing } from '../../lib/docs.js';
+import { PLANS as DEFAULT_PLANS, LEGAL_FORMS, SOCIETIES, companyMissing } from '../../lib/docs.js';
+import { usePlans } from '../../lib/platform.js';
 import { TradePicker } from '../../ui/trades.jsx';
 import { AddressFields, CityInput } from '../../ui/address.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
@@ -25,6 +26,7 @@ export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
 export function Account() {
   const { profile, company, confirm } = useApp();
   const ger = profile.member_role === 'gerant';
+  const adm = !!company.is_platform; // compte Artesa : pas d'équipe, d'avis ni d'abonnement
   // Double demande avant de se déconnecter
   const logout = async () => {
     if (!(await confirm({ title: t('Se déconnecter ?'), text: OFFLINE ? t('Vos données restent dans ce navigateur. Vous devrez saisir à nouveau votre e-mail et votre mot de passe.') : t('Vous devrez saisir à nouveau votre e-mail et votre mot de passe (et votre code de double authentification si elle est activée).'), ok: t('Se déconnecter'), danger: true }))) return;
@@ -35,29 +37,29 @@ export function Account() {
       <TopBar title={t('Paramètres et compte')} />
       <div className="card navy row" style={{ gap: 14 }}>
         <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} size="lg" />
-        <div><b style={{ fontSize: 19 }}>{fullName(profile)}</b><div className="muted">{company.name}</div><Pill c="white">{t({ gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' }[profile.member_role])}</Pill></div>
+        <div><b style={{ fontSize: 19 }}>{fullName(profile)}</b><div className="muted">{company.name}</div><Pill c="white">{adm ? t('Administrateur') : t({ gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' }[profile.member_role])}</Pill></div>
       </div>
       <Sec title={t('Compte')} />
       <div className="list">
         <MenuRow to="/pro/compte/profil" icon={LuUser} label={t('Mon profil')} sub={profile.email} />
-        {ger && !company.is_platform && <MenuRow to="/pro/compte/abonnement" icon={LuCreditCard} label={t('Abonnement et parrainage')} sub={t('Formule {p}', { p: PLANS.find((p) => p.id === company.plan)?.name })} />}
+        {ger && !company.is_platform && <MenuRow to="/pro/compte/abonnement" icon={LuCreditCard} label={t('Abonnement et parrainage')} sub={t('Formule {p}', { p: DEFAULT_PLANS.find((p) => p.id === company.plan)?.name })} />}
       </div>
       <Sec title={t('Entreprise')} />
       <div className="list">
-        {ger && <MenuRow to="/pro/compte/entreprise" icon={LuBuilding2} label={t('Mon entreprise')} sub={company.name} />}
-        <MenuRow to="/pro/compte/equipe" icon={LuUsers} label={t('Mon équipe')} />
+        {ger && <MenuRow to="/pro/compte/entreprise" icon={LuBuilding2} label={adm ? t('Infos Artesa') : t('Mon entreprise')} sub={adm ? t('SIRET, TVA, adresse, mentions') : company.name} />}
+        {!adm && <MenuRow to="/pro/compte/equipe" icon={LuUsers} label={t('Mon équipe')} />}
         {ger && <MenuRow to="/pro/compte/devis" icon={LuFilePen} label={t('Devis')} sub={t('Numérotation, TVA, validité, acompte')} />}
         {ger && <MenuRow to="/pro/compte/factures" icon={LuFileText} label={t('Factures')} sub={t('Numérotation, paiement, mentions')} />}
-        {ger && <MenuRow to="/pro/compte/avis" icon={LuStar} label={t('Mes avis clients')} />}
+        {ger && !adm && <MenuRow to="/pro/compte/avis" icon={LuStar} label={t('Mes avis clients')} />}
       </div>
       <Sec title={t('Application')} />
       <div className="list">
         <MenuRow to="/pro/compte/notifications" icon={LuBell} label={t('Notifications')} />
         <MenuRow to="/pro/compte/apparence" icon={LuPalette} label={t('Langue et apparence')} />
-        {ger && <MenuRow to="/pro/compte/integrations" icon={LuPlug} label={t('Intégrations')} sub={t('Agenda, comptable, paiement')} />}
+        {ger && <MenuRow to={adm ? '/admin/integrations' : '/pro/compte/integrations'} icon={LuPlug} label={t('Intégrations')} sub={adm ? t('Services connectés à la plateforme') : t('Agenda, comptable, paiement')} />}
         <MenuRow to="/pro/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />
         <MenuRow to="/telecharger" icon={LuDownload} label={t('Logiciel PC / Mac et application mobile')} />
-        {profile.is_admin && <MenuRow to={profile.kind === 'admin' ? '/admin' : '/pro/admin'} icon={LuShieldCheck} label={t('Administration Artesa')} />}
+        {profile.is_admin && !adm && <MenuRow to="/pro/admin" icon={LuShieldCheck} label={t('Administration Artesa')} />}
       </div>
       <Sec title={t('Aide')} />
       <div className="list">
@@ -70,6 +72,7 @@ export function Account() {
 
 export function Subscription() {
   const { company, wip } = useApp();
+  const PLANS = usePlans();
   const [filleuls] = useData(async () => (await api.select('companies', { referred_by: company.id }, { columns: 'id,name,created_at' }).catch(() => [])), []);
   const days = Math.ceil((new Date(company.trial_ends_at) - new Date()) / 864e5);
   const copy = () => { navigator.clipboard?.writeText(company.referral_code); };
@@ -121,7 +124,7 @@ export function CompanySettings() {
     if (pending && miss.length) { toast(t('Complétez les champs obligatoires : {l}', { l: miss.map((m) => t(m[1])).join(', ') }), true); return; }
     if (c.siret && !siretValid(c.siret)) { toast(t('Le SIRET doit contenir 14 chiffres valides.'), true); return; }
     await run(async () => {
-      const { id, counters, owner_id, created_at, referral_code, verified, plan, trial_ends_at, referred_by, verification_status, verification_note, verified_at, ...row } = c;
+      const { id, counters, owner_id, created_at, referral_code, verified, plan, trial_ends_at, referred_by, verification_status, verification_note, verified_at, is_platform, ...row } = c;
       const x = await api.update('companies', { id: company.id }, row); setCompany({ ...company, ...row, ...(x || {}) });
       // Compléments envoyés : le dossier repart en vérification
       if (company.verification_status === 'rejected' && !miss.length) { const y = await api.rpc('resubmit_company', {}); if (y) setCompany({ ...company, ...row, ...y }); }
@@ -159,10 +162,15 @@ export function CompanySettings() {
           <div className={missKeys.has('address') || missKeys.has('city') || missKeys.has('zip') ? 'missing-block' : ''}><AddressFields value={c} onChange={setC} required /></div>
           <div className="form-grid two">{F('phone', t('Téléphone'), { req: 1, type: 'tel' })}{F('email', t('E-mail'), { req: 1, type: 'email' })}{F('website', t('Site web'))}</div>
           <p className="small muted">{t('Ces informations figurent sur les devis et factures.')}</p>
-          <Sec title={t('Assurance décennale')} />
-          <div className="form-grid three">{F('insurer', t('Assureur'), { req: 1 })}{F('insurance_contract', t('N° de contrat'), { req: 1 })}{F('insurance_coverage', t('Couverture'))}</div>
+          {!c.is_platform && <><Sec title={t('Assurance décennale')} />
+          <div className="form-grid three">{F('insurer', t('Assureur'), { req: 1 })}{F('insurance_contract', t('N° de contrat'), { req: 1 })}{F('insurance_coverage', t('Couverture'))}</div></>}
         </div>
-        <div>
+        {c.is_platform ? <div>
+          <Sec title={t('Plateforme Artesa')} />
+          <div className="card soft small" style={{ lineHeight: 1.6 }}>{t('Ces informations apparaissent sur les devis et factures d’Artesa (abonnements, prestations). Artesa n’est pas un artisan : pas de métier, de zone ni de profil public.')}</div>
+          <Field label={t('Présentation (mentions bas de page, e-mails)')}><textarea value={c.description || ''} onChange={(e) => setC({ ...c, description: e.target.value })} /></Field>
+          <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
+        </div> : <div>
           <Sec title={<>{t('Activité')}{missKeys.has('trades') && <span className="small red-t"> · {t('choisissez au moins un métier')}</span>}</>} />
           <TradePicker value={c.trades || []} onChange={(trades) => setC({ ...c, trades })} />
           <Sec title={t("Zone d'intervention")} />
@@ -180,7 +188,7 @@ export function CompanySettings() {
             <SettingToggle label={t('Rendez-vous en visio (WhatsApp)')} hint={visio ? t('Vos clients peuvent demander une visio WhatsApp') : t('Uniquement des rendez-vous sur place')} checked={visio} onChange={(v) => setC({ ...c, settings: { ...c.settings, planning: { ...(c.settings?.planning || {}), visio: v } } })} />
           </div>
           <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
-        </div>
+        </div>}
       </div>
       <CropSheet file={crop} onClose={() => setCrop(null)} onDone={saveLogo} title={t('Recadrer le logo')} />
     </div>

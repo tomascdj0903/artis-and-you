@@ -77,6 +77,8 @@ const PRO_TABS = [
 const ADMIN = [
   ['/admin', L('adm', 'AdminHome')], ['/admin/gestion/:tab', L('common', 'Admin')], ['/admin/comptes', L('adm', 'AdminAccounts')], ['/admin/stats', L('adm', 'AdminStats')],
   ['/admin/compta', L('adm', 'AdminCompta')], ['/admin/facturation-electronique', L('adm', 'AdminEInvoice')], ['/admin/legal', L('adm', 'AdminLegal')],
+  ['/admin/offres', L('adm', 'AdminOffers')], ['/admin/prospection', L('adm', 'AdminPipeline')], ['/admin/taches', L('adm', 'AdminTasks')], ['/admin/agenda', L('adm', 'AdminCalendar')],
+  ['/admin/notes', L('adm', 'AdminNotes')], ['/admin/fichiers', L('adm', 'AdminDrive')], ['/admin/service-client', L('adm', 'AdminSupport')], ['/admin/integrations', L('adm', 'AdminIntegrations')],
 ];
 const ADMIN_TABS = [
   ['/admin', LuLayoutGrid, 'Tableau de bord', true], ['/pro/clients', LuUsers, 'Clients'], ['/pro/documents', LuFileText, 'Documents'],

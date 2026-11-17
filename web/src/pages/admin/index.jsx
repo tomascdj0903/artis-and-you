@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   LuShieldCheck, LuIdCard, LuFolderLock, LuStar, LuFlag, LuHammer, LuUsers, LuChartLine, LuBuilding2, LuUserRound, LuFileText,
-  LuReceiptEuro, LuBellRing, LuChartColumn, LuCalendar, LuMessageSquare, LuCalculator, LuSend, LuLibrary, LuSettings, LuScale,
-  LuDownload, LuCircleCheck, LuCircleAlert, LuClock, LuSparkles, LuArrowRight,
+  LuReceiptEuro, LuBellRing, LuCalendar, LuMessageSquare, LuCalculator, LuSend, LuSettings, LuScale,
+  LuDownload, LuCircleCheck, LuCircleAlert, LuClock, LuSparkles, LuArrowRight, LuKanban, LuListChecks, LuNotebookPen, LuFolderOpen, LuTags, LuPlug, LuHeadset,
 } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -12,9 +12,10 @@ import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, money0, date, clientName, fullName } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
-import { PLANS } from '../../lib/docs.js';
+import { usePlans } from '../../lib/platform.js';
 import { TopBar, Sec, Pill, useData, Loader, Empty, Chips, Table, SearchBar } from '../../ui/index.jsx';
 import { LawRefs } from '../../ui/lawref.jsx';
+export * from './workspace.jsx';
 
 // ─────────────── Tuiles ───────────────
 function Tile({ to, icon: I, label, sub, count, tone }) {
@@ -30,6 +31,7 @@ function Tile({ to, icon: I, label, sub, count, tone }) {
 
 export function AdminHome() {
   const { profile, company, run, reload: reloadApp } = useApp();
+  const plans = usePlans();
   const [s, reload] = useData(() => (profile.is_admin ? api.rpc('admin_stats') : null), [profile.is_admin]);
   const ready = profile.kind === 'admin' && company?.is_platform;
   useEffect(() => { if (profile.is_admin && !ready) run(async () => { await api.rpc('admin_setup_platform'); await reloadApp(); }).catch(() => {}); }, [profile.is_admin, ready]);
@@ -44,7 +46,7 @@ export function AdminHome() {
         <div className="kpi"><small>{t('Comptes')}</small><b>{s.users}</b><span className="small muted">{t('+{n} en 7 jours', { n: s.new_7d })}</span></div>
         <div className="kpi"><small>{t('Entreprises validées')}</small><b>{s.approved}</b><span className="small muted">{t('{n} en attente', { n: s.pending })}</span></div>
         <div className="kpi"><small>{t('En essai gratuit')}</small><b>{s.in_trial}</b><span className="small muted">{t('{n} finissent sous 7 jours', { n: s.trial_ending_7d.length })}</span></div>
-        <div className="kpi"><small>{t('Abonnements estimés')}</small><b>{money0(mrr(s))}</b><span className="small muted">{t('par mois, HT')}</span></div>
+        <div className="kpi"><small>{t('Abonnements estimés')}</small><b>{money0(mrr(s, plans))}</b><span className="small muted">{t('par mois, HT')}</span></div>
       </div>}
 
       <Sec title={t('À traiter')} meta={todoTotal ? t('{n} en attente', { n: todoTotal }) : t('Tout est à jour')} />
@@ -65,6 +67,16 @@ export function AdminHome() {
         <Tile to="/admin/legal" icon={LuScale} label={t('Juridique')} sub={t('Pages légales, conformité')} tone="navy" />
       </div>
 
+      <Sec title={t('Notre équipe')} meta={t('Partagé entre administrateurs')} />
+      <div className="atiles">
+        <Tile to="/admin/prospection" icon={LuKanban} label={t('Prospection')} sub={t('Artisans à convaincre')} tone="navy" />
+        <Tile to="/admin/taches" icon={LuListChecks} label={t('Tâches')} tone="navy" />
+        <Tile to="/admin/agenda" icon={LuCalendar} label={t('Agenda')} tone="navy" />
+        <Tile to="/admin/notes" icon={LuNotebookPen} label={t('Notes et wiki')} tone="navy" />
+        <Tile to="/admin/fichiers" icon={LuFolderOpen} label={t('Fichiers')} tone="navy" />
+        <Tile to="/admin/service-client" icon={LuHeadset} label={t('Service client')} sub={t('Messages des pros')} tone="navy" />
+      </div>
+
       <Sec title={t('Notre activité Artesa')} meta={t('Clients, devis, factures et comptabilité d’Artesa')} />
       <div className="atiles">
         <Tile to="/pro/clients" icon={LuUserRound} label={t('Clients')} tone="light" />
@@ -72,10 +84,8 @@ export function AdminHome() {
         <Tile to="/pro/relances" icon={LuBellRing} label={t('Relances')} sub={t('Impayés')} tone="light" />
         <Tile to="/admin/compta" icon={LuCalculator} label={t('Tableau des comptes')} sub={t('Automatique')} tone="light" />
         <Tile to="/admin/facturation-electronique" icon={LuSend} label={t('Facturation électronique')} tone="light" />
-        <Tile to="/pro/crm" icon={LuChartColumn} label={t('CRM et chantiers')} tone="light" />
-        <Tile to="/pro/planning" icon={LuCalendar} label={t('Planning')} tone="light" />
-        <Tile to="/pro/messages" icon={LuMessageSquare} label={t('Messages')} tone="light" />
-        <Tile to="/pro/crm/bibliotheque" icon={LuLibrary} label={t('Prix et prestations')} tone="light" />
+        <Tile to="/admin/offres" icon={LuTags} label={t('Offres et tarifs')} sub={t('Prix des abonnements')} tone="light" />
+        <Tile to="/admin/integrations" icon={LuPlug} label={t('Intégrations')} sub={t('Services branchés')} tone="light" />
         <Tile to="/pro/compte/entreprise" icon={LuSettings} label={t('Infos Artesa')} sub={t('SIRET, TVA, mentions')} tone="light" />
       </div>
       <div className="row mt" style={{ justifyContent: 'center' }}><button className="link small" onClick={reload}><LuClock size={13} /> {t('Actualiser les compteurs')}</button></div>
@@ -83,8 +93,8 @@ export function AdminHome() {
   );
 }
 
-const PRICE = Object.fromEntries((PLANS || []).map((p) => [p.id, Number(p.price) || 0]));
-const mrr = (s) => Object.entries(s?.plans || {}).reduce((a, [k, n]) => a + (PRICE[k] || 0) * Number(n), 0);
+const priceOf = (plans, k) => Number(plans.find((p) => p.id === k)?.price) || 0;
+const mrr = (s, plans) => Object.entries(s?.plans || {}).reduce((a, [k, n]) => a + priceOf(plans, k) * Number(n), 0);
 
 // ─────────────── Comptes ───────────────
 export function AdminAccounts() {
@@ -127,6 +137,7 @@ export function AdminAccounts() {
 // ─────────────── Statistiques ───────────────
 export function AdminStats() {
   const { profile } = useApp();
+  const plans = usePlans();
   const [s] = useData(() => (profile.is_admin ? api.rpc('admin_stats') : null), [profile.is_admin]);
   if (!s) return <div className="content"><TopBar title={t('Statistiques')} /><Loader /></div>;
   const weeks = s.signups_by_week || [];
@@ -159,8 +170,8 @@ export function AdminStats() {
             <div className="r"><span>{t('À compléter')}</span><b>{s.rejected}</b></div>
             <div className="r"><span>{t('En essai gratuit')}</span><b>{s.in_trial}</b></div>
             <div className="r"><span>{t('Essai terminé (abonnement attendu)')}</span><b>{s.after_trial}</b></div>
-            {Object.entries(s.plans || {}).map(([k, n]) => <div key={k} className="r"><span>{t('Formule {p}', { p: (PLANS.find((p) => p.id === k)?.name) || k })}</span><b>{n} × {money0(PRICE[k] || 0)}</b></div>)}
-            <div className="r"><span><b>{t('Revenu mensuel estimé')}</b><div className="small muted">{t('Estimation : le paiement des abonnements n’est pas encore relié.')}</div></span><b>{money0(mrr(s))} {t('HT')}</b></div>
+            {Object.entries(s.plans || {}).map(([k, n]) => <div key={k} className="r"><span>{t('Formule {p}', { p: (plans.find((p) => p.id === k)?.name) || k })}</span><b>{n} × {money0(priceOf(plans, k))}</b></div>)}
+            <div className="r"><span><b>{t('Revenu mensuel estimé')}</b><div className="small muted">{t('Estimation : le paiement des abonnements n’est pas encore relié.')}</div></span><b>{money0(mrr(s, plans))} {t('HT')}</b></div>
           </div>
           <Sec title={t('Essais qui se terminent sous 7 jours')} />
           {!s.trial_ending_7d.length ? <Empty text={t('Aucun')} /> : <div className="list">{s.trial_ending_7d.map((c) => <div key={c.id} className="li"><b>{c.name}</b><span className="small muted">{t('fin le {d}', { d: date(c.ends) })}</span></div>)}</div>}

@@ -214,7 +214,7 @@ export function DataPrivacy() {
 }
 
 export function Help() {
-  const { isPro, wip, profile, setProfile } = useApp();
+  const { isPro, wip, run, profile, setProfile } = useApp();
   const who = isPro ? 'pro' : 'client';
   const [q, setQ] = useState('');
   const [cat, setCat] = useState('');
@@ -256,7 +256,7 @@ export function Help() {
       <Sec title={t('Nous contacter')} />
       <div className="list">
         <a className="li click" href="mailto:support@artisandyou.fr"><span className="ficon navy"><LuMail /></span><div className="grow"><div className="t1">{t('Écrire au support')}</div><div className="t2">support@artisandyou.fr · {t('réponse sous 24 h ouvrées')}</div></div></a>
-        <button className="li click" onClick={() => wip(t('Le chat avec le support'))}><span className="ficon navy"><LuMessageSquare /></span><div className="grow t1">{t('Chat avec le support')}</div></button>
+        <button className="li click" onClick={() => run(async () => { const id = await api.rpc('support_conversation'); navigate((isPro ? '/pro' : '/client') + '/messages/' + id); })}><span className="ficon navy"><LuMessageSquare /></span><div className="grow t1">{t('Chat avec le support')}</div></button>
         <button className="li click" onClick={() => wip(t('La ligne téléphonique'))}><span className="ficon navy"><LuPhone /></span><div className="grow t1">{t('Appeler')}</div></button>
         <a className="li click" href={`mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Signaler un problème'))}&body=${encodeURIComponent('\n\n---\nVersion ' + APP_VERSION + ' · ' + navigator.userAgent)}`}><span className="ficon"><LuBug /></span><div className="grow t1">{t('Signaler un problème')}</div></a>
       </div>
