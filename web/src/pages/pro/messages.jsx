@@ -9,14 +9,17 @@ import { t } from '../../lib/i18n.js';
 import { clientName, rel, date, initials } from '../../lib/format.js';
 import { useTrades } from '../../ui/trades.jsx';
 
-import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, ShareButton } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, ShareButton, ArtesaAvatar } from '../../ui/index.jsx';
 import { Chat, convMeta } from '../common/chat.jsx';
 
 async function loadConvCtx(company, teams, members) {
   const [convs, clients] = await Promise.all([api.select('conversations', {}, { order: 'last_at.desc', limit: 300 }), api.select('clients', { company_id: company.id })]);
   const others = [...new Set(convs.filter((c) => c.kind === 'pro' || c.kind === 'support').map((c) => (c.company_id === company.id ? c.other_company_id : c.company_id)).filter(Boolean))];
   const cos = others.length ? await api.select('companies', { id: others }) : [];
-  return { convs, ctx: { mine: company.id, clients: Object.fromEntries(clients.map((c) => [c.id, c])), teams: Object.fromEntries(teams.map((x) => [x.id, x])), companies: Object.fromEntries(cos.map((c) => [c.id, c])), members }, clients };
+  // Espace Artesa : nom des particuliers qui écrivent au service client
+  const uids = company.is_platform ? [...new Set(convs.filter((c) => c.kind === 'support' && c.client_user_id).map((c) => c.client_user_id))] : [];
+  const us = uids.length ? await api.select('profiles', { id: uids }).catch(() => []) : [];
+  return { convs, ctx: { mine: company.id, clients: Object.fromEntries(clients.map((c) => [c.id, c])), teams: Object.fromEntries(teams.map((x) => [x.id, x])), companies: Object.fromEntries(cos.map((c) => [c.id, c])), users: Object.fromEntries(us.map((u) => [u.id, u])), members }, clients };
 }
 
 export function Messages() {
@@ -42,7 +45,7 @@ export function Messages() {
           const un = c.last_message && (!reads[c.id] || reads[c.id] < c.last_at);
           return (
             <button key={c.id} className="li click" onClick={() => navigate('/pro/messages/' + c.id)}>
-              <div className={'avatar' + (c.kind === 'client' ? ' ring' : '')} style={c.kind === 'team' ? { background: m.color } : c.kind === 'pro' ? { background: 'var(--ardoise)' } : undefined}>{initials(...(m.initials || '').split(' '))}</div>
+              {m.artesa ? <ArtesaAvatar /> : <div className={'avatar' + (c.kind === 'client' ? ' ring' : '')} style={c.kind === 'team' ? { background: m.color } : c.kind === 'pro' ? { background: 'var(--ardoise)' } : undefined}>{initials(...(m.initials || '').split(' '))}</div>}
               <div className="grow"><div className="t1">{m.name} <Pill c={c.kind === 'client' ? 'red-o' : c.kind === 'team' ? 'navy' : 'grey'}>{m.tag}</Pill></div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.last_message || t('Aucun message')}</div></div>
               <div className="side-r"><span className={un ? 'red-t bold' : ''}>{rel(c.last_at)}</span>{un && <span className="badge-n">•</span>}</div>
             </button>
@@ -98,7 +101,7 @@ export function Conversation({ params }) {
   const titleLink = b.c.kind === 'client' && b.c.client_id ? '/pro/clients/' + b.c.client_id : b.c.kind === 'pro' ? '/pro/reseau/' + b.m.otherId : null;
   return (
     <div className="content narrow">
-      <TopBar title={titleLink ? <Link to={titleLink}>{b.m.name}</Link> : b.m.name} sub={b.m.sub} right={b.c.kind === 'client' && <Link className="iconbtn" to={'/pro/clients/' + b.c.client_id} aria-label={t('Fiche client')}><LuChevronRight /></Link>} />
+      <TopBar title={b.m.artesa ? <span className="row" style={{ gap: 8 }}><ArtesaAvatar size="sm" /> Artesa</span> : titleLink ? <Link to={titleLink}>{b.m.name}</Link> : b.m.name} sub={b.m.sub} right={b.c.kind === 'client' && <Link className="iconbtn" to={'/pro/clients/' + b.c.client_id} aria-label={t('Fiche client')}><LuChevronRight /></Link>} />
       <Chat convId={b.c.id} projects={b.projects} banner={b.shared && <div className="banner"><LuMapPin className="red-t" /><div><div className="small muted">{t('Chantier partagé')}</div><b>{b.shared.title}{b.shared.address ? ' · ' + b.shared.address : ''}</b></div></div>} />
     </div>
   );

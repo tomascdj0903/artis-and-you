@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LuUser, LuCreditCard, LuBuilding2, LuUsers, LuFileText, LuBell, LuPlug, LuShield, LuCircleHelp, LuLogOut, LuChevronRight, LuPalette, LuStar, LuCopy, LuPlus, LuImage, LuShieldCheck, LuDownload, LuLock, LuFilePen } from 'react-icons/lu';
+import { LuUser, LuCreditCard, LuBuilding2, LuUsers, LuFileText, LuBell, LuPlug, LuShield, LuCircleHelp, LuLogOut, LuChevronRight, LuPalette, LuStar, LuCopy, LuPlus, LuImage, LuShieldCheck, LuDownload, LuLock, LuFilePen, LuHeadset } from 'react-icons/lu';
 import { api, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
@@ -24,7 +24,7 @@ export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
 }
 
 export function Account() {
-  const { profile, company, confirm } = useApp();
+  const { profile, company, confirm, run } = useApp();
   const ger = profile.member_role === 'gerant';
   const adm = !!company.is_platform; // compte Artesa : pas d'équipe, d'avis ni d'abonnement
   // Double demande avant de se déconnecter
@@ -36,12 +36,12 @@ export function Account() {
     <div className="content narrow">
       <TopBar title={t('Paramètres et compte')} />
       <div className="card navy row" style={{ gap: 14 }}>
-        <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} size="lg" />
-        <div><b style={{ fontSize: 19 }}>{fullName(profile)}</b><div className="muted">{company.name}</div><Pill c="white">{adm ? t('Administrateur') : t({ gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' }[profile.member_role])}</Pill></div>
+        {adm ? <Avatar src="/favicon.svg" name="Artesa" size="lg" /> : <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} size="lg" />}
+        <div><b style={{ fontSize: 19 }}>{adm ? 'Artesa' : fullName(profile)}</b><div className="muted">{adm ? profile.email : company.name}</div><Pill c="white">{adm ? t('Administrateur') : t({ gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' }[profile.member_role])}</Pill></div>
       </div>
       <Sec title={t('Compte')} />
       <div className="list">
-        <MenuRow to="/pro/compte/profil" icon={LuUser} label={t('Mon profil')} sub={profile.email} />
+        <MenuRow to="/pro/compte/profil" icon={LuUser} label={adm ? t('Connexion et sécurité') : t('Mon profil')} sub={profile.email} />
         {ger && !company.is_platform && <MenuRow to="/pro/compte/abonnement" icon={LuCreditCard} label={t('Abonnement et parrainage')} sub={t('Formule {p}', { p: DEFAULT_PLANS.find((p) => p.id === company.plan)?.name })} />}
       </div>
       <Sec title={t('Entreprise')} />
@@ -63,6 +63,8 @@ export function Account() {
       </div>
       <Sec title={t('Aide')} />
       <div className="list">
+        {adm ? <MenuRow to="/admin/service-client" icon={LuHeadset} label={t('Service client')} sub={t('Messages des pros et des particuliers')} />
+          : <MenuRow onClick={() => run(async () => navigate('/pro/messages/' + await api.rpc('support_conversation')))} icon={LuHeadset} label={t('Service client')} sub={t('Écrire à l’équipe Artesa')} />}
         <MenuRow to="/pro/compte/aide" icon={LuCircleHelp} label={t('Aide et support')} />
         <MenuRow onClick={logout} icon={LuLogOut} label={t('Se déconnecter')} red />
       </div>
@@ -384,7 +386,7 @@ export function PdfSettings() {
           <div className="row mb"><button className="btn ghost sm" onClick={() => navigate('/pro/compte/entreprise')}><LuImage /> {company.logo_path ? t('Changer le logo') : t('Ajouter mon logo')}</button></div>
           <p className="small faint">{t('Votre logo apparaît en haut à gauche ; la mention « Document réalisé avec Artesa » en bas de page.')}</p>
           <Sec title={t('Signature')} />
-          <SignatureEditor p={p} setP={setP} defaultName={fullName(profile)} />
+          <SignatureEditor p={p} setP={setP} defaultName={company.is_platform ? 'Artesa' : fullName(profile)} />
           <Field label={t('Pied de page')}><input value={p.footer} onChange={(e) => setP({ ...p, footer: e.target.value })} placeholder={t('ex. Membre d’une association agréée')} /></Field>
           <button className="btn block" onClick={() => { if (!p.sig_text) return alert(t('Saisissez votre nom pour créer votre signature.')); run(async () => { const settings = { ...company.settings, pdf: p }; await api.update('companies', { id: company.id }, { settings }); setCompany({ ...company, settings }); }, t('Modèle enregistré')); }}>{t('Enregistrer')}</button>
         </div>

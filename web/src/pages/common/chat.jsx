@@ -53,7 +53,7 @@ export function Chat({ convId, projects = [], banner }) {
     return () => { stop(); api.upsert('conversation_reads', { conversation_id: convId, user_id: uid(), last_read_at: new Date().toISOString() }).then(refreshUnread).catch(() => {}); };
   }, [convId]);
 
-  const senderName = fullName(profile) || company?.name || '';
+  const senderName = company?.is_platform ? 'Artesa' : fullName(profile) || company?.name || '';
   const post = async (row) => {
     const msg = { conversation_id: convId, sender_id: uid(), sender_name: senderName, sender_company_id: profile.company_id || null, ...row };
     // Hors ligne : le message texte est mis en attente et partira au retour du réseau
@@ -194,7 +194,7 @@ export function Chat({ convId, projects = [], banner }) {
 }
 
 // Nom et sous-titre d'une conversation selon le point de vue
-export function convMeta(c, { mine, clients, teams, companies, members }) {
+export function convMeta(c, { mine, clients, teams, companies, members, users }) {
   if (c.kind === 'client') {
     if (!mine) { const co = companies[c.company_id]; return { name: co?.trade_name || co?.name || t('Artisan'), sub: (co?.trades || [])[0] || '', tag: t('Artisan'), initials: co?.name }; }
     const cl = clients[c.client_id]; return { name: clientName(cl), sub: [t('Client'), cl?.site_city || cl?.billing_city].filter(Boolean).join(' · '), tag: t('Client'), initials: clientName(cl) };
@@ -202,6 +202,10 @@ export function convMeta(c, { mine, clients, teams, companies, members }) {
   if (c.kind === 'team') { const tm = teams[c.team_id]; const ms = (members || []).filter((m) => m.team_id === c.team_id).map((m) => m.first_name); return { name: tm?.name || t('Équipe'), sub: t('Équipe') + (ms.length ? ' · ' + ms.join(', ') + ' ' + t('et vous') : ''), tag: t('Équipe'), color: tm?.color, initials: tm?.name }; }
   if (c.kind === 'pro') { const oid = c.company_id === mine ? c.other_company_id : c.company_id; const co = companies[oid]; return { name: co?.trade_name || co?.name || t('Artisan'), sub: t('Artisan') + ' · ' + (co?.name || ''), tag: (co?.trades || [])[0] || t('Artisan'), initials: co?.name, otherId: oid }; }
   // Service client : côté Artesa on voit le pro (ou le particulier), côté pro/particulier on voit « Artesa »
-  if (c.kind === 'support' && mine && c.company_id === mine) { const co = companies[c.other_company_id]; return { name: co?.trade_name || co?.name || t('Particulier'), sub: t('Service client'), tag: co ? t('Pro') : t('Particulier'), initials: co?.name || 'P' }; }
-  return { name: 'Artesa', sub: t('Service client'), tag: t('Support'), initials: 'A' };
+  if (c.kind === 'support' && mine && c.company_id === mine) {
+    const co = companies[c.other_company_id], u = (users || {})[c.client_user_id];
+    const n = co?.trade_name || co?.name || [u?.first_name, u?.last_name].filter(Boolean).join(' ') || t('Particulier');
+    return { name: n, sub: t('Service client') + ' · ' + (co ? t('Pro') : t('Particulier')), tag: co ? t('Pro') : t('Particulier'), initials: n };
+  }
+  return { name: 'Artesa', sub: t('Administrateur · Service client'), tag: t('Administrateur'), initials: 'A', artesa: true };
 }

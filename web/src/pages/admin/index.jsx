@@ -40,7 +40,7 @@ export function AdminHome() {
   const todoTotal = Object.values(todo).reduce((a, b) => a + Number(b || 0), 0);
   return (
     <div className="content">
-      <TopBar title={t('Bonjour {n}', { n: profile.first_name || '' })} sub={t('Espace administrateur Artesa')} />
+      <TopBar title="Artesa" sub={t('Espace administrateur')} />
       {!ready && <div className="notice">{t('Mise en place de l’espace Artesa…')}</div>}
       {s && <div className="kpis mb">
         <div className="kpi"><small>{t('Comptes')}</small><b>{s.users}</b><span className="small muted">{t('+{n} en 7 jours', { n: s.new_7d })}</span></div>

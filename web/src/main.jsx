@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { GlobalFab } from './ui/fab.jsx';
 import { ErrorBoundary } from './ui/errors.jsx';
-import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog } from 'react-icons/lu';
+import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog, LuKanban } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
 import { Landing } from './pages/auth/landing.jsx';
@@ -80,9 +80,11 @@ const ADMIN = [
   ['/admin/offres', L('adm', 'AdminOffers')], ['/admin/prospection', L('adm', 'AdminPipeline')], ['/admin/taches', L('adm', 'AdminTasks')], ['/admin/agenda', L('adm', 'AdminCalendar')],
   ['/admin/notes', L('adm', 'AdminNotes')], ['/admin/fichiers', L('adm', 'AdminDrive')], ['/admin/service-client', L('adm', 'AdminSupport')], ['/admin/integrations', L('adm', 'AdminIntegrations')],
 ];
+// 5e valeur « true » : seulement dans la barre de gauche (la barre du bas du téléphone garde l'essentiel)
 const ADMIN_TABS = [
-  ['/admin', LuLayoutGrid, 'Tableau de bord', true], ['/pro/clients', LuUsers, 'Clients'], ['/pro/documents', LuFileText, 'Documents'],
-  ['/admin/compta', LuCalculator, 'Comptabilité'], ['/pro/messages', LuMessageSquare, 'Messages'], ['/admin/comptes', LuUserCog, 'Comptes'],
+  ['/admin', LuLayoutGrid, 'Tableau de bord', true], ['/admin/prospection', LuKanban, 'Prospection'], ['/admin/agenda', LuCalendar, 'Agenda'],
+  ['/pro/messages', LuMessageSquare, 'Messages'], ['/pro/clients', LuUsers, 'Clients', false, true], ['/pro/documents', LuFileText, 'Documents', false, true],
+  ['/admin/compta', LuCalculator, 'Comptabilité', false, true], ['/admin/comptes', LuUserCog, 'Comptes', false, true],
 ];
 const CLI_TABS = [
   ['/client', LuHouse, 'Accueil', true], ['/client/rdv', LuCalendar, 'Mes RDV'], ['/client/messages', LuMessageSquare, 'Messages'],
@@ -116,8 +118,8 @@ function Shell({ tabs, children, path }) {
         </nav>
         <div className="spacer" />
         <Link to={profile?.kind === 'admin' ? '/pro/compte' : (isPro ? '/pro' : '/client') + '/compte'} className="me">
-          <Avatar name={profile?.first_name} last={profile?.last_name} path={profile?.avatar_path} size="sm" />
-          <div><b>{fullName(profile) || t('Mon compte')}</b><small>{profile?.kind === 'admin' ? t('Administrateur Artesa') : company?.name || t('Particulier')}</small></div>
+          {company?.is_platform ? <Avatar src="/favicon.svg" name="Artesa" size="sm" /> : <Avatar name={profile?.first_name} last={profile?.last_name} path={profile?.avatar_path} size="sm" />}
+          <div><b>{company?.is_platform ? 'Artesa' : fullName(profile) || t('Mon compte')}</b><small>{profile?.kind === 'admin' ? t('Administrateur') : company?.name || t('Particulier')}</small></div>
         </Link>
       </aside>
       <div className="main">
@@ -129,7 +131,7 @@ function Shell({ tabs, children, path }) {
       <GlobalFab />
       {!hideTabs && (
         <nav className="tabbar" aria-label={t('Navigation')}>
-          {tabs.map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t({ 'Mon réseau': 'Réseau', Notifications: 'Alertes', Documents: 'Docs', 'Mes documents': 'Docs', 'Mes rendez-vous': 'RDV', 'Mes artisans': 'Artisans' }[label] || label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
+          {tabs.filter((x) => !x[4]).map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t({ 'Mon réseau': 'Réseau', Notifications: 'Alertes', Documents: 'Docs', 'Mes documents': 'Docs', 'Mes rendez-vous': 'RDV', 'Mes artisans': 'Artisans' }[label] || label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
         </nav>
       )}
     </div>
@@ -145,7 +147,7 @@ function LockScreen({ onUnlock }) {
     <div className="auth" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24 }}>
       <div style={{ display: 'grid', gap: 14, maxWidth: 360, width: '100%', textAlign: 'center' }}>
         <Wordmark size={54} style={{ margin: '0 auto' }} />
-        <h1 style={{ fontSize: 22, margin: 0 }}>{t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
+        <h1 style={{ fontSize: 22, margin: 0 }}>{profile.kind === 'admin' ? 'Artesa' : t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
         <p className="muted" style={{ margin: 0 }}>{t('Application verrouillée. Utilisez Face ID, Touch ID, votre empreinte ou Windows Hello.')}</p>
         {err && <div className="error" role="alert">{err}</div>}
         <button className="btn" onClick={go}>{t('Déverrouiller')}</button>

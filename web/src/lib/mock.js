@@ -220,6 +220,13 @@ export function mockBackend({ saveSession, getSession }) {
       if (!c) { c = { id: id(), kind: 'support', company_id: plat.id, other_company_id: p_company, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(c); }
       return c.id;
     },
+    admin_support_start_user({ p_user }) {
+      const plat = db.companies.find((x) => x.id === myCompany() && x.is_platform); if (!isAdmin() || !plat) throw new Error('Réservé à l’équipe Artesa.');
+      const u = db.profiles.find((x) => x.id === p_user && x.kind === 'particulier'); if (!u) throw new Error('Compte introuvable');
+      let c = db.conversations.find((x) => x.kind === 'support' && x.company_id === plat.id && x.client_user_id === p_user);
+      if (!c) { c = { id: id(), kind: 'support', company_id: plat.id, other_company_id: null, client_user_id: p_user, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(c); }
+      return c.id;
+    },
     admin_stats() {
       if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
       const co = db.companies.filter((c) => !c.is_platform), pr = db.profiles.filter((p) => p.kind !== 'admin'), ago = (d) => new Date(Date.now() - d * 864e5).toISOString(), nowS = now();

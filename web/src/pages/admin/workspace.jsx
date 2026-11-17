@@ -218,26 +218,38 @@ export function AdminDrive() {
 export function AdminSupport() {
   const { run } = useApp();
   const [pick, setPick] = useState(false);
+  const [who, setWhoK] = useState('pro');
   const [q, setQ] = useState('');
   const [b] = useData(async () => {
-    const [convs, cos] = await Promise.all([api.select('conversations', { kind: 'support' }, { order: 'last_at.desc' }), api.select('companies', {}, { limit: 1000 })]);
-    return { convs, cos: cos.filter((c) => !c.is_platform), cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
+    const [convs, cos, users] = await Promise.all([
+      api.select('conversations', { kind: 'support' }, { order: 'last_at.desc' }),
+      api.select('companies', {}, { limit: 2000 }),
+      api.select('profiles', { kind: 'particulier' }, { limit: 2000 }).catch(() => []),
+    ]);
+    return { convs, cos: cos.filter((c) => !c.is_platform), cm: Object.fromEntries(cos.map((c) => [c.id, c])), users, um: Object.fromEntries(users.map((u) => [u.id, u])) };
   }, []);
   if (!b) return <div className="content"><TopBar title={t('Service client')} /><Loader /></div>;
-  const start = (c) => run(async () => { const id = await api.rpc('admin_support_start', { p_company: c.id }); navigate('/pro/messages/' + id); });
+  const open = (id) => navigate('/pro/messages/' + id);
+  const startPro = (c) => run(async () => open(await api.rpc('admin_support_start', { p_company: c.id })));
+  const startUser = (u) => run(async () => open(await api.rpc('admin_support_start_user', { p_user: u.id })));
   const n = q.trim().toLowerCase();
+  const uname = (u) => [u?.first_name, u?.last_name].filter(Boolean).join(' ');
+  const cands = who === 'pro'
+    ? b.cos.filter((c) => !n || [c.name, c.trade_name, c.city, c.email].join(' ').toLowerCase().includes(n)).slice(0, 40).map((c) => ({ id: c.id, t1: c.trade_name || c.name, t2: [c.city, (c.trades || [])[0]].filter(Boolean).join(' · '), go: () => startPro(c) }))
+    : b.users.filter((u) => !n || [uname(u), u.email, u.home?.city].join(' ').toLowerCase().includes(n)).slice(0, 40).map((u) => ({ id: u.id, t1: uname(u) || u.email, t2: [u.email, u.home?.city].filter(Boolean).join(' · '), go: () => startUser(u) }));
   return (
     <div className="content">
-      <TopBar title={t('Service client')} sub={t('Les pros et les particuliers vous écrivent depuis « Aide › Chat avec le support »')} right={<button className="btn sm" onClick={() => setPick(true)}><LuMessageSquare /> {t('Écrire à un pro')}</button>} />
-      <div className="notice small">{t('Artesa reste invisible dans la recherche : seuls les pros que vous contactez, ou qui écrivent au support, vous voient. Ils peuvent vous répondre ici.')}</div>
-      {!b.convs.length ? <Empty text={t('Aucune conversation pour l’instant')} /> : <div className="list mt">{b.convs.map((c) => { const co = b.cm[c.other_company_id]; return (
-        <button key={c.id} className="li click" onClick={() => navigate('/pro/messages/' + c.id)}>
-          <div className="grow"><div className="t1">{co?.name || t('Particulier')} <Pill c={co ? 'yellow' : 'grey'}>{co ? t('Pro') : t('Particulier')}</Pill></div><div className="t2">{c.last_message || t('Nouvelle conversation')}</div></div>
+      <TopBar title={t('Service client')} sub={t('Vous écrivez sous le nom « Artesa », avec votre logo')} right={<button className="btn sm" onClick={() => setPick(true)}><LuMessageSquare /> {t('Nouveau message')}</button>} />
+      <div className="notice small">{t('Les pros et les particuliers vous écrivent depuis Paramètres › Service client. Artesa reste invisible dans la recherche : seuls ceux que vous contactez, ou qui écrivent au support, vous voient.')}</div>
+      {!b.convs.length ? <Empty text={t('Aucune conversation pour l’instant')} /> : <div className="list mt">{b.convs.map((c) => { const co = b.cm[c.other_company_id], u = b.um[c.client_user_id]; return (
+        <button key={c.id} className="li click" onClick={() => open(c.id)}>
+          <div className="grow"><div className="t1">{co ? co.trade_name || co.name : uname(u) || t('Particulier')} <Pill c={co ? 'yellow' : 'grey'}>{co ? t('Pro') : t('Particulier')}</Pill></div><div className="t2">{c.last_message || t('Nouvelle conversation')}</div></div>
           <span className="small muted">{rel(c.last_at)}</span>
         </button>); })}</div>}
-      <Sheet open={pick} onClose={() => setPick(false)} title={t('Écrire à un pro')}>
-        <SearchBar value={q} onChange={setQ} placeholder={t('Nom de l’entreprise…')} />
-        <div className="list">{b.cos.filter((c) => !n || (c.name + ' ' + c.city).toLowerCase().includes(n)).slice(0, 30).map((c) => <button key={c.id} className="li click" onClick={() => start(c)}><div className="grow"><div className="t1">{c.name}</div><div className="t2">{c.city}</div></div></button>)}</div>
+      <Sheet open={pick} onClose={() => setPick(false)} title={t('Écrire à…')}>
+        <Chips options={[['pro', t('Un pro')], ['particulier', t('Un particulier')]]} value={who} onChange={(v) => { setWhoK(v); setQ(''); }} />
+        <SearchBar value={q} onChange={setQ} placeholder={who === 'pro' ? t('Entreprise, ville, e-mail…') : t('Nom, e-mail, ville…')} />
+        {!cands.length ? <Empty text={t('Personne ne correspond')} /> : <div className="list">{cands.map((x) => <button key={x.id} className="li click" onClick={x.go}><div className="grow"><div className="t1">{x.t1}</div><div className="t2">{x.t2}</div></div></button>)}</div>}
       </Sheet>
     </div>
   );

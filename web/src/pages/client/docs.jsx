@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { LuFilePen, LuFileText, LuHardHat, LuFolderOpen, LuDownload, LuPrinter, LuMessageSquare, LuCreditCard, LuLandmark, LuUser, LuHouse, LuUsers, LuBell, LuShield, LuCircleHelp, LuScale, LuLogOut, LuPalette, LuStar, LuCamera, LuDownload as LuDl } from 'react-icons/lu';
+import { LuFilePen, LuFileText, LuHardHat, LuFolderOpen, LuDownload, LuPrinter, LuMessageSquare, LuCreditCard, LuLandmark, LuUser, LuHouse, LuUsers, LuBell, LuShield, LuCircleHelp, LuScale, LuLogOut, LuPalette, LuStar, LuCamera, LuDownload as LuDl, LuHeadset } from 'react-icons/lu';
 import { api, uid, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
@@ -273,7 +273,7 @@ export function OtherDocs() {
 
 // ─────────────── Compte particulier ───────────────
 export function Account() {
-  const { profile, confirm } = useApp();
+  const { profile, confirm, run } = useApp();
   // Double demande avant de se déconnecter
   const logout = async () => {
     if (!(await confirm({ title: t('Se déconnecter ?'), text: OFFLINE ? t('Vos données restent dans ce navigateur. Vous devrez saisir à nouveau votre e-mail et votre mot de passe.') : t('Vous devrez saisir à nouveau votre e-mail et votre mot de passe (et votre code de double authentification si elle est activée).'), ok: t('Se déconnecter'), danger: true }))) return;
@@ -289,7 +289,7 @@ export function Account() {
       <Sec title={t('Application')} />
       <div className="list"><MenuRow to="/client/compte/notifications" icon={LuBell} label={t('Notifications')} /><MenuRow to="/client/compte/apparence" icon={LuPalette} label={t('Langue et apparence')} /><MenuRow to="/client/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />{profile.is_admin && <MenuRow to="/client/admin" icon={LuShield} label={t('Administration Artesa')} />}</div>
       <Sec title={t('Aide')} />
-      <div className="list"><MenuRow to="/client/compte/aide" icon={LuCircleHelp} label={t('Aide et support')} /><MenuRow to="/mentions-legales" icon={LuScale} label={t('Mentions légales')} /><MenuRow onClick={logout} icon={LuLogOut} label={t('Se déconnecter')} red /></div>
+      <div className="list"><MenuRow onClick={() => run(async () => navigate('/client/messages/' + await api.rpc('support_conversation')))} icon={LuHeadset} label={t('Service client')} sub={t('Écrire à l’équipe Artesa')} /><MenuRow to="/client/compte/aide" icon={LuCircleHelp} label={t('Aide et support')} /><MenuRow to="/mentions-legales" icon={LuScale} label={t('Mentions légales')} /><MenuRow onClick={logout} icon={LuLogOut} label={t('Se déconnecter')} red /></div>
     </div>
   );
 }

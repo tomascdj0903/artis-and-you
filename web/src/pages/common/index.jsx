@@ -65,6 +65,17 @@ export function MyProfile() {
     if (pw) { await api.updatePassword(pw); setPw(''); }
     setProfile({ ...profile, ...p });
   }, p.email !== profile.email ? t('Enregistré. Confirmez la nouvelle adresse via le lien reçu par e-mail.') : t('Profil enregistré'));
+  if (profile.kind === 'admin') return (
+    <div className="content narrow">
+      <TopBar title={t('Connexion et sécurité')} />
+      <div className="mb" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, textAlign: 'center' }}><Avatar src="/favicon.svg" name="Artesa" size="lg" /><b style={{ fontSize: 19 }}>Artesa</b><span className="small muted">{t('Compte administrateur : vous apparaissez partout sous le nom « Artesa » avec le logo.')}</span></div>
+      <Field label={t('E-mail de connexion')} req><input type="email" value={p.email} onChange={(e) => setP({ ...p, email: e.target.value })} /></Field>
+      <Sec title={t('Sécurité')} />
+      <Field label={t('Nouveau mot de passe')} hint={t('laisser vide pour ne pas changer')}><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} minLength={6} autoComplete="new-password" /></Field>
+      <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
+      <Security />
+    </div>
+  );
   return (
     <div className="content narrow">
       <TopBar title={t('Mon profil')} />

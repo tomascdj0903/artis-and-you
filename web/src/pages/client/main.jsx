@@ -9,7 +9,7 @@ import { dateLong, dateShort, hm, rel, iso, addDays, date, dateTime, time } from
 import { useTrades } from '../../ui/trades.jsx';
 import { clientApptStatus } from '../../lib/docs.js';
 import { icsFile } from '../../lib/ics.js';
-import { TopBar, SearchBar, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox } from '../../ui/index.jsx';
+import { TopBar, SearchBar, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox, ArtesaAvatar } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
 import { planSettings, freeWindows } from '../pro/planning.jsx';
 import { MoveSheet } from '../pro/planning-rdv.jsx';
@@ -366,7 +366,8 @@ export function Messages() {
   const [b] = useData(async () => { const m = await loadMine(); const convs = await api.select('conversations', {}, { order: 'last_at.desc' }); return { ...m, convs: await withLast(convs.filter((c) => c.last_message)) }; }, []);
   if (!b) return <div className="content"><TopBar title={t('Messages')} /><Loader /></div>;
   const reads = unread.reads || {};
-  const list = b.convs.filter((c) => c.last_message && (!q || (coName(b.cm[c.company_id]) + ' ' + c.last_message).toLowerCase().includes(q.toLowerCase())));
+  const nameOf = (c) => (c.kind === 'support' ? 'Artesa' : coName(b.cm[c.company_id]));
+  const list = b.convs.filter((c) => c.last_message && (!q || (nameOf(c) + ' ' + c.last_message).toLowerCase().includes(q.toLowerCase())));
   const n = list.filter((c) => !reads[c.id] || reads[c.id] < c.last_at).length;
   return (
     <div className="content">
@@ -376,8 +377,8 @@ export function Messages() {
       {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation.')} /> : (
         <div className="list">{list.map((c) => { const co = b.cm[c.company_id]; const un = !reads[c.id] || reads[c.id] < c.last_at; return (
           <button key={c.id} className="li click" onClick={() => navigate('/client/messages/' + c.id)}>
-            <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} />
-            <div className="grow"><div className="t1">{coName(co)} {(co?.trades || [])[0] && <Pill c="grey">{t(co.trades[0])}</Pill>}</div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.mine ? t('Vous') + ' : ' : ''}{c.last_message}</div></div>
+            {c.kind === 'support' ? <ArtesaAvatar /> : <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} />}
+            <div className="grow"><div className="t1">{c.kind === 'support' ? <>Artesa <Pill c="navy">{t('Administrateur')}</Pill></> : <>{coName(co)} {(co?.trades || [])[0] && <Pill c="grey">{t(co.trades[0])}</Pill>}</>}</div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.mine ? t('Vous') + ' : ' : ''}{c.last_message}</div></div>
             <div className="side-r"><SentTag mine={c.mine} /><span className={un ? 'red-t bold' : ''}>{whenMsg(c.last_at)}</span>{un && <span className="badge-n">1</span>}</div>
           </button>
         ); })}</div>
@@ -396,6 +397,12 @@ export function Conversation({ params }) {
   const [b] = useData(async () => { const c = await api.one('conversations', { id: params.id }); const co = c ? await api.one('companies', { id: c.company_id }) : null; return { c, co }; }, [params.id]);
   if (!b) return <div className="content"><TopBar title={t('Messages')} /><Loader /></div>;
   if (!b.c) return <div className="content"><TopBar title={t('Messages')} /><Empty text={t('Conversation introuvable')} /></div>;
+  if (b.c.kind === 'support') return (
+    <div className="content narrow">
+      <TopBar title={<span className="row" style={{ gap: 8 }}><ArtesaAvatar size="sm" /> Artesa</span>} sub={t('Administrateur · Service client')} />
+      <Chat convId={b.c.id} />
+    </div>
+  );
   return (
     <div className="content narrow">
       <TopBar title={<Link to={'/client/artisans/' + b.c.company_id}>{coName(b.co)}</Link>} sub={b.co?.name} />
