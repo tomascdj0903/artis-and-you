@@ -3,12 +3,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   LuShieldCheck, LuIdCard, LuFolderLock, LuStar, LuFlag, LuHammer, LuUsers, LuChartLine, LuBuilding2, LuUserRound, LuFileText,
-  LuReceiptEuro, LuBellRing, LuCalendar, LuMessageSquare, LuCalculator, LuSend, LuSettings, LuScale,
-  LuDownload, LuCircleCheck, LuCircleAlert, LuClock, LuSparkles, LuArrowRight, LuKanban, LuListChecks, LuNotebookPen, LuFolderOpen, LuTags, LuPlug, LuHeadset,
+  LuBellRing, LuCalendar, LuCalculator, LuSend, LuSettings, LuScale,
+  LuDownload, LuCircleCheck, LuCircleAlert, LuClock, LuArrowRight, LuKanban, LuListChecks, LuNotebookPen, LuFolderOpen, LuTags, LuPlug, LuHeadset,
 } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
-import { navigate, Link } from '../../lib/router.jsx';
+import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, money0, date, clientName, fullName } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';

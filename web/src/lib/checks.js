@@ -32,7 +32,7 @@ export async function rgeLookup(id) {
 }
 
 // ── TVA intracommunautaire ──
-export const normVat = (v) => String(v || '').toUpperCase().replace(/[\s.\-]/g, '');
+export const normVat = (v) => String(v || '').toUpperCase().replace(/[\s.-]/g, '');
 
 // Clé du numéro de TVA français : FR + clé (2 chiffres) + SIREN
 export function frVatFromSiren(siren) {
