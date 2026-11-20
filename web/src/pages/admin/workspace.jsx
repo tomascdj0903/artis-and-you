@@ -161,7 +161,7 @@ export function AdminNotes() {
       <div className="grid2" style={{ gridTemplateColumns: 'minmax(220px, 1fr) 2fr' }}>
         <div>
           <SearchBar value={q} onChange={setQ} placeholder={t('Chercher dans les notes…')} />
-          {!list.length ? <Empty text={t('Aucune note')} /> : folders.map((f) => (
+          {!list.length ? <Empty text={t('Aucune note')}>{!q && <button className="btn sm" onClick={() => setCur({ title: '', content: '', folder: 'Général', pinned: false })}><LuPlus /> {t('Nouvelle note')}</button>}</Empty> : folders.map((f) => (
             <div key={f}><Sec title={f} />
               <div className="list">{list.filter((x) => (x.folder || 'Général') === f).map((x) => (
                 <button key={x.id} className={'li click' + (cur?.id === x.id ? ' on' : '')} onClick={() => setCur({ ...x })}>

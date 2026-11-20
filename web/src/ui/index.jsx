@@ -108,8 +108,8 @@ export function KV({ rows }) {
   );
 }
 
-export function Table({ cols, rows, onRow, empty }) {
-  if (!rows.length) return <Empty text={empty || t('Aucun élément')} />;
+export function Table({ cols, rows, onRow, empty, emptyAction }) {
+  if (!rows.length) return <Empty text={empty || t('Aucun élément')}>{emptyAction}</Empty>;
   return (
     <div className="table-wrap">
       <table className="t">

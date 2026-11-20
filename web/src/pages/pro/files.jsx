@@ -1,7 +1,7 @@
 import { kbd } from '../../lib/a11y.js';
 import { useEffect, useRef, useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2, LuUpload } from 'react-icons/lu';
+import { LuCamera, LuFileText, LuDownload, LuChevronRight, LuFolder, LuTriangleAlert, LuLock, LuTrash2, LuUpload , LuPlus } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
@@ -33,7 +33,7 @@ function ClientFileList({ kind, title, to }) {
       <TopBar title={title} sub={t('Tous les clients')} />
       <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={onlyWith} />
       <Sec title={t('Mes clients')} meta={t('{n} clients · {m} {k}', { n: b.clients.length, m: b.total, k: kind === 'photo' ? t('photos') : t('documents') })} />
-      {!list.length ? <Empty text={t('Aucun client pour le moment. Ajoutez-en un avec le bouton +.')} /> : (
+      {!list.length ? <Empty text={b.clients.length ? t('Aucun client ne correspond à votre recherche.') : t('Aucun client pour le moment.')}>{!b.clients.length && <button className="btn sm" onClick={() => navigate('/pro/clients/nouveau')}><LuPlus /> {t('Ajouter un client')}</button>}</Empty> : (
         <div className="list">{list.map((c) => (
           <button key={c.id} className="li click" onClick={() => navigate(to + c.id)}>
             <div className="ficon"><I /></div>
@@ -153,7 +153,7 @@ export function OtherDocsClient({ params }) {
       <TopBar title={t('Autres docs')} sub={clientName(b.c)} />
       <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={types.length > 0} />
       <Sec title={t('Documents')} meta={t('{n} documents', { n: b.files.length })} />
-      {!list.length ? <Empty text={t('Attestations, Kbis, contrats, plans… Ajoutez-les avec +.')} /> : <div className="list">{list.map((f) => <FileRow key={f.id} f={f} onOpen={() => setEdit(f)} extra={f.shared_with_client ? t('Partagé avec le client') : ''} />)}</div>}
+      {!list.length ? <Empty text={b.files.length ? t('Aucun document ne correspond.') : t('Attestations, Kbis, contrats, plans… Rangez ici les documents de ce client.')}>{!b.files.length && <button className="btn sm" onClick={() => setAdd(true)}><LuPlus /> {t('Ajouter un document')}</button>}</Empty> : <div className="list">{list.map((f) => <FileRow key={f.id} f={f} onOpen={() => setEdit(f)} extra={f.shared_with_client ? t('Partagé avec le client') : ''} />)}</div>}
       <PageFab primary={{ label: t('Ajouter un document'), onClick: () => setAdd(true) }} />
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtrer par type')} right={<span className="red-t bold small">{t('{n} sélectionnés', { n: types.length })}</span>}>
         <div className="checklist">{DOC_TYPES.map(([k, l]) => <label key={k} className="check"><input type="checkbox" checked={types.includes(k)} onChange={(e) => setTypes(e.target.checked ? [...types, k] : types.filter((x) => x !== k))} />{t(l)}</label>)}</div>

@@ -1492,3 +1492,16 @@ Fiches et historique|Records and history|Fichas e histórico|Schede e cronologia
 Rendez-vous et agenda|Appointments and calendar|Marcações e agenda|Appuntamenti e agenda
 Voir et envoyer|View and send|Ver e enviar|Vedi e invia
 Mon espace|My space|O meu espaço|Il mio spazio
+Aucun client pour le moment.|No clients yet.|Ainda sem clientes.|Ancora nessun cliente.
+Ajouter un client|Add a client|Adicionar um cliente|Aggiungi un cliente
+Aucun projet pour le moment. Un projet se crée aussi tout seul avec une demande de RDV ou un devis.|No projects yet. A project is also created automatically from an appointment request or a quote.|Ainda sem projetos. Um projeto também é criado automaticamente com um pedido de marcação ou um orçamento.|Ancora nessun progetto. Un progetto si crea anche automaticamente con una richiesta di appuntamento o un preventivo.
+Ajouter un article|Add an item|Adicionar um artigo|Aggiungi un articolo
+Ajouter un ouvrage|Add a work package|Adicionar uma obra|Aggiungi una lavorazione
+Aucun client ne correspond à votre recherche.|No client matches your search.|Nenhum cliente corresponde à sua pesquisa.|Nessun cliente corrisponde alla ricerca.
+Aucun document ne correspond.|No document matches.|Nenhum documento corresponde.|Nessun documento corrisponde.
+Attestations, Kbis, contrats, plans… Rangez ici les documents de ce client.|Certificates, Kbis, contracts, plans… Keep this client's documents here.|Certificados, Kbis, contratos, plantas… Guarde aqui os documentos deste cliente.|Attestati, visura, contratti, piante… Conserva qui i documenti di questo cliente.
+Aucune conversation pour le moment.|No conversations yet.|Ainda sem conversas.|Ancora nessuna conversazione.
+Votre bibliothèque est vide.|Your library is empty.|A sua biblioteca está vazia.|La tua libreria è vuota.
+Ouvrir ma bibliothèque|Open my library|Abrir a minha biblioteca|Apri la mia libreria
+Créer un devis|Create a quote|Criar um orçamento|Crea un preventivo
+Créer une facture|Create an invoice|Criar uma fatura|Crea una fattura

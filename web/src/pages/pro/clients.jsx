@@ -79,7 +79,7 @@ export function Clients() {
       {data.some((c) => !c.user_id && c.type !== 'pro') && <button className="invite-strip" onClick={() => navigate('/pro/reseau/inviter-clients')}>📣 <span className="grow"><b>{t('Inviter mes clients sur Artesa')}</b><small>{t('Gratuit pour eux : ils retrouvent leurs documents et vous écrivent directement.')}</small></span><span className="red-t bold">›</span></button>}
       <Sec title={t('Mes clients')} meta={<span className="row" style={{ gap: 8 }}>{list.length !== data.length ? t('{n} sur {m}', { n: list.length, m: data.length }) : t('{n} clients', { n: data.length })}
         <select className="mini-select" value={f.sort} onChange={(e) => setFilter({ ...f, sort: e.target.value })} aria-label={t('Trier')}>{SORTS.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></span>} />
-      <Table rows={list} onRow={(c) => navigate('/pro/clients/' + c.id)} empty={data.length ? t('Aucun client ne correspond à ces filtres.') : t('Aucun client. Ajoutez votre premier client avec le bouton +.')}
+      <Table rows={list} onRow={(c) => navigate('/pro/clients/' + c.id)} empty={data.length ? t('Aucun client ne correspond à ces filtres.') : t('Aucun client pour le moment.')} emptyAction={!data.length && <button className="btn sm" onClick={() => navigate('/pro/clients/nouveau')}><LuPlus /> {t('Ajouter un client')}</button>}
         cols={[
           { label: t('Type'), render: typePill },
           { label: t('Nom'), strong: true, render: (c) => c.last_name || '—' },

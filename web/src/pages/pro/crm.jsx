@@ -101,7 +101,7 @@ export function ProjectStatus() {
         <div style={{ flex: 1 }} />
         <div style={{ minWidth: 220 }}><Seg options={[['cards', t('Suivi')], ['table', t('Tableau des étapes')]]} value={view} onChange={setV} /></div>
       </div>
-      {!rows.length ? <Empty text={b.projects.length ? t('Aucun projet dans cette étape.') : t('Aucun projet. Les projets sont créés avec les demandes de RDV, les devis ou le bouton +.')} /> : view === 'cards' ? (
+      {!rows.length ? <Empty text={b.projects.length ? t('Aucun projet dans cette étape.') : t('Aucun projet pour le moment. Un projet se crée aussi tout seul avec une demande de RDV ou un devis.')}>{!b.projects.length && <button className="btn sm" onClick={() => setAdd(true)}><LuPlus /> {t('Nouveau projet')}</button>}</Empty> : view === 'cards' ? (
         <div className="proj-grid">
           {rows.map(({ p, info }) => (
             <div key={p.id} className="card proj">
@@ -203,7 +203,7 @@ export function CompanyKpi() {
       {rows.length ? (
         <div className="table-wrap"><table className="t"><thead><tr><th>{t('Client')}</th><th>{t('Statut')}</th><th className="num">{t('CA HT')}</th><th className="num">{t('Dû')}</th><th className="num">{t('Dernier document')}</th></tr></thead>
           <tbody>{rows.slice(0, 50).map((r) => <tr {...kbdRow} key={r.c.id} style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/clients/' + r.c.id)}><td className="strong">{clientName(r.c)}</td><td><Pill c={r.status[0]}>{t(r.status[1])}</Pill></td><td className="num">{money0(r.ca)}</td><td className={'num' + (r.due > 0.005 ? ' red-t' : '')}>{money0(r.due)}</td><td className="num" style={{ fontWeight: 400 }}>{r.last ? date(r.last) : '—'}</td></tr>)}</tbody></table></div>
-      ) : <Empty text={t('Aucun client pour le moment. Ajoutez-en un avec le bouton +.')} />}
+      ) : <Empty text={t('Aucun client pour le moment.')}><button className="btn sm" onClick={() => navigate('/pro/clients/nouveau')}><LuPlus /> {t('Ajouter un client')}</button></Empty>}
     </div>
   );
 }
@@ -385,7 +385,7 @@ export function Library() {
       {cat && <TradeCatalog items={items} onClose={() => setCat(false)} onDone={() => { setCat(false); reload(); }} />}
       {items.length < 8 && starter.length > 0 && <div className="card soft mb"><b>{t('Démarrez plus vite')}</b><div className="small muted" style={{ margin: '4px 0 10px' }}>{t('Ajoutez {n} ouvrages et articles courants de votre métier, avec des prix indicatifs à ajuster.', { n: starter.length })}</div><button className="btn sm" onClick={addStarter}>{t('Ajouter la bibliothèque de démarrage')}</button></div>}
       {families.length > 0 && <Chips scroll options={[['', t('Tout')], ...families.map((f) => [f, f])]} value={fam} onChange={setFam} />}
-      {!list.length ? <Empty text={tab === 'article' ? t('Ajoutez vos produits (fournitures) avec leur prix d’achat et de vente.') : t('Un ouvrage regroupe des articles et de la main-d’œuvre (ex. « Pose d’un chauffe-eau »).')} /> : (
+      {!list.length ? <Empty text={tab === 'article' ? t('Ajoutez vos produits (fournitures) avec leur prix d’achat et de vente.') : t('Un ouvrage regroupe des articles et de la main-d’œuvre (ex. « Pose d’un chauffe-eau »).')}>{!q && !fam && <button className="btn sm" onClick={() => navigate('/pro/crm/bibliotheque/nouveau?kind=' + tab)}><LuPlus /> {tab === 'article' ? t('Ajouter un article') : t('Ajouter un ouvrage')}</button>}</Empty> : (
         <div className="list">{list.map((i) => (
           <button key={i.id} className="li click" onClick={() => navigate('/pro/crm/bibliotheque/' + i.id)}>
             <div className="grow"><div className="t1">{i.name}</div><div className="t3">{i.family}</div><div className="row small" style={{ marginTop: 4, gap: 4 }}>{(i.trades || []).slice(0, 3).map((x) => <Pill key={x} c="grey">{t(x)}</Pill>)}</div></div>

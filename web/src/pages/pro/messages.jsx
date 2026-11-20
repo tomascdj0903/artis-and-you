@@ -40,7 +40,7 @@ export function Messages() {
       <TopBar title={t('Messages')} back={false} settings="/pro/compte/notifications" />
       <SearchBar placeholder={t('Recherchez un contact')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={kinds.length > 0} />
       <Sec title={t('Conversations')} meta={t('{n} non lues', { n: unreadN })} />
-      {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation. Écrivez à un client, à une équipe ou à un pro avec le bouton en bas.')} /> : (
+      {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation pour le moment.')}><button className="btn sm" onClick={() => setNw(true)}><LuPlus /> {t('Nouvelle conversation')}</button></Empty> : (
         <div className="list">{list.map(({ c, m }) => {
           const un = c.last_message && (!reads[c.id] || reads[c.id] < c.last_at);
           return (

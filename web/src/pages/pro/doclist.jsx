@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuX } from 'react-icons/lu';
+import { LuX, LuPlus } from 'react-icons/lu';
 import { navigate, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, date, clientName, iso } from '../../lib/format.js';
@@ -81,6 +81,7 @@ export function DocList({ docs, clients, kind, newHref, from }) {
           <option value="date">{t('Plus récents')}</option><option value="montant">{t('Montant')}</option><option value="client">{t('Client')}</option>{!isQ && <option value="echeance">{t('Échéance')}</option>}
         </select></Sec>
       <Table rows={list} onRow={(d) => navigate('/pro/documents/' + d.id + (from ? '?from=' + from : ''))} empty={qs || chips.length ? t('Aucun résultat avec ces critères') : isQ ? t('Aucun devis pour le moment') : t('Aucune facture pour le moment')}
+        emptyAction={!qs && !chips.length && <button className="btn sm" onClick={() => navigate('/pro/documents/nouveau?kind=' + (isQ ? 'devis' : 'facture'))}><LuPlus /> {isQ ? t('Créer un devis') : t('Créer une facture')}</button>}
         cols={[
           { label: isQ ? t('N° devis') : t('N° facture'), render: (d) => <span className="small bold">{d.number || '—'}{d.kind !== 'devis' && d.kind !== 'facture' && <div className="faint">{kindLabel(d.kind)}</div>}</span> },
           { label: t('Statut'), render: (d) => <StatusPill s={statusPill(d)} /> },

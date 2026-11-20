@@ -379,7 +379,7 @@ export function Messages() {
       <TopBar back={false} title={t('Messages')} />
       <SearchBar placeholder={t('Rechercher un pro')} value={q} onChange={setQ} />
       <Sec title={t('Conversations')} meta={t('{n} non lue', { n })} />
-      {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation.')} /> : (
+      {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button></Empty> : (
         <div className="list">{list.map((c) => { const co = b.cm[c.company_id]; const un = !reads[c.id] || reads[c.id] < c.last_at; return (
           <button key={c.id} className="li click" onClick={() => navigate('/client/messages/' + c.id)}>
             {c.kind === 'support' ? <ArtesaAvatar /> : <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} />}
