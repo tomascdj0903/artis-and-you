@@ -1296,12 +1296,12 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 
 /* Barre d'onglets du téléphone en « verre » : capsule flottante, translucide et floutée (mobile uniquement) */
 @media (max-width: 1023px) {
-  .tabbar { left: 12px; right: 12px; bottom: max(10px, env(safe-area-inset-bottom)); padding: 6px 4px; border-radius: 28px; border: 1px solid rgba(255,255,255,.6);
-    background: rgba(255,255,255,.34); -webkit-backdrop-filter: blur(14px) saturate(190%); backdrop-filter: blur(14px) saturate(190%);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 1px rgba(43,31,28,.06), 0 10px 30px rgba(43,31,28,.14); }
+  .tabbar { left: 12px; right: 12px; bottom: max(10px, env(safe-area-inset-bottom)); padding: 6px 4px; border-radius: 28px; border: 1px solid rgba(255,255,255,.75);
+    background: rgba(255,255,255,.12); -webkit-backdrop-filter: blur(3px) saturate(200%); backdrop-filter: blur(3px) saturate(200%);
+    box-shadow: inset 0 1px 0 #fff, inset 0 -1px 1px rgba(43,31,28,.06), 0 10px 30px rgba(43,31,28,.10); text-shadow: 0 0 8px rgba(255,255,255,.9); }
   .tabbar a { border-radius: 20px; }
   .tabbar a.on { background: rgba(180,67,42,.12); }
-  :root[data-theme="dark"] .tabbar { background: rgba(28,22,20,.42); border-color: rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.45); }
+  :root[data-theme="dark"] .tabbar { text-shadow: 0 0 8px rgba(0,0,0,.7); background: rgba(28,22,20,.22); border-color: rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.45); }
   :root[data-theme="dark"] .tabbar a.on { background: rgba(255,158,160,.12); }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
