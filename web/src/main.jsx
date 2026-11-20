@@ -1,7 +1,8 @@
 import { OfflineBanner } from './ui/offline.jsx';
 import './styles.css';
 import { createRoot } from 'react-dom/client';
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState, useRef, lazy, Suspense } from 'react';
+import { useGlassTint } from './ui/glasstint.js';
 import { GlobalFab } from './ui/fab.jsx';
 import { ErrorBoundary } from './ui/errors.jsx';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog, LuKanban, LuListChecks } from 'react-icons/lu';
@@ -94,6 +95,8 @@ const CLI_TABS = [
 const ALIAS = { '/pro/photos': '/pro/documents', '/pro/autres-docs': '/pro/documents', '/pro/coffre-fort': '/pro/documents', '/client/devis': '/client/documents', '/client/factures': '/client/documents', '/client/chantiers': '/client/documents', '/client/autres-docs': '/client/documents', '/client/artisans': '/client', '/client/demande-envoyee': '/client/rdv', '/client/avis': '/client/documents' };
 
 function Shell({ tabs, children, path }) {
+  const barRef = useRef(null);
+  useGlassTint(barRef, [path]);
   const { profile, company, unread, isPro } = useApp();
   let p = path;
   for (const [a, b] of Object.entries(ALIAS)) if (p.startsWith(a)) p = b;
@@ -130,7 +133,7 @@ function Shell({ tabs, children, path }) {
       {tour && <Tour id={tour} onDone={finishTour} />}
       <GlobalFab />
       {!hideTabs && (
-        <nav className="tabbar" aria-label={t('Navigation')}>
+        <nav ref={barRef} className="tabbar" aria-label={t('Navigation')}>
           {tabs.filter((x) => !x[4]).map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t({ 'Tableau de bord': 'Accueil', Prospection: 'Prospects', 'Mon réseau': 'Réseau', Notifications: 'Alertes', Documents: 'Docs', 'Mes documents': 'Docs', 'Mes rendez-vous': 'RDV', 'Mes artisans': 'Artisans' }[label] || label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
         </nav>
       )}

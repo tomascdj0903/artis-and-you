@@ -1299,7 +1299,11 @@ h1, h2, .tile { letter-spacing: -0.01em; }
   .tabbar { left: 12px; right: 12px; bottom: max(10px, env(safe-area-inset-bottom)); padding: 6px 4px; border-radius: 28px; border: 1px solid rgba(255,255,255,.75);
     background: rgba(255,255,255,.12); -webkit-backdrop-filter: blur(3px) saturate(200%); backdrop-filter: blur(3px) saturate(200%);
     box-shadow: inset 0 1px 0 #fff, inset 0 -1px 1px rgba(43,31,28,.06), 0 10px 30px rgba(43,31,28,.10); text-shadow: 0 0 8px rgba(255,255,255,.9); }
-  .tabbar a { border-radius: 20px; }
+  .tabbar a { border-radius: 20px; transition: color .25s ease, background-color .25s ease, text-shadow .25s ease; }
+  /* Couleur des onglets selon le fond derrière le verre (calculée par ui/glasstint.js) */
+  .tabbar a.on-dark:not(.on) { color: #FFFFFF; text-shadow: 0 0 8px rgba(0,0,0,.35); }
+  .tabbar a.on.on-dark { color: #FFFFFF; background: rgba(255,255,255,.22); text-shadow: 0 0 8px rgba(0,0,0,.35); }
+  :root[data-theme="dark"] .tabbar a.on-light:not(.on) { color: var(--marine); text-shadow: 0 0 8px rgba(255,255,255,.8); }
   .tabbar a.on { background: rgba(180,67,42,.12); }
   :root[data-theme="dark"] .tabbar { text-shadow: 0 0 8px rgba(0,0,0,.7); background: rgba(28,22,20,.22); border-color: rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.45); }
   :root[data-theme="dark"] .tabbar a.on { background: rgba(255,158,160,.12); }
