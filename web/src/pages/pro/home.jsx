@@ -60,7 +60,7 @@ export function Home() {
   return (
     <div className="content">
       <section className="home-band">
-        <div className="hb-head">
+        <div className="hb-head glass-tint">
           <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{company?.trade_name || company?.name}</b></div>
           <div className="hb-search hide-mob"><SmartSearch /></div>
           <TopBar back={false} home />

@@ -53,7 +53,7 @@ export function Home() {
   return (
     <div className="content">
       <section className="home-band slim">
-        <div className="hb-head">
+        <div className="hb-head glass-tint">
           <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{t('Mon espace')}</b></div>
           <div className="hb-search hide-mob"><SearchBar placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} /></div>
           <TopBar back={false} home />

@@ -45,7 +45,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
   const { profile, company, isPro } = useApp();
   const base = isPro ? '/pro' : '/client';
   return (
-    <header className={'topbar' + (home ? ' home-top' : '')}>
+    <header className={'topbar' + (home ? ' home-top' : ' glass-tint')}>
       <div>
         {back ? <button className="iconbtn" onClick={onBack || (() => (history.length > 1 ? navigate(-1) : navigate(base)))} aria-label={t('Retour')}><LuChevronLeft /></button>
           : <Link to={base} className="logo-btn logo-full hide-desk" aria-label="Artesa"><Wordmark size={26} /></Link>}

@@ -42,8 +42,8 @@ export function AdminHome() {
   return (
     <div className="content">
       <section className="home-band">
-        <div className="hb-head">
-          <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>Artesa · {t('Espace administrateur')}</b></div>
+        <div className="hb-head glass-tint">
+          <div className="hb-hello"><span>{t('Espace administrateur')}</span><b>Artesa</b></div>
           <div className="hb-search hide-mob"><SmartSearch /></div>
           <TopBar back={false} home />
         </div>
