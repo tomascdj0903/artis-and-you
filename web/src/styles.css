@@ -1471,3 +1471,20 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 
 /* Boutons dans les cadres vides : icône à la taille du texte, couleur du bouton (pas celle de la grande icône du cadre) */
 .empty .btn svg, .empty button svg { width: 1em; height: 1em; font-size: 18px; color: currentColor; opacity: 1; margin: 0; display: inline-block; }
+
+/* Barre latérale : toujours à la hauteur de l'écran, carte du compte toujours visible en bas.
+   Si la liste des rubriques est plus haute que l'écran (admin : 11 rubriques), c'est la liste qui défile
+   dans la barre, au lieu de déborder et de décaler la page. Plus compacte sur les écrans peu hauts. */
+@media (min-width: 1024px) {
+  .side { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; }
+  .side .brand { flex: none; }
+  .side nav { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; margin: 0 -6px; padding: 2px 6px; }
+  .side .spacer { flex: 0 0 8px; }
+  .side .me { flex: none; }
+}
+@media (min-width: 1024px) and (max-height: 860px) {
+  .side { padding-top: 16px; padding-bottom: 14px; }
+  .side .brand { padding-bottom: 14px; }
+  .side nav { gap: 2px; }
+  .side nav a { padding: 8px 14px; }
+}
