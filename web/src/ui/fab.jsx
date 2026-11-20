@@ -1,8 +1,9 @@
 // Bouton « + » unique, présent sur toutes les pages pro : un toucher déploie un menu d'actions
-// qui s'adapte à la page (planning, client, documents…) et se termine toujours par « Demander à l'assistant ».
+// qui s'adapte à la page (planning, client, documents…). L'assistant a sa propre petite bulle en verre,
+// posée en haut à droite du « + », pour bien séparer les deux.
 // Une page peut fournir sa propre action principale avec <Fab primary={…} /> ; sinon le bouton global s'affiche.
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { LuHistory, LuRotateCcw, LuArrowLeft, LuPlus, LuX, LuSparkles, LuCalendarPlus, LuFilePen, LuFileText, LuUserPlus, LuUsers, LuMegaphone, LuMessageSquare, LuSend, LuSearch, LuCalendar, LuFileText as LuDoc } from 'react-icons/lu';
+import { LuHistory, LuRotateCcw, LuArrowLeft, LuPlus, LuX, LuSparkles, LuCalendarPlus, LuFilePen, LuFileText, LuUserPlus, LuUsers, LuMegaphone, LuMessageSquare, LuSend, LuSearch, LuCalendar, LuListChecks, LuNotebookPen, LuFileText as LuDoc } from 'react-icons/lu';
 import { t } from '../lib/i18n.js';
 import { navigate, useLocation as useRoute } from '../lib/router.jsx';
 import { searchKB, suggestFor, nz } from '../lib/assistant-kb.js';
@@ -31,6 +32,12 @@ const useOwners = () => useSyncExternalStore((f) => { subs.add(f); return () => 
 const rich = (s) => String(s || '').split(/\*\*(.+?)\*\*/g).map((x, i) => (i % 2 ? <b key={i}>{x}</b> : x));
 
 function routeActions(path) {
+  if (path.startsWith('/admin')) return [
+    { label: t('Ajouter une tâche'), icon: LuListChecks, to: '/admin/taches' },
+    { label: t('Ajouter un prospect'), icon: LuUserPlus, to: '/admin/prospection' },
+    { label: t('Nouvelle note'), icon: LuNotebookPen, to: '/admin/notes' },
+    { label: t('Nouveau devis'), icon: LuFilePen, to: '/pro/documents/nouveau?kind=devis' },
+  ];
   if (path.startsWith('/client')) {
     const a = path.match(/^\/client\/artisans\/([0-9a-f-]{36})/);
     if (a) return [{ label: t('Demander un rendez-vous'), icon: LuCalendarPlus, to: '/client/artisans/' + a[1] + '/demande' }, { label: t('Trouver un autre artisan'), icon: LuSearch, to: '/client/artisans' }];
@@ -91,9 +98,11 @@ export function Fab({ primary, hidden }) {
       <div className={'fabm' + (open ? ' open' : '')}>
         {open && <div className="fabm-list" role="menu">
           {items.map((a) => { const I = a.icon || LuPlus; return <button key={a.label} role="menuitem" onClick={() => go(a)}><span>{a.label}</span><i><I /></i></button>; })}
-          <button role="menuitem" className="ai" onClick={() => { setOpen(false); setAsk(true); }}><span>{t('Demander à l’assistant')}</span><i><LuSparkles /></i></button>
         </div>}
-        <button className="fab fabm-btn" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={open ? t('Fermer') : t('Actions')}>{open ? <LuX /> : <LuPlus />}</button>
+        <div className="fab-wrap">
+          <button className="fab fabm-btn" onClick={() => setOpen(!open)} aria-expanded={open} aria-label={open ? t('Fermer') : t('Actions')}>{open ? <LuX /> : <LuPlus />}</button>
+          {!open && <button type="button" className="fab-ai" onClick={() => setAsk(true)} aria-label={t('Demander à l’assistant')} title={t('Demander à l’assistant')}><LuSparkles /></button>}
+        </div>
       </div>
       {ask && <Assistant onClose={() => setAsk(false)} />}
     </>
@@ -110,7 +119,7 @@ export function PageFab(props) {
 export function GlobalFab() {
   const n = useOwners();
   const { path } = useRoute();
-  if (n > 0 || !/^\/(pro|client)(\/|$)/.test(path) || /\/(nouveau|modifier|rdv\/|messages\/[^/]+$|chat$|demande$|pdf$|payer$|admin)/.test(path)) return null;
+  if (n > 0 || !/^\/(pro|client|admin)(\/|$)/.test(path) || /\/(nouveau|modifier|rdv\/|messages\/[^/]+$|chat$|demande$|pdf$|payer$)/.test(path)) return null;
   return <Fab />;
 }
 

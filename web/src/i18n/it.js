@@ -2650,4 +2650,6 @@ export default {"(copie)":"(copia)",
 "Aucune conversation pour le moment.":"Ancora nessuna conversazione.",
 "Votre bibliothèque est vide.":"La tua libreria è vuota.",
 "Ouvrir ma bibliothèque":"Apri la mia libreria",
-"Créer une facture":"Crea una fattura"};
+"Créer une facture":"Crea una fattura",
+"Ajouter une tâche":"Aggiungi un'attività",
+"Ajouter un prospect":"Aggiungi un potenziale cliente"};

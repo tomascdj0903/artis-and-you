@@ -1458,3 +1458,12 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 .hb-head .searchrow { margin: 0; }
 .hb-search { display: flex; align-items: center; }
 .hb-search > * { flex: 1 1 auto; min-width: 0; }
+
+/* Bulle de l'assistant : petit rond en verre clair, étoiles marron, posé en haut à droite du « + » */
+.fab-wrap { position: relative; }
+.fab-ai { position: absolute; top: -30px; right: -12px; width: 44px; height: 44px; border-radius: 50%; padding: 0; display: grid; place-items: center; font-size: 20px; cursor: pointer; z-index: 1;
+  color: #6B3A22; background: rgba(255,255,255,.72); -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255,255,255,.85); box-shadow: inset 0 1px 0 #fff, inset 0 -1px 2px rgba(43,31,28,.08), 0 8px 20px rgba(43,31,28,.18); transition: transform .15s ease; }
+.fab-ai:hover { transform: scale(1.06); }
+.fab-ai svg { stroke-width: 2.2; }
+:root[data-theme="dark"] .fab-ai { background: rgba(255,255,255,.7); }

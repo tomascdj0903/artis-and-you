@@ -1505,3 +1505,5 @@ Votre bibliothèque est vide.|Your library is empty.|A sua biblioteca está vazi
 Ouvrir ma bibliothèque|Open my library|Abrir a minha biblioteca|Apri la mia libreria
 Créer un devis|Create a quote|Criar um orçamento|Crea un preventivo
 Créer une facture|Create an invoice|Criar uma fatura|Crea una fattura
+Ajouter une tâche|Add a task|Adicionar uma tarefa|Aggiungi un'attività
+Ajouter un prospect|Add a prospect|Adicionar um prospect|Aggiungi un potenziale cliente

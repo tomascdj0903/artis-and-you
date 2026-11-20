@@ -2650,4 +2650,6 @@ export default {"(copie)":"(copy)",
 "Aucune conversation pour le moment.":"No conversations yet.",
 "Votre bibliothèque est vide.":"Your library is empty.",
 "Ouvrir ma bibliothèque":"Open my library",
-"Créer une facture":"Create an invoice"};
+"Créer une facture":"Create an invoice",
+"Ajouter une tâche":"Add a task",
+"Ajouter un prospect":"Add a prospect"};

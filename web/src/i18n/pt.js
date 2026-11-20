@@ -2650,4 +2650,6 @@ export default {"(copie)":"(cópia)",
 "Aucune conversation pour le moment.":"Ainda sem conversas.",
 "Votre bibliothèque est vide.":"A sua biblioteca está vazia.",
 "Ouvrir ma bibliothèque":"Abrir a minha biblioteca",
-"Créer une facture":"Criar uma fatura"};
+"Créer une facture":"Criar uma fatura",
+"Ajouter une tâche":"Adicionar uma tarefa",
+"Ajouter un prospect":"Adicionar um prospect"};
