@@ -102,9 +102,9 @@ export function mockBackend({ saveSession, getSession }) {
     if (table === 'messages') {
       const c = db.conversations.find((x) => x.id === row.conversation_id);
       if (c) {
-        c.last_message = (row.card?.type === 'demande' ? '📅 ' + row.card.title + (row.body ? ' · ' + row.body : '') : row.body || (row.card ? row.card.title : (row.attachments || []).some((a) => a.kind === 'voice' || /^audio\//.test(a.mime || '')) ? '🎤 Message vocal' : (row.attachments || []).some((a) => /^image\//.test(a.mime || '')) ? '📷 Photo' : '📎 Pièce jointe')).slice(0, 140); c.last_at = row.created_at;
+        c.last_message = (row.card?.type === 'demande' ? '📅 Demande de RDV' + (row.sender_name ? ' · ' + row.sender_name : '') + (row.body ? ' · ' + row.body : '') : row.card?.type === 'rdv_proposal' ? '📅 ' + row.card.title + ' · ' + row.card.sub : row.body || (row.card ? row.card.title : (row.attachments || []).some((a) => a.kind === 'voice' || /^audio\//.test(a.mime || '')) ? '🎤 Message vocal' : (row.attachments || []).some((a) => /^image\//.test(a.mime || '')) ? '📷 Photo' : '📎 Pièce jointe')).slice(0, 140); c.last_at = row.created_at;
         if (row.sender_id) { const r = db.conversation_reads.find((x) => x.conversation_id === c.id && x.user_id === row.sender_id); if (r) { if (!r.last_read_at || r.last_read_at < row.created_at) r.last_read_at = row.created_at; } else db.conversation_reads.push({ conversation_id: c.id, user_id: row.sender_id, last_read_at: row.created_at }); }
-        if (c.client_user_id && c.client_user_id !== row.sender_id) notify(c.client_user_id, 'message', 'Nouveau message', `${row.sender_name} : ${(row.body || row.card?.title || '📎').slice(0, 80)}`, '/client/messages/' + c.id);
+        if (c.client_user_id && c.client_user_id !== row.sender_id && !['rdv_proposal', 'demande', 'rdv_change'].includes(row.card?.type)) notify(c.client_user_id, 'message', 'Nouveau message', `${row.sender_name} : ${(row.body || row.card?.title || '📎').slice(0, 80)}`, '/client/messages/' + c.id);
       }
     }
     if (table === 'payments') syncPaid(row.document_id);
@@ -295,6 +295,7 @@ export function mockBackend({ saveSession, getSession }) {
     admin_identity_review({ p_id, p_status, p_note = '' }) {
       if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa');
       if (p_status === 'refuse' && !String(p_note).trim()) throw new Error('Indiquez le motif du refus.');
+      if (p_status === 'verifie' && String(p_note).trim()) throw new Error('Un motif de refus est indiqué : cliquez sur « Refuser », ou effacez le motif pour valider.');
       const r = db.identity_checks.find((x) => x.id === p_id && x.status === 'en_attente'); if (!r) throw new Error('Demande déjà traitée');
       Object.assign(r, { status: p_status, note: String(p_note).trim(), reviewed_by: me(), reviewed_at: now() });
       notify(r.user_id, 'systeme', p_status === 'verifie' ? 'Identité vérifiée' : 'Pièce d’identité refusée', p_status === 'verifie' ? 'Votre identité est vérifiée. La copie de votre pièce a été supprimée.' : 'Motif : ' + String(p_note).trim() + '. La copie a été supprimée ; vous pouvez en envoyer une nouvelle.', r.purpose === 'dirigeant' ? '/pro/compte/entreprise' : '/client/compte');
@@ -422,6 +423,16 @@ export function mockBackend({ saveSession, getSession }) {
       return db.appointments.filter((a) => a.company_id === p_company && ['a_valider', 'valide'].includes(a.status) && a.start_at < p_to && a.end_at > p_from).map((a) => ({ start_at: a.start_at, end_at: a.end_at }));
     },
     ensure_client({ p_company }) { return ensureClient(p_company); },
+    appointment_proposal_answer({ p_id, p_accept }) {
+      const a = db.appointments.find((x) => x.id === p_id);
+      if (!a || a.requested_by !== me()) throw new Error('Rendez-vous introuvable');
+      if (!a.proposed_start_at || a.status !== 'a_valider') throw new Error('Aucun nouveau créneau à confirmer');
+      const when = fmtDT(a.proposed_start_at);
+      if (p_accept) Object.assign(a, { start_at: a.proposed_start_at, end_at: a.proposed_end_at, status: 'valide', validated_at: now() });
+      Object.assign(a, { proposed_start_at: null, proposed_end_at: null, proposed_at: null });
+      const prof = profile();
+      notifyCompany(a.company_id, 'rdv', p_accept ? 'Nouveau créneau accepté' : 'Nouveau créneau refusé', `${prof.first_name} ${prof.last_name} · ${a.title} · ${when}${p_accept ? ' · RDV confirmé' : ' · la demande reste à traiter'}`, '/pro/planning/rdv/' + a.id);
+    },
     request_appointment({ p }) {
       const cid = ensureClient(p.company_id); const prof = profile();
       const pid = id();
@@ -672,6 +683,14 @@ export function mockBackend({ saveSession, getSession }) {
           const p2 = { ...patch }; delete p2.review_status; delete p2.review_note; delete p2.reviewed_at;
           if (r.kind === 'vault' && ['path', 'doc_type', 'issued_at', 'valid_until', 'meta'].some((k) => k in p2 && JSON.stringify(p2[k]) !== JSON.stringify(r[k]))) Object.assign(p2, { review_status: 'en_attente', review_note: '' });
           patch = p2;
+        }
+        // Demande de RDV d'un particulier : un nouveau créneau devient une proposition à accepter (comme en base)
+        if (table === 'appointments' && r.status === 'a_valider' && r.requested_by && r.requested_by !== me() && ((patch.start_at && patch.start_at !== r.start_at) || (patch.end_at && patch.end_at !== r.end_at))) {
+          patch = { ...patch, proposed_start_at: patch.start_at || r.start_at, proposed_end_at: patch.end_at || r.end_at, proposed_at: now(), start_at: r.start_at, end_at: r.end_at, status: 'a_valider', validated_at: r.validated_at || null };
+          const c = db.conversations.find((x) => x.kind === 'client' && x.company_id === r.company_id && x.client_user_id === r.requested_by);
+          const co = db.companies.find((x) => x.id === r.company_id);
+          if (c) { const m = { ...defaults.messages, id: id(), conversation_id: c.id, sender_id: me(), sender_name: co?.name || '', sender_company_id: r.company_id, body: `Nouveau créneau proposé pour « ${r.title} » : le ${fmtDT(patch.proposed_start_at)}. Merci de l’accepter ou de le refuser.`, card: { type: 'rdv_proposal', title: 'Nouveau créneau proposé', sub: fmtDT(patch.proposed_start_at), appointment_id: r.id }, created_at: now() }; db.messages.push(m); afterInsert('messages', m); }
+          notify(r.requested_by, 'rdv', 'Nouveau créneau proposé', `${co?.trade_name || co?.name || ''} · ${r.title} · ${fmtDT(patch.proposed_start_at)} · à accepter ou refuser`, '/client/rdv/' + r.id);
         }
         const old = { ...r }; Object.assign(r, patch); afterUpdate(table, old, r); last = r;
       }

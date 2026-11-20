@@ -1,6 +1,6 @@
 // Planning : fiche d'un rendez-vous, création / modification, déplacement, « je suis en route »
 import { useState } from 'react';
-import { LuVideo, LuMapPin, LuSend, LuImage, LuNavigation } from 'react-icons/lu';
+import { LuVideo, LuMapPin, LuSend, LuImage, LuNavigation, LuClock } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
@@ -49,6 +49,7 @@ export function ApptDetail({ params }) {
         <div className="l2">{[a.personal ? '' : clientName(c), c?.site_city || c?.billing_city].filter(Boolean).join(' · ')}</div>
         <div className="row"><b>{dateShort(a.start_at)} · {hm(a.start_at)} – {hm(a.end_at)}</b><StatusPill s={a.status === 'a_valider' ? ['white', t('À valider')] : apptStatus(a.status)} /></div>
       </div>
+      {a.proposed_start_at && a.status === 'a_valider' && <div className="alert mt" role="status"><LuClock className="red-t" /><div><b>{t('Nouveau créneau proposé au client')}</b><div className="small">{dateShort(a.proposed_start_at)} · {hm(a.proposed_start_at)} – {hm(a.proposed_end_at)} · {t('en attente de sa réponse')}</div></div></div>}
       <div className="grid2">
         <div>
           <Sec title={t('Détails')} />
@@ -97,6 +98,11 @@ export function ApptDetail({ params }) {
       </div>
       <EnRoute open={enroute} a={a} c={c} onClose={() => setEnroute(false)} done={() => { setEnroute(false); reload(); goRoute(); }} skip={() => { setEnroute(false); goRoute(); }} />
       <MoveSheet open={moveOpen} a={a} settings={planSettings(company)} onClose={() => setMoveOpen(false)} onDone={async (start, end) => {
+        // Demande d'un particulier pas encore validée : le créneau est PROPOSÉ, il l'accepte ou le refuse (la base garde l'ancien d'ici là)
+        if (a.status === 'a_valider' && a.requested_by) {
+          await run(() => api.update('appointments', { id: a.id }, { start_at: start.toISOString(), end_at: end.toISOString() }), t('Nouveau créneau proposé au client, en attente de sa réponse'));
+          setMoveOpen(false); reload(); return;
+        }
         await run(async () => {
           await api.update('appointments', { id: a.id }, { start_at: start.toISOString(), end_at: end.toISOString(), status: 'valide', validated_at: new Date().toISOString() });
           await notifyChat({ type: 'cal', title: t('Nouveau créneau proposé') + ' · ' + dateShort(start) + ' ' + hm(start), sub: t('Vous pouvez le déplacer depuis vos RDV si besoin.') });

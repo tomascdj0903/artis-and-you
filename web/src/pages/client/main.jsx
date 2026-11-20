@@ -1,6 +1,7 @@
 import { kbd } from '../../lib/a11y.js';
 import { useState, useMemo } from 'react';
-import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus } from 'react-icons/lu';
+import { ArtisanSearch } from '../../ui/suggest.jsx';
+import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
@@ -55,10 +56,10 @@ export function Home() {
       <section className="home-band slim">
         <div className="hb-head glass-tint">
           <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{t('Mon espace')}</b></div>
-          <div className="hb-search hide-mob"><SearchBar placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} /></div>
+          <div className="hb-search hide-mob"><ArtisanSearch placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} /></div>
           <TopBar back={false} home />
         </div>
-        <div className="hide-desk"><SearchBar placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} /></div>
+        <div className="hide-desk"><ArtisanSearch placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} /></div>
       </section>
       {!b ? <Loader /> : (
         <>
@@ -99,7 +100,7 @@ export function Search() {
   return (
     <div className="content">
       <TopBar title={t('Rechercher un artisan')} />
-      <SearchBar placeholder={t('Métier, nom, besoin…')} value={q} onChange={(v) => { setQ(v); if (v.length === 0 || v.length > 2) setTerm(v); }} onSubmit={() => setTerm(q)} onFilter={() => setOpen(true)} filterActive={!!(trade || city)} />
+      <ArtisanSearch placeholder={t('Métier, nom, besoin…')} value={q} onChange={(v) => { setQ(v); if (v.length === 0 || v.length > 2) setTerm(v); }} onSubmit={() => setTerm(q)} onFilter={() => setOpen(true)} filterActive={!!(trade || city)} />
       <div className="chips scroll">
         <button className={'chip' + (trade ? ' on' : '')} onClick={() => setOpen(true)}>{trade ? t(trade) : t('Métier')}</button>
         <button className={'chip' + (city ? ' on' : '')} onClick={() => setOpen(true)}>{city || t('Ville des travaux')}</button>
@@ -330,6 +331,16 @@ export function ApptDetail({ params }) {
         <div className="l2">{coName(co)}</div>
         <div className="row"><b style={{ textTransform: 'capitalize' }}>{dateShort(a.start_at)} · {time(a.start_at)} – {time(a.end_at)}</b><StatusPill s={clientApptStatus(a)} /></div>
       </div>
+      {a.proposed_start_at && a.status === 'a_valider' && (
+        <div className="alert mt" role="status"><LuCalendarCheck className="red-t" /><div className="grow">
+          <b>{t('{n} vous propose un autre créneau', { n: coName(co) })}</b>
+          <div className="small" style={{ textTransform: 'capitalize' }}>{dateShort(a.proposed_start_at)} · {time(a.proposed_start_at)} – {time(a.proposed_end_at)}</div>
+          <div className="row wrap mt" style={{ gap: 8 }}>
+            <button className="btn sm" onClick={() => run(async () => { await api.rpc('appointment_proposal_answer', { p_id: a.id, p_accept: true }); reload(); }, t('Créneau accepté, votre RDV est confirmé'))}>{t('Accepter ce créneau')}</button>
+            <button className="btn ghost sm" onClick={() => run(async () => { await api.rpc('appointment_proposal_answer', { p_id: a.id, p_accept: false }); reload(); }, t('Créneau refusé, l’artisan est prévenu'))}>{t('Refuser')}</button>
+          </div>
+        </div></div>
+      )}
       {isEnroute && <div className="alert mt"><LuSend className="red-t" /><div><b>{t('{n} est en route', { n: coName(co) })}</b><div className="small">{t('Arrivée prévue vers {h}', { h: hm(a.eta_at) })}</div></div></div>}
       <Sec title={t('Détails')} />
       <KV rows={[[t('Type'), t(a.type)], [t('Artisan'), <Link key="v" to={'/client/artisans/' + a.company_id}>{coName(co)}</Link>], a.mode === 'site' && [t('Adresse'), a.address], [t('Demandé le'), dateTime(a.created_at)], a.validated_at && [t('Confirmé le'), dateTime(a.validated_at)]]} />

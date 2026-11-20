@@ -1593,3 +1593,20 @@ le nom de l’entreprise|the company name|o nome da empresa|il nome dell'impresa
 votre nom|your name|o seu nome|il tuo nome
 un e-mail valide|a valid email|um e-mail válido|un'e-mail valida
 cocher la case d’accord en bas|tick the consent box at the bottom|assinalar a caixa de acordo no fundo|spuntare la casella di consenso in basso
+{n} vous propose un autre créneau|{n} suggests another time slot|{n} propõe-lhe outro horário|{n} ti propone un altro orario
+Accepter ce créneau|Accept this time slot|Aceitar este horário|Accetta questo orario
+Créneau accepté, votre RDV est confirmé|Time slot accepted, your appointment is confirmed|Horário aceite, a sua marcação está confirmada|Orario accettato, l'appuntamento è confermato
+Créneau refusé, l’artisan est prévenu|Time slot declined, the tradesperson has been notified|Horário recusado, o profissional foi avisado|Orario rifiutato, l'artigiano è stato avvisato
+Nouveau créneau proposé au client, en attente de sa réponse|New time slot proposed to the client, awaiting their reply|Novo horário proposto ao cliente, a aguardar resposta|Nuovo orario proposto al cliente, in attesa di risposta
+Nouveau créneau proposé au client|New time slot proposed to the client|Novo horário proposto ao cliente|Nuovo orario proposto al cliente
+en attente de sa réponse|awaiting their reply|a aguardar resposta|in attesa di risposta
+Demande de RDV de {n}|Appointment request from {n}|Pedido de marcação de {n}|Richiesta di appuntamento di {n}
+votre client|your client|o seu cliente|il tuo cliente
+En attente de la réponse du client|Awaiting the client's reply|A aguardar a resposta do cliente|In attesa della risposta del cliente
+Accepter ou refuser|Accept or decline|Aceitar ou recusar|Accetta o rifiuta
+Refuser pour ce motif|Decline for this reason|Recusar por este motivo|Rifiuta per questo motivo
+Effacer le motif|Clear the reason|Apagar o motivo|Cancella il motivo
+Pour refuser, choisissez ou écrivez un motif.|To decline, choose or write a reason.|Para recusar, escolha ou escreva um motivo.|Per rifiutare, scegli o scrivi un motivo.
+Suggestions|Suggestions|Sugestões|Suggerimenti
+Voir les artisans|See tradespeople|Ver os profissionais|Vedi gli artigiani
+Rechercher « {q} »|Search "{q}"|Pesquisar «{q}»|Cerca «{q}»

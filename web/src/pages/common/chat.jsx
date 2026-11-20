@@ -136,7 +136,7 @@ export function Chat({ convId, projects = [], banner }) {
               {showWho && <div className="who">{m.sender_name}</div>}
               {m.card?.type === 'artesa_rdv' ? <RdvSupportCard m={m} mine={mine} onDone={load} /> : m.card?.type === 'demande' ? (
                 <div className={'req-card' + (mine ? ' r' : '')}>
-                  <div className="row" style={{ gap: 8 }}><LuCalendarCheck size={20} /><b>{t(m.card.title)}</b></div>
+                  <div className="row" style={{ gap: 8 }}><LuCalendarCheck size={20} /><b>{mine ? t(m.card.title) : t('Demande de RDV de {n}', { n: m.sender_name || t('votre client') })}</b></div>
                   <div className="small">{m.card.sub}</div>
                   {m.body && <div className="req-text">« {m.body} »</div>}
                   {m.card.appointment_id && <a className="small bold" href={(profile.company_id ? '/pro/planning/rdv/' : '/client/rdv/') + m.card.appointment_id} onClick={(e) => { e.preventDefault(); navigate((profile.company_id ? '/pro/planning/rdv/' : '/client/rdv/') + m.card.appointment_id); }}>{profile.company_id ? t('Voir et répondre à la demande') : t('Voir ma demande')} ›</a>}
@@ -150,6 +150,9 @@ export function Chat({ convId, projects = [], banner }) {
                       <button className="btn xs" onClick={() => api.rpc('project_invite_answer', { p_project: m.card.project_id, p_accept: true }).then(() => { toast(t('Vous avez rejoint le chantier')); navigate('/pro/planning?projet=' + m.card.project_id); }, (e) => toast(e.message))}>{t('Accepter')}</button>
                     </div>}
                     {m.card.type === 'project_invite' && mine && <span className="small muted">{t('En attente de sa réponse')}</span>}
+                    {m.card.type === 'rdv_proposal' && m.card.appointment_id && (profile.company_id
+                      ? <span className="small muted">{t('En attente de la réponse du client')}</span>
+                      : <div className="row mt"><button className="btn xs" onClick={() => navigate('/client/rdv/' + m.card.appointment_id)}>{t('Accepter ou refuser')}</button></div>)}
                   </div>
                 </div>
               )}

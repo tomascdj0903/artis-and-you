@@ -9,16 +9,16 @@ import { api, GITHUB_REPO, APP_VERSION } from '../../lib/api.js';
 // Informations de l'éditeur : à compléter à l'immatriculation de la société (tout ce qui est entre crochets s'affiche en orange)
 export const EDITOR = {
   name: 'Artesa',
-  form: '[forme juridique et capital : à compléter à l’immatriculation]',
-  address: '[adresse du siège : à compléter]',
+  form: 'société par actions simplifiée (SAS) au capital de 2 500 €',
+  address: '67 ter avenue Georges Clemenceau, 06220 Vallauris, France',
   rcs: '[RCS / SIREN : à compléter]',
   vat: '[n° de TVA intracommunautaire : à compléter]',
-  director: '[nom du directeur de la publication : à compléter]',
+  director: 'Clément [nom à compléter], Président',
   email: 'support@artisandyou.fr',
   phone: '[téléphone : à compléter]',
-  updated: '17 novembre 2026',
+  updated: '20 novembre 2026',
 };
-const TBD = ({ v }) => (/^\[/.test(v) ? <span style={{ color: '#C2410C', fontWeight: 700 }}>{v}</span> : v);
+const TBD = ({ v }) => (/\[/.test(v) ? <span style={{ color: '#C2410C', fontWeight: 700 }}>{v}</span> : v);
 const L = LawRef;
 
 const PAGES = [['/mentions-legales', 'Mentions légales'], ['/cgu', 'CGU'], ['/cgv', 'CGV artisans'], ['/confidentialite', 'Confidentialité'], ['/sous-traitance', 'Sous-traitance RGPD'], ['/signaler', 'Signaler un contenu']];
@@ -43,6 +43,9 @@ export function Mentions() {
     <Page title={t('Mentions légales')}>
       <h3>Éditeur du site et de l’application</h3>
       <p>{e.name} — <TBD v={e.form} /><br />Siège : <TBD v={e.address} /><br /><TBD v={e.rcs} /> · <TBD v={e.vat} /><br />Directeur de la publication : <TBD v={e.director} /><br />Contact : <a href={'mailto:' + e.email}>{e.email}</a> · <TBD v={e.phone} /></p>
+      <p className="small muted">L’immatriculation de la société est en cours (décembre 2026) : les numéros manquants seront ajoutés dès sa création.</p>
+      <h3>Rôle d’Artesa</h3>
+      <p>Artesa fournit aux professionnels du bâtiment un outil de gestion (demandes, planning, devis, factures, messagerie, documents) et aux particuliers un service gratuit pour trouver un artisan, le contacter et suivre leurs travaux. Artesa <b>n’est pas partie</b> aux contrats conclus entre un artisan et ses clients et ne réalise aucun travaux : l’artisan est seul responsable de ses devis, factures, prix, travaux, assurances (dont la décennale) et qualifications. Détails dans les <Link to="/cgu">CGU</Link>, les <Link to="/cgv">CGV artisans</Link> et la <Link to="/confidentialite">politique de confidentialité</Link>. <L id="conso-L111-7" /></p>
       <h3>Hébergement</h3>
       <p><b>Application web</b> : Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis — vercel.com.<br /><b>Base de données, fichiers et comptes</b> : Supabase Inc., 970 Toa Payoh North #07-04, Singapour 318992 — supabase.com. Les données sont stockées dans l’Union européenne.</p>
       <h3>Points de contact (règlement sur les services numériques)</h3>
@@ -50,7 +53,11 @@ export function Mentions() {
       <h3>Propriété intellectuelle</h3>
       <p>La marque, le logo, les textes et l’interface Artesa sont protégés. Toute reproduction sans autorisation est interdite. Les contenus publiés par les artisans (photos, descriptions) restent leur propriété ; ils nous accordent le droit de les afficher sur Artesa le temps de leur inscription.</p>
       <h3>Médiation</h3>
-      <p>Pour un litige avec Artesa, un consommateur peut recourir gratuitement au médiateur de la consommation : <TBD v="[nom et site du médiateur choisi par Artesa : à compléter]" />. <L id="conso-L612-1" /> <L id="conso-L616-1" /> Pour un litige avec un artisan, c’est le médiateur de l’artisan, indiqué sur ses devis et factures, qui est compétent.</p>
+      <p>Pour un litige avec Artesa, un consommateur peut recourir gratuitement au médiateur de la consommation d’Artesa : <b>CM2C</b> (Centre de la Médiation de la Consommation des Conciliateurs de Justice), <a href="https://www.cm2c.net" target="_blank" rel="noreferrer">www.cm2c.net</a> <TBD v="[adhésion après l’immatriculation, adresse à compléter]" />. <L id="conso-L612-1" /> <L id="conso-L616-1" /> Pour un litige avec un artisan, c’est le médiateur de l’artisan, indiqué sur ses devis et factures, qui est compétent.</p>
+      <h3>Données personnelles et cookies</h3>
+      <p>Voir la <Link to="/confidentialite">politique de confidentialité</Link>. Vous pouvez aussi saisir la CNIL (cnil.fr).</p>
+      <h3>Droit applicable</h3>
+      <p>Les présentes mentions légales sont soumises au droit français.</p>
       <p className="small muted">Base : <L id="lcen-1-1" /></p>
     </Page>
   );
@@ -83,7 +90,7 @@ export function CGU() {
       <p>Seul un client ayant eu un rendez-vous avec l’artisan via Artesa peut publier un avis ; l’avis est donc lié à une prestation réelle. Les avis sont relus par Artesa avant publication (délai habituel : 48 h ouvrées). Ils sont affichés du plus récent au plus ancien, avec leur date. Un avis est refusé s’il est injurieux, diffamatoire, hors sujet, contient des données personnelles ou s’il existe un conflit d’intérêts ; l’auteur est informé du motif du refus. Artesa ne modifie pas le contenu des avis et ne reçoit aucune contrepartie pour les publier ou les supprimer. Un avis reste affiché tant que l’auteur ou l’artisan a un compte, sauf retrait par son auteur. L’artisan peut y répondre publiquement. <L id="conso-L111-7-2" /> <L id="conso-D111-17" /></p>
 
       <h3>5. Messagerie, photos et contenus</h3>
-      <p>Chaque utilisateur est responsable de ce qu’il publie. Sont interdits : contenus illicites, injurieux, discriminatoires, trompeurs, atteintes à la vie privée ou aux droits d’autrui, démarchage abusif, contournement de la plateforme pour escroquer. Artesa n’exerce pas de contrôle préalable sur les messages privés mais agit promptement dès qu’un contenu illicite lui est signalé. <L id="lcen-6" /></p>
+      <p>Chaque utilisateur est responsable de ce qu’il publie. Sont interdits : contenus illicites, injurieux, discriminatoires, trompeurs, atteintes à la vie privée ou aux droits d’autrui, menaces ou harcèlement, faux avis et fausses demandes, usurpation d’identité, démarchage abusif, contournement de la plateforme pour escroquer, et toute tentative de pirater, copier ou aspirer les données d’Artesa (robots, extraction de fiches). Artesa n’exerce pas de contrôle préalable sur les messages privés mais agit promptement dès qu’un contenu illicite lui est signalé. <L id="lcen-6" /></p>
 
       <h3>6. Signaler un contenu</h3>
       <p>Tout contenu (fiche artisan, avis, photo, message) peut être signalé avec le bouton <b>Signaler</b> ou depuis la page <Link to="/signaler">Signaler un contenu</Link>. Le signalement indique pourquoi le contenu serait illicite, où il se trouve et, sauf exception, votre nom et votre e-mail. Vous recevez un accusé de réception puis notre décision motivée. <L id="dsa-16" /></p>

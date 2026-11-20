@@ -103,12 +103,20 @@ export function AdminIdentities({ list, leftovers = [], reload }) {
           {cur.r.purpose === 'dirigeant' && cur.r.siren && <p className="small"><a href={`https://annuaire-entreprises.data.gouv.fr/dirigeants/${cur.r.siren}`} target="_blank" rel="noopener noreferrer">{t('Voir les dirigeants inscrits (Annuaire des entreprises)')}</a></p>}
           {cur.url ? (/\.pdf$/i.test(cur.r.file_path) ? <iframe title="pièce" src={cur.url} style={{ width: '100%', height: 420, border: 0 }} /> : <img src={cur.url} alt="" style={{ width: '100%', borderRadius: 10 }} />) : <p className="small muted">{t('Fichier introuvable.')}</p>}
           <p className="small faint">{t('La copie sera supprimée automatiquement dès votre décision. Ne la téléchargez pas.')}</p>
-          <div className="chips wrap mt" style={{ gap: 6 }}>{REFUSE.map((x) => <button key={x} type="button" className="chip" onClick={() => setCur({ ...cur, note: t(x) })}>{t(x)}</button>)}</div>
+          <div className="chips wrap mt" style={{ gap: 6 }}>{REFUSE.map((x) => <button key={x} type="button" className={'chip' + (cur.note === t(x) ? ' on' : '')} aria-pressed={cur.note === t(x)} onClick={() => setCur({ ...cur, note: cur.note === t(x) ? '' : t(x) })}>{t(x)}</button>)}</div>
           <Field label={t('Motif en cas de refus')}><textarea value={cur.note} onChange={(e) => setCur({ ...cur, note: e.target.value })} /></Field>
-          <div className="row" style={{ gap: 8 }}>
-            <button className="btn" onClick={() => decide('verifie')}><LuCheck /> {t('Identité vérifiée')}</button>
-            <button className="btn ghost" disabled={!cur.note.trim()} onClick={() => decide('refuse')}><LuX /> {t('Refuser')}</button>
-          </div>
+          {/* Un motif est choisi : on ne peut plus valider par erreur, seul « Refuser » est proposé (et la base refuse aussi) */}
+          {cur.note.trim() ? (
+            <div className="row wrap" style={{ gap: 8 }}>
+              <button className="btn" onClick={() => decide('refuse')}><LuX /> {t('Refuser pour ce motif')}</button>
+              <button className="btn ghost" onClick={() => setCur({ ...cur, note: '' })}>{t('Effacer le motif')}</button>
+            </div>
+          ) : (
+            <div className="row wrap" style={{ gap: 8 }}>
+              <button className="btn" onClick={() => decide('verifie')}><LuCheck /> {t('Identité vérifiée')}</button>
+              <span className="small muted">{t('Pour refuser, choisissez ou écrivez un motif.')}</span>
+            </div>
+          )}
         </>}
       </Sheet>
     </>
