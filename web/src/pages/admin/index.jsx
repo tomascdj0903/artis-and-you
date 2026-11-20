@@ -65,6 +65,7 @@ export function AdminHome() {
         <Tile to="/admin/gestion/avis" icon={LuStar} label={t('Avis à relire')} count={todo.reviews} />
         <Tile to="/admin/gestion/signal" icon={LuFlag} label={t('Signalements')} count={todo.reports} />
         <Tile to="/admin/gestion/metiers" icon={LuHammer} label={t('Métiers proposés')} count={todo.trades} />
+        <Tile to="/admin/devis-entreprise" icon={LuFileText} label={t('Demandes de devis')} sub={t('Formules sur devis')} count={todo.quote_requests} />
       </div>
 
       <Sec title={t('La plateforme')} />

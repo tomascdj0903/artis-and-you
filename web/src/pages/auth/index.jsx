@@ -354,3 +354,4 @@ export function NewPassword() {
     </AuthLayout>
   );
 }
+export { QuoteRequest } from './quote.jsx';

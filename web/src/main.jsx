@@ -29,7 +29,7 @@ export const preload = (mod) => loaders[mod]().catch(() => {});
 const PUBLIC = [
   ['/', Landing], ['/connexion', Auth.Login], ['/inscription', Auth.SignupChoice], ['/inscription/artisan', Auth.SignupPro], ['/inscription/particulier', Auth.SignupClient],
   ['/mot-de-passe-oublie', Auth.Forgot], ['/verification', Auth.Verify], ['/nouveau-mot-de-passe', Auth.NewPassword], ['/telecharger', Legal.Download],
-  ['/mentions-legales', Legal.Mentions], ['/cgu', Legal.CGU], ['/confidentialite', Legal.Privacy], ['/cgv', Legal.CGV], ['/sous-traitance', Legal.DPA], ['/signaler', Legal.Report],
+  ['/mentions-legales', Legal.Mentions], ['/cgu', Legal.CGU], ['/confidentialite', Legal.Privacy], ['/cgv', Legal.CGV], ['/sous-traitance', Legal.DPA], ['/signaler', Legal.Report], ['/devis-entreprise', Auth.QuoteRequest],
 ];
 const PRO = [
   ['/pro', L('pro', 'Home')], ['/pro/recherche', L('pro', 'GlobalSearch')],
@@ -78,7 +78,7 @@ const PRO_TABS = [
 const ADMIN = [
   ['/admin', L('adm', 'AdminHome')], ['/admin/gestion/:tab', L('common', 'Admin')], ['/admin/comptes', L('adm', 'AdminAccounts')], ['/admin/stats', L('adm', 'AdminStats')],
   ['/admin/compta', L('adm', 'AdminCompta')], ['/admin/facturation-electronique', L('adm', 'AdminEInvoice')], ['/admin/legal', L('adm', 'AdminLegal')],
-  ['/admin/offres', L('adm', 'AdminOffers')], ['/admin/prospection', L('adm', 'AdminPipeline')], ['/admin/taches', L('adm', 'AdminTasks')], ['/admin/agenda', L('adm', 'AdminCalendar')],
+  ['/admin/offres', L('adm', 'AdminOffers')], ['/admin/devis-entreprise', L('adm', 'AdminQuoteRequests')], ['/admin/prospection', L('adm', 'AdminPipeline')], ['/admin/taches', L('adm', 'AdminTasks')], ['/admin/agenda', L('adm', 'AdminCalendar')],
   ['/admin/notes', L('adm', 'AdminNotes')], ['/admin/fichiers', L('adm', 'AdminDrive')], ['/admin/service-client', L('adm', 'AdminSupport')], ['/admin/integrations', L('adm', 'AdminIntegrations')],
 ];
 // 5e valeur « true » : seulement dans la barre de gauche (la barre du bas du téléphone garde l'essentiel)

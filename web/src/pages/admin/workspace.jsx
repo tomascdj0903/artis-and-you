@@ -1,7 +1,7 @@
 // Espace de travail de l'équipe Artesa : offres et tarifs, prospection, tâches, agenda, notes, fichiers,
 // service client et intégrations. Tout est partagé entre les comptes administrateurs.
 import { useMemo, useRef, useState } from 'react';
-import { LuPlus, LuTrash2, LuSave, LuCheck, LuChevronLeft, LuChevronRight, LuUpload, LuDownload, LuPin, LuMessageSquare, LuExternalLink, LuCircleCheck, LuCircleAlert, LuCircleDashed } from 'react-icons/lu';
+import { LuPlus, LuTrash2, LuSave, LuCheck, LuChevronLeft, LuChevronRight, LuUpload, LuDownload, LuPin, LuMessageSquare, LuExternalLink, LuCircleCheck, LuCircleAlert, LuCircleDashed, LuFilePen, LuMail, LuKanban } from 'react-icons/lu';
 import { api, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
@@ -24,12 +24,12 @@ export function AdminOffers() {
   const P = plans ?? s.plans.map((p) => ({ ...p, features: [...(p.features || [])] }));
   const set = (i, k, v) => setPlans(P.map((p, j) => (j === i ? { ...p, [k]: v } : p)));
   const save = () => run(async () => {
-    const clean = P.map((p) => ({ ...p, name: String(p.name).trim(), price: Math.max(0, Number(p.price) || 0), users: Math.max(0, Number(p.users) || 0), features: p.features.map((f) => f.trim()).filter(Boolean) }));
+    const clean = P.map((p) => ({ ...p, quote: !!p.quote, name: String(p.name).trim(), price: Math.max(0, Number(p.price) || 0), users: Math.max(0, Number(p.users) || 0), features: p.features.map((f) => f.trim()).filter(Boolean) }));
     await savePlatform({ plans: clean, trial_days: Number(trial ?? s.trial_days), banner: banner ?? s.banner }, profile.id);
     // Les formules deviennent aussi des lignes prêtes à facturer dans les devis et factures d'Artesa
     if (company?.id) {
       const items = await api.select('items', { company_id: company.id }).catch(() => []);
-      for (const p of clean) {
+      for (const p of clean.filter((x) => !x.quote)) {
         const ref = 'ABO-' + p.id.toUpperCase(), ex = items.find((x) => x.ref === ref);
         const row = { name: `Abonnement Artesa ${p.name} (1 mois)`, ref, family: 'Abonnements', unit: 'mois', sale_price: p.price, purchase_price: 0, coef: 1, vat_rate: 20 };
         if (ex) await api.update('items', { id: ex.id }, row); else await api.insert('items', { ...row, company_id: company.id, kind: 'article' });
@@ -45,9 +45,10 @@ export function AdminOffers() {
           <div key={p.id} className="card soft">
             <Field label={t('Nom de la formule')}><input value={p.name} onChange={(e) => set(i, 'name', e.target.value)} /></Field>
             <div className="form-grid two">
-              <Field label={t('Prix HT / mois (€)')}><input type="number" min={0} step="1" value={p.price} onChange={(e) => set(i, 'price', e.target.value)} /></Field>
+              <Field label={t('Prix HT / mois (€)')}>{p.quote ? <input value={t('Sur devis')} disabled /> : <input type="number" min={0} step="1" value={p.price} onChange={(e) => set(i, 'price', e.target.value)} />}</Field>
               <Field label={t('Utilisateurs (0 = illimité)')}><input type="number" min={0} value={p.users} onChange={(e) => set(i, 'users', e.target.value)} /></Field>
             </div>
+            <label className="check"><input type="checkbox" checked={!!p.quote} onChange={(e) => set(i, 'quote', e.target.checked)} /><span><b>{t('Sur devis')}</b> · {t('le site affiche « Sur devis » et un bouton « Demander un devis » au lieu du prix')}</span></label>
             <Field label={t('Phrase courte')}><input value={p.desc} onChange={(e) => set(i, 'desc', e.target.value)} /></Field>
             <Field label={t('Ce qui est inclus (une ligne par avantage)')}><textarea rows={6} value={p.features.join('\n')} onChange={(e) => set(i, 'features', e.target.value.split('\n'))} /></Field>
           </div>
@@ -281,6 +282,62 @@ export function AdminIntegrations() {
       {!b ? <Loader /> : <div className="list">{rows.map(([n, d, s, url]) => { const [I, cls, l] = ST[s]; return (
         <div key={n} className="li"><I className={cls} /><div className="grow"><div className="t1">{t(n)}</div><div className="t2">{t(d)}</div></div><span className={'small bold ' + cls}>{t(l)}</span>{url && <a className="iconbtn" href={url} target="_blank" rel="noopener noreferrer" aria-label={t('Ouvrir')}><LuExternalLink /></a>}</div>); })}</div>}
       <p className="small muted mt">{t('Par sécurité, les clés secrètes (Resend, Super PDP, paiement) se posent dans les réglages Supabase, jamais dans l’application ni dans un message.')}</p>
+    </div>
+  );
+}
+
+// ─────────────── Demandes de devis (formules « sur devis ») ───────────────
+const QR_STATUS = [['nouvelle', 'Nouvelle'], ['en_cours', 'En cours'], ['devis_envoye', 'Devis envoyé'], ['gagnee', 'Gagnée'], ['perdue', 'Perdue']];
+export function AdminQuoteRequests() {
+  const { profile, run } = useApp();
+  const { plans } = usePlatform();
+  const [who] = useWho(profile);
+  const [tab, setTab] = useState('ouvertes');
+  const [open, setOpen] = useState(null);
+  const [list, reload] = useData(() => api.select('quote_requests', {}, { order: 'created_at.desc', limit: 500 }).catch(() => []), []);
+  if (!list) return <div className="content"><TopBar title={t('Demandes de devis')} /><Loader /></div>;
+  const shown = list.filter((q) => (tab === 'ouvertes' ? ['nouvelle', 'en_cours'].includes(q.status) : tab === 'toutes' ? true : q.status === tab));
+  const save = (q, patch, msg) => run(async () => { await api.update('quote_requests', { id: q.id }, { ...patch, updated_at: new Date().toISOString(), handled_by: who || q.handled_by }); reload(); }, msg);
+  const toProspect = (q) => run(async () => {
+    await api.insert('admin_deals', { title: q.company_name, company_name: q.company_name, contact_name: q.contact_name, email: q.email, phone: q.phone, city: q.city, trade: q.trades, siret: q.siret, source: t('Demande de devis (site)'), stage: 'prospect', owner: who || '', worked_by: [], tags: [], priority: 'haute', plan: q.plan, value: 0, next_action: t('Envoyer le devis'), next_date: '', notes: t('Demande de devis du {d}', { d: date(q.created_at) }) + (q.message ? ' : ' + q.message : '') });
+    if (q.status === 'nouvelle') await api.update('quote_requests', { id: q.id }, { status: 'en_cours', handled_by: who || '' });
+    reload();
+  }, t('Ajouté aux prospects'));
+  return (
+    <div className="content">
+      <TopBar title={t('Demandes de devis')} sub={t('Entreprises qui veulent une formule sur devis')} />
+      <Chips scroll options={[['ouvertes', t('À traiter ({n})', { n: list.filter((q) => ['nouvelle', 'en_cours'].includes(q.status)).length })], ...QR_STATUS.slice(2).map(([k, l]) => [k, t(l)]), ['toutes', t('Toutes')]]} value={tab} onChange={setTab} />
+      {!shown.length ? <Empty text={tab === 'ouvertes' ? t('Aucune demande à traiter. Elles arrivent ici quand une entreprise clique sur « Demander un devis » sur le site.') : t('Aucune demande')} /> : (
+        <div className="list mt">{shown.map((q) => (
+          <div key={q.id} className="card soft qr-card">
+            <button type="button" className="row between qr-head" onClick={() => setOpen(open === q.id ? null : q.id)} aria-expanded={open === q.id}>
+              <span><b>{q.company_name}</b><span className="small muted"> · {[q.team_size && t(q.team_size), q.city, rel(q.created_at)].filter(Boolean).join(' · ')}</span></span>
+              <Pill c={q.status === 'nouvelle' ? 'red' : q.status === 'gagnee' ? 'green' : q.status === 'perdue' ? 'grey' : 'navy'}>{t(QR_STATUS.find((s) => s[0] === q.status)?.[1] || q.status)}</Pill>
+            </button>
+            {open === q.id && (
+              <div className="mt">
+                <div className="kv">
+                  {[[t('Contact'), q.contact_name], [t('E-mail'), <a key="e" href={'mailto:' + q.email}>{q.email}</a>], [t('Téléphone'), q.phone ? <a key="p" href={'tel:' + q.phone}>{q.phone}</a> : '—'], [t('Formule'), plans.find((p) => p.id === q.plan)?.name || q.plan], [t('SIRET'), q.siret || '—'], [t('Métier(s)'), q.trades || '—'],
+                    [t('Utilisateurs'), q.users_needed || '—'], [t('Chantiers par mois'), t(q.sites_per_month || '—')], [t('Démarrage'), t(q.start_when || '—')], [t('Outils actuels'), q.current_tools || '—']].map(([k, v]) => (
+                    <div key={k} className="r"><span className="k">{k}</span><span className="v">{v}</span></div>))}
+                </div>
+                {q.options?.length > 0 && <><Sec title={t('Ce qui l’intéresse')} /><div className="chips wrap" style={{ gap: 6 }}>{q.options.map((o) => <span key={o} className="chip on" style={{ cursor: 'default' }}>{t(o)}</span>)}</div></>}
+                {q.message && <><Sec title={t('Son message')} /><p style={{ whiteSpace: 'pre-line', margin: 0 }}>{q.message}</p></>}
+                <Sec title={t('Suivi')} meta={q.handled_by ? t('Suivi par {w}', { w: q.handled_by }) : ''} />
+                <div className="form-grid two">
+                  <Field label={t('Étape')}><select value={q.status} onChange={(e) => save(q, { status: e.target.value }, t('Étape mise à jour'))}>{QR_STATUS.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></Field>
+                  <Field label={t('Note interne')}><input defaultValue={q.admin_note || ''} onBlur={(e) => e.target.value !== (q.admin_note || '') && save(q, { admin_note: e.target.value }, t('Note enregistrée'))} placeholder={t('ex. rappelé le 21/11, devis à 129 €/mois')} /></Field>
+                </div>
+                <div className="row wrap" style={{ gap: 8 }}>
+                  <button className="btn sm" onClick={() => { if (q.status === 'nouvelle') save(q, { status: 'en_cours' }); navigate('/pro/documents/nouveau?kind=devis'); }}><LuFilePen /> {t('Faire le devis')}</button>
+                  <a className="btn sm ghost" href={'mailto:' + q.email + '?subject=' + encodeURIComponent(t('Votre devis Artesa'))}><LuMail /> {t('Écrire')}</a>
+                  <button className="btn sm ghost" onClick={() => toProspect(q)}><LuKanban /> {t('Ajouter aux prospects')}</button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}</div>
+      )}
     </div>
   );
 }

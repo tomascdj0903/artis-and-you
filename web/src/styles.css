@@ -1506,3 +1506,15 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 .topbar.glass-tint.on-dark .iconbtn, .home-band .hb-head.on-dark .topbar .iconbtn { color: var(--text) !important; background: rgba(255,255,255,.75) !important; text-shadow: none !important; }
 .hb-head.on-dark .hb-search, .hb-head.on-dark .search { text-shadow: none; }
 .hb-head.on-dark .hb-hello b, .topbar.glass-tint.on-dark .title, .topbar.glass-tint.on-dark h1 { color: #fff; }
+
+/* Page « Demander un devis » (formules sur devis) */
+.quote-page .quote-h { font-size: 18px; margin: 26px 0 10px; }
+.quote-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.quote-opt { position: relative; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 10px 14px; border-radius: 14px; border: 1.5px solid var(--line-2); background: var(--surface); cursor: pointer; font-size: 14px; font-weight: 600; }
+.quote-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.quote-opt .qo-box { flex: none; width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--line-2); display: grid; place-items: center; color: #fff; font-size: 14px; }
+.quote-opt.on { border-color: var(--bordeaux); background: var(--bordeaux-50); }
+.quote-opt.on .qo-box { background: var(--bordeaux); border-color: var(--bordeaux); }
+.quote-opt:focus-within { outline: 3px solid #E5484D; outline-offset: 2px; }
+.qr-card .qr-head { width: 100%; border: 0; background: none; padding: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; gap: 10px; }
+.lp-amount.quote { flex-wrap: wrap; } .lp-amount.quote b { font-size: .72em; white-space: nowrap; }

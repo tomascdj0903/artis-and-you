@@ -131,10 +131,11 @@ function Pricing() {
           <article key={x.id} className={'lp-plan' + (x.id === 'equipe' ? ' best' : '')}>
             <h3>{t(x.name)}</h3>
             <p className="lp-plan-desc">{t(x.desc)}</p>
-            <div className="lp-amount"><b>{fmt(x.price)} €</b><span>{t('HT / mois')}</span></div>
-            <p className="lp-plan-note">{t('sans engagement, résiliable à tout moment')}</p>
+            {x.quote ? <div className="lp-amount quote"><b>{t('Sur devis')}</b><span>{t('adapté à votre entreprise')}</span></div> : <div className="lp-amount"><b>{fmt(x.price)} €</b><span>{t('HT / mois')}</span></div>}
+            <p className="lp-plan-note">{x.quote ? t('un prix selon votre équipe et vos besoins') : t('sans engagement, résiliable à tout moment')}</p>
             <ul>{x.features.map((f) => <li key={f}><LuCheck />{t(f)}</li>)}</ul>
-            <Link to="/inscription/artisan" className={'btn' + (x.id === 'equipe' ? '' : ' ghost')}>{t('Essayer 30 jours gratuits')}</Link>
+            {x.quote ? <Link to={'/devis-entreprise?formule=' + x.id} className="btn ghost">{t('Demander un devis')}</Link>
+              : <Link to="/inscription/artisan" className={'btn' + (x.id === 'equipe' ? '' : ' ghost')}>{t('Essayer 30 jours gratuits')}</Link>}
           </article>
         ))}
         <article className="lp-plan free">
@@ -150,15 +151,16 @@ function Pricing() {
       {who === 'pro' ? (
         <>
           <div className="lp-plan-tabs" role="tablist" aria-label={t('Formule')}>
-            {PLANS.map((x) => <button key={x.id} role="tab" aria-selected={plan === x.id} className={plan === x.id ? 'on' : ''} onClick={() => setPlan(x.id)}><b>{t(x.name)}</b><small>{fmt(x.price)} €</small></button>)}
+            {PLANS.map((x) => <button key={x.id} role="tab" aria-selected={plan === x.id} className={plan === x.id ? 'on' : ''} onClick={() => setPlan(x.id)}><b>{t(x.name)}</b><small>{x.quote ? t('Sur devis') : fmt(x.price) + ' €'}</small></button>)}
           </div>
           <article className="lp-plan one" role="tabpanel">
             <div className="lp-plan-l">
               <h3>{t(p.name)}</h3>
               <p className="lp-plan-desc">{t(p.desc)}</p>
-              <div className="lp-amount"><b>{fmt(p.price)} €</b><span>{t('HT / mois')}</span></div>
-              <p className="lp-plan-note">{t('30 jours d’essai gratuit, sans carte bancaire · sans engagement')}</p>
-              <Link to="/inscription/artisan" className="btn">{t('Essayer {p} gratuitement', { p: t(p.name) })}</Link>
+              {p.quote ? <div className="lp-amount quote"><b>{t('Sur devis')}</b><span>{t('adapté à votre entreprise')}</span></div> : <div className="lp-amount"><b>{fmt(p.price)} €</b><span>{t('HT / mois')}</span></div>}
+              <p className="lp-plan-note">{p.quote ? t('un prix selon votre équipe et vos besoins') : t('30 jours d’essai gratuit, sans carte bancaire · sans engagement')}</p>
+              {p.quote ? <Link to={'/devis-entreprise?formule=' + p.id} className="btn">{t('Demander un devis')}</Link>
+                : <Link to="/inscription/artisan" className="btn">{t('Essayer {p} gratuitement', { p: t(p.name) })}</Link>}
             </div>
             <ul>{p.features.map((f) => <li key={f}><LuCheck />{t(f)}</li>)}</ul>
           </article>

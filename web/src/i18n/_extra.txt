@@ -1507,3 +1507,84 @@ Créer un devis|Create a quote|Criar um orçamento|Crea un preventivo
 Créer une facture|Create an invoice|Criar uma fatura|Crea una fattura
 Ajouter une tâche|Add a task|Adicionar uma tarefa|Aggiungi un'attività
 Ajouter un prospect|Add a prospect|Adicionar um prospect|Aggiungi un potenziale cliente
+Sur devis|On quote|Sob orçamento|Su preventivo
+adapté à votre entreprise|tailored to your business|adaptado à sua empresa|su misura per la tua impresa
+un prix selon votre équipe et vos besoins|a price based on your team and needs|um preço segundo a sua equipa e necessidades|un prezzo in base al team e alle esigenze
+Demander un devis|Request a quote|Pedir um orçamento|Richiedi un preventivo
+Demander un devis {p}|Request a {p} quote|Pedir um orçamento {p}|Richiedi un preventivo {p}
+Dites-nous comment vous travaillez : nous vous proposons une formule et un prix adaptés à votre entreprise. Réponse sous 48 heures ouvrées, sans engagement.|Tell us how you work: we'll offer a plan and price tailored to your business. Reply within 2 working days, no commitment.|Diga-nos como trabalha: propomos uma fórmula e um preço adaptados à sua empresa. Resposta em 48 horas úteis, sem compromisso.|Dicci come lavori: ti proponiamo una formula e un prezzo su misura. Risposta entro 48 ore lavorative, senza impegno.
+Votre entreprise|Your business|A sua empresa|La tua impresa
+Votre équipe|Your team|A sua equipa|Il tuo team
+Ce qui vous intéresse|What you're interested in|O que lhe interessa|Cosa ti interessa
+Vos coordonnées|Your contact details|Os seus contactos|I tuoi recapiti
+Nom de l’entreprise|Company name|Nome da empresa|Nome dell'impresa
+Métier(s)|Trade(s)|Profissão(ões)|Mestiere/i
+ex. plomberie, chauffage|e.g. plumbing, heating|ex. canalização, aquecimento|es. idraulica, riscaldamento
+Taille de l’équipe|Team size|Tamanho da equipa|Dimensione del team
+Personnes qui utiliseront Artesa|People who will use Artesa|Pessoas que vão usar a Artesa|Persone che useranno Artesa
+environ|approximately|aproximadamente|circa
+Chantiers ou interventions par mois|Jobs per month|Obras ou intervenções por mês|Cantieri o interventi al mese
+Démarrage souhaité|Preferred start|Início desejado|Avvio desiderato
+6 à 10 personnes|6 to 10 people|6 a 10 pessoas|Da 6 a 10 persone
+11 à 20 personnes|11 to 20 people|11 a 20 pessoas|Da 11 a 20 persone
+21 à 50 personnes|21 to 50 people|21 a 50 pessoas|Da 21 a 50 persone
+Plus de 50 personnes|More than 50 people|Mais de 50 pessoas|Più di 50 persone
+Moins de 10|Fewer than 10|Menos de 10|Meno di 10
+10 à 30|10 to 30|10 a 30|Da 10 a 30
+30 à 100|30 to 100|30 a 100|Da 30 a 100
+Plus de 100|More than 100|Mais de 100|Più di 100
+Dès que possible|As soon as possible|O mais rápido possível|Il prima possibile
+Dans le mois|Within the month|Dentro de um mês|Entro il mese
+Dans les 3 mois|Within 3 months|Dentro de 3 meses|Entro 3 mesi
+Je me renseigne|Just looking|Estou a informar-me|Mi sto informando
+Cochez tout ce dont vous avez besoin : nous construisons le devis à partir de vos choix.|Tick everything you need: we build the quote from your choices.|Assinale tudo o que precisa: construímos o orçamento a partir das suas escolhas.|Spunta tutto ciò che ti serve: costruiamo il preventivo dalle tue scelte.
+Reprise de nos données (clients, devis, factures)|Import of our data (clients, quotes, invoices)|Importação dos nossos dados (clientes, orçamentos, faturas)|Ripresa dei nostri dati (clienti, preventivi, fatture)
+Formation de l’équipe|Team training|Formação da equipa|Formazione del team
+Accompagnement à la mise en place|Help with setup|Acompanhamento na implementação|Supporto all'avvio
+Plusieurs agences ou établissements|Several branches or sites|Várias agências ou estabelecimentos|Più agenzie o sedi
+Lien avec notre logiciel de comptabilité|Link with our accounting software|Ligação ao nosso software de contabilidade|Collegamento al nostro software di contabilità
+Un interlocuteur dédié|A dedicated contact person|Um interlocutor dedicado|Un referente dedicato
+Outils que vous utilisez aujourd’hui|Tools you use today|Ferramentas que usa hoje|Strumenti che usi oggi
+ex. Excel, logiciel de devis, agenda papier…|e.g. Excel, quoting software, paper diary…|ex. Excel, software de orçamentos, agenda em papel…|es. Excel, software per preventivi, agenda cartacea…
+Autre chose à nous dire ?|Anything else to tell us?|Mais alguma coisa a dizer-nos?|Altro da dirci?
+Vos attentes, vos contraintes, ce qui vous fait perdre du temps aujourd’hui…|Your expectations, constraints, what wastes your time today…|As suas expectativas, restrições, o que o faz perder tempo hoje…|Le tue aspettative, i vincoli, cosa ti fa perdere tempo oggi…
+pour en parler de vive voix|to talk it through|para falarmos de viva voz|per parlarne a voce
+J’accepte qu’Artesa utilise ces informations pour me recontacter et m’envoyer un devis.|I agree that Artesa may use this information to contact me and send me a quote.|Aceito que a Artesa use estas informações para me contactar e enviar um orçamento.|Accetto che Artesa usi queste informazioni per ricontattarmi e inviarmi un preventivo.
+Envoyer ma demande de devis|Send my quote request|Enviar o meu pedido de orçamento|Invia la mia richiesta di preventivo
+Envoi…|Sending…|A enviar…|Invio…
+Demande envoyée|Request sent|Pedido enviado|Richiesta inviata
+Merci ! L’équipe Artesa étudie vos besoins et vous envoie un devis sur mesure sous 48 heures ouvrées, à l’adresse {e}.|Thank you! The Artesa team will review your needs and send a tailored quote within 2 working days to {e}.|Obrigado! A equipa Artesa analisa as suas necessidades e envia um orçamento à medida em 48 horas úteis, para {e}.|Grazie! Il team Artesa studia le tue esigenze e ti invia un preventivo su misura entro 48 ore lavorative a {e}.
+En attendant, vous pouvez déjà essayer Artesa gratuitement pendant 30 jours.|Meanwhile, you can already try Artesa free for 30 days.|Entretanto, já pode experimentar a Artesa gratuitamente durante 30 dias.|Nel frattempo puoi già provare Artesa gratis per 30 giorni.
+Créer mon compte et essayer|Create my account and try|Criar a minha conta e experimentar|Crea il mio account e prova
+Retour à l’accueil|Back to home|Voltar ao início|Torna alla home
+le site affiche « Sur devis » et un bouton « Demander un devis » au lieu du prix|the site shows "On quote" and a "Request a quote" button instead of the price|o site mostra «Sob orçamento» e um botão «Pedir um orçamento» em vez do preço|il sito mostra «Su preventivo» e un pulsante «Richiedi un preventivo» al posto del prezzo
+Demandes de devis|Quote requests|Pedidos de orçamento|Richieste di preventivo
+Formules sur devis|Plans on quote|Fórmulas sob orçamento|Formule su preventivo
+Entreprises qui veulent une formule sur devis|Businesses asking for a plan on quote|Empresas que querem uma fórmula sob orçamento|Imprese che vogliono una formula su preventivo
+Nouvelle|New|Nova|Nuova
+Devis envoyé|Quote sent|Orçamento enviado|Preventivo inviato
+Gagnée|Won|Ganha|Vinta
+Perdue|Lost|Perdida|Persa
+Toutes|All|Todas|Tutte
+À traiter ({n})|To handle ({n})|A tratar ({n})|Da gestire ({n})
+Aucune demande à traiter. Elles arrivent ici quand une entreprise clique sur « Demander un devis » sur le site.|No requests to handle. They arrive here when a business clicks "Request a quote" on the site.|Nenhum pedido a tratar. Chegam aqui quando uma empresa clica em «Pedir um orçamento» no site.|Nessuna richiesta da gestire. Arrivano qui quando un'impresa clicca «Richiedi un preventivo» sul sito.
+Aucune demande|No requests|Nenhum pedido|Nessuna richiesta
+Utilisateurs|Users|Utilizadores|Utenti
+Chantiers par mois|Jobs per month|Obras por mês|Cantieri al mese
+Démarrage|Start|Início|Avvio
+Outils actuels|Current tools|Ferramentas atuais|Strumenti attuali
+Ce qui l’intéresse|What they're interested in|O que lhe interessa|Cosa gli interessa
+Son message|Their message|A mensagem|Il suo messaggio
+Suivi|Follow-up|Acompanhamento|Seguito
+Suivi par {w}|Handled by {w}|Acompanhado por {w}|Seguito da {w}
+Étape mise à jour|Stage updated|Etapa atualizada|Fase aggiornata
+Note interne|Internal note|Nota interna|Nota interna
+ex. rappelé le 21/11, devis à 129 €/mois|e.g. called back 21/11, quote at €129/month|ex. contactado a 21/11, orçamento a 129 €/mês|es. richiamato il 21/11, preventivo a 129 €/mese
+Faire le devis|Prepare the quote|Fazer o orçamento|Fai il preventivo
+Écrire|Write|Escrever|Scrivi
+Ajouter aux prospects|Add to prospects|Adicionar aos prospects|Aggiungi ai potenziali clienti
+Ajouté aux prospects|Added to prospects|Adicionado aos prospects|Aggiunto ai potenziali clienti
+Votre devis Artesa|Your Artesa quote|O seu orçamento Artesa|Il tuo preventivo Artesa
+Demande de devis du {d}|Quote request of {d}|Pedido de orçamento de {d}|Richiesta di preventivo del {d}
+Demande de devis (site)|Quote request (website)|Pedido de orçamento (site)|Richiesta di preventivo (sito)
+Envoyer le devis|Send the quote|Enviar o orçamento|Invia il preventivo

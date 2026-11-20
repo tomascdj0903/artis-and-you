@@ -2,7 +2,7 @@ import { PLANS } from './docs.js';
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['platform_settings', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
+const TABLES = ['platform_settings', 'quote_requests', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
@@ -184,7 +184,7 @@ export function mockBackend({ saveSession, getSession }) {
       case 'clients': return r.company_id === mc || r.user_id === me();
       case 'documents': return r.company_id === mc || (r.number && mine.includes(r.client_id) && approvedCo(r.company_id));
       case 'identity_checks': return r.user_id === me() || isAdmin();
-      case 'admin_deals': case 'admin_deal_events': case 'admin_tasks': case 'admin_notes': return isAdmin();
+      case 'admin_deals': case 'admin_deal_events': case 'admin_tasks': case 'admin_notes': case 'quote_requests': return isAdmin();
       case 'platform_settings': return true;
       case 'appointments': case 'projects': return r.company_id === mc || mine.includes(r.client_id);
       case 'trades': return r.status === 'valide' || r.created_by === me() || isAdmin();
@@ -277,7 +277,8 @@ export function mockBackend({ saveSession, getSession }) {
         signups_by_week: Object.entries(weeks).sort().map(([week, n]) => ({ week, n })),
         todo: { companies: co.filter((c) => c.verification_status === 'pending').length, identities: db.identity_checks.filter((i) => i.status === 'en_attente').length,
           vault: db.files.filter((f) => cids.has(f.company_id) && f.kind === 'vault' && f.review_status === 'en_attente').length, reviews: db.reviews.filter((r) => r.status === 'en_attente').length,
-          reports: db.content_reports.filter((r) => r.status === 'recu').length, trades: db.trades.filter((x) => x.status === 'en_attente').length },
+          reports: db.content_reports.filter((r) => r.status === 'recu').length, trades: db.trades.filter((x) => x.status === 'en_attente').length,
+          quote_requests: (db.quote_requests || []).filter((q) => q.status === 'nouvelle').length },
       };
     },
     identity_submit({ p_purpose, p_doc_type, p_path, p_holder }) {
@@ -486,6 +487,18 @@ export function mockBackend({ saveSession, getSession }) {
       notifyCompany(d.company_id, 'documents', 'Rétractation du client', d.number + ' : le client a exercé son droit de rétractation.', '/pro/documents/' + d.id);
       notify(me(), 'documents', 'Accusé de réception de votre rétractation', 'Votre rétractation du devis ' + (d.number || '') + ' a bien été enregistrée le ' + new Date().toLocaleString('fr-FR') + ". L'artisan doit vous rembourser les sommes versées au plus tard 14 jours après cette date.", '/client/documents/' + d.id);
       return { at: now(), by: me(), reason: p_reason, number: d.number };
+    },
+    request_quote({ p }) {
+      const email = String(p?.email || '').trim().toLowerCase();
+      if (!p?.consent) throw new Error('Merci d’accepter d’être recontacté pour recevoir votre devis.');
+      if (String(p.company_name || '').trim().length < 2) throw new Error('Indiquez le nom de votre entreprise.');
+      if (String(p.contact_name || '').trim().length < 2) throw new Error('Indiquez votre nom.');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('Indiquez un e-mail valide pour recevoir votre devis.');
+      db.quote_requests = db.quote_requests || [];
+      const r = { id: id(), created_at: now(), updated_at: now(), user_id: me() || null, plan: p.plan || 'entreprise', company_name: p.company_name.trim(), siret: p.siret || '', trades: p.trades || '', city: p.city || '', team_size: p.team_size || '', users_needed: Number(String(p.users_needed || '').replace(/\D/g, '')) || null, sites_per_month: p.sites_per_month || '', options: (p.options || []).slice(0, 40), current_tools: p.current_tools || '', start_when: p.start_when || '', message: p.message || '', contact_name: p.contact_name.trim(), email, phone: p.phone || '', status: 'nouvelle', admin_note: '', handled_by: '' };
+      db.quote_requests.push(r);
+      db.profiles.filter((x) => ADMIN_EMAILS.includes(String(x.email).toLowerCase())).forEach((x) => notify(x.id, 'systeme', 'Nouvelle demande de devis', r.company_name + (r.team_size ? ' · ' + r.team_size : ''), '/admin/devis-entreprise'));
+      return r.id;
     },
     report_content({ p_type, p_target = '', p_url = '', p_reason, p_explanation, p_name = '', p_email = '', p_good_faith = false }) {
       if (!p_good_faith) throw new Error('Merci de confirmer que votre signalement est fait de bonne foi.');
