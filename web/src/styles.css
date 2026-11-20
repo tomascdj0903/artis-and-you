@@ -1334,6 +1334,7 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .htile .dot.warn { background: #FFE2A8; color: #5C3D00; }
 .side nav a.on { border-color: rgba(255,255,255,.22); }
 .fabm .fab.fabm-btn, :root[data-theme="dark"] .fabm .fab.fabm-btn { background: var(--glass-ter) !important; color: #fff !important; border: 1px solid rgba(255,255,255,.3) !important; box-shadow: var(--glass-ter-fx) !important; }
+.fabm .fab.fabm-btn svg, :root[data-theme="dark"] .fabm .fab.fabm-btn svg { color: #fff; }
 @media (max-width: 1023px) {
   .tabbar a.on, .tabbar a.on.on-dark { background: var(--glass-ter); color: #fff; text-shadow: none; }
 }
