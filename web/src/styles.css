@@ -1403,13 +1403,10 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 @media (min-width: 1024px) { .home-band.slim { padding-top: 84px; padding-bottom: 0; background: transparent; } }
 @media (max-width: 1023px) { .home-band.slim { padding-bottom: 14px; } }
 
-/* Onglets du bas : couche foncée + couche blanche, mélangées par le masque calculé dans ui/glasstint.js */
-.tabbar a { position: relative; }
-.tabbar a .tb-l { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-width: 0; max-width: 100%; }
-.tabbar a .tb-white { position: absolute; inset: 0; color: #fff; text-shadow: 0 0 6px rgba(0,0,0,.3); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-image: linear-gradient(transparent, transparent); mask-image: linear-gradient(transparent, transparent); }
-.tabbar a .tb-ink { color: #2B1F1C; text-shadow: 0 0 6px rgba(255,255,255,.7); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
-.tabbar a.on .tb-ink { visibility: hidden; }
-.tabbar a.on .tb-white { -webkit-mask-image: none !important; mask-image: none !important; text-shadow: none; }
-@media (max-width: 1023px) { .tabbar a.on-dark:not(.on), .tabbar a.on-light:not(.on), :root[data-theme="dark"] .tabbar a.on-light:not(.on) { color: inherit; text-shadow: none; } .tabbar { text-shadow: none; } }
-@media (min-width: 1024px) { .tabbar a .tb-white { display: none; } .tabbar a .tb-ink { color: inherit; text-shadow: none; } }
-.tabbar a .dot { z-index: 1; }
+/* Onglets du bas : toute la barre passe en clair au-dessus d'un fond foncé (classe posée par ui/glasstint.js) */
+@media (max-width: 1023px) {
+  .tabbar a.on-dark:not(.on), .tabbar a.on-light:not(.on), :root[data-theme="dark"] .tabbar a.on-light:not(.on) { color: inherit; text-shadow: inherit; }
+  .tabbar.on-dark a:not(.on) { color: #fff; text-shadow: 0 0 8px rgba(0,0,0,.35); }
+  .tabbar { transition: text-shadow .3s ease; }
+  .tabbar a { transition: color .3s ease, background-color .3s ease, text-shadow .3s ease; }
+}

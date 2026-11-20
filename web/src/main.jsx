@@ -134,13 +134,7 @@ function Shell({ tabs, children, path }) {
       <GlobalFab />
       {!hideTabs && (
         <nav ref={barRef} className="tabbar" aria-label={t('Navigation')}>
-          {tabs.filter((x) => !x[4]).map(([to, I, label, exact]) => { const short = t({ 'Tableau de bord': 'Accueil', Prospection: 'Prospects', 'Mon réseau': 'Réseau', Notifications: 'Alertes', Documents: 'Docs', 'Mes documents': 'Docs', 'Mes rendez-vous': 'RDV', 'Mes artisans': 'Artisans' }[label] || label); return (
-            <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}>
-              {/* Deux couches identiques (foncée et blanche) mélangées par un masque selon le fond derrière : voir ui/glasstint.js */}
-              <span className="tb-l tb-ink" aria-hidden="true"><I /><small>{short}</small></span>
-              <span className="tb-l tb-white" aria-hidden="true"><I /><small>{short}</small></span>
-              {badge(to) > 0 && <span className="dot">{badge(to)}</span>}
-            </Link>); })}
+          {tabs.filter((x) => !x[4]).map(([to, I, label, exact]) => <Link key={to} to={to} className={active(to, exact) ? 'on' : ''} aria-label={t(label)}><I /><small aria-hidden="true">{t({ 'Tableau de bord': 'Accueil', Prospection: 'Prospects', 'Mon réseau': 'Réseau', Notifications: 'Alertes', Documents: 'Docs', 'Mes documents': 'Docs', 'Mes rendez-vous': 'RDV', 'Mes artisans': 'Artisans' }[label] || label)}</small>{badge(to) > 0 && <span className="dot">{badge(to)}</span>}</Link>)}
         </nav>
       )}
     </div>
