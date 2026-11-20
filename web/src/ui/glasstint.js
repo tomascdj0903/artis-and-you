@@ -46,8 +46,7 @@ export function useGlassTint(ref, deps = []) {
     let timer = 0, last = 0, raf = 0;
     const run = () => {
       raf = 0; last = performance.now();
-      if (!mq.matches) return;
-      shade(bar, BAR_X);
+      if (mq.matches) shade(bar, BAR_X); // la barre du bas n'existe que sur mobile ; les en-têtes, partout
       for (const h of document.querySelectorAll('.glass-tint')) shade(h, HEAD_X);
     };
     // Au plus une détection toutes les 140 ms pendant le défilement, plus une à l'arrêt
