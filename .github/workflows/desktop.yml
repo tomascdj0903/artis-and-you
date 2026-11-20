@@ -55,7 +55,7 @@ jobs:
           # Crée la version si elle n'existe pas encore (si les deux systèmes la créent en même temps, un seul gagne : on réessaie)
           for i in 1 2 3; do
             gh release view "v$V" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 && break
-            gh release create "v$V" --repo "$GITHUB_REPOSITORY" --title "Artesa $V" --notes "Logiciel PC / Mac Artesa, version $V. Les logiciels installés se mettent à jour tout seuls." 2>/dev/null || sleep 10
+            gh release create "v$V" --repo "$GITHUB_REPOSITORY" --title "Artis & You $V" --notes "Logiciel PC / Mac Artis & You, version $V. Les logiciels installés se mettent à jour tout seuls." 2>/dev/null || sleep 10
           done
           shopt -s nullglob
           ls release/latest*.yml >/dev/null 2>&1 || { echo "Fichier de mise à jour (latest*.yml) absent : la mise à jour automatique ne marcherait pas"; exit 1; }

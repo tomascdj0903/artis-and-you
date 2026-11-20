@@ -10,7 +10,7 @@ import { api, GITHUB_REPO, APP_VERSION } from '../../lib/api.js';
 export const EDITOR = {
   name: 'Artis & You',
   company: '[dénomination sociale à confirmer : ARTESA ou Artis & You]',
-  form: 'société par actions simplifiée (SAS) au capital de 2 500 €',
+  form: 'société par actions simplifiée (SAS) au capital de 2\u00a0500\u00a0€',
   address: '67 ter avenue Georges Clemenceau, 06220 Vallauris, France',
   rcs: '[RCS / SIREN : à compléter]',
   vat: '[n° de TVA intracommunautaire : à compléter]',
@@ -249,8 +249,8 @@ export function Download() {
         <div className="seg" style={{ margin: '6px 0 14px' }}>{[['pc', t('Ordinateur')], ['tel', t('Téléphone et tablette')]].map(([v, l]) => <button key={v} className={tab === v ? 'on' : ''} onClick={() => setTab(v)}>{l}</button>)}</div>
         {tab === 'pc' ? <>
           <p className="center muted">{t('Le logiciel s’ouvre dans sa propre fenêtre, avec son icône, et se met à jour tout seul. Une connexion internet est nécessaire.')}</p>
-          <a className={'opt' + (!isMac ? ' red' : '')} href={base + 'Artis & You-Setup.exe'}><LuMonitor /><div><b>{t('Télécharger pour Windows')}</b><small>Windows 10 / 11 · .exe</small></div><LuDownload /></a>
-          <a className={'opt' + (isMac ? ' red' : '')} href={base + 'Artis & You.dmg'}><LuApple /><div><b>{t('Télécharger pour Mac')}</b><small>macOS 11+ · Apple Silicon et Intel · .dmg</small></div><LuDownload /></a>
+          <a className={'opt' + (!isMac ? ' red' : '')} href={base + 'ArtisAndYou-Setup.exe'}><LuMonitor /><div><b>{t('Télécharger pour Windows')}</b><small>Windows 10 / 11 · .exe</small></div><LuDownload /></a>
+          <a className={'opt' + (isMac ? ' red' : '')} href={base + 'ArtisAndYou.dmg'}><LuApple /><div><b>{t('Télécharger pour Mac')}</b><small>{t('macOS 11+ · Apple Silicon et Intel · .dmg')}</small></div><LuDownload /></a>
           <div className="notice"><LuRefreshCw /><span>{t('Mises à jour automatiques : à chaque nouvelle version, le logiciel la télécharge en arrière-plan et l’installe au prochain démarrage.')}</span></div>
           <p className="small faint">{t('Au premier lancement sur Windows, si SmartScreen s’affiche, cliquez sur « Informations complémentaires » puis « Exécuter quand même » (le logiciel n’est pas encore signé). Sur Mac : clic droit sur l’application puis « Ouvrir ».')}</p>
           {canInstall && <button className="opt" onClick={install}><LuMonitor /><div><b>{t('Ou installer la version web')}</b><small>{t('Sans téléchargement, depuis ce navigateur (Chrome, Edge)')}</small></div></button>}

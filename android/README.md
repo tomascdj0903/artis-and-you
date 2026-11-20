@@ -1,4 +1,4 @@
-# Artesa sur Android (Google Play)
+# Artis & You sur Android (Google Play)
 
 L'application Android est une **Trusted Web Activity** : une coquille native qui affiche le site https://artis-and-you.vercel.app en plein écran, avec l'icône, le nom et les notifications d'une vraie application. Le code reste celui de `web/` : chaque mise en ligne du site met à jour l'app sans repasser par le Play Store.
 
@@ -31,7 +31,7 @@ Tester l'APK sur un téléphone : `adb install app-release-signed.apk`.
 ## 4. Publier
 
 1. Créer le compte sur https://play.google.com/console (25 €, pièce d'identité demandée).
-2. Créer l'application « Artesa », importer `app-release-bundle.aab` dans **Production** (ou d'abord **Test interne**).
+2. Créer l'application « Artis & You », importer `app-release-bundle.aab` dans **Production** (ou d'abord **Test interne**).
 3. Remplir la fiche avec les textes et visuels du dossier `store/` (voir `store/fiche.md`).
 4. Questionnaires obligatoires : sécurité des données (voir `store/securite-donnees.md`), classification du contenu (aucun contenu sensible), public cible (18 ans et plus).
 5. Première validation Google : 1 à 7 jours.

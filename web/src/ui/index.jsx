@@ -48,7 +48,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
     <header className={'topbar' + (home ? ' home-top' : ' glass-tint')}>
       <div>
         {back ? <button className="iconbtn" onClick={onBack || (() => (history.length > 1 ? navigate(-1) : navigate(base)))} aria-label={t('Retour')}><LuChevronLeft /></button>
-          : <Link to={base} className="logo-btn logo-full hide-desk" aria-label="Artis & You"><Wordmark size={26} /></Link>}
+          : <Link to={base} className="logo-btn logo-full hide-desk" aria-label="Artis & You"><Wordmark size={26} short /></Link>}
       </div>
       <div className="title">{title && <h1>{title}</h1>}{sub && <div className="sub">{sub}</div>}</div>
       <div className="right">
@@ -301,10 +301,10 @@ export function DeviceNotif() {
 }
 
 // Logo Artis & You : le « A » dessiné + « rtesa » en Quicksand. light = sur fond sombre
-export function Wordmark({ size = 28, light = false, style }) {
+export function Wordmark({ size = 28, light = false, short = false, style }) {
   return (
-    <span className={'wordmark' + (light ? ' light' : '')} style={{ fontSize: size, ...style }} role="img" aria-label="Artis & You">
-      <img src={light ? '/logo-light.svg' : '/logo.svg'} alt="" style={{ width: size * 0.95, height: size * 0.95 }} />rtis<b>&amp;</b>You
+    <span className={'wordmark' + (light ? ' light' : '') + (short ? ' short' : '')} style={{ fontSize: short ? size : `min(${size}px, calc((100vw - 40px) / 5.6))`, ...style }} role="img" aria-label="Artis & You">
+      <img src={light ? '/logo-light.svg' : '/logo.svg'} alt="" style={{ width: '.95em', height: '.95em' }} /><span className="wm-text">rtis<span className="wm-you"><b>&amp;</b>You</span></span>
     </span>
   );
 }

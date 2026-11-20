@@ -1,13 +1,13 @@
-# Fiche Google Play — Artesa
+# Fiche Google Play — Artis & You
 
-**Nom de l'application** (30 car. max) : `Artesa – Artisans & clients`
+**Nom de l'application** (30 car. max) : `Artis & You – Artisans & clients`
 
 **Description courte** (80 car. max) :
 `Devis, factures, planning et messagerie pour les artisans du bâtiment.`
 
 **Description complète** (4 000 car. max) :
 
-Artesa, c'est l'application des artisans du bâtiment et de leurs clients.
+Artis & You, c'est l'application des artisans du bâtiment et de leurs clients.
 
 CÔTÉ ARTISAN
 • Devis et factures en 2 minutes, conformes (mentions légales, TVA, acomptes, avoirs), signés en ligne par le client.
@@ -24,7 +24,7 @@ CÔTÉ CLIENT (gratuit)
 • Demandez un rendez-vous, suivez votre chantier, signez vos devis, payez vos factures.
 • Échangez avec vos artisans dans une messagerie sécurisée.
 
-Artesa fonctionne aussi sur ordinateur (Windows, Mac) et sur le web : vos données sont les mêmes partout. Hébergement en Europe, données chiffrées, suppression de compte en un clic.
+Artis & You fonctionne aussi sur ordinateur (Windows, Mac) et sur le web : vos données sont les mêmes partout. Hébergement en Europe, données chiffrées, suppression de compte en un clic.
 
 Une question ? contact@artisandyou.fr
 

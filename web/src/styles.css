@@ -1540,3 +1540,27 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 .asg-it.all { border-top: 1px solid var(--line); border-radius: 0 0 14px 14px; margin-top: 4px; }
 :root[data-theme="dark"] .asg-list { background: rgba(30,30,32,.96); border-color: rgba(255,255,255,.12); }
 .asg-it .grow { flex: 1 1 auto; min-width: 0; }
+
+/* Logo Artis & You ; en version courte (en-tête mobile) : « Artis » seul */
+.wordmark .wm-text { display: inline-flex; align-items: flex-end; white-space: nowrap; }
+.wordmark .wm-you { display: inline-flex; align-items: flex-end; }
+.wordmark.short .wm-you { display: none; }
+/* Téléphone à l'horizontale (écran très bas) : barre du bas plus fine, + et assistant côte à côte */
+@media (max-width: 1023px) and (max-height: 500px) {
+  .tabbar a { height: 40px; gap: 0; }
+  .tabbar a small { display: none; }
+  .fab, .fabm { bottom: calc(66px + env(safe-area-inset-bottom)) !important; }
+  .fab { width: 52px; height: 52px; font-size: 26px; }
+  .fab-ai { bottom: 0; right: calc(100% + 12px); width: 46px; height: 46px; }
+}
+/* Petits téléphones (iPhone SE, Android 360 px) : un peu plus de place pour le titre de l'en-tête */
+@media (max-width: 400px) {
+  .topbar .logo-full .wordmark { font-size: 20px !important; }
+  .topbar h1 { font-size: 16px; }
+  .topbar .logo-btn.logo-full { min-width: 0; }
+  .topbar { padding-left: 8px !important; padding-right: 8px !important; column-gap: 6px !important; }
+  .topbar .right .avatar { width: 38px !important; height: 38px !important; font-size: 14px; }
+  .topbar .right { gap: 0; }
+  .topbar .right .iconbtn { width: 40px; height: 40px; font-size: 23px; }
+}
+@media (max-width: 340px) { .topbar h1 { font-size: 15px; } .topbar .right .iconbtn { width: 34px; } .topbar .logo-full .wordmark { font-size: 18px !important; } }

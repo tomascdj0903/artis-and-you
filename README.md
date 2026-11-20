@@ -1,4 +1,4 @@
-# Artesa (dépôt `artis-and-you`)
+# Artis & You (dépôt `artis-and-you`)
 
 L'application des artisans du bâtiment et de leurs clients : devis, factures, planning, messagerie, réseau de pros côté artisan ; recherche d'artisan, rendez-vous, signature de devis et suivi des travaux côté particulier.
 
@@ -25,7 +25,7 @@ Il n'y a pas encore d'application native iPhone ou Android : sur téléphone, c'
 - **Variables Vercel** : `SUPABASE_URL` et `SUPABASE_KEY` (clé publique « publishable »). Sans elles, l'app démarre en **mode démo** : données fictives gardées dans le navigateur, bandeau jaune. C'est ce mode qu'utilisent les tests.
 - **Secrets** : uniquement dans Supabase › Edge Functions › Secrets. Aucun secret dans le dépôt ni dans Vercel.
   - `GROQ_API_KEY` : l'assistant (IA).
-  - `RESEND_API_KEY` et `MAIL_FROM` (ex. `Artesa <notifications@votre-domaine.fr>`, expéditeur vérifié chez Resend) : e-mails envoyés par Artesa (relances). Tant qu'ils sont absents, les relances par e-mail s'ouvrent dans l'application mail de l'artisan.
+  - `RESEND_API_KEY` et `MAIL_FROM` (ex. `Artis & You <notifications@votre-domaine.fr>`, expéditeur vérifié chez Resend) : e-mails envoyés par Artis & You (relances). Tant qu'ils sont absents, les relances par e-mail s'ouvrent dans l'application mail de l'artisan.
 - **Tâches planifiées** (pg_cron, migration 0024) : rappel des rendez-vous du lendemain à 18 h, relances automatiques à 8 h (entreprises ayant activé « automatique » dans Paramètres › Relances). Les scénarios par défaut sont dupliqués dans `web/src/lib/relances.js` et `0024_taches_planifiees.sql` : modifier les deux.
 - **En-têtes de sécurité** (CSP, HSTS…) : `web/vercel.json`.
 
@@ -62,8 +62,8 @@ Traductions : ajouter une ligne `français|anglais|portugais|italien` dans `web/
 - **Logiciel PC / Mac** (icône, fenêtre, menus) : `./release.sh 1.2.2` (Mac / Linux) ou `.\release.ps1 1.2.2` (Windows). GitHub construit le .exe et le .dmg en dix minutes environ ; les logiciels installés se mettent à jour au redémarrage. Les installeurs ne sont pas signés (avertissement Windows SmartScreen et macOS Gatekeeper).
 
 Téléchargements (toujours la dernière version) :
-- Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artesa-Setup.exe`
-- Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/Artesa.dmg`
+- Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/ArtisAndYou-Setup.exe`
+- Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/ArtisAndYou.dmg`
 
 ## Administration
 

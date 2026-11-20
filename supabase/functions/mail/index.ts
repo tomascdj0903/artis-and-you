@@ -1,6 +1,6 @@
 // Envoi d'e-mails au nom de l'artisan (relances, suivis) via Resend. Inactif tant que les secrets ne sont pas posés :
 //   RESEND_API_KEY  : clé du compte Resend (https://resend.com, gratuit jusqu'à 3 000 e-mails / mois)
-//   MAIL_FROM       : expéditeur vérifié chez Resend, ex. "Artesa <notifications@artesa.fr>"
+//   MAIL_FROM       : expéditeur vérifié chez Resend, ex. "Artis & You <notifications@artisandyou.fr>"
 // Sans clé, la fonction répond { error: 'no_key' } et l'application retombe sur l'application mail de l'artisan (mailto).
 // Garde-fous : utilisateur connecté, destinataire = un client de SON entreprise, 60 e-mails / jour / entreprise, texte brut uniquement.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
@@ -45,12 +45,12 @@ Deno.serve(async (req) => {
   if ((row?.count || 0) >= DAILY) return json({ error: 'quota' }, 429);
   await admin.from('mail_usage').upsert({ company_id: prof.company_id, day, count: (row?.count || 0) + 1 });
 
-  const name = co?.trade_name || co?.name || 'Artesa';
+  const name = co?.trade_name || co?.name || 'Artis & You';
   const replyTo = co?.email || prof.email || undefined;
-  const html = `<div style="font-family:system-ui,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.5;color:#2B1F1C;max-width:600px">${esc(text).replace(/\n/g, '<br>')}<hr style="border:0;border-top:1px solid #E6DDD3;margin:24px 0"><div style="font-size:12px;color:#8A7F78">Envoyé par ${esc(name)} via Artesa. Répondez à cet e-mail pour contacter directement l'entreprise.</div></div>`;
+  const html = `<div style="font-family:system-ui,Segoe UI,Arial,sans-serif;font-size:15px;line-height:1.5;color:#4B2014;max-width:600px">${esc(text).replace(/\n/g, '<br>')}<hr style="border:0;border-top:1px solid #E6DDD3;margin:24px 0"><div style="font-size:12px;color:#8A7F78">Envoyé par ${esc(name)} via Artis &amp; You. Répondez à cet e-mail pour contacter directement l'entreprise.</div></div>`;
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST', headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: `${name.replace(/[<>"]/g, '')} via Artesa <${from.match(/<([^>]+)>/)?.[1] || from}>`, to: [to], subject, text, html, reply_to: replyTo }),
+    body: JSON.stringify({ from: `${name.replace(/[<>"]/g, '')} via Artis & You <${from.match(/<([^>]+)>/)?.[1] || from}>`, to: [to], subject, text, html, reply_to: replyTo }),
   }).catch(() => null);
   if (!r) return json({ error: 'mail_unavailable' }, 502);
   const d = await r.json().catch(() => ({}));

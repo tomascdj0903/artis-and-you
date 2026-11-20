@@ -1,9 +1,9 @@
-// Assistant Artesa : reçoit la question + les 2-3 fiches d'aide trouvées dans l'app, et demande à l'IA (Groq)
+// Assistant Artis & You : reçoit la question + les 2-3 fiches d'aide trouvées dans l'app, et demande à l'IA (Groq)
 // de répondre en s'appuyant UNIQUEMENT sur ces fiches. La clé GROQ_API_KEY reste côté serveur (secret Supabase).
 // Limites : 40 questions / jour / utilisateur, réponses courtes (max ~350 tokens), contexte réduit.
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
-// Seuls le site Artesa (et ses aperçus Vercel) et le développement local peuvent appeler la fonction depuis un navigateur.
+// Seuls le site Artis & You (et ses aperçus Vercel) et le développement local peuvent appeler la fonction depuis un navigateur.
 // Le logiciel PC/Mac charge le site : même origine.
 const ALLOWED = /^https:\/\/(artis-and-you(-[a-z0-9-]+)?|artesa-pro)\.vercel\.app$|^http:\/\/localhost(:\d+)?$/;
 const cors = (req: Request) => {
@@ -41,10 +41,10 @@ Deno.serve(async (req) => {
 
   // L'assistant sert aussi les particuliers (clients des artisans) : on adapte la présentation de l'app
   const who = body.audience === 'client'
-    ? "Tu parles à un particulier, client d'artisans, qui utilise gratuitement l'espace client d'Artesa (trouver un artisan, demander un rendez-vous, signer ses devis, payer ses factures, suivre ses chantiers, écrire à ses artisans). Ce n'est pas un artisan : ne parle jamais de créer des devis ou des factures."
+    ? "Tu parles à un particulier, client d'artisans, qui utilise gratuitement l'espace client d'Artis & You (trouver un artisan, demander un rendez-vous, signer ses devis, payer ses factures, suivre ses chantiers, écrire à ses artisans). Ce n'est pas un artisan : ne parle jamais de créer des devis ou des factures."
     : "Tu parles à un artisan ou à son équipe (logiciel pour artisans du bâtiment : devis, factures, planning, clients, réseau de pros).";
-  const system = `Tu es l'assistant de l'application Artesa. ${who}
-Réponds en français, de façon courte (3 à 5 phrases maximum), concrète, et vouvoie l'utilisateur.
+  const system = `Tu es l'assistant de l'application Artis & You. ${who}
+Réponds dans la langue de la question de l'utilisateur (français par défaut), de façon courte (3 à 5 phrases maximum), concrète, et vouvoie l'utilisateur.
 Appuie-toi UNIQUEMENT sur les fiches d'aide ci-dessous. Si elles ne permettent pas de répondre, dis-le simplement et propose de contacter le support (Paramètres › Aide et support). N'invente jamais de fonctionnalité, de prix ni de chemin de menu.
 Écris en texte simple : pas de Markdown, pas d'astérisques, pas de titres. Tu ne peux faire aucune action toi-même (envoyer un message, créer un document) : ne dis jamais qu'une action a été faite ou qu'une notification sera envoyée.
 Fiches d'aide :

@@ -1610,3 +1610,340 @@ Pour refuser, choisissez ou écrivez un motif.|To decline, choose or write a rea
 Suggestions|Suggestions|Sugestões|Suggerimenti
 Voir les artisans|See tradespeople|Ver os profissionais|Vedi gli artigiani
 Rechercher « {q} »|Search "{q}"|Pesquisar «{q}»|Cerca «{q}»
+Administrateur|Administrator|Administrador|Amministratore
+Espace administrateur|Admin area|Área de administração|Area amministratore
+Mise en place de l’espace Artis & You…|Setting up the Artis & You area…|A preparar a área Artis & You…|Configurazione dell'area Artis & You…
++{n} en 7 jours|+{n} in 7 days|+{n} em 7 dias|+{n} in 7 giorni
+Entreprises validées|Approved companies|Empresas validadas|Aziende approvate
+{n} en attente|{n} pending|{n} pendentes|{n} in attesa
+En essai gratuit|On free trial|Em período de teste|In prova gratuita
+{n} finissent sous 7 jours|{n} ending within 7 days|{n} terminam em 7 dias|{n} scadono entro 7 giorni
+Abonnements estimés|Estimated subscriptions|Assinaturas estimadas|Abbonamenti stimati
+par mois, HT|per month, excl. VAT|por mês, sem IVA|al mese, IVA esclusa
+Tout est à jour|All up to date|Tudo em dia|Tutto aggiornato
+Entreprises à valider|Companies to approve|Empresas a validar|Aziende da approvare
+Pièces d’identité|ID documents|Documentos de identificação|Documenti d'identità
+Documents des pros|Pros' documents|Documentos dos profissionais|Documenti dei professionisti
+Kbis, URSSAF, décennale|Kbis, URSSAF, ten-year insurance|Kbis, URSSAF, seguro decenal|Kbis, URSSAF, assicurazione decennale
+Avis à relire|Reviews to check|Avaliações a rever|Recensioni da verificare
+Signalements|Reports|Denúncias|Segnalazioni
+Métiers proposés|Suggested trades|Profissões propostas|Mestieri proposti
+La plateforme|The platform|A plataforma|La piattaforma
+Artisans et particuliers|Tradespeople and individuals|Artesãos e particulares|Artigiani e privati
+Toutes les entreprises|All companies|Todas as empresas|Tutte le aziende
+Statistiques|Statistics|Estatísticas|Statistiche
+Inscriptions, essais, abonnements|Sign-ups, trials, subscriptions|Inscrições, testes, assinaturas|Iscrizioni, prove, abbonamenti
+Juridique|Legal|Jurídico|Legale
+Pages légales, conformité|Legal pages, compliance|Páginas legais, conformidade|Pagine legali, conformità
+Notre équipe|Our team|A nossa equipa|Il nostro team
+Partagé entre administrateurs|Shared between administrators|Partilhado entre administradores|Condiviso tra amministratori
+Prospection|Prospecting|Prospeção|Prospezione
+Artisans à convaincre|Tradespeople to win over|Artesãos a convencer|Artigiani da convincere
+Tâches|Tasks|Tarefas|Attività
+Notes et wiki|Notes and wiki|Notas e wiki|Note e wiki
+Fichiers|Files|Ficheiros|File
+Service client|Customer service|Apoio ao cliente|Assistenza clienti
+Messages des pros|Messages from pros|Mensagens dos profissionais|Messaggi dei professionisti
+Notre activité Artis & You|Our Artis & You business|A nossa atividade Artis & You|La nostra attività Artis & You
+Clients, devis, factures et comptabilité d’Artis & You|Artis & You clients, quotes, invoices and accounting|Clientes, orçamentos, faturas e contabilidade da Artis & You|Clienti, preventivi, fatture e contabilità di Artis & You
+Impayés|Unpaid invoices|Faturas por pagar|Insoluti
+Tableau des comptes|Account statements|Quadro de contas|Prospetto dei conti
+Facturation électronique|E-invoicing|Faturação eletrónica|Fatturazione elettronica
+Offres et tarifs|Plans and pricing|Planos e preços|Offerte e prezzi
+Prix des abonnements|Subscription prices|Preços das assinaturas|Prezzi degli abbonamenti
+Services branchés|Connected services|Serviços ligados|Servizi collegati
+Infos Artis & You|Artis & You details|Dados da Artis & You|Dati di Artis & You
+SIRET, TVA, mentions|SIRET, VAT, legal notices|SIRET, IVA, menções|SIRET, IVA, diciture
+Actualiser les compteurs|Refresh counters|Atualizar contadores|Aggiorna i contatori
+{n} comptes|{n} accounts|{n} contas|{n} account
+Nom, e-mail, entreprise…|Name, e-mail, company…|Nome, e-mail, empresa…|Nome, e-mail, azienda…
+Exporter (CSV)|Export (CSV)|Exportar (CSV)|Esporta (CSV)
+Aucun compte|No accounts|Nenhuma conta|Nessun account
+Inscrit|Signed up|Inscrito|Iscritto
+Hors compte Artis & You|Excluding the Artis & You account|Sem a conta Artis & You|Escluso l'account Artis & You
+{a} artisans · {p} particuliers|{a} tradespeople · {p} individuals|{a} artesãos · {p} particulares|{a} artigiani · {p} privati
+Nouveaux (30 j)|New (30 days)|Novos (30 dias)|Nuovi (30 gg)
+Devis émis|Quotes issued|Orçamentos emitidos|Preventivi emessi
+Factures émises|Invoices issued|Faturas emitidas|Fatture emesse
+RDV (30 j)|Appointments (30 days)|Marcações (30 dias)|Appuntamenti (30 gg)
+Avis publiés|Reviews published|Avaliações publicadas|Recensioni pubblicate
+Inscriptions par semaine|Sign-ups per week|Inscrições por semana|Iscrizioni a settimana
+12 dernières semaines|Last 12 weeks|Últimas 12 semanas|Ultime 12 settimane
+Pas encore d’inscription|No sign-ups yet|Ainda sem inscrições|Ancora nessuna iscrizione
+Entreprises et abonnements|Companies and subscriptions|Empresas e assinaturas|Aziende e abbonamenti
+Validées|Approved|Validadas|Approvate
+En attente de validation|Awaiting approval|A aguardar validação|In attesa di approvazione
+Essai terminé (abonnement attendu)|Trial ended (subscription expected)|Teste terminado (assinatura esperada)|Prova terminata (abbonamento atteso)
+Revenu mensuel estimé|Estimated monthly revenue|Receita mensal estimada|Ricavo mensile stimato
+Estimation : le paiement des abonnements n’est pas encore relié.|Estimate: subscription payments are not connected yet.|Estimativa: o pagamento das assinaturas ainda não está ligado.|Stima: il pagamento degli abbonamenti non è ancora collegato.
+Essais qui se terminent sous 7 jours|Trials ending within 7 days|Testes que terminam em 7 dias|Prove che scadono entro 7 giorni
+fin le {d}|ends on {d}|termina a {d}|scade il {d}
+Non échu|Not yet due|Não vencido|Non scaduto
+1 à 30 j|1 to 30 days|1 a 30 dias|Da 1 a 30 gg
+31 à 60 j|31 to 60 days|31 a 60 dias|Da 31 a 60 gg
+Plus de 60 j|Over 60 days|Mais de 60 dias|Oltre 60 gg
+Calculé automatiquement depuis vos factures, paiements et achats|Calculated automatically from your invoices, payments and purchases|Calculado automaticamente a partir das suas faturas, pagamentos e compras|Calcolato automaticamente da fatture, pagamenti e acquisti
+Synthèse|Summary|Resumo|Sintesi
+Balance|Trial balance|Balancete|Bilancio di verifica
+Grand livre|General ledger|Razão geral|Libro mastro
+Journal|Journal|Diário|Libro giornale
+Chiffre d’affaires HT|Revenue excl. VAT|Volume de negócios sem IVA|Fatturato IVA esclusa
+Achats HT|Purchases excl. VAT|Compras sem IVA|Acquisti IVA esclusa
+Résultat avant impôt (estimé)|Profit before tax (estimate)|Resultado antes de impostos (estimado)|Risultato ante imposte (stima)
+Trésorerie encaissée|Cash received|Tesouraria recebida|Liquidità incassata
+hors achats payés|excluding paid purchases|sem as compras pagas|esclusi gli acquisti pagati
+Facturé et encaissé par mois|Invoiced and received per month|Faturado e recebido por mês|Fatturato e incassato al mese
+Facturé HT|Invoiced excl. VAT|Faturado sem IVA|Fatturato IVA esclusa
+Encaissé TTC|Received incl. VAT|Recebido com IVA|Incassato IVA inclusa
+TVA par mois|VAT per month|IVA por mês|IVA al mese
+collectée − déductible|collected − deductible|liquidado − dedutível|a debito − detraibile
+Rien sur l’année|Nothing this year|Nada neste ano|Niente quest'anno
+Factures à encaisser|Invoices to collect|Faturas a receber|Fatture da incassare
+toutes années|all years|todos os anos|tutti gli anni
+Export comptable (Excel, FEC)|Accounting export (Excel, FEC)|Exportação contabilística (Excel, FEC)|Esportazione contabile (Excel, FEC)
+Journal des écritures (CSV)|Journal entries (CSV)|Diário de lançamentos (CSV)|Libro giornale delle scritture (CSV)
+Relancer les impayés|Chase unpaid invoices|Cobrar faturas por pagar|Sollecita gli insoluti
+Conservation et obligations|Retention and obligations|Conservação e obrigações|Conservazione e obblighi
+Aucune écriture sur l’année|No entries this year|Nenhum lançamento neste ano|Nessuna scrittura quest'anno
+Débit|Debit|Débito|Dare
+Crédit|Credit|Crédito|Avere
+Aucune écriture sur ce compte|No entries on this account|Nenhum lançamento nesta conta|Nessuna scrittura su questo conto
+Solde du compte : {s}|Account balance: {s}|Saldo da conta: {s}|Saldo del conto: {s}
+Télécharger (CSV)|Download (CSV)|Descarregar (CSV)|Scarica (CSV)
+Comptabilité de trésorerie simplifiée, calculée à partir des documents d’Artis & You. Elle prépare le travail de l’expert-comptable et ne le remplace pas.|Simplified cash accounting, calculated from Artis & You's documents. It prepares the accountant's work and does not replace it.|Contabilidade de tesouraria simplificada, calculada a partir dos documentos da Artis & You. Prepara o trabalho do contabilista e não o substitui.|Contabilità di cassa semplificata, calcolata dai documenti di Artis & You. Prepara il lavoro del commercialista e non lo sostituisce.
+SIRET de l’entreprise (14 chiffres)|Company SIRET (14 digits)|SIRET da empresa (14 algarismos)|SIRET dell'azienda (14 cifre)
+N° de TVA intracommunautaire (ou franchise de TVA)|EU VAT number (or VAT exemption)|N.º de IVA intracomunitário (ou isenção de IVA)|Partita IVA intracomunitaria (o franchigia IVA)
+Adresse complète|Full address|Morada completa|Indirizzo completo
+E-mail de facturation|Billing e-mail|E-mail de faturação|E-mail di fatturazione
+Réforme 2026–2027|2026–2027 reform|Reforma 2026–2027|Riforma 2026–2027
+Où en est Artis & You ?|Where does Artis & You stand?|Em que ponto está a Artis & You?|A che punto è Artis & You?
+Format des factures|Invoice format|Formato das faturas|Formato delle fatture
+Plateforme agréée (envoi et réception)|Approved platform (sending and receiving)|Plataforma certificada (envio e receção)|Piattaforma accreditata (invio e ricezione)
+Pas encore connectée|Not connected yet|Ainda não ligada|Non ancora collegata
+Réception obligatoire|Receiving mandatory|Receção obrigatória|Ricezione obbligatoria
+depuis le 1er septembre 2026|since 1 September 2026|desde 1 de setembro de 2026|dal 1° settembre 2026
+Émission obligatoire (PME, micro)|Issuing mandatory (SMEs, micro-businesses)|Emissão obrigatória (PME, micro)|Emissione obbligatoria (PMI, micro)
+à partir du 1er septembre 2027|from 1 September 2027|a partir de 1 de setembro de 2027|dal 1° settembre 2027
+Informations obligatoires|Mandatory information|Informações obrigatórias|Informazioni obbligatorie
+Compléter les infos Artis & You|Complete the Artis & You details|Completar os dados da Artis & You|Completa i dati di Artis & You
+Prochaine étape : Super PDP|Next step: Super PDP|Próximo passo: Super PDP|Prossimo passo: Super PDP
+Super PDP est une plateforme agréée : elle transmettra nos factures et celles des artisans au format officiel, et recevra les factures des fournisseurs.|Super PDP is an approved platform: it will send our invoices and the tradespeople's in the official format, and receive suppliers' invoices.|A Super PDP é uma plataforma certificada: vai transmitir as nossas faturas e as dos artesãos no formato oficial e receber as faturas dos fornecedores.|Super PDP è una piattaforma accreditata: trasmetterà le nostre fatture e quelle degli artigiani nel formato ufficiale e riceverà le fatture dei fornitori.
+Créer le compte de test Super PDP (gratuit) une fois la société immatriculée.|Create the free Super PDP test account once the company is registered.|Criar a conta de teste Super PDP (gratuita) quando a empresa estiver registada.|Creare l'account di prova Super PDP (gratuito) dopo l'iscrizione della società.
+Ajouter la clé dans les réglages Supabase (jamais dans le chat).|Add the key in the Supabase settings (never in the chat).|Adicionar a chave nas definições do Supabase (nunca no chat).|Aggiungere la chiave nelle impostazioni di Supabase (mai nella chat).
+Envoyer une facture de test, vérifier le statut « Déposée », puis passer en production (0,01 € HT par facture).|Send a test invoice, check the “Filed” status, then go live (€0.01 excl. VAT per invoice).|Enviar uma fatura de teste, verificar o estado «Depositada» e passar para produção (0,01 € sem IVA por fatura).|Inviare una fattura di prova, verificare lo stato «Depositata», poi passare in produzione (0,01 € IVA esclusa per fattura).
+Factures émises par Artis & You|Invoices issued by Artis & You|Faturas emitidas pela Artis & You|Fatture emesse da Artis & You
+Aucune facture pour l’instant|No invoices yet|Ainda sem faturas|Ancora nessuna fattura
+N°|No.|N.º|N.
+Statut d’envoi|Sending status|Estado de envio|Stato di invio
+Factur-X prêt|Factur-X ready|Factur-X pronto|Factur-X pronto
+Chaque facture se télécharge au format Factur-X depuis sa fiche. L’envoi automatique par la plateforme agréée sera activé avec Super PDP.|Each invoice can be downloaded in Factur-X format from its page. Automatic sending through the approved platform will be switched on with Super PDP.|Cada fatura descarrega-se em formato Factur-X a partir da sua ficha. O envio automático pela plataforma certificada será ativado com a Super PDP.|Ogni fattura si scarica in formato Factur-X dalla sua scheda. L'invio automatico tramite la piattaforma accreditata sarà attivato con Super PDP.
+Pages légales et conformité|Legal pages and compliance|Páginas legais e conformidade|Pagine legali e conformità
+À faire avant le lancement : compléter les informations de la société (en orange dans les mentions légales), choisir un médiateur de la consommation et faire relire les textes par un avocat.|To do before launch: complete the company details (in orange in the legal notice), choose a consumer mediator and have the texts reviewed by a lawyer.|A fazer antes do lançamento: completar os dados da empresa (a laranja nas menções legais), escolher um mediador do consumo e mandar rever os textos por um advogado.|Da fare prima del lancio: completare i dati della società (in arancione nelle note legali), scegliere un mediatore dei consumatori e far rileggere i testi da un avvocato.
+Ce qui est en place|What is in place|O que está implementado|Cosa è già in funzione
+Bouton de rétractation en ligne sur les devis des particuliers, avec accusé de réception|Online withdrawal button on individuals' quotes, with acknowledgement of receipt|Botão de desistência online nos orçamentos dos particulares, com aviso de receção|Pulsante di recesso online sui preventivi dei privati, con ricevuta
+Signalement des contenus et décisions motivées|Content reporting and reasoned decisions|Denúncia de conteúdos e decisões fundamentadas|Segnalazione dei contenuti e decisioni motivate
+Explication du classement et du contrôle des avis|Explanation of the ranking and of review checks|Explicação da classificação e do controlo das avaliações|Spiegazione della classifica e del controllo delle recensioni
+Vérification d’identité des dirigeants, copies supprimées après contrôle|Identity check of company directors, copies deleted after checking|Verificação de identidade dos dirigentes, cópias apagadas após controlo|Verifica dell'identità dei titolari, copie eliminate dopo il controllo
+Mention de franchise de TVA mise à jour automatiquement au 1er janvier 2027|VAT exemption wording updated automatically on 1 January 2027|Menção de isenção de IVA atualizada automaticamente a 1 de janeiro de 2027|Dicitura di franchigia IVA aggiornata automaticamente il 1° gennaio 2027
+Vous travaillez en tant que|You are working as|Está a trabalhar como|Stai lavorando come
+Qui travaille sur cet appareil ?|Who is working on this device?|Quem trabalha neste aparelho?|Chi lavora su questo dispositivo?
+Choisissez votre nom : vos actions seront signées.|Choose your name: your actions will be signed.|Escolha o seu nome: as suas ações serão assinadas.|Scegli il tuo nome: le tue azioni saranno firmate.
+{a} → {b}|{a} → {b}|{a} → {b}|{a} → {b}
+{n} prospect(s) supprimé(s)|{n} prospect(s) deleted|{n} potencial(is) cliente(s) apagado(s)|{n} potenziali clienti eliminati
+Votre carnet de prospects, partagé à deux|Your prospect list, shared between the two of you|A sua lista de potenciais clientes, partilhada a dois|La vostra rubrica di potenziali clienti, condivisa in due
+Importer|Import|Importar|Importa
+Exporter|Export|Exportar|Esporta
+{m} / mois potentiels|{m} / month potential|{m} / mês potenciais|{m} / mese potenziali
+À relancer|To follow up|A contactar de novo|Da ricontattare
+aujourd’hui ou en retard|today or overdue|hoje ou em atraso|oggi o in ritardo
+Mes prospects ({n})|My prospects ({n})|Os meus potenciais clientes ({n})|I miei potenziali clienti ({n})
+Abonnés gagnés|Subscribers won|Assinantes conquistados|Abbonati conquistati
+de conversion|conversion|de conversão|di conversione
+Nom, ville, métier, téléphone…|Name, town, trade, phone…|Nome, cidade, profissão, telefone…|Nome, città, mestiere, telefono…
+Non attribués|Unassigned|Não atribuídos|Non assegnati
+Vue tableau|Board view|Vista de quadro|Vista a colonne
+Vue liste|List view|Vista de lista|Vista elenco
+Aucun prospect pour l’instant.|No prospects yet.|Ainda sem potenciais clientes.|Ancora nessun potenziale cliente.
+Importer un fichier Excel ou CSV|Import an Excel or CSV file|Importar um ficheiro Excel ou CSV|Importa un file Excel o CSV
++{n} autres : affinez la recherche|+{n} more: refine your search|+{n} outros: refine a pesquisa|+{n} altri: affina la ricerca
+{n} sélectionné(s)|{n} selected|{n} selecionado(s)|{n} selezionati
+Attribué à {n}|Assigned to {n}|Atribuído a {n}|Assegnato a {n}
+À {n}|To {n}|A {n}|A {n}
+Étape modifiée|Stage changed|Etapa alterada|Fase modificata
+Changer d’étape|Change stage|Mudar de etapa|Cambia fase
+Changer d’étape…|Change stage…|Mudar de etapa…|Cambia fase…
+Confirmer : supprimer {n} prospect(s)|Confirm: delete {n} prospect(s)|Confirmar: apagar {n} potencial(is) cliente(s)|Conferma: elimina {n} potenziali clienti
+Aucun prospect ne correspond|No matching prospects|Nenhum potencial cliente corresponde|Nessun potenziale cliente corrisponde
+Sélectionner|Select|Selecionar|Seleziona
+Étape|Stage|Etapa|Fase
+Responsable|Owner|Responsável|Responsabile
+Relance|Follow-up|Seguimento|Promemoria
+Les 500 premiers sont affichés : affinez la recherche ou exportez.|The first 500 are shown: refine your search or export.|São mostrados os 500 primeiros: refine a pesquisa ou exporte.|Sono mostrati i primi 500: affina la ricerca o esporta.
+Fiche prospect|Prospect record|Ficha do potencial cliente|Scheda del potenziale cliente
+Nouveau prospect|New prospect|Novo potencial cliente|Nuovo potenziale cliente
+Importer des prospects|Import prospects|Importar potenciais clientes|Importa potenziali clienti
+Non attribué|Unassigned|Não atribuído|Non assegnato
+Fiche créée|Record created|Ficha criada|Scheda creata
+Fiche enregistrée|Record saved|Ficha guardada|Scheda salvata
+Relancer|Follow up|Voltar a contactar|Ricontatta
+Tâche ajoutée à « Tâches » et à l’agenda|Task added to “Tasks” and to the calendar|Tarefa adicionada a «Tarefas» e à agenda|Attività aggiunta ad «Attività» e all'agenda
+Venu de la prospection ({w})|From prospecting ({w})|Vindo da prospeção ({w})|Dalla prospezione ({w})
+Fiche client créée|Client record created|Ficha de cliente criada|Scheda cliente creata
+Client créé : vous pouvez lui faire un devis ou une facture|Client created: you can now send them a quote or an invoice|Cliente criado: pode fazer-lhe um orçamento ou uma fatura|Cliente creato: puoi fargli un preventivo o una fattura
+Nom (entreprise ou artisan)|Name (company or tradesperson)|Nome (empresa ou artesão)|Nome (azienda o artigiano)
+Pris en charge par|Handled by|A cargo de|Gestito da
+Personne|Nobody|Ninguém|Nessuno
+Ont travaillé dessus|Worked on it|Trabalharam nisto|Ci hanno lavorato
+Site|Website|Site|Sito
+Ex. : messagerie, rappeler jeudi ; intéressé par la formule Équipe…|E.g. voicemail, call back Thursday; interested in the Team plan…|Ex.: caixa de correio, ligar na quinta; interessado no plano Equipa…|Es.: segreteria, richiamare giovedì; interessato al piano Squadra…
+Ce qui s’est passé…|What happened…|O que aconteceu…|Cosa è successo…
+Ajouter ({w})|Add ({w})|Adicionar ({w})|Aggiungi ({w})
+Choisissez d’abord votre nom en haut|First choose your name at the top|Escolha primeiro o seu nome no topo|Scegli prima il tuo nome in alto
+Rien pour l’instant.|Nothing yet.|Nada por agora.|Niente per ora.
+Priorité|Priority|Prioridade|Priorità
+Basse|Low|Baixa|Bassa
+Normale|Normal|Normal|Normale
+Haute|High|Alta|Alta
+Prochaine action|Next action|Próxima ação|Prossima azione
+Rappeler, envoyer la démo…|Call back, send the demo…|Ligar de novo, enviar a demo…|Richiamare, inviare la demo…
+Pour le|Due|Para|Per il
+En faire une tâche (agenda)|Make it a task (calendar)|Transformar em tarefa (agenda)|Trasforma in attività (agenda)
+salon, bouche-à-oreille, fichier…|trade fair, word of mouth, file…|feira, passa-palavra, ficheiro…|fiera, passaparola, file…
+Formule visée|Target plan|Plano pretendido|Piano previsto
+Valeur / mois (€)|Value / month (€)|Valor / mês (€)|Valore / mese (€)
+Étiquettes (séparées par des virgules)|Tags (comma-separated)|Etiquetas (separadas por vírgulas)|Etichette (separate da virgole)
+Notes|Notes|Notas|Note
+Créer la fiche client Artis & You (devis, factures)|Create the Artis & You client record (quotes, invoices)|Criar a ficha de cliente Artis & You (orçamentos, faturas)|Crea la scheda cliente Artis & You (preventivi, fatture)
+Prospect supprimé|Prospect deleted|Potencial cliente apagado|Potenziale cliente eliminato
+Confirmer la suppression (historique compris)|Confirm deletion (history included)|Confirmar a eliminação (histórico incluído)|Conferma l'eliminazione (storico compreso)
+Créé {a} · modifié {b}|Created {a} · edited {b}|Criado {a} · alterado {b}|Creato {a} · modificato {b}
+Le fichier est vide.|The file is empty.|O ficheiro está vazio.|Il file è vuoto.
+Colonne {n}|Column {n}|Coluna {n}|Colonna {n}
+{n} prospect(s) importé(s)|{n} prospect(s) imported|{n} potencial(is) cliente(s) importado(s)|{n} potenziali clienti importati
+Excel (.xlsx) ou CSV, une ligne par prospect. Les colonnes sont reconnues toutes seules (Entreprise, Contact, Téléphone, E-mail, Ville, Métier…) et vous pouvez corriger avant d’importer.|Excel (.xlsx) or CSV, one row per prospect. Columns are recognised automatically (Company, Contact, Phone, E-mail, Town, Trade…) and you can correct them before importing.|Excel (.xlsx) ou CSV, uma linha por potencial cliente. As colunas são reconhecidas automaticamente (Empresa, Contacto, Telefone, E-mail, Cidade, Profissão…) e pode corrigi-las antes de importar.|Excel (.xlsx) o CSV, una riga per potenziale cliente. Le colonne vengono riconosciute da sole (Azienda, Contatto, Telefono, E-mail, Città, Mestiere…) e puoi correggerle prima di importare.
+Ancien format .xls : ouvrez-le dans Excel puis « Enregistrer sous » .xlsx ou CSV.|Old .xls format: open it in Excel then “Save as” .xlsx or CSV.|Formato antigo .xls: abra-o no Excel e depois «Guardar como» .xlsx ou CSV.|Vecchio formato .xls: aprilo in Excel e poi «Salva con nome» .xlsx o CSV.
+{n} ligne(s)|{n} row(s)|{n} linha(s)|{n} righe
+changer|change|alterar|cambia
+La première ligne contient les titres des colonnes|The first row contains the column headings|A primeira linha contém os títulos das colunas|La prima riga contiene i titoli delle colonne
+— ignorer —|— ignore —|— ignorar —|— ignora —
+Attribuer les prospects à|Assign prospects to|Atribuir os potenciais clientes a|Assegna i potenziali clienti a
+si le fichier n’a pas de colonne « Responsable »|if the file has no “Owner” column|se o ficheiro não tiver coluna «Responsável»|se il file non ha la colonna «Responsabile»
+Ignorer les doublons (même e-mail, téléphone, SIRET ou nom + ville)|Skip duplicates (same e-mail, phone, SIRET or name + town)|Ignorar duplicados (mesmo e-mail, telefone, SIRET ou nome + cidade)|Ignora i doppioni (stessa e-mail, telefono, SIRET o nome + città)
+{n} à importer|{n} to import|{n} a importar|{n} da importare
+{n} doublon(s) ignoré(s)|{n} duplicate(s) skipped|{n} duplicado(s) ignorado(s)|{n} doppioni ignorati
+Indiquez la colonne du nom|Select the name column|Indique a coluna do nome|Indica la colonna del nome
+Importer {n} prospect(s)|Import {n} prospect(s)|Importar {n} potencial(is) cliente(s)|Importa {n} potenziali clienti
+Tarifs enregistrés : ils sont à jour sur le site|Prices saved: they are up to date on the website|Preços guardados: estão atualizados no site|Prezzi salvati: sono aggiornati sul sito
+Ce que voient les artisans sur le site et dans leur abonnement|What tradespeople see on the website and in their subscription|O que os artesãos veem no site e na sua assinatura|Cosa vedono gli artigiani sul sito e nel loro abbonamento
+Nom de la formule|Plan name|Nome do plano|Nome del piano
+Prix HT / mois (€)|Price excl. VAT / month (€)|Preço sem IVA / mês (€)|Prezzo IVA esclusa / mese (€)
+Utilisateurs (0 = illimité)|Users (0 = unlimited)|Utilizadores (0 = ilimitado)|Utenti (0 = illimitati)
+Phrase courte|Short description|Frase curta|Frase breve
+Ce qui est inclus (une ligne par avantage)|What's included (one benefit per line)|O que está incluído (uma vantagem por linha)|Cosa è incluso (un vantaggio per riga)
+Réglages généraux|General settings|Definições gerais|Impostazioni generali
+Durée de l’essai gratuit (jours)|Free trial length (days)|Duração do teste gratuito (dias)|Durata della prova gratuita (giorni)
+pour les nouvelles inscriptions|for new sign-ups|para as novas inscrições|per le nuove iscrizioni
+Bandeau d’information (facultatif)|Information banner (optional)|Faixa de informação (opcional)|Banner informativo (facoltativo)
+ex. maintenance prévue dimanche|e.g. maintenance planned on Sunday|ex.: manutenção prevista no domingo|es. manutenzione prevista domenica
+Les artisans déjà inscrits gardent leur formule ; le nouveau prix s’affiche partout dès l’enregistrement. Pensez à prévenir les abonnés 15 jours avant une hausse (CGV).|Tradespeople already signed up keep their plan; the new price shows everywhere as soon as it is saved. Remember to notify subscribers 15 days before a price rise (terms of sale).|Os artesãos já inscritos mantêm o seu plano; o novo preço aparece em todo o lado assim que for guardado. Lembre-se de avisar os assinantes 15 dias antes de um aumento (condições de venda).|Gli artigiani già iscritti mantengono il loro piano; il nuovo prezzo compare ovunque appena salvato. Ricorda di avvisare gli abbonati 15 giorni prima di un aumento (condizioni di vendita).
+Enregistrer les tarifs|Save prices|Guardar os preços|Salva i prezzi
+Fait par {w}|Done by {w}|Feito por {w}|Fatto da {w}
+Partagées entre vous|Shared between you|Partilhadas entre vocês|Condivise tra voi
+Nouvelle tâche…|New task…|Nova tarefa…|Nuova attività…
+Pour|For|Para|Per
+Pour moi ({w})|For me ({w})|Para mim ({w})|Per me ({w})
+Pour…|For…|Para…|Per…
+Terminées|Done|Concluídas|Completate
+Rien de terminé pour l’instant|Nothing completed yet|Nada concluído por agora|Ancora niente di completato
+Aucune tâche|No tasks|Nenhuma tarefa|Nessuna attività
+Rouvrir|Reopen|Reabrir|Riapri
+prospect|prospect|potencial cliente|potenziale cliente
+Rendez-vous, tâches et relances de prospection|Appointments, tasks and prospecting follow-ups|Marcações, tarefas e seguimentos de prospeção|Appuntamenti, attività e promemoria di prospezione
+Planning détaillé|Detailed schedule|Planeamento detalhado|Planning dettagliato
+Mois précédent|Previous month|Mês anterior|Mese precedente
+Mois suivant|Next month|Mês seguinte|Mese successivo
+Sans titre|Untitled|Sem título|Senza titolo
+Procédures, idées, comptes rendus, partagés entre vous|Procedures, ideas, meeting notes, shared between you|Procedimentos, ideias, atas, partilhados entre vocês|Procedure, idee, verbali, condivisi tra voi
+Nouvelle note|New note|Nova nota|Nuova nota
+Chercher dans les notes…|Search notes…|Pesquisar nas notas…|Cerca nelle note…
+Aucune note|No notes|Nenhuma nota|Nessuna nota
+Choisissez une note ou créez-en une.|Choose a note or create one.|Escolha uma nota ou crie uma.|Scegli una nota o creane una.
+Titre|Title|Título|Titolo
+Dossier|Folder|Pasta|Cartella
+Épinglée|Pinned|Fixada|Fissata
+Écrivez ici… (listes avec « - », titres avec « # »)|Write here… (lists with “-”, headings with “#”)|Escreva aqui… (listas com «-», títulos com «#»)|Scrivi qui… (elenchi con «-», titoli con «#»)
+Note supprimée|Note deleted|Nota apagada|Nota eliminata
+Fichiers ajoutés|Files added|Ficheiros adicionados|File aggiunti
+Fichiers partagés|Shared files|Ficheiros partilhados|File condivisi
+Statuts, contrats, logos, présentations…|Articles of association, contracts, logos, presentations…|Estatutos, contratos, logótipos, apresentações…|Statuti, contratti, loghi, presentazioni…
+Chercher un fichier…|Search for a file…|Procurar um ficheiro…|Cerca un file…
+Aucun fichier. Glissez-en avec « Ajouter ».|No files. Add some with “Add”.|Nenhum ficheiro. Adicione com «Adicionar».|Nessun file. Aggiungine con «Aggiungi».
+Taille|Size|Tamanho|Dimensione
+Ajouté|Added|Adicionado|Aggiunto
+Fichier supprimé|File deleted|Ficheiro apagado|File eliminato
+Vous écrivez sous le nom « Artis & You », avec votre logo|You write as “Artis & You”, with your logo|Escreve com o nome «Artis & You», com o seu logótipo|Scrivi con il nome «Artis & You», con il tuo logo
+Les pros et les particuliers vous écrivent depuis Paramètres › Service client. Artis & You reste invisible dans la recherche : seuls ceux que vous contactez, ou qui écrivent au support, vous voient.|Pros and individuals write to you from Settings › Customer service. Artis & You stays hidden from search: only the people you contact, or who write to support, can see you.|Os profissionais e os particulares escrevem-lhe em Definições › Apoio ao cliente. A Artis & You fica invisível na pesquisa: só a veem as pessoas que contacta ou que escrevem ao apoio.|Professionisti e privati ti scrivono da Impostazioni › Assistenza clienti. Artis & You resta invisibile nella ricerca: ti vede solo chi contatti o chi scrive all'assistenza.
+Aucune conversation pour l’instant|No conversations yet|Ainda sem conversas|Ancora nessuna conversazione
+Écrire à…|Write to…|Escrever a…|Scrivi a…
+Un particulier|An individual|Um particular|Un privato
+Entreprise, ville, e-mail…|Company, town, e-mail…|Empresa, cidade, e-mail…|Azienda, città, e-mail…
+Nom, e-mail, ville…|Name, e-mail, town…|Nome, e-mail, cidade…|Nome, e-mail, città…
+Personne ne correspond|No one matches|Ninguém corresponde|Nessuno corrisponde
+Services branchés à la plateforme|Services connected to the platform|Serviços ligados à plataforma|Servizi collegati alla piattaforma
+Par sécurité, les clés secrètes (Resend, Super PDP, paiement) se posent dans les réglages Supabase, jamais dans l’application ni dans un message.|For security, secret keys (Resend, Super PDP, payment) are set in the Supabase settings, never in the app or in a message.|Por segurança, as chaves secretas (Resend, Super PDP, pagamento) são definidas nas definições do Supabase, nunca na aplicação nem numa mensagem.|Per sicurezza, le chiavi segrete (Resend, Super PDP, pagamento) si impostano nelle impostazioni di Supabase, mai nell'app né in un messaggio.
+Écrire à l’équipe Artis & You|Write to the Artis & You team|Escrever à equipa Artis & You|Scrivi al team Artis & You
+Administrateur · Service client|Administrator · Customer service|Administrador · Apoio ao cliente|Amministratore · Assistenza clienti
+Proposer un rendez-vous|Suggest an appointment|Propor uma marcação|Proponi un appuntamento
+Téléphone, WhatsApp, visio… il s’ajoute au planning|Phone, WhatsApp, video call… it goes into the schedule|Telefone, WhatsApp, videochamada… é adicionado ao planeamento|Telefono, WhatsApp, video… si aggiunge al planning
+Connexion et sécurité|Login and security|Início de sessão e segurança|Accesso e sicurezza
+Compte administrateur : vous apparaissez partout sous le nom « Artis & You » avec le logo.|Administrator account: you appear everywhere as “Artis & You” with the logo.|Conta de administrador: aparece em todo o lado com o nome «Artis & You» e o logótipo.|Account amministratore: compari ovunque con il nome «Artis & You» e il logo.
+E-mail de connexion|Login e-mail|E-mail de acesso|E-mail di accesso
+Numéro où vous joindre|Number to reach you on|Número para o contactar|Numero a cui contattarti
+Lien ou e-mail pour la visio|Video call link or e-mail|Link ou e-mail para a videochamada|Link o e-mail per la videochiamata
+Identifiant ou numéro|Username or number|Identificador ou número|Identificativo o numero
+Proposition de rendez-vous|Appointment proposal|Proposta de marcação|Proposta di appuntamento
+Objet (facultatif)|Subject (optional)|Assunto (opcional)|Oggetto (facoltativo)
+Ex. : présentation d’Artis & You, aide à la facturation…|E.g. Artis & You presentation, help with invoicing…|Ex.: apresentação da Artis & You, ajuda com a faturação…|Es.: presentazione di Artis & You, aiuto con la fatturazione…
+Comment ?|How?|Como?|Come?
+la personne choisira parmi ceux-ci|they will choose from these|a pessoa escolherá entre estes|la persona sceglierà tra questi
+Créneaux proposés|Suggested time slots|Horários propostos|Fasce orarie proposte
+Créneau {n}|Time slot {n}|Horário {n}|Fascia {n}
+Autre créneau|Another time slot|Outro horário|Altra fascia oraria
+La personne peut aussi choisir une autre date et heure|They can also choose another date and time|A pessoa também pode escolher outra data e hora|La persona può anche scegliere un'altra data e ora
+Envoyer la proposition|Send the proposal|Enviar a proposta|Invia la proposta
+Demande de rendez-vous|Appointment request|Pedido de marcação|Richiesta di appuntamento
+Demander un rendez-vous à Artis & You|Request an appointment with Artis & You|Pedir uma marcação à Artis & You|Chiedi un appuntamento ad Artis & You
+Quand ?|When?|Quando?|Quando?
+Message (facultatif)|Message (optional)|Mensagem (opcional)|Messaggio (facoltativo)
+De quoi souhaitez-vous parler ?|What would you like to talk about?|Sobre o que gostaria de falar?|Di cosa vorresti parlare?
+L’équipe Artis & You confirme le rendez-vous ou vous propose un autre horaire.|The Artis & You team will confirm the appointment or suggest another time.|A equipa Artis & You confirma a marcação ou propõe-lhe outro horário.|Il team Artis & You conferma l'appuntamento o ti propone un altro orario.
+Quelle plateforme ?|Which platform?|Que plataforma?|Quale piattaforma?
+Ex. : Messenger, Signal, Skype…|E.g. Messenger, Signal, Skype…|Ex.: Messenger, Signal, Skype…|Es.: Messenger, Signal, Skype…
+Plateforme (facultatif)|Platform (optional)|Plataforma (opcional)|Piattaforma (facoltativa)
+Google Meet, Teams, Zoom…|Google Meet, Teams, Zoom…|Google Meet, Teams, Zoom…|Google Meet, Teams, Zoom…
+Rendez-vous confirmé : il est dans votre planning|Appointment confirmed: it is in your schedule|Marcação confirmada: está no seu planeamento|Appuntamento confermato: è nel tuo planning
+Rendez-vous confirmé|Appointment confirmed|Marcação confirmada|Appuntamento confermato
+ou un autre horaire de votre choix|or another time of your choice|ou outro horário à sua escolha|o un altro orario a tua scelta
+Choisir mon créneau|Choose my time slot|Escolher o meu horário|Scegli la mia fascia oraria
+En attente de son choix|Waiting for their choice|A aguardar a escolha|In attesa della sua scelta
+Confirmer ce rendez-vous|Confirm this appointment|Confirmar esta marcação|Conferma questo appuntamento
+En attente de confirmation par Artis & You|Awaiting confirmation by Artis & You|A aguardar confirmação da Artis & You|In attesa di conferma da Artis & You
+Voir dans l’agenda|View in the calendar|Ver na agenda|Vedi nell'agenda
+Voir dans mon planning|View in my schedule|Ver no meu planeamento|Vedi nel mio planning
+Voir dans Mes RDV|View in My appointments|Ver em As minhas marcações|Vedi nei miei appuntamenti
+Choisir mon rendez-vous|Choose my appointment|Escolher a minha marcação|Scegli il mio appuntamento
+Un autre horaire|Another time|Outro horário|Un altro orario
+Autre horaire|Other time|Outro horário|Altro orario
+Choisissez un horaire|Choose a time|Escolha um horário|Scegli un orario
+Confirmer le rendez-vous|Confirm the appointment|Confirmar a marcação|Conferma l'appuntamento
+SIRET, TVA, adresse, mentions|SIRET, VAT, address, legal notices|SIRET, IVA, morada, menções|SIRET, IVA, indirizzo, diciture
+Services connectés à la plateforme|Services connected to the platform|Serviços ligados à plataforma|Servizi collegati alla piattaforma
+Messages des pros et des particuliers|Messages from pros and individuals|Mensagens dos profissionais e particulares|Messaggi di professionisti e privati
+Plateforme Artis & You|Artis & You platform|Plataforma Artis & You|Piattaforma Artis & You
+Ces informations apparaissent sur les devis et factures d’Artis & You (abonnements, prestations). Artis & You n’est pas un artisan : pas de métier, de zone ni de profil public.|This information appears on Artis & You's quotes and invoices (subscriptions, services). Artis & You is not a tradesperson: no trade, area or public profile.|Estas informações aparecem nos orçamentos e faturas da Artis & You (assinaturas, serviços). A Artis & You não é um artesão: sem profissão, zona nem perfil público.|Queste informazioni compaiono sui preventivi e sulle fatture di Artis & You (abbonamenti, servizi). Artis & You non è un artigiano: nessun mestiere, zona né profilo pubblico.
+Présentation (mentions bas de page, e-mails)|Presentation (footer notices, e-mails)|Apresentação (menções de rodapé, e-mails)|Presentazione (diciture a piè di pagina, e-mail)
+Montant dû|Amount due|Montante em dívida|Importo dovuto
+Créer, suivre, signer|Create, track, sign|Criar, acompanhar, assinar|Crea, segui, firma
+Paiements et relances|Payments and reminders|Pagamentos e lembretes|Pagamenti e solleciti
+Discuter avec le client|Chat with the client|Conversar com o cliente|Parla con il cliente
+macOS 11+ · Apple Silicon et Intel · .dmg|macOS 11+ · Apple Silicon and Intel · .dmg|macOS 11+ · Apple Silicon e Intel · .dmg|macOS 11+ · Apple Silicon e Intel · .dmg

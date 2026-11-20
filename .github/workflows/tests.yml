@@ -14,6 +14,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: npm install
-      - run: npm install --no-save playwright@1.49.1 && npx playwright install --with-deps chromium
+      - run: npm install --no-save playwright@1.55.1 && npx playwright install --with-deps chromium
       - run: npm run build
       - run: node tests/e2e.mjs
+      - run: node tests/layout.mjs
