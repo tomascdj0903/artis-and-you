@@ -1488,3 +1488,6 @@ Le nom ne correspond pas au compte|Name does not match the account|O nome não c
 Le nom ne correspond pas au dirigeant inscrit|Name does not match the registered manager|O nome não corresponde ao gerente registado|Il nome non corrisponde al titolare iscritto
 Document non accepté|Document not accepted|Documento não aceite|Documento non accettato
 Particulier|Private client|Particular|Privato
+Fiches et historique|Records and history|Fichas e histórico|Schede e cronologia
+Rendez-vous et agenda|Appointments and calendar|Marcações e agenda|Appuntamenti e agenda
+Voir et envoyer|View and send|Ver e enviar|Vedi e invia

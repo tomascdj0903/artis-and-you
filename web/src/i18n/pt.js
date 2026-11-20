@@ -2635,4 +2635,7 @@ export default {"(copie)":"(cópia)",
 "Pièce expirée":"Documento caducado",
 "Le nom ne correspond pas au compte":"O nome não corresponde à conta",
 "Le nom ne correspond pas au dirigeant inscrit":"O nome não corresponde ao gerente registado",
-"Document non accepté":"Documento não aceite"};
+"Document non accepté":"Documento não aceite",
+"Fiches et historique":"Fichas e histórico",
+"Rendez-vous et agenda":"Marcações e agenda",
+"Voir et envoyer":"Ver e enviar"};

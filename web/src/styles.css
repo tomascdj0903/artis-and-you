@@ -1313,3 +1313,66 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 }
 /* 7 onglets (pro, admin) : libellés un peu plus serrés pour éviter « Messa… » */
 @media (max-width: 1023px) { .tabbar:has(> a:nth-child(7)) a small { font-size: 10.5px; letter-spacing: -.15px; } .tabbar:has(> a:nth-child(7)) { padding-left: 2px; padding-right: 2px; } }
+
+/* ─────────────── Verre profond (novembre 2026) ───────────────
+   Verre terracotta pour les éléments actifs (tuiles, onglet actif, menu, bouton +),
+   verre clair pour l'en-tête et les chiffres clés, verre rosé / encre pour les cartes d'info. */
+:root {
+  --glass-ter: rgba(170,60,38,.88);
+  --glass-ter-fx: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 2px rgba(43,31,28,.12), 0 12px 28px rgba(142,50,32,.22);
+  --glass-light-fx: inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 1px rgba(43,31,28,.06), 0 10px 30px rgba(43,31,28,.12);
+}
+.glass-ter, .htile, .side nav a.on, .fabm-btn, .tabbar a.on {
+  background: var(--glass-ter); -webkit-backdrop-filter: blur(16px) saturate(160%); backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255,255,255,.3); box-shadow: var(--glass-ter-fx); color: #fff;
+}
+.htile { border-radius: 18px; }
+.htile:hover { background: rgba(150,52,32,.92); border-color: rgba(255,255,255,.3); box-shadow: var(--glass-ter-fx); }
+.htile .ht-ic { background: rgba(255,255,255,.2); box-shadow: inset 0 1px 0 rgba(255,255,255,.45); }
+.htile small { color: rgba(255,255,255,.9); }
+.htile .dot { background: #fff; color: var(--bordeaux); box-shadow: 0 2px 6px rgba(43,31,28,.2); }
+.htile .dot.warn { background: #FFE2A8; color: #5C3D00; }
+.side nav a.on { border-color: rgba(255,255,255,.22); }
+.fabm .fab.fabm-btn, :root[data-theme="dark"] .fabm .fab.fabm-btn { background: var(--glass-ter) !important; color: #fff !important; border: 1px solid rgba(255,255,255,.3) !important; box-shadow: var(--glass-ter-fx) !important; }
+@media (max-width: 1023px) {
+  .tabbar a.on, .tabbar a.on.on-dark { background: var(--glass-ter); color: #fff; text-shadow: none; }
+}
+
+/* Accueil : bande d'une seule couleur, en-tête flottant en verre clair */
+.home-band { background: var(--bg-soft); }
+.hb-kpi, .hb-kpi:hover {
+  background: rgba(255,255,255,.42); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255,255,255,.6); box-shadow: var(--glass-light-fx);
+}
+.hb-kpi:hover { background: rgba(255,255,255,.6); }
+.hb-head { display: flex; align-items: center; gap: 16px; z-index: 20; border: 1px solid rgba(255,255,255,.6); }
+.home-band .hb-head .topbar { display: flex; padding: 0; margin: 0; }
+.home-band .hb-head .topbar > div:not(.right) { display: none; }
+.home-band .hb-head .topbar .iconbtn, .home-band .hb-head .topbar .notifbell .iconbtn { background: rgba(255,255,255,.3); box-shadow: none; }
+.hb-search { flex: 1 1 auto; min-width: 0; }
+.hb-search .search { margin: 0; height: 44px; min-height: 44px; background: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.7); box-shadow: none; }
+@media (min-width: 1024px) {
+  .hb-head { position: fixed; top: 12px; left: 264px; right: 16px; height: 66px; padding: 0 14px 0 20px; border-radius: 22px;
+    background: rgba(255,255,255,.42); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%); box-shadow: var(--glass-light-fx); }
+  .home-band { padding-top: 88px; }
+  .hb-hello b { font-size: 18px; }
+}
+@media (max-width: 1023px) {
+  /* Mobile : verre quasi transparent, comme la barre du bas */
+  .hb-head { position: fixed; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; height: 58px; padding: 0 8px 0 16px; border-radius: 29px; border-color: rgba(255,255,255,.75);
+    background: rgba(255,255,255,.12); -webkit-backdrop-filter: blur(3px) saturate(200%); backdrop-filter: blur(3px) saturate(200%);
+    box-shadow: inset 0 1px 0 #fff, inset 0 -1px 1px rgba(43,31,28,.06), 0 10px 30px rgba(43,31,28,.10); text-shadow: 0 0 8px rgba(255,255,255,.9); }
+  .hb-head .hb-hello { flex: 1; min-width: 0; } .hb-head .hb-hello b { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .home-band { padding-top: 82px; }
+}
+:root[data-theme="dark"] .hb-head, :root[data-theme="dark"] .hb-kpi { background: rgba(28,28,30,.5); border-color: rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.4); text-shadow: none; }
+
+/* Validation du compte (verre rosé) et relances (verre encre), côte à côte sur ordinateur */
+.home-duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.home-duo:empty { display: none; }
+.home-duo .alert { margin: 0; }
+.glass-rose { background: rgba(251,232,225,.62); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%); border: 1px solid rgba(255,255,255,.75); box-shadow: var(--glass-light-fx); border-radius: 18px; padding: 16px 18px; }
+.rel-card { display: flex; flex-direction: column; gap: 4px; padding: 16px 18px; border-radius: 18px; color: #fff; text-decoration: none;
+  background: rgba(43,31,28,.84); -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%); border: 1px solid rgba(255,255,255,.16); box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 12px 28px rgba(43,31,28,.22); }
+.rel-card span { font-size: 13px; font-weight: 600; color: #F5D3C6; } .rel-card b { font-size: 18px; } .rel-card small { font-size: 13px; color: rgba(255,255,255,.78); }
+:root[data-theme="dark"] .glass-rose { background: rgba(67,40,32,.6); border-color: rgba(255,255,255,.12); }

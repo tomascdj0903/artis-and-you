@@ -11,19 +11,8 @@ import { TopBar, SearchBar, useData, Loader, Sec, Empty, StatusPill } from '../.
 import { clientName, money, date, dateShort, hm } from '../../lib/format.js';
 import { statusPill, kindLabel, apptStatus, effectiveStatus } from '../../lib/docs.js';
 
-const tileSub = (to, st, unread) => {
-  if (!st) return null;
-  const n = (k, one, many) => (k === 1 ? t(one) : t(many, { n: k }));
-  switch (to) {
-    case '/pro/clients': return [n(st.clients, '1 fiche client', '{n} fiches clients')];
-    case '/pro/planning': return [st.today ? n(st.today, '1 RDV aujourd’hui', '{n} RDV aujourd’hui') : t('Aucun RDV aujourd’hui')];
-    case '/pro/documents': return st.late ? ['! ' + n(st.late, '1 facture en retard', '{n} factures en retard'), true] : [st.pending ? n(st.pending, '1 devis en attente', '{n} devis en attente') : t('Devis et factures')];
-    case '/pro/crm': return [t('Suivi et chiffres')];
-    case '/pro/messages': return [unread.messages ? n(unread.messages, '1 message non lu', '{n} messages non lus') : t('Clients et équipe')];
-    case '/pro/reseau': return [st.net ? n(st.net, '1 pro dans mon réseau', '{n} pros dans mon réseau') : t('Trouver des pros')];
-    default: return null;
-  }
-};
+// Sous-titres fixes des tuiles : pas de chiffres, les nouveautés s'affichent dans la pastille en haut à droite
+const TILE_SUB = { '/pro/clients': 'Fiches et historique', '/pro/planning': 'Rendez-vous et agenda', '/pro/documents': 'Devis et factures', '/pro/crm': 'Suivi et chiffres', '/pro/messages': 'Clients et équipe', '/pro/reseau': 'Trouver des pros' };
 
 export function Home() {
   const { company, can, profile } = useApp();
@@ -71,9 +60,12 @@ export function Home() {
   return (
     <div className="content">
       <section className="home-band">
-        <TopBar back={false} home />
-        <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{company?.trade_name || company?.name}</b></div>
-        <SmartSearch />
+        <div className="hb-head">
+          <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{company?.trade_name || company?.name}</b></div>
+          <div className="hb-search hide-mob"><SmartSearch /></div>
+          <TopBar back={false} home />
+        </div>
+        <div className="hide-desk"><SmartSearch /></div>
         {st && <div className="hb-kpis">
           {can('planning') && <Link to="/pro/planning" className="hb-kpi"><span className="hk-ic"><LuCalendar /></span><b>{st.today}</b><span>{t('RDV aujourd’hui')}</span></Link>}
           {can('devis') && <Link to="/pro/documents/devis" className="hb-kpi"><span className="hk-ic"><LuFileText /></span><b>{st.pending}</b><span>{t('devis en attente')}</span></Link>}
@@ -85,24 +77,28 @@ export function Home() {
         </div>}
       </section>
       <div className="htiles">
-        {tiles.map(([to, I, l]) => { const sub = tileSub(to, st, unread); return (
+        {tiles.map(([to, I, l]) => { const sub = TILE_SUB[to]; return (
           <Link key={to} to={to} className="htile">
             <span className="ht-ic"><I /></span>
             <b>{t(l)}</b>
-            {sub && <small className={sub[1] ? 'warn' : ''}>{sub[0]}</small>}
+            {sub && <small>{t(sub)}</small>}
             {to === '/pro/messages' && unread.messages > 0 && <span className="dot">{unread.messages}</span>}
             {to === '/pro/planning' && unread.rdv > 0 && <span className="dot">{unread.rdv}</span>}
+            {to === '/pro/documents' && st?.late > 0 && <span className="dot warn" title={st.late > 1 ? t('{n} factures en retard', { n: st.late }) : t('1 facture en retard')}>{st.late}</span>}
           </Link>
         ); })}
       </div>
-      {company && (company.verification_status || (company.verified ? 'approved' : 'pending')) !== 'approved' && (
-        <Link to="/pro/compte/entreprise" className="alert" style={{ color: 'inherit' }}>
+      <div className="home-duo">
+        {company && (company.verification_status || (company.verified ? 'approved' : 'pending')) !== 'approved' && (
+        <Link to="/pro/compte/entreprise" className="alert glass-rose" style={{ color: 'inherit' }}>
           <LuShieldAlert className="red-t" size={28} style={{ flexShrink: 0 }} />
           <div>{company.verification_status === 'rejected'
             ? <><b>{t('Votre inscription est à compléter')}</b><div className="small">{company.verification_note || t('L’équipe Artesa a besoin d’informations supplémentaires.')}</div></>
             : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artesa vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
         </Link>
       )}
+        {relN > 0 && <Link to="/pro/relances" className="rel-card"><span>{t('Relances')}</span><b>{relN > 1 ? t('{n} relances clients à envoyer aujourd’hui', { n: relN }) : t('1 relance client à envoyer aujourd’hui')}</b><small>{t('Voir et envoyer')} →</small></Link>}
+      </div>
  {reqs?.length > 0 && (
         <div className="card" style={{ marginBottom: 12 }}>
           <div className="row" style={{ justifyContent: 'space-between' }}><b>📥 {reqs.length > 1 ? t('{n} demandes de rendez-vous à traiter', { n: reqs.length }) : t('1 demande de rendez-vous à traiter')}</b><Link to="/pro/planning" className="small bold">{t('Planning')} ›</Link></div>
@@ -111,7 +107,6 @@ export function Home() {
           ))}</div>
         </div>
       )}
-      {relN > 0 && <Link to="/pro/relances" className="notice">🔔 <span>{relN > 1 ? t('{n} relances clients à envoyer aujourd’hui', { n: relN }) : t('1 relance client à envoyer aujourd’hui')} →</span></Link>}
       <div className="row" style={{ justifyContent: 'flex-end', marginTop: 40 }}><Link to="/mentions-legales" className="bold">{t('Mentions légales')}</Link></div>
     </div>
   );

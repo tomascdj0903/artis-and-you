@@ -2635,4 +2635,7 @@ export default {"(copie)":"(copy)",
 "Pièce expirée":"Document expired",
 "Le nom ne correspond pas au compte":"Name does not match the account",
 "Le nom ne correspond pas au dirigeant inscrit":"Name does not match the registered manager",
-"Document non accepté":"Document not accepted"};
+"Document non accepté":"Document not accepted",
+"Fiches et historique":"Records and history",
+"Rendez-vous et agenda":"Appointments and calendar",
+"Voir et envoyer":"View and send"};
