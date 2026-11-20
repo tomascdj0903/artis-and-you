@@ -2638,4 +2638,5 @@ export default {"(copie)":"(cópia)",
 "Document non accepté":"Documento não aceite",
 "Fiches et historique":"Fichas e histórico",
 "Rendez-vous et agenda":"Marcações e agenda",
-"Voir et envoyer":"Ver e enviar"};
+"Voir et envoyer":"Ver e enviar",
+"Mon espace":"O meu espaço"};

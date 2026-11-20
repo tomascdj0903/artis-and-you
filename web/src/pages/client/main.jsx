@@ -52,9 +52,14 @@ export function Home() {
   const go = () => navigate('/client/artisans' + (q ? '?q=' + encodeURIComponent(q) : ''));
   return (
     <div className="content">
-      <TopBar back={false} home />
-      <h1 className="hide-mob" style={{ fontSize: 28, marginBottom: 6 }}>{t('Bonjour {n}', { n: profile.first_name })}</h1>
-      <SearchBar placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} />
+      <section className="home-band slim">
+        <div className="hb-head">
+          <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>{t('Mon espace')}</b></div>
+          <div className="hb-search hide-mob"><SearchBar placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} /></div>
+          <TopBar back={false} home />
+        </div>
+        <div className="hide-desk"><SearchBar placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} /></div>
+      </section>
       {!b ? <Loader /> : (
         <>
           <Sec title={t('Mes RDV')} to="/client/rdv" meta={t('{n} à venir', { n: b.appts.length })} />

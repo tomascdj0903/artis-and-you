@@ -15,6 +15,7 @@ import { download } from '../../lib/xlsx.js';
 import { usePlans } from '../../lib/platform.js';
 import { TopBar, Sec, Pill, useData, Loader, Empty, Chips, Table, SearchBar } from '../../ui/index.jsx';
 import { LawRefs } from '../../ui/lawref.jsx';
+import { SmartSearch } from '../../ui/smartsearch.jsx';
 export * from './workspace.jsx';
 
 // ─────────────── Tuiles ───────────────
@@ -40,14 +41,21 @@ export function AdminHome() {
   const todoTotal = Object.values(todo).reduce((a, b) => a + Number(b || 0), 0);
   return (
     <div className="content">
-      <TopBar title="Artesa" sub={t('Espace administrateur')} />
-      {!ready && <div className="notice">{t('Mise en place de l’espace Artesa…')}</div>}
-      {s && <div className="kpis mb">
-        <div className="kpi"><small>{t('Comptes')}</small><b>{s.users}</b><span className="small muted">{t('+{n} en 7 jours', { n: s.new_7d })}</span></div>
-        <div className="kpi"><small>{t('Entreprises validées')}</small><b>{s.approved}</b><span className="small muted">{t('{n} en attente', { n: s.pending })}</span></div>
-        <div className="kpi"><small>{t('En essai gratuit')}</small><b>{s.in_trial}</b><span className="small muted">{t('{n} finissent sous 7 jours', { n: s.trial_ending_7d.length })}</span></div>
-        <div className="kpi"><small>{t('Abonnements estimés')}</small><b>{money0(mrr(s, plans))}</b><span className="small muted">{t('par mois, HT')}</span></div>
-      </div>}
+      <section className="home-band">
+        <div className="hb-head">
+          <div className="hb-hello"><span>{t('Bonjour {n}', { n: profile.first_name })}</span><b>Artesa · {t('Espace administrateur')}</b></div>
+          <div className="hb-search hide-mob"><SmartSearch /></div>
+          <TopBar back={false} home />
+        </div>
+        <div className="hide-desk"><SmartSearch /></div>
+        {!ready && <div className="notice">{t('Mise en place de l’espace Artesa…')}</div>}
+        {s && <div className="hb-kpis">
+          <button type="button" className="hb-kpi" onClick={() => navigate('/admin/comptes')}><span className="hk-ic"><LuUsers /></span><b>{s.users}</b><span className="hk-txt">{t('Comptes')}<small>{t('+{n} en 7 jours', { n: s.new_7d })}</small></span></button>
+          <button type="button" className="hb-kpi" onClick={() => navigate('/admin/gestion/all')}><span className="hk-ic"><LuCircleCheck /></span><b>{s.approved}</b><span className="hk-txt">{t('Entreprises validées')}<small>{t('{n} en attente', { n: s.pending })}</small></span></button>
+          <button type="button" className="hb-kpi" onClick={() => navigate('/admin/stats')}><span className="hk-ic"><LuClock /></span><b>{s.in_trial}</b><span className="hk-txt">{t('En essai gratuit')}<small>{t('{n} finissent sous 7 jours', { n: s.trial_ending_7d.length })}</small></span></button>
+          <button type="button" className="hb-kpi" onClick={() => navigate('/admin/offres')}><span className="hk-ic"><LuChartLine /></span><b>{money0(mrr(s, plans))}</b><span className="hk-txt">{t('Abonnements estimés')}<small>{t('par mois, HT')}</small></span></button>
+        </div>}
+      </section>
 
       <Sec title={t('À traiter')} meta={todoTotal ? t('{n} en attente', { n: todoTotal }) : t('Tout est à jour')} />
       <div className="atiles">

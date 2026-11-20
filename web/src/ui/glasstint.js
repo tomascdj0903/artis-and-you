@@ -17,6 +17,39 @@ function bgAt(x, y, bar) {
   return parse(getComputedStyle(document.body).backgroundColor);
 }
 
+
+// Masque progressif pour un onglet : une grille de points sous l'onglet donne, pour chaque zone, la part de
+// « fond foncé ». Le masque (petite image agrandie, donc lissée) révèle la couche blanche là où le fond est foncé
+// et la couche foncée ailleurs : une même icône peut être blanche d'un côté et foncée de l'autre, en dégradé.
+const COLS = 12, ROWS = 5;
+const cv = typeof document !== 'undefined' ? document.createElement('canvas') : null;
+if (cv) { cv.width = COLS; cv.height = ROWS; }
+function masks(a, bar) {
+  const r = a.getBoundingClientRect(); const ctx = cv.getContext('2d');
+  const img = ctx.createImageData(COLS, ROWS); const inv = ctx.createImageData(COLS, ROWS);
+  for (let y = 0; y < ROWS; y++) for (let x = 0; x < COLS; x++) {
+    const c = bgAt(r.left + (x + 0.5) * r.width / COLS, r.top + (y + 0.5) * r.height / ROWS, bar);
+    const L = c ? lum(c) : 1;
+    const k = Math.max(0, Math.min(1, (0.32 - L) / 0.22)); // 1 = fond foncé, 0 = fond clair, entre les deux : transition
+    const i = (y * COLS + x) * 4;
+    img.data[i + 3] = Math.round(k * 255); inv.data[i + 3] = 255 - img.data[i + 3];
+  }
+  ctx.putImageData(img, 0, 0); const white = cv.toDataURL();
+  ctx.putImageData(inv, 0, 0); const ink = cv.toDataURL();
+  return { white, ink };
+}
+function setMask(el, url) {
+  if (!el) return;
+  const v = url ? `url(${url})` : '';
+  el.style.webkitMaskImage = v; el.style.maskImage = v;
+}
+function paintTab(a, bar) {
+  const w = a.querySelector('.tb-white'), k = a.querySelector('.tb-ink');
+  if (!w || !k || !cv) return;
+  if (a.classList.contains('on')) { setMask(w, null); setMask(k, null); return; } // onglet actif : toujours blanc sur le verre terracotta
+  const m = masks(a, bar); setMask(w, m.white); setMask(k, m.ink);
+}
+
 export function useGlassTint(ref, deps = []) {
   useEffect(() => {
     const bar = ref.current; if (!bar) return;
@@ -25,12 +58,16 @@ export function useGlassTint(ref, deps = []) {
     const run = () => {
       raf = 0;
       if (!mq.matches) return;
-      for (const a of bar.querySelectorAll(':scope > a')) {
-        const r = a.getBoundingClientRect();
-        const c = bgAt(r.left + r.width / 2, r.top + r.height / 2, bar);
-        const dark = c ? lum(c) < 0.18 : false;
-        a.classList.toggle('on-dark', dark); a.classList.toggle('on-light', !dark);
-      }
+      // Plusieurs points sous l'élément : on garde la luminosité moyenne (évite qu'un interstice blanc décide seul)
+      const tint = (el, zone, xs = [0.5]) => {
+        const r = el.getBoundingClientRect();
+        const ls = xs.map((f) => bgAt(r.left + r.width * f, r.top + r.height / 2, zone)).filter(Boolean).map(lum);
+        const dark = ls.length ? ls.reduce((a, b) => a + b, 0) / ls.length < 0.18 : false;
+        el.classList.toggle('on-dark', dark); el.classList.toggle('on-light', !dark);
+      };
+      for (const a of bar.querySelectorAll(':scope > a')) { tint(a, bar); paintTab(a, bar); }
+      // En-tête flottant des accueils (verre quasi transparent sur mobile)
+      for (const h of document.querySelectorAll('.hb-head')) tint(h, h, [0.1, 0.25, 0.4, 0.6, 0.75, 0.9]);
     };
     const ask = () => { if (!raf) raf = requestAnimationFrame(run); };
     ask();

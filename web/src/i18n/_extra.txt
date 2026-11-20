@@ -1491,3 +1491,4 @@ Particulier|Private client|Particular|Privato
 Fiches et historique|Records and history|Fichas e histórico|Schede e cronologia
 Rendez-vous et agenda|Appointments and calendar|Marcações e agenda|Appuntamenti e agenda
 Voir et envoyer|View and send|Ver e enviar|Vedi e invia
+Mon espace|My space|O meu espaço|Il mio spazio
