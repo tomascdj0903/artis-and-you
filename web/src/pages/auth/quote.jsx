@@ -34,11 +34,17 @@ export function QuoteRequest() {
   const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
   const toggle = (o) => set('options', f.options.includes(o) ? f.options.filter((x) => x !== o) : [...f.options, o]);
   const send = async (e) => {
-    e.preventDefault(); setErr(''); setState('…');
-    try { await api.rpc('request_quote', { p: { ...f, plan: plan?.id || 'entreprise' } }); setState('ok'); window.scrollTo(0, 0); }
+    e.preventDefault(); setErr('');
+    // On relit aussi les champs dans la page : un remplissage automatique du navigateur ne passe pas toujours par onChange
+    const fd = new FormData(e.currentTarget), v = { ...f };
+    for (const k of ['company_name', 'siret', 'trades', 'city', 'users_needed', 'current_tools', 'message', 'contact_name', 'email', 'phone']) { const x = fd.get(k); if (typeof x === 'string' && x.trim() && !String(v[k] || '').trim()) v[k] = x; }
+    if (v !== f) setF(v);
+    const miss = [v.company_name.trim().length < 2 && t('le nom de l’entreprise'), v.contact_name.trim().length < 2 && t('votre nom'), !/\S+@\S+\.\S+/.test(v.email) && t('un e-mail valide'), !v.consent && t('cocher la case d’accord en bas')].filter(Boolean);
+    if (miss.length) { setErr(t('Il manque : {l}.', { l: miss.join(', ') })); return; }
+    setState('…');
+    try { await api.rpc('request_quote', { p: { ...v, plan: plan?.id || 'entreprise' } }); setState('ok'); window.scrollTo(0, 0); }
     catch (x) { setState(''); setErr(x.message || String(x)); }
   };
-  const ok = f.company_name.trim().length > 1 && f.contact_name.trim().length > 1 && /\S+@\S+\.\S+/.test(f.email) && f.consent;
 
   return (
     <div className="content narrow quote-page" style={{ paddingTop: 20, paddingBottom: 60 }}>
@@ -61,16 +67,16 @@ export function QuoteRequest() {
 
           <h2 className="quote-h">{t('Votre entreprise')}</h2>
           <div className="form-grid two">
-            <Field label={t('Nom de l’entreprise')} req><input value={f.company_name} onChange={(e) => set('company_name', e.target.value)} autoComplete="organization" /></Field>
-            <Field label={t('SIRET')} hint={t('facultatif')}><input value={f.siret} onChange={(e) => set('siret', e.target.value)} inputMode="numeric" /></Field>
-            <Field label={t('Métier(s)')}><input value={f.trades} onChange={(e) => set('trades', e.target.value)} placeholder={t('ex. plomberie, chauffage')} /></Field>
-            <Field label={t('Ville')}><input value={f.city} onChange={(e) => set('city', e.target.value)} autoComplete="address-level2" /></Field>
+            <Field label={t('Nom de l’entreprise')} req><input name="company_name" value={f.company_name} onChange={(e) => set('company_name', e.target.value)} autoComplete="organization" /></Field>
+            <Field label={t('SIRET')} hint={t('facultatif')}><input name="siret" value={f.siret} onChange={(e) => set('siret', e.target.value)} inputMode="numeric" /></Field>
+            <Field label={t('Métier(s)')}><input name="trades" value={f.trades} onChange={(e) => set('trades', e.target.value)} placeholder={t('ex. plomberie, chauffage')} /></Field>
+            <Field label={t('Ville')}><input name="city" value={f.city} onChange={(e) => set('city', e.target.value)} autoComplete="address-level2" /></Field>
           </div>
 
           <h2 className="quote-h">{t('Votre équipe')}</h2>
           <div className="form-grid two">
             <Field label={t('Taille de l’équipe')}><select value={f.team_size} onChange={(e) => set('team_size', e.target.value)}>{TEAM.map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
-            <Field label={t('Personnes qui utiliseront Artesa')} hint={t('environ')}><input type="number" min={1} value={f.users_needed} onChange={(e) => set('users_needed', e.target.value)} /></Field>
+            <Field label={t('Personnes qui utiliseront Artesa')} hint={t('environ')}><input type="number" min={1} name="users_needed" value={f.users_needed} onChange={(e) => set('users_needed', e.target.value)} /></Field>
             <Field label={t('Chantiers ou interventions par mois')}><select value={f.sites_per_month} onChange={(e) => set('sites_per_month', e.target.value)}>{SITES.map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
             <Field label={t('Démarrage souhaité')}><select value={f.start_when} onChange={(e) => set('start_when', e.target.value)}>{START.map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
           </div>
@@ -87,19 +93,19 @@ export function QuoteRequest() {
             ))}
           </div>
           <div className="form-grid two">
-            <Field label={t('Outils que vous utilisez aujourd’hui')} hint={t('facultatif')}><input value={f.current_tools} onChange={(e) => set('current_tools', e.target.value)} placeholder={t('ex. Excel, logiciel de devis, agenda papier…')} /></Field>
+            <Field label={t('Outils que vous utilisez aujourd’hui')} hint={t('facultatif')}><input name="current_tools" value={f.current_tools} onChange={(e) => set('current_tools', e.target.value)} placeholder={t('ex. Excel, logiciel de devis, agenda papier…')} /></Field>
           </div>
-          <Field label={t('Autre chose à nous dire ?')} hint={t('facultatif')}><textarea rows={4} value={f.message} onChange={(e) => set('message', e.target.value)} placeholder={t('Vos attentes, vos contraintes, ce qui vous fait perdre du temps aujourd’hui…')} /></Field>
+          <Field label={t('Autre chose à nous dire ?')} hint={t('facultatif')}><textarea rows={4} name="message" value={f.message} onChange={(e) => set('message', e.target.value)} placeholder={t('Vos attentes, vos contraintes, ce qui vous fait perdre du temps aujourd’hui…')} /></Field>
 
           <h2 className="quote-h">{t('Vos coordonnées')}</h2>
           <div className="form-grid two">
-            <Field label={t('Votre nom')} req><input value={f.contact_name} onChange={(e) => set('contact_name', e.target.value)} autoComplete="name" /></Field>
-            <Field label={t('E-mail')} req><input type="email" value={f.email} onChange={(e) => set('email', e.target.value)} autoComplete="email" /></Field>
-            <Field label={t('Téléphone')} hint={t('pour en parler de vive voix')}><input type="tel" value={f.phone} onChange={(e) => set('phone', e.target.value)} autoComplete="tel" /></Field>
+            <Field label={t('Votre nom')} req><input name="contact_name" value={f.contact_name} onChange={(e) => set('contact_name', e.target.value)} autoComplete="name" /></Field>
+            <Field label={t('E-mail')} req><input type="email" name="email" value={f.email} onChange={(e) => set('email', e.target.value)} autoComplete="email" /></Field>
+            <Field label={t('Téléphone')} hint={t('pour en parler de vive voix')}><input type="tel" name="phone" value={f.phone} onChange={(e) => set('phone', e.target.value)} autoComplete="tel" /></Field>
           </div>
           <label className="check"><input type="checkbox" checked={f.consent} onChange={(e) => set('consent', e.target.checked)} /><span>{t('J’accepte qu’Artesa utilise ces informations pour me recontacter et m’envoyer un devis.')} <Link to="/confidentialite">{t('Confidentialité')}</Link></span></label>
           {err && <div className="notice mt" role="alert">{err}</div>}
-          <button className="btn block mt" disabled={!ok || state === '…'}><LuSend /> {state === '…' ? t('Envoi…') : t('Envoyer ma demande de devis')}</button>
+          <button className="btn block mt" disabled={state === '…'}><LuSend /> {state === '…' ? t('Envoi…') : t('Envoyer ma demande de devis')}</button>
         </form>
       )}
     </div>

@@ -1588,3 +1588,8 @@ Votre devis Artesa|Your Artesa quote|O seu orçamento Artesa|Il tuo preventivo A
 Demande de devis du {d}|Quote request of {d}|Pedido de orçamento de {d}|Richiesta di preventivo del {d}
 Demande de devis (site)|Quote request (website)|Pedido de orçamento (site)|Richiesta di preventivo (sito)
 Envoyer le devis|Send the quote|Enviar o orçamento|Invia il preventivo
+Il manque : {l}.|Missing: {l}.|Falta: {l}.|Manca: {l}.
+le nom de l’entreprise|the company name|o nome da empresa|il nome dell'impresa
+votre nom|your name|o seu nome|il tuo nome
+un e-mail valide|a valid email|um e-mail válido|un'e-mail valida
+cocher la case d’accord en bas|tick the consent box at the bottom|assinalar a caixa de acordo no fundo|spuntare la casella di consenso in basso

@@ -2724,4 +2724,9 @@ export default {"(copie)":"(copy)",
 "Ajouté aux prospects":"Added to prospects",
 "Votre devis Artesa":"Your Artesa quote",
 "Demande de devis du {d}":"Quote request of {d}",
-"Demande de devis (site)":"Quote request (website)"};
+"Demande de devis (site)":"Quote request (website)",
+"Il manque : {l}.":"Missing: {l}.",
+"le nom de l’entreprise":"the company name",
+"votre nom":"your name",
+"un e-mail valide":"a valid email",
+"cocher la case d’accord en bas":"tick the consent box at the bottom"};

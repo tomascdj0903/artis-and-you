@@ -2724,4 +2724,9 @@ export default {"(copie)":"(cópia)",
 "Ajouté aux prospects":"Adicionado aos prospects",
 "Votre devis Artesa":"O seu orçamento Artesa",
 "Demande de devis du {d}":"Pedido de orçamento de {d}",
-"Demande de devis (site)":"Pedido de orçamento (site)"};
+"Demande de devis (site)":"Pedido de orçamento (site)",
+"Il manque : {l}.":"Falta: {l}.",
+"le nom de l’entreprise":"o nome da empresa",
+"votre nom":"o seu nome",
+"un e-mail valide":"um e-mail válido",
+"cocher la case d’accord en bas":"assinalar a caixa de acordo no fundo"};
