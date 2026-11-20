@@ -81,13 +81,13 @@ function AgendaSync({ open, onClose }) {
   const copy = () => { navigator.clipboard?.writeText(feed); toast(t('Lien copié')); };
   return (
     <Sheet open onClose={onClose} title={t('Relier mon agenda')}>
-      <p className="small">{t('Votre planning Artesa apparaît dans votre agenda habituel et se met à jour tout seul (toutes les 15 min à quelques heures selon l’application). Les modifications se font dans Artesa.')}</p>
+      <p className="small">{t('Votre planning Artis & You apparaît dans votre agenda habituel et se met à jour tout seul (toutes les 15 min à quelques heures selon l’application). Les modifications se font dans Artis & You.')}</p>
       {OFFLINE ? <div className="notice small">{t('Disponible quand l’application sera en ligne (serveur Supabase). En attendant, utilisez « Exporter mon planning (.ics) ».')}</div> : !tok ? <Loader /> : <>
         <div className="card soft small" style={{ wordBreak: 'break-all', fontFamily: 'ui-monospace, monospace' }}>{feed}</div>
         <div className="row" style={{ gap: 8, margin: '8px 0 14px', flexWrap: 'wrap' }}>
           <button className="btn sm" onClick={copy}>{t('Copier le lien')}</button>
           <a className="btn sm ghost" href={'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent(webcal)} target="_blank" rel="noreferrer">Google Agenda ↗</a>
-          <a className="btn sm ghost" href={'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(feed) + '&name=Artesa'} target="_blank" rel="noreferrer">Outlook ↗</a>
+          <a className="btn sm ghost" href={'https://outlook.live.com/calendar/0/addfromweb?url=' + encodeURIComponent(feed) + '&name=' + encodeURIComponent('Artis & You')} target="_blank" rel="noreferrer">Outlook ↗</a>
           <a className="btn sm ghost" href={webcal}>{t('iPhone / Mac')}</a>
         </div>
         <ol className="small" style={{ paddingLeft: 18, margin: 0 }}>

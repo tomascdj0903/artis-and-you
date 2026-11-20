@@ -64,14 +64,14 @@ function routeActions(path) {
   ];
   if (path.startsWith('/pro/clients')) return [
     { label: t('Nouveau client'), icon: LuUserPlus, to: '/pro/clients/nouveau' },
-    { label: t('Inviter mes clients sur Artesa'), icon: LuMegaphone, to: '/pro/reseau/inviter-clients' },
+    { label: t('Inviter mes clients sur Artis & You'), icon: LuMegaphone, to: '/pro/reseau/inviter-clients' },
   ];
   if (path.startsWith('/pro/reseau')) return [
     { label: t('Ajouter un pro'), icon: LuUsers, to: '/pro/reseau/ajouter' },
-    { label: t('Inviter mes clients sur Artesa'), icon: LuMegaphone, to: '/pro/reseau/inviter-clients' },
+    { label: t('Inviter mes clients sur Artis & You'), icon: LuMegaphone, to: '/pro/reseau/inviter-clients' },
   ];
   if (path.startsWith('/pro/messages')) return [
-    { label: t('Inviter mes clients sur Artesa'), icon: LuMegaphone, to: '/pro/reseau/inviter-clients' },
+    { label: t('Inviter mes clients sur Artis & You'), icon: LuMegaphone, to: '/pro/reseau/inviter-clients' },
   ];
   if (path.startsWith('/pro/crm')) return [
     { label: t('Nouveau devis'), icon: LuFilePen, to: '/pro/documents/nouveau?kind=devis' },
@@ -129,7 +129,7 @@ function Assistant({ onClose }) {
   const { path } = useRoute();
   const { company, profile } = useApp();
   const isClient = path.startsWith('/client');
-  const hello = () => [{ me: false, text: t('Bonjour ! Posez-moi une question sur Artesa, ou choisissez une suggestion :'), sugg: [...(isClient ? CLIENT_CAPS.slice(0, 4) : [{ id: 'x1', q: 'Mes rendez-vous de demain' }, { id: 'x2', q: 'Qui me doit de l’argent ?' }, { id: 'x3', q: 'Ouvrir mon dernier client' }, { id: 'x4', q: 'Que sais-tu faire ?' }]), ...suggestFor(path).slice(0, 2)] }];
+  const hello = () => [{ me: false, text: t('Bonjour ! Posez-moi une question sur Artis & You, ou choisissez une suggestion :'), sugg: [...(isClient ? CLIENT_CAPS.slice(0, 4) : [{ id: 'x1', q: 'Mes rendez-vous de demain' }, { id: 'x2', q: 'Qui me doit de l’argent ?' }, { id: 'x3', q: 'Ouvrir mon dernier client' }, { id: 'x4', q: 'Que sais-tu faire ?' }]), ...suggestFor(path).slice(0, 2)] }];
   const saved = useState(() => { const v = rd(sessionStorage, ck()); return v && Date.now() - v.at < IDLE ? v : null; })[0];
   const [q, setQ] = useState(saved?.q || '');
   const [msgs, setMsgs] = useState(saved?.msgs?.length ? saved.msgs : hello);
@@ -168,7 +168,7 @@ function Assistant({ onClose }) {
       <div className="sheet ai-sheet" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label={t('Assistant')}>
         <div className="ai-head">
           {hist ? <button className="iconbtn" onClick={() => setHist(null)} aria-label={t('Retour')}><LuArrowLeft /></button> : <LuSparkles className="red-t" />}
-          <b>{hist ? t('Historique') : t('Assistant Artesa')}</b>
+          <b>{hist ? t('Historique') : t('Assistant Artis & You')}</b>
           {!hist && <button className="iconbtn" onClick={() => setHist(aiHistory())} aria-label={t('Historique')} title={t('Historique')}><LuHistory /></button>}
           {!hist && msgs.length > 1 && <button className="iconbtn" onClick={reset} aria-label={t('Nouvelle conversation')} title={t('Nouvelle conversation')}><LuRotateCcw /></button>}
           <button className="iconbtn" onClick={onClose} aria-label={t('Fermer')}><LuX /></button>

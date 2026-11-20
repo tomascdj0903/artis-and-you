@@ -77,7 +77,7 @@ export function fillTemplate(text, d, client, company) {
   return Object.entries(v).reduce((s, [k, x]) => s.split(k).join(x), t(text));
 }
 
-// Envoi : message dans la messagerie Artesa (si le client a un compte) et/ou e-mail
+// Envoi : message dans la messagerie Artis & You (si le client a un compte) et/ou e-mail
 export async function sendReminder({ d, step, client, company, profile, text, channel }) {
   const body = text || fillTemplate(step.text, d, client, company);
   if (channel === 'app') {
@@ -87,7 +87,7 @@ export async function sendReminder({ d, step, client, company, profile, text, ch
       card: { type: 'relance', title: t(step.title) + ' · ' + d.number, sub: d.kind === 'devis' ? money(d.totals?.ttc) : t('{m} restant', { m: money(remaining(d)) }) } });
   } else {
     const subject = `${t(step.title)} · ${d.number} · ${company.trade_name || company.name}`;
-    // E-mail envoyé par Artesa si le service d'envoi est configuré (fonction `mail`), sinon via l'application mail de l'artisan
+    // E-mail envoyé par Artis & You si le service d'envoi est configuré (fonction `mail`), sinon via l'application mail de l'artisan
     const r = (!OFFLINE && client.email) ? await api.fn('mail', { to: client.email, subject, text: body }).catch(() => ({ error: 'http' })) : { error: 'no_key' };
     if (!r.ok) {
       if (r.error && !['no_key', 'http_404', 'http'].includes(r.error)) throw new Error(r.error === 'quota' ? t('Limite d’e-mails du jour atteinte (60).') : r.error === 'not_a_client' ? t('Cette adresse n’est pas celle d’un de vos clients.') : t('Envoi de l’e-mail impossible.'));

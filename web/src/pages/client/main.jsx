@@ -67,7 +67,7 @@ export function Home() {
           {b.appts.length ? <div className="carousel">{b.appts.map((a, i) => <RdvCard key={a.id} a={a} co={b.cm[a.company_id]} dark={i === 0} />)}</div>
             : <Empty icon={LuCalendarPlus} text={t('Aucun rendez-vous à venir.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button></Empty>}
           <Sec title={t('Mes messages')} to="/client/messages" />
-          {b.convs.length ? <div className="carousel">{b.convs.map((c) => { const co = c.kind === 'support' ? { name: 'Artesa', is_platform: true } : b.cm[c.company_id]; return (
+          {b.convs.length ? <div className="carousel">{b.convs.map((c) => { const co = c.kind === 'support' ? { name: 'Artis & You', is_platform: true } : b.cm[c.company_id]; return (
             <Link key={c.id} to={'/client/messages/' + c.id} className="rdvcard"><div className="row"><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} size="sm" /><div><b>{coName(co)}</b><div className="small muted">{(co?.trades || [])[0] ? t(co.trades[0]) : ''}</div></div></div><div className="small" style={{ overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{c.mine ? <b>{t('Vous')} : </b> : null}{c.last_message}</div><div className="row small faint" style={{ gap: 6 }}><SentTag mine={c.mine} /><span>{whenMsg(c.last_at)}</span></div></Link>
           ); })}</div> : <Empty text={t('Pas encore de message.')} />}
           <Sec title={t('Mes notifications')} to="/client/notifications" />
@@ -111,8 +111,8 @@ export function Search() {
         <InfoBubble label={t('Comment sont classés les résultats ?')} laws={['conso-L111-7', 'conso-D111-7']}>
           <p>{t('Les artisans sont affichés dans cet ordre :')}</p>
           <ol><li>{t('les artisans avec qui vous avez déjà travaillé ;')}</li><li>{t('puis du plus proche au plus éloigné de la ville des travaux ;')}</li><li>{t('parmi ceux qui correspondent au métier ou au nom recherché et qui interviennent dans votre ville.')}</li></ol>
-          <p>{t('Aucun artisan ne paie pour être mieux classé et Artesa ne touche aucune commission sur les travaux. Une éventuelle mise en avant payante serait signalée par la mention « Annonce ».')}</p>
-          <p>{t('Les artisans sont des professionnels : vous bénéficiez des droits des consommateurs. Artesa n’est pas partie au contrat que vous concluez avec eux.')}</p>
+          <p>{t('Aucun artisan ne paie pour être mieux classé et Artis & You ne touche aucune commission sur les travaux. Une éventuelle mise en avant payante serait signalée par la mention « Annonce ».')}</p>
+          <p>{t('Les artisans sont des professionnels : vous bénéficiez des droits des consommateurs. Artis & You n’est pas partie au contrat que vous concluez avec eux.')}</p>
           <Link to="/cgu" className="bold">{t('Lire les conditions d’utilisation')}</Link>
         </InfoBubble>
       </div>
@@ -164,9 +164,9 @@ export function ArtisanCard({ params }) {
       {p.photos?.length > 0 && <><Sec title={t('Réalisations')} /><div className="photos-grid">{p.photos.map((x) => <Img key={x} path={x} onClick={() => setBig(x)} />)}</div></>}
       <Sec title={t('Avis vérifiés')} meta={total ? t('{n} avis', { n: total }) : ''} />
       <div className="mb"><InfoBubble label={t('Comment les avis sont-ils contrôlés ?')} laws={['conso-L111-7-2', 'conso-D111-17']}>
-        <p>{t('Seul un client qui a eu un rendez-vous avec cet artisan via Artesa peut donner un avis : chaque avis correspond à une vraie prestation.')}</p>
-        <p>{t('Chaque avis est relu par l’équipe Artesa avant publication (sous 48 h ouvrées). Il est refusé s’il est injurieux, hors sujet, contient des données personnelles ou en cas de conflit d’intérêts ; son auteur est informé du motif.')}</p>
-        <p>{t('Les avis sont affichés du plus récent au plus ancien, avec leur date. Artesa ne les modifie pas et ne reçoit aucune contrepartie. L’artisan peut répondre.')}</p>
+        <p>{t('Seul un client qui a eu un rendez-vous avec cet artisan via Artis & You peut donner un avis : chaque avis correspond à une vraie prestation.')}</p>
+        <p>{t('Chaque avis est relu par l’équipe Artis & You avant publication (sous 48 h ouvrées). Il est refusé s’il est injurieux, hors sujet, contient des données personnelles ou en cas de conflit d’intérêts ; son auteur est informé du motif.')}</p>
+        <p>{t('Les avis sont affichés du plus récent au plus ancien, avec leur date. Artis & You ne les modifie pas et ne reçoit aucune contrepartie. L’artisan peut répondre.')}</p>
       </InfoBubble></div>
       {!total ? <Empty icon={LuStar} text={t('Pas encore d’avis.')} /> : p.reviews.map((r, i) => (
         <div key={i} className="card soft mb"><div className="row between"><Stars n={r.rating} /><span className="small faint">{date(r.created_at)}</span></div><p style={{ margin: '6px 0' }}>{r.comment}</p><div className="small bold red-t">{r.author}</div>{r.reply && <div className="notice small"><b>{t('Réponse de l’artisan')} :</b> {r.reply}</div>}<Link className="small faint" to={`/signaler?type=avis&id=${p.id}-${i}&url=${encodeURIComponent(location.href)}`}>{t('Signaler cet avis')}</Link></div>
@@ -382,7 +382,7 @@ export function Messages() {
   const [b] = useData(async () => { const m = await loadMine(); const convs = await api.select('conversations', {}, { order: 'last_at.desc' }); return { ...m, convs: await withLast(convs.filter((c) => c.last_message)) }; }, []);
   if (!b) return <div className="content"><TopBar title={t('Messages')} /><Loader /></div>;
   const reads = unread.reads || {};
-  const nameOf = (c) => (c.kind === 'support' ? 'Artesa' : coName(b.cm[c.company_id]));
+  const nameOf = (c) => (c.kind === 'support' ? 'Artis & You' : coName(b.cm[c.company_id]));
   const list = b.convs.filter((c) => c.last_message && (!q || (nameOf(c) + ' ' + c.last_message).toLowerCase().includes(q.toLowerCase())));
   const n = list.filter((c) => !reads[c.id] || reads[c.id] < c.last_at).length;
   return (
@@ -394,7 +394,7 @@ export function Messages() {
         <div className="list">{list.map((c) => { const co = b.cm[c.company_id]; const un = !reads[c.id] || reads[c.id] < c.last_at; return (
           <button key={c.id} className="li click" onClick={() => navigate('/client/messages/' + c.id)}>
             {c.kind === 'support' ? <ArtesaAvatar /> : <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} />}
-            <div className="grow"><div className="t1">{c.kind === 'support' ? <>Artesa <Pill c="navy">{t('Administrateur')}</Pill></> : <>{coName(co)} {(co?.trades || [])[0] && <Pill c="grey">{t(co.trades[0])}</Pill>}</>}</div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.mine ? t('Vous') + ' : ' : ''}{c.last_message}</div></div>
+            <div className="grow"><div className="t1">{c.kind === 'support' ? <>Artis & You <Pill c="navy">{t('Administrateur')}</Pill></> : <>{coName(co)} {(co?.trades || [])[0] && <Pill c="grey">{t(co.trades[0])}</Pill>}</>}</div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.mine ? t('Vous') + ' : ' : ''}{c.last_message}</div></div>
             <div className="side-r"><SentTag mine={c.mine} /><span className={un ? 'red-t bold' : ''}>{whenMsg(c.last_at)}</span>{un && <span className="badge-n">1</span>}</div>
           </button>
         ); })}</div>
@@ -415,7 +415,7 @@ export function Conversation({ params }) {
   if (!b.c) return <div className="content"><TopBar title={t('Messages')} /><Empty text={t('Conversation introuvable')} /></div>;
   if (b.c.kind === 'support') return (
     <div className="content narrow">
-      <TopBar title={<span className="row" style={{ gap: 8 }}><ArtesaAvatar size="sm" /> Artesa</span>} sub={t('Administrateur · Service client')} />
+      <TopBar title={<span className="row" style={{ gap: 8 }}><ArtesaAvatar size="sm" /> Artis & You</span>} sub={t('Administrateur · Service client')} />
       <Chat convId={b.c.id} />
     </div>
   );

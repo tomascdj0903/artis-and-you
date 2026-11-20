@@ -15,7 +15,7 @@ export const loadSigFonts = () => sigFonts || (sigFonts = new Promise((res) => {
 }));
 
 // Transforme le nom écrit dans la police choisie en image PNG (fond transparent)
-export async function textSignature(name, font, color = '#2B1F1C') {
+export async function textSignature(name, font, color = '#4B2014') {
   await loadSigFonts();
   try { await document.fonts.load(`64px "${font}"`, name); } catch {}
   const c = document.createElement('canvas'); const x = c.getContext('2d');
@@ -30,7 +30,7 @@ export function DrawPad({ value, onChange }) {
   useEffect(() => {
     const c = ref.current; const r = c.getBoundingClientRect(); const k = window.devicePixelRatio || 1;
     c.width = r.width * k; c.height = r.height * k; const x = c.getContext('2d'); x.scale(k, k);
-    x.lineWidth = 2.4; x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = '#2B1F1C';
+    x.lineWidth = 2.4; x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = '#4B2014';
     if (value) { const im = new Image(); im.onload = () => x.drawImage(im, 0, 0, r.width, r.height); im.src = value; }
   }, []);
   const pos = (e) => { const r = ref.current.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };

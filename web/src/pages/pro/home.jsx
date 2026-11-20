@@ -93,8 +93,8 @@ export function Home() {
         <Link to="/pro/compte/entreprise" className="alert glass-rose" style={{ color: 'inherit' }}>
           <LuShieldAlert className="red-t" size={28} style={{ flexShrink: 0 }} />
           <div>{company.verification_status === 'rejected'
-            ? <><b>{t('Votre inscription est à compléter')}</b><div className="small">{company.verification_note || t('L’équipe Artesa a besoin d’informations supplémentaires.')}</div></>
-            : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artesa vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
+            ? <><b>{t('Votre inscription est à compléter')}</b><div className="small">{company.verification_note || t('L’équipe Artis & You a besoin d’informations supplémentaires.')}</div></>
+            : <><b>{t('Compte en cours de validation')}</b><div className="small">{t('L’équipe Artis & You vérifie votre SIRET et vos informations. Vous pouvez déjà utiliser l’application ; votre profil sera visible des clients après validation.')}</div></>}</div>
         </Link>
       )}
         {relN > 0 && <Link to="/pro/relances" className="rel-card"><span>{t('Relances')}</span><b>{relN > 1 ? t('{n} relances clients à envoyer aujourd’hui', { n: relN }) : t('1 relance client à envoyer aujourd’hui')}</b><small>{t('Voir et envoyer')} →</small></Link>}
@@ -155,9 +155,9 @@ export function ReferralCard({ code }) {
   const [hide, setHide] = useState(() => { try { return localStorage.getItem('ay-ref-hide') === code; } catch { return false; } });
   if (hide) return null;
   const url = `${location.origin}/inscription/artisan?parrain=${encodeURIComponent(code)}`;
-  const msg = t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: code });
+  const msg = t('Je gère mes devis, factures et rendez-vous avec Artis & You. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: code });
   const share = async () => {
-    try { if (navigator.share) { await navigator.share({ title: 'Artesa', text: msg, url }); return; } } catch { return; }
+    try { if (navigator.share) { await navigator.share({ title: 'Artis & You', text: msg, url }); return; } } catch { return; }
     try { await navigator.clipboard.writeText(msg + ' ' + url); toast(t('Lien de parrainage copié')); } catch {}
   };
   return (
@@ -173,9 +173,9 @@ export function ReferralCard({ code }) {
 function ReferralLink({ code }) {
   const { toast } = useApp();
   const url = `${location.origin}/inscription/artisan?parrain=${encodeURIComponent(code)}`;
-  const msg = t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: code });
+  const msg = t('Je gère mes devis, factures et rendez-vous avec Artis & You. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: code });
   const share = async () => {
-    try { if (navigator.share) { await navigator.share({ title: 'Artesa', text: msg, url }); return; } } catch { return; }
+    try { if (navigator.share) { await navigator.share({ title: 'Artis & You', text: msg, url }); return; } } catch { return; }
     try { await navigator.clipboard.writeText(msg + ' ' + url); toast(t('Lien de parrainage copié')); } catch {}
   };
   return <button type="button" onClick={share}>🎁 <span className="hb-long">{t('Parrainez un artisan : 1 mois offert pour lui, 15 jours pour vous')} ·</span><span className="hb-short">{t('1 mois offert')}</span> <u>{t('Parrainer')}</u></button>;

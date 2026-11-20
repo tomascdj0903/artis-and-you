@@ -1,4 +1,4 @@
-// Espace administrateur Artesa : tuiles d'administration de la plateforme + outils de l'activité d'Artesa
+// Espace administrateur Artis & You : tuiles d'administration de la plateforme + outils de l'activité d'Artis & You
 // (clients, devis, factures, comptabilité, facturation électronique), réservé au compte admin.
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -36,19 +36,19 @@ export function AdminHome() {
   const [s, reload] = useData(() => (profile.is_admin ? api.rpc('admin_stats') : null), [profile.is_admin]);
   const ready = profile.kind === 'admin' && company?.is_platform;
   useEffect(() => { if (profile.is_admin && !ready) run(async () => { await api.rpc('admin_setup_platform'); await reloadApp(); }).catch(() => {}); }, [profile.is_admin, ready]);
-  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artesa.')} /></div>;
+  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artis & You.')} /></div>;
   const todo = s?.todo || {};
   const todoTotal = Object.values(todo).reduce((a, b) => a + Number(b || 0), 0);
   return (
     <div className="content">
       <section className="home-band">
         <div className="hb-head glass-tint">
-          <div className="hb-hello"><span>{t('Espace administrateur')}</span><b>Artesa</b></div>
+          <div className="hb-hello"><span>{t('Espace administrateur')}</span><b>Artis & You</b></div>
           <div className="hb-search hide-mob"><SmartSearch /></div>
           <TopBar back={false} home />
         </div>
         <div className="hide-desk"><SmartSearch /></div>
-        {!ready && <div className="notice">{t('Mise en place de l’espace Artesa…')}</div>}
+        {!ready && <div className="notice">{t('Mise en place de l’espace Artis & You…')}</div>}
         {s && <div className="hb-kpis">
           <button type="button" className="hb-kpi" onClick={() => navigate('/admin/comptes')}><span className="hk-ic"><LuUsers /></span><b>{s.users}</b><span className="hk-txt">{t('Comptes')}<small>{t('+{n} en 7 jours', { n: s.new_7d })}</small></span></button>
           <button type="button" className="hb-kpi" onClick={() => navigate('/admin/gestion/all')}><span className="hk-ic"><LuCircleCheck /></span><b>{s.approved}</b><span className="hk-txt">{t('Entreprises validées')}<small>{t('{n} en attente', { n: s.pending })}</small></span></button>
@@ -86,7 +86,7 @@ export function AdminHome() {
         <Tile to="/admin/service-client" icon={LuHeadset} label={t('Service client')} sub={t('Messages des pros')} tone="navy" />
       </div>
 
-      <Sec title={t('Notre activité Artesa')} meta={t('Clients, devis, factures et comptabilité d’Artesa')} />
+      <Sec title={t('Notre activité Artis & You')} meta={t('Clients, devis, factures et comptabilité d’Artis & You')} />
       <div className="atiles">
         <Tile to="/pro/clients" icon={LuUserRound} label={t('Clients')} tone="light" />
         <Tile to="/pro/documents" icon={LuFileText} label={t('Devis et factures')} tone="light" />
@@ -95,7 +95,7 @@ export function AdminHome() {
         <Tile to="/admin/facturation-electronique" icon={LuSend} label={t('Facturation électronique')} tone="light" />
         <Tile to="/admin/offres" icon={LuTags} label={t('Offres et tarifs')} sub={t('Prix des abonnements')} tone="light" />
         <Tile to="/admin/integrations" icon={LuPlug} label={t('Intégrations')} sub={t('Services branchés')} tone="light" />
-        <Tile to="/pro/compte/entreprise" icon={LuSettings} label={t('Infos Artesa')} sub={t('SIRET, TVA, mentions')} tone="light" />
+        <Tile to="/pro/compte/entreprise" icon={LuSettings} label={t('Infos Artis & You')} sub={t('SIRET, TVA, mentions')} tone="light" />
       </div>
       <div className="row mt" style={{ justifyContent: 'center' }}><button className="link small" onClick={reload}><LuClock size={13} /> {t('Actualiser les compteurs')}</button></div>
     </div>
@@ -153,7 +153,7 @@ export function AdminStats() {
   const max = Math.max(1, ...weeks.map((w) => w.n));
   return (
     <div className="content">
-      <TopBar title={t('Statistiques')} sub={t('Hors compte Artesa')} />
+      <TopBar title={t('Statistiques')} sub={t('Hors compte Artis & You')} />
       <div className="kpis mb">
         <div className="kpi"><small>{t('Comptes')}</small><b>{s.users}</b><span className="small muted">{t('{a} artisans · {p} particuliers', { a: s.artisans, p: s.particuliers })}</span></div>
         <div className="kpi"><small>{t('Nouveaux (30 j)')}</small><b>{s.new_30d}</b></div>
@@ -306,7 +306,7 @@ export function AdminCompta() {
           { label: t('Date'), render: (e) => date(e.date) }, { label: t('Journal'), render: (e) => e.journal }, { label: t('Compte'), render: (e) => e.acc },
           { label: t('Libellé'), render: (e) => e.lib }, { label: t('Débit'), num: true, render: (e) => (e.debit ? money(e.debit) : '') }, { label: t('Crédit'), num: true, render: (e) => (e.credit ? money(e.credit) : '') }]} />
       </>}
-      <p className="small faint mt">{t('Comptabilité de trésorerie simplifiée, calculée à partir des documents d’Artesa. Elle prépare le travail de l’expert-comptable et ne le remplace pas.')}</p>
+      <p className="small faint mt">{t('Comptabilité de trésorerie simplifiée, calculée à partir des documents d’Artis & You. Elle prépare le travail de l’expert-comptable et ne le remplace pas.')}</p>
     </div>
   );
 }
@@ -331,7 +331,7 @@ export function AdminEInvoice() {
       <TopBar title={t('Facturation électronique')} sub={t('Réforme 2026–2027')} />
       <div className="grid2">
         <div>
-          <Sec title={t('Où en est Artesa ?')} />
+          <Sec title={t('Où en est Artis & You ?')} />
           <div className="kv">
             <div className="r"><span>{t('Format des factures')}</span><b className="green-t"><LuCircleCheck size={14} /> Factur-X (PDF + XML)</b></div>
             <div className="r"><span>{t('Plateforme agréée (envoi et réception)')}</span><b className="muted"><LuClock size={14} /> {t('Pas encore connectée')}</b></div>
@@ -340,7 +340,7 @@ export function AdminEInvoice() {
           </div>
           <Sec title={t('Informations obligatoires')} />
           <div className="list">{checks.map(([v, l]) => <div key={l} className="li"><span>{l}</span>{v ? <LuCircleCheck className="green-t" /> : <LuCircleAlert className="red-t" />}</div>)}</div>
-          {!ok && <button className="btn ghost sm mt" onClick={() => navigate('/pro/compte/entreprise')}>{t('Compléter les infos Artesa')} <LuArrowRight /></button>}
+          {!ok && <button className="btn ghost sm mt" onClick={() => navigate('/pro/compte/entreprise')}>{t('Compléter les infos Artis & You')} <LuArrowRight /></button>}
           <Sec title={t('Prochaine étape : Super PDP')} />
           <div className="card soft small" style={{ lineHeight: 1.6 }}>
             <p style={{ marginTop: 0 }}>{t('Super PDP est une plateforme agréée : elle transmettra nos factures et celles des artisans au format officiel, et recevra les factures des fournisseurs.')}</p>
@@ -353,7 +353,7 @@ export function AdminEInvoice() {
           <LawRefs ids={['cgi-289', 'cgi-289bis', 'cgi-242nonies', 'cgi-1737']} title={t('Textes de loi')} />
         </div>
         <div>
-          <Sec title={t('Factures émises par Artesa')} meta={t('{n} documents', { n: inv.length })} />
+          <Sec title={t('Factures émises par Artis & You')} meta={t('{n} documents', { n: inv.length })} />
           <Table rows={inv} empty={t('Aucune facture pour l’instant')} cols={[
             { label: t('N°'), render: (d) => <button className="link bold" onClick={() => navigate('/pro/documents/' + d.id)}>{d.number}</button> },
             { label: t('Date'), render: (d) => date(d.issue_date) },

@@ -166,7 +166,7 @@ export function SignupClient() {
       <form onSubmit={submit}>
         <button type="button" className="iconbtn" onClick={() => navigate('/inscription')} aria-label={t('Retour')}><LuArrowLeft /></button>
         <h1 style={{ fontSize: 26, margin: '8px 0 4px' }}>{t('Créer mon compte gratuit')}</h1>
-        {pro ? <div className="notice mb">{proName ? t('{n} vous invite sur Artesa.', { n: proName }) + ' ' : ''}{t('Créez votre compte gratuit : vous retrouverez vos devis, factures et rendez-vous, et pourrez écrire directement à votre artisan.')}</div>
+        {pro ? <div className="notice mb">{proName ? t('{n} vous invite sur Artis & You.', { n: proName }) + ' ' : ''}{t('Créez votre compte gratuit : vous retrouverez vos devis, factures et rendez-vous, et pourrez écrire directement à votre artisan.')}</div>
           : <p className="muted mb">{t('Pour trouver un artisan, prendre rendez-vous et suivre vos chantiers.')}</p>}
         <AccountFields v={v} set={set} />
         <div className="field"><span>{t('Adresse de votre logement')}</span></div>
@@ -247,7 +247,7 @@ export function SignupPro() {
       if (mode === 'join' && !(await api.rpc('join_company', { p_code: code.trim() }))) throw new Error(t('Code invalide ou déjà utilisé'));
       else {
         if (!siretValid(c.siret)) throw new Error(t('Le SIRET doit contenir 14 chiffres valides.'));
-        if (siretSt === 'active') throw new Error(t('Ce SIRET est déjà inscrit sur Artesa. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.'));
+        if (siretSt === 'active') throw new Error(t('Ce SIRET est déjà inscrit sur Artis & You. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.'));
         if (!c.legal_form) throw new Error(t('Choisissez la forme juridique.'));
         if (!c.address || !c.zip || !c.city) throw new Error(t('L’adresse complète de l’entreprise est obligatoire.'));
         if (!phoneValid(c.phone || profile?.phone)) throw new Error(t('Numéro de téléphone invalide.'));
@@ -287,8 +287,8 @@ export function SignupPro() {
               <div className="form-grid two">
                 <Field label={t('Forme juridique')}><select value={c.legal_form} onChange={(e) => setC({ ...c, legal_form: e.target.value })} required><option value="">{t('Choisir')}</option>{LEGAL_FORMS.map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
                 <Field label={t('SIRET')} hint={t('vérifié par notre équipe')}><input value={c.siret} onChange={(e) => { setC({ ...c, siret: e.target.value }); setSiretSt(null); }} onBlur={() => siretValid(c.siret) && api.rpc('siret_status', { p_siret: c.siret.replace(/\s/g, '') }).then(setSiretSt, () => {})} required inputMode="numeric" placeholder="845 216 937 00024" /></Field>
-                {siretSt === 'active' && <div className="error" role="alert" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET est déjà inscrit sur Artesa. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.')}</div>}
-                {siretSt === 'known' && <div className="notice small" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET a déjà utilisé Artesa par le passé. Vous pouvez recréer votre compte, mais sans essai gratuit ni avantage de parrainage.')}</div>}
+                {siretSt === 'active' && <div className="error" role="alert" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET est déjà inscrit sur Artis & You. Connectez-vous avec le compte existant, ou contactez-nous si vous n’y avez plus accès.')}</div>}
+                {siretSt === 'known' && <div className="notice small" style={{ gridColumn: '1 / -1' }}>{t('Ce SIRET a déjà utilisé Artis & You par le passé. Vous pouvez recréer votre compte, mais sans essai gratuit ni avantage de parrainage.')}</div>}
               </div>
               <div className="field"><span>{t('Adresse du siège')}</span></div>
               <AddressFields value={c} onChange={(x) => setC({ ...c, ...x })} required />
@@ -299,7 +299,7 @@ export function SignupPro() {
               <div className="field"><span>{t('Vos métiers')}</span></div>
               <TradePicker value={c.trades} onChange={(trades) => setC({ ...c, trades })} />
               <Field label={t('Code de parrainage')} hint={t('facultatif — 1 mois offert en plus')}><input value={c.referral} onChange={(e) => setC({ ...c, referral: e.target.value.toUpperCase() })} /></Field>
-              <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artesa (SIRET, informations légales) avant d’être visible des clients.')}</p>
+              <p className="small muted">{t('Votre compte sera vérifié par l’équipe Artis & You (SIRET, informations légales) avant d’être visible des clients.')}</p>
             </>
           )}
           {err && <div className="error" role="alert">{err}</div>}

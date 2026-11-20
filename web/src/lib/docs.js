@@ -148,7 +148,7 @@ export const VAULT_FORM = {
   autre: { issued: 'Date du document', months: 0, needName: true },
 };
 export const addMonths = (isoDate, m) => { if (!isoDate || !m) return ''; const d = new Date(isoDate + 'T12:00:00'); d.setMonth(d.getMonth() + m); d.setDate(d.getDate() - 1); return d.toISOString().slice(0, 10); };
-// Statut de vérification d'un document du coffre-fort (équipe Artesa)
+// Statut de vérification d'un document du coffre-fort (équipe Artis & You)
 export const reviewPill = (f) => f?.kind === 'vault' && f.review_status === 'en_attente' ? ['yellow', t('En vérification')] : f?.kind === 'vault' && f.review_status === 'refuse' ? ['red', t('Refusé')] : null;
 
 // Documents légalement exigés d'un artisan (BTP) : Kbis / immatriculation, vigilance URSSAF (sous-traitance > 5 000 €), décennale
@@ -200,7 +200,7 @@ export const PLANS = [
   { id: 'entreprise', name: 'Entreprise', price: 69, users: 0, desc: 'Utilisateurs illimités', features: ['Tout Équipe', 'Utilisateurs illimités', 'Chantiers partagés avec le réseau', 'Bibliothèque d’ouvrages avancée', 'Support prioritaire'] },
 ];
 
-// Informations obligatoires pour que l'équipe Artesa valide une entreprise
+// Informations obligatoires pour que l'équipe Artis & You valide une entreprise
 export const SOCIETIES = ['EURL', 'SARL', 'SASU', 'SAS', 'SA', 'SNC', 'SCI', 'SCOP'];
 export function companyMissing(c) {
   const out = [];
@@ -214,7 +214,7 @@ export function companyMissing(c) {
   need(c.phone, 'phone', 'Téléphone');
   need(c.email, 'email', 'E-mail');
   if (SOCIETIES.includes(c.legal_form)) need(c.capital, 'capital', 'Capital social');
-  if (c.is_platform) return out; // Artesa elle-même : pas de métier ni d'assurance décennale
+  if (c.is_platform) return out; // Artis & You elle-même : pas de métier ni d'assurance décennale
   need((c.trades || []).length, 'trades', 'Au moins un métier');
   need(c.insurer, 'insurer', 'Assureur décennale');
   need(c.insurance_contract, 'insurance_contract', 'N° de contrat décennale');

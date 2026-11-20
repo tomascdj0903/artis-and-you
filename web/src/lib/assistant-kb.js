@@ -1,4 +1,4 @@
-// Base de connaissances de l'assistant Artesa.
+// Base de connaissances de l'assistant Artis & You.
 // Aujourd'hui : l'assistant cherche ici la meilleure réponse (gratuit, hors ligne, instantané).
 // Demain, avec l'IA : on n'enverra à l'IA que les 2-3 fiches les plus proches de la question
 // (au lieu de toute la documentation), ce qui limite fortement les tokens consommés.
@@ -12,7 +12,7 @@ export const KB = [
     a: 'Touchez « + » puis « Nouveau devis » (ou le bouton dans la tuile Devis). Choisissez le client, ajoutez vos lignes (ou piochez dans votre bibliothèque), puis « Envoyer ». Le numéro et les mentions légales sont ajoutés automatiquement.',
     links: [{ label: 'Nouveau devis', to: '/pro/documents/nouveau?kind=devis' }, { label: 'Mes devis', to: '/pro/documents/devis' }] },
   { id: 'devis-signer', q: 'Comment faire signer un devis (bon pour accord) ?', k: 'signer signature bon pour accord accepter valider devis client electronique', pages: ['/pro/documents'],
-    a: 'Envoyez le devis : le client le reçoit dans son espace Artesa et le signe en ligne (nom, signature dessinée facultative, case « Bon pour accord »). La date et une empreinte du devis sont gardées comme preuve, et vous êtes prévenu. S’il n’a pas de compte, le lien de l’e-mail l’invite à en créer un gratuitement. Signature sur papier : ouvrez le devis puis « Marquer comme signé ».',
+    a: 'Envoyez le devis : le client le reçoit dans son espace Artis & You et le signe en ligne (nom, signature dessinée facultative, case « Bon pour accord »). La date et une empreinte du devis sont gardées comme preuve, et vous êtes prévenu. S’il n’a pas de compte, le lien de l’e-mail l’invite à en créer un gratuitement. Signature sur papier : ouvrez le devis puis « Marquer comme signé ».',
     links: [{ label: 'Mes devis', to: '/pro/documents/devis' }, { label: 'Inviter mes clients', to: '/pro/reseau/inviter-clients' }] },
   { id: 'devis-facture', q: 'Transformer un devis en facture', k: 'transformer convertir devis facture acompte situation', pages: ['/pro/documents'],
     a: 'Ouvrez le devis signé puis « Créer la facture » (ou une facture d’acompte). Les lignes sont reprises automatiquement.',
@@ -26,7 +26,7 @@ export const KB = [
     a: 'Touchez « + » puis « Nouvelle facture », ou transformez un devis signé. Une facture envoyée est verrouillée (obligation légale) : pour corriger, on crée un avoir.',
     links: [{ label: 'Nouvelle facture', to: '/pro/documents/nouveau?kind=facture' }, { label: 'Mes factures', to: '/pro/documents/factures' }] },
   { id: 'facture-electronique', q: 'La facturation électronique, comment ça marche ?', k: 'facture electronique facturation electronique reforme 2026 2027 ppf pdp obligation', pages: ['/pro/documents'],
-    a: 'Artesa émet des factures conformes à la réforme de la facturation électronique (obligation 2026-2027). Vérifiez que les mentions obligatoires de votre entreprise sont remplies (champs marqués d’un astérisque rouge).',
+    a: 'Artis & You émet des factures conformes à la réforme de la facturation électronique (obligation 2026-2027). Vérifiez que les mentions obligatoires de votre entreprise sont remplies (champs marqués d’un astérisque rouge).',
     links: [{ label: 'Mon entreprise', to: '/pro/compte/entreprise' }, { label: 'Réglages des factures', to: '/pro/compte/factures' }] },
   { id: 'facture-paiement', q: 'Enregistrer un paiement reçu', k: 'paiement encaisser regler payee virement cheque especes recu', pages: ['/pro/documents'],
     a: 'Ouvrez la facture puis « Enregistrer un paiement » (montant, date, moyen). La facture passe « Payée » ou « Partiellement payée » toute seule.',
@@ -82,7 +82,7 @@ export const KB = [
   { id: 'client-creer', q: 'Ajouter un client', k: 'ajouter creer nouveau client fiche particulier professionnel', pages: ['/pro/clients', '/pro'],
     a: 'Clients › « + » : nom, téléphone et adresse du chantier suffisent pour commencer.',
     links: [{ label: 'Nouveau client', to: '/pro/clients/nouveau' }, { label: 'Clients', to: '/pro/clients' }] },
-  { id: 'client-inviter', q: 'Inviter mes clients sur Artesa', k: 'inviter client compte espace inscription bouche oreille partager lien', pages: ['/pro/clients', '/pro/reseau'],
+  { id: 'client-inviter', q: 'Inviter mes clients sur Artis & You', k: 'inviter client compte espace inscription bouche oreille partager lien', pages: ['/pro/clients', '/pro/reseau'],
     a: 'Mon réseau › « Inviter mes clients » : envoyez le lien par SMS, e-mail ou n’importe quelle app (bouton Partager). C’est gratuit pour eux, et votre conversation s’ouvre à l’inscription.',
     links: [{ label: 'Inviter mes clients', to: '/pro/reseau/inviter-clients' }] },
   { id: 'client-historique', q: 'Voir l’historique d’un client', k: 'historique client passe rdv paiement document suivi', pages: ['/pro/clients'],
@@ -116,7 +116,7 @@ export const KB = [
   { id: 'sombre', q: 'Activer le mode sombre ou changer la langue', k: 'mode sombre theme nuit langue anglais portugais apparence', pages: ['/pro/compte'],
     a: 'Paramètres › Langue et apparence.',
     links: [{ label: 'Langue et apparence', to: '/pro/compte/apparence' }] },
-  { id: 'logiciel', q: 'Installer Artesa sur PC, Mac ou téléphone', k: 'installer application pc mac windows telephone iphone android telecharger', pages: ['/pro/compte'],
+  { id: 'logiciel', q: 'Installer Artis & You sur PC, Mac ou téléphone', k: 'installer application pc mac windows telephone iphone android telecharger', pages: ['/pro/compte'],
     a: 'Paramètres › Logiciel PC / Mac et application mobile. Sur téléphone : ouvrez le site puis « Ajouter à l’écran d’accueil ».',
     links: [{ label: 'Télécharger', to: '/telecharger' }] },
   { id: 'support', q: 'Contacter le support', k: 'aide support contact probleme bug humain', pages: [],

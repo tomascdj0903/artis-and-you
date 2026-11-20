@@ -26,7 +26,7 @@ export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
 export function Account() {
   const { profile, company, confirm, run } = useApp();
   const ger = profile.member_role === 'gerant';
-  const adm = !!company.is_platform; // compte Artesa : pas d'équipe, d'avis ni d'abonnement
+  const adm = !!company.is_platform; // compte Artis & You : pas d'équipe, d'avis ni d'abonnement
   // Double demande avant de se déconnecter
   const logout = async () => {
     if (!(await confirm({ title: t('Se déconnecter ?'), text: OFFLINE ? t('Vos données restent dans ce navigateur. Vous devrez saisir à nouveau votre e-mail et votre mot de passe.') : t('Vous devrez saisir à nouveau votre e-mail et votre mot de passe (et votre code de double authentification si elle est activée).'), ok: t('Se déconnecter'), danger: true }))) return;
@@ -36,8 +36,8 @@ export function Account() {
     <div className="content narrow">
       <TopBar title={t('Paramètres et compte')} />
       <div className="card navy row" style={{ gap: 14 }}>
-        {adm ? <Avatar src="/favicon.svg" name="Artesa" size="lg" /> : <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} size="lg" />}
-        <div><b style={{ fontSize: 19 }}>{adm ? 'Artesa' : fullName(profile)}</b><div className="muted">{adm ? profile.email : company.name}</div><Pill c="white">{adm ? t('Administrateur') : t({ gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' }[profile.member_role])}</Pill></div>
+        {adm ? <Avatar src="/favicon.svg" name="Artis & You" size="lg" /> : <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} size="lg" />}
+        <div><b style={{ fontSize: 19 }}>{adm ? 'Artis & You' : fullName(profile)}</b><div className="muted">{adm ? profile.email : company.name}</div><Pill c="white">{adm ? t('Administrateur') : t({ gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' }[profile.member_role])}</Pill></div>
       </div>
       <Sec title={t('Compte')} />
       <div className="list">
@@ -46,7 +46,7 @@ export function Account() {
       </div>
       <Sec title={t('Entreprise')} />
       <div className="list">
-        {ger && <MenuRow to="/pro/compte/entreprise" icon={LuBuilding2} label={adm ? t('Infos Artesa') : t('Mon entreprise')} sub={adm ? t('SIRET, TVA, adresse, mentions') : company.name} />}
+        {ger && <MenuRow to="/pro/compte/entreprise" icon={LuBuilding2} label={adm ? t('Infos Artis & You') : t('Mon entreprise')} sub={adm ? t('SIRET, TVA, adresse, mentions') : company.name} />}
         {!adm && <MenuRow to="/pro/compte/equipe" icon={LuUsers} label={t('Mon équipe')} />}
         {ger && <MenuRow to="/pro/compte/devis" icon={LuFilePen} label={t('Devis')} sub={t('Numérotation, TVA, validité, acompte')} />}
         {ger && <MenuRow to="/pro/compte/factures" icon={LuFileText} label={t('Factures')} sub={t('Numérotation, paiement, mentions')} />}
@@ -59,12 +59,12 @@ export function Account() {
         {ger && <MenuRow to={adm ? '/admin/integrations' : '/pro/compte/integrations'} icon={LuPlug} label={t('Intégrations')} sub={adm ? t('Services connectés à la plateforme') : t('Agenda, comptable, paiement')} />}
         <MenuRow to="/pro/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />
         <MenuRow to="/telecharger" icon={LuDownload} label={t('Logiciel PC / Mac et application mobile')} />
-        {profile.is_admin && !adm && <MenuRow to="/pro/admin" icon={LuShieldCheck} label={t('Administration Artesa')} />}
+        {profile.is_admin && !adm && <MenuRow to="/pro/admin" icon={LuShieldCheck} label={t('Administration Artis & You')} />}
       </div>
       <Sec title={t('Aide')} />
       <div className="list">
         {adm ? <MenuRow to="/admin/service-client" icon={LuHeadset} label={t('Service client')} sub={t('Messages des pros et des particuliers')} />
-          : <MenuRow onClick={() => run(async () => navigate('/pro/messages/' + await api.rpc('support_conversation')))} icon={LuHeadset} label={t('Service client')} sub={t('Écrire à l’équipe Artesa')} />}
+          : <MenuRow onClick={() => run(async () => navigate('/pro/messages/' + await api.rpc('support_conversation')))} icon={LuHeadset} label={t('Service client')} sub={t('Écrire à l’équipe Artis & You')} />}
         <MenuRow to="/pro/compte/aide" icon={LuCircleHelp} label={t('Aide et support')} />
         <MenuRow onClick={logout} icon={LuLogOut} label={t('Se déconnecter')} red />
       </div>
@@ -97,13 +97,13 @@ export function Subscription() {
         ))}
       </div>
       <Sec title={t('Paiement et factures')} />
-      <div className="list"><MenuRow onClick={() => wip(t('Le paiement de l’abonnement'))} icon={LuCreditCard} label={t('Moyen de paiement')} sub={t('Aucun pour l’instant')} /><MenuRow onClick={() => wip(t('Les factures d’abonnement'))} icon={LuFileText} label={t('Mes factures Artesa')} /></div>
+      <div className="list"><MenuRow onClick={() => wip(t('Le paiement de l’abonnement'))} icon={LuCreditCard} label={t('Moyen de paiement')} sub={t('Aucun pour l’instant')} /><MenuRow onClick={() => wip(t('Les factures d’abonnement'))} icon={LuFileText} label={t('Mes factures Artis & You')} /></div>
       <Sec title={t('Parrainage')} />
       <div className="card soft">
         <p>{t('Partagez votre code : votre filleul gagne 1 mois offert en plus de son essai (2 mois en tout), et vous gagnez 15 jours offerts. Jusqu’à 10 filleuls.')}</p>
         {refStats && <p className="small muted">{t('{n} filleuls sur 10', { n: refStats.count })}{refStats.count >= 10 ? ' · ' + t('Maximum atteint : votre code ne donne plus d’avantage.') : ''}</p>}
         <div className="row"><b style={{ fontSize: 24, letterSpacing: 3 }} className="red-t">{company.referral_code}</b><button className="btn xs ghost" onClick={copy}><LuCopy /> {t('Copier')}</button>
-          <a className="btn xs ghost" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artesa'))}&body=${encodeURIComponent(t('Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert en plus de l’essai.', { u: location.origin + '/inscription/artisan', c: company.referral_code }))}`}>{t('Partager')}</a><ShareButton className="btn xs ghost" title={t('Rejoignez-moi sur Artesa')} text={t('Je gère mes devis, factures et rendez-vous avec Artesa. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: company.referral_code })} url={location.origin + '/inscription/artisan?parrain=' + encodeURIComponent(company.referral_code)} /></div>
+          <a className="btn xs ghost" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artis & You'))}&body=${encodeURIComponent(t('Inscrivez-vous sur {u} avec mon code {c} : 1 mois offert en plus de l’essai.', { u: location.origin + '/inscription/artisan', c: company.referral_code }))}`}>{t('Partager')}</a><ShareButton className="btn xs ghost" title={t('Rejoignez-moi sur Artis & You')} text={t('Je gère mes devis, factures et rendez-vous avec Artis & You. Inscris-toi avec mon code {c} : 1 mois offert en plus de l’essai.', { c: company.referral_code })} url={location.origin + '/inscription/artisan?parrain=' + encodeURIComponent(company.referral_code)} /></div>
       </div>
       <Sec title={t('Mes filleuls')} meta={t('{n} mois gagnés', { n: filleuls?.length || 0 })} />
       {filleuls?.length ? <div className="list">{filleuls.map((f) => <div className="li" key={f.id}><div className="grow"><div className="t1">{f.name}</div><div className="t2">{t('Inscrit le {d}', { d: date(f.created_at) })}</div></div><Pill c="green">+1 {t('mois')}</Pill></div>)}</div> : <Empty text={t('Pas encore de filleul.')} />}
@@ -130,7 +130,7 @@ export function CompanySettings() {
       const x = await api.update('companies', { id: company.id }, row); setCompany({ ...company, ...row, ...(x || {}) });
       // Compléments envoyés : le dossier repart en vérification
       if (company.verification_status === 'rejected' && !miss.length) { const y = await api.rpc('resubmit_company', {}); if (y) setCompany({ ...company, ...row, ...y }); }
-    }, company.verification_status === 'rejected' && !miss.length ? t('Merci ! Votre dossier est renvoyé à l’équipe Artesa.') : t('Entreprise enregistrée'));
+    }, company.verification_status === 'rejected' && !miss.length ? t('Merci ! Votre dossier est renvoyé à l’équipe Artis & You.') : t('Entreprise enregistrée'));
   };
   const logo = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (f) setCrop(f); };
   const saveLogo = (f) => { setCrop(null); run(async () => { const up = await uploadTo(company.id + '/logo', f); setC((x) => ({ ...x, logo_path: up.path })); await api.update('companies', { id: company.id }, { logo_path: up.path }); setCompany({ ...company, logo_path: up.path }); }, t('Logo enregistré')); };
@@ -144,13 +144,13 @@ export function CompanySettings() {
           <div className="row mb"><Avatar name={c.name} path={c.logo_path} size="lg" /><div style={{ display: 'grid', gap: 6 }}><button className="btn ghost sm" onClick={logo}><LuImage /> {c.logo_path ? t('Changer le logo') : t('Ajouter le logo')}</button><span className="small faint">{t('Vous pourrez le recadrer avant de l’enregistrer.')}</span></div></div>
           {company.verified || company.verification_status === 'approved' ? <Pill c="green"><LuShieldCheck /> {t('Entreprise vérifiée')}</Pill> : (
             <div className="notice">
-              <b>{company.verification_status === 'rejected' ? t('Informations à compléter') : t('Validation en cours par l’équipe Artesa')}</b>
+              <b>{company.verification_status === 'rejected' ? t('Informations à compléter') : t('Validation en cours par l’équipe Artis & You')}</b>
               {company.verification_note && <div className="small">« {company.verification_note} »</div>}
               <ul className="req-list">{companyMissing(c).length ? companyMissing(c).map(([k, l]) => <li key={k} className="ko">✕ {t(l)}</li>) : <li className="ok">✓ {t('Toutes les informations obligatoires sont renseignées')}</li>}</ul>
             </div>
           )}
           {company.owner_id === profile.id && !company.is_platform && <div className="mt"><IdentityCard purpose="dirigeant" /></div>}
-          {!(company.verified || company.verification_status === 'approved') && <p className="small muted">{t('Avant la validation, votre fiche n’apparaît pas dans la recherche et vos devis et factures ne sont pas transmis aux particuliers inscrits sur Artesa. Vous pouvez déjà tout préparer.')}</p>}
+          {!(company.verified || company.verification_status === 'approved') && <p className="small muted">{t('Avant la validation, votre fiche n’apparaît pas dans la recherche et vos devis et factures ne sont pas transmis aux particuliers inscrits sur Artis & You. Vous pouvez déjà tout préparer.')}</p>}
           <Sec title={t('Identité')} />
           <p className="small faint" style={{ marginTop: -6 }}><b className="red-t">*</b> {t('obligatoire pour la validation du compte')}</p>
           <div className="form-grid two">
@@ -168,8 +168,8 @@ export function CompanySettings() {
           <div className="form-grid three">{F('insurer', t('Assureur'), { req: 1 })}{F('insurance_contract', t('N° de contrat'), { req: 1 })}{F('insurance_coverage', t('Couverture'))}</div></>}
         </div>
         {c.is_platform ? <div>
-          <Sec title={t('Plateforme Artesa')} />
-          <div className="card soft small" style={{ lineHeight: 1.6 }}>{t('Ces informations apparaissent sur les devis et factures d’Artesa (abonnements, prestations). Artesa n’est pas un artisan : pas de métier, de zone ni de profil public.')}</div>
+          <Sec title={t('Plateforme Artis & You')} />
+          <div className="card soft small" style={{ lineHeight: 1.6 }}>{t('Ces informations apparaissent sur les devis et factures d’Artis & You (abonnements, prestations). Artis & You n’est pas un artisan : pas de métier, de zone ni de profil public.')}</div>
           <Field label={t('Présentation (mentions bas de page, e-mails)')}><textarea value={c.description || ''} onChange={(e) => setC({ ...c, description: e.target.value })} /></Field>
           <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
         </div> : <div>
@@ -198,7 +198,7 @@ export function CompanySettings() {
 }
 
 const ROLE = { gerant: 'Gérant', chef: "Chef d'équipe", ouvrier: 'Ouvrier' };
-const COLORS = ['#2B1F1C', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
+const COLORS = ['#4B2014', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
 export function TeamSettings() {
   const { company, teams, setTeams, members, profile } = useApp();
   const ger = profile.member_role === 'gerant';
@@ -249,11 +249,11 @@ function InviteSheet({ open, onClose }) {
   const [v, setV] = useState({ label: '', member_role: 'ouvrier', team_id: teams[0]?.id || '' });
   const [code, setCode] = useState(null);
   if (!open) return null;
-  const msg = code && t('Rejoignez {c} sur Artesa : créez votre compte sur {u} puis choisissez « Rejoindre une équipe » avec le code {k}.', { c: company.name, u: location.origin + '/inscription/artisan', k: code });
+  const msg = code && t('Rejoignez {c} sur Artis & You : créez votre compte sur {u} puis choisissez « Rejoindre une équipe » avec le code {k}.', { c: company.name, u: location.origin + '/inscription/artisan', k: code });
   return (
     <Sheet open onClose={() => { setCode(null); onClose(); }} title={t('Inviter un membre')}>
       {code ? (<div className="center"><p>{t('Code d’invitation')}</p><div style={{ fontSize: 34, fontWeight: 800, letterSpacing: 6 }} className="red-t">{code}</div><p className="small muted">{msg}</p>
-        <div className="btns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}><a className="btn ghost" href={`sms:?&body=${encodeURIComponent(msg)}`}>{t('SMS')}</a><a className="btn ghost" href={`mailto:?subject=${encodeURIComponent(t('Invitation Artesa'))}&body=${encodeURIComponent(msg)}`}>{t('E-mail')}</a></div></div>) : (<>
+        <div className="btns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}><a className="btn ghost" href={`sms:?&body=${encodeURIComponent(msg)}`}>{t('SMS')}</a><a className="btn ghost" href={`mailto:?subject=${encodeURIComponent(t('Invitation Artis & You'))}&body=${encodeURIComponent(msg)}`}>{t('E-mail')}</a></div></div>) : (<>
         <Field label={t('Nom du membre')}><input value={v.label} onChange={(e) => setV({ ...v, label: e.target.value })} /></Field>
         <Chips options={Object.entries(ROLE).filter(([k]) => k !== 'gerant').map(([k, l]) => [k, t(l)])} value={v.member_role} onChange={(member_role) => setV({ ...v, member_role })} />
         <Field label={t('Équipe')}><select value={v.team_id} onChange={(e) => setV({ ...v, team_id: e.target.value })}>{teams.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}</select></Field>
@@ -371,9 +371,9 @@ export function PdfSettings() {
   const [kind, setKind] = useState('facture');
   const logoUrl = useLogo(company);
   const sample = { kind, number: kind === 'devis' ? 'DE-2027-0001' : 'FA-2027-0001', issue_date: new Date().toISOString().slice(0, 10), due_date: new Date().toISOString().slice(0, 10), validity_days: 30, object: kind === 'devis' ? t('Exemple de devis') : t('Exemple de facture'), lines: [{ id: 'a', kind: 'section', label: t('Détail fournitures') }, { id: 'b', kind: 'item', label: t('Fourniture'), qty: 1, unit: 'u', price: 100, vat: 20 }, { id: 'c', kind: 'section', label: t('Détail prestations') }, { id: 'd', kind: 'item', label: t('Main-d’œuvre'), qty: 2, unit: 'h', price: 45, vat: 20 }], conditions: {}, totals: {}, operations_nature: 'Biens et services', paid_amount: 0 };
-  const mini = (k) => k === 'moderne' ? <><i style={{ left: 0, right: 0, top: 0, height: 18, background: p.color }} /><i style={{ left: 8, top: 4, width: 14, height: 10, background: '#fff', borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 32, height: 6, background: '#2B1F1C' }} /><i style={{ left: 8, right: 8, top: 42, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 48, height: 3, background: '#E5E7EE' }} /></>
+  const mini = (k) => k === 'moderne' ? <><i style={{ left: 0, right: 0, top: 0, height: 18, background: p.color }} /><i style={{ left: 8, top: 4, width: 14, height: 10, background: '#fff', borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 32, height: 6, background: '#4B2014' }} /><i style={{ left: 8, right: 8, top: 42, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 48, height: 3, background: '#E5E7EE' }} /></>
     : k === 'epure' ? <><i style={{ left: 8, top: 6, width: 14, height: 10, border: '1.5px solid ' + p.color, borderRadius: 2 }} /><i style={{ left: 8, right: 8, top: 22, height: 1.5, background: p.color }} /><i style={{ left: 8, right: 8, top: 32, height: 1.5, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>
-    : <><i style={{ left: 8, top: 6, width: 14, height: 10, background: '#2B1F1C', borderRadius: 2 }} /><i style={{ right: 8, top: 7, width: 22, height: 5, background: p.color }} /><i style={{ left: 8, right: 8, top: 30, height: 6, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>;
+    : <><i style={{ left: 8, top: 6, width: 14, height: 10, background: '#4B2014', borderRadius: 2 }} /><i style={{ right: 8, top: 7, width: 22, height: 5, background: p.color }} /><i style={{ left: 8, right: 8, top: 30, height: 6, background: p.color }} /><i style={{ left: 8, right: 8, top: 40, height: 3, background: '#E5E7EE' }} /><i style={{ left: 8, right: 8, top: 46, height: 3, background: '#E5E7EE' }} /></>;
   return (
     <div className="content">
       <TopBar title={t('Modèle du PDF')} />
@@ -384,9 +384,9 @@ export function PdfSettings() {
           <Sec title={t('Personnalisation')} />
           <Field label={t('Couleur')}><input type="color" value={p.color} onChange={(e) => setP({ ...p, color: e.target.value })} style={{ height: 48 }} /></Field>
           <div className="row mb"><button className="btn ghost sm" onClick={() => navigate('/pro/compte/entreprise')}><LuImage /> {company.logo_path ? t('Changer le logo') : t('Ajouter mon logo')}</button></div>
-          <p className="small faint">{t('Votre logo apparaît en haut à gauche ; la mention « Document réalisé avec Artesa » en bas de page.')}</p>
+          <p className="small faint">{t('Votre logo apparaît en haut à gauche ; la mention « Document réalisé avec Artis & You » en bas de page.')}</p>
           <Sec title={t('Signature')} />
-          <SignatureEditor p={p} setP={setP} defaultName={company.is_platform ? 'Artesa' : fullName(profile)} />
+          <SignatureEditor p={p} setP={setP} defaultName={company.is_platform ? 'Artis & You' : fullName(profile)} />
           <Field label={t('Pied de page')}><input value={p.footer} onChange={(e) => setP({ ...p, footer: e.target.value })} placeholder={t('ex. Membre d’une association agréée')} /></Field>
           <button className="btn block" onClick={() => { if (!p.sig_text) return alert(t('Saisissez votre nom pour créer votre signature.')); run(async () => { const settings = { ...company.settings, pdf: p }; await api.update('companies', { id: company.id }, { settings }); setCompany({ ...company, settings }); }, t('Modèle enregistré')); }}>{t('Enregistrer')}</button>
         </div>
@@ -431,7 +431,7 @@ export function Integrations() {
       <div className="form-grid two"><Field label={t('Nom')}><input value={a.name} onChange={(e) => setA({ ...a, name: e.target.value })} /></Field><Field label={t('E-mail')}><input type="email" value={a.email} onChange={(e) => setA({ ...a, email: e.target.value })} /></Field></div>
       <button className="btn sm" onClick={() => run(async () => { await api.update('companies', { id: company.id }, { accountant: a }); setCompany({ ...company, accountant: a }); }, t('Comptable enregistré'))}>{t('Enregistrer')}</button>
       <Sec title={t('Paiement et facturation')} />
-      <div className="list"><MenuRow onClick={() => wip(t('Le paiement en ligne'))} icon={LuCreditCard} label={t('Paiement en ligne')} sub={t('Carte et prélèvement SEPA')} /><MenuRow onClick={() => wip(t('La facture électronique via Artesa'))} icon={LuFileText} label={t('Facture électronique')} sub={t('Plateforme agréée')} /></div>
+      <div className="list"><MenuRow onClick={() => wip(t('Le paiement en ligne'))} icon={LuCreditCard} label={t('Paiement en ligne')} sub={t('Carte et prélèvement SEPA')} /><MenuRow onClick={() => wip(t('La facture électronique via Artis & You'))} icon={LuFileText} label={t('Facture électronique')} sub={t('Plateforme agréée')} /></div>
     </div>
   );
 }
@@ -446,7 +446,7 @@ export function Reviews() {
   return (
     <div className="content narrow">
       <TopBar title={t('Mes avis clients')} sub={pub.length ? `${avg.toFixed(1).replace('.', ',')} / 5 · ${t('{n} avis', { n: pub.length })}` : ''} />
-      <p className="small muted">{t('Les avis sont vérifiés (seulement après un vrai RDV) et relus par Artesa avant publication.')}</p>
+      <p className="small muted">{t('Les avis sont vérifiés (seulement après un vrai RDV) et relus par Artis & You avant publication.')}</p>
       {!list.length ? <Empty icon={LuStar} text={t('Pas encore d’avis.')} /> : list.map((r) => (
         <div key={r.id} className="card soft mb">
           <div className="row between"><Stars n={r.rating} /><Pill c={r.status === 'publie' ? 'green' : r.status === 'refuse' ? 'grey' : 'yellow'}>{t({ publie: 'Publié', en_attente: 'En relecture', refuse: 'Refusé' }[r.status])}</Pill></div>

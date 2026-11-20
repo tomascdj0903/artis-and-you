@@ -75,7 +75,7 @@ export function RetractationBox({ d, company, client, onDone }) {
     '',
     'Votre rétractation a été transmise à l’artisan. Il doit vous rembourser la totalité des sommes versées au plus tard 14 jours après cette date (art. L. 221-24 du Code de la consommation), sauf la part des travaux déjà réalisés à votre demande expresse avant la fin du délai (art. L. 221-25).',
     '',
-    'Document généré par Artesa.',
+    'Document généré par Artis & You.',
   ].filter((x) => x !== '').join('\n');
   const dl = (a) => download(new Blob([receipt(a)], { type: 'text/plain;charset=utf-8' }), `accuse-retractation-${d.number || 'devis'}.txt`);
   if (d.status === 'retracte') return (

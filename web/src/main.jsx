@@ -74,7 +74,7 @@ const PRO_TABS = [
   ['/pro', LuHouse, 'Accueil', true], ['/pro/clients', LuUsers, 'Clients'], ['/pro/planning', LuCalendar, 'Planning'], ['/pro/documents', LuFileText, 'Documents'],
   ['/pro/crm', LuChartColumn, 'CRM'], ['/pro/messages', LuMessageSquare, 'Messages'], ['/pro/reseau', LuNetwork, 'Mon réseau'],
 ];
-// Espace administrateur Artesa (compte « admin » : ni artisan, ni particulier)
+// Espace administrateur Artis & You (compte « admin » : ni artisan, ni particulier)
 const ADMIN = [
   ['/admin', L('adm', 'AdminHome')], ['/admin/gestion/:tab', L('common', 'Admin')], ['/admin/comptes', L('adm', 'AdminAccounts')], ['/admin/stats', L('adm', 'AdminStats')],
   ['/admin/compta', L('adm', 'AdminCompta')], ['/admin/facturation-electronique', L('adm', 'AdminEInvoice')], ['/admin/legal', L('adm', 'AdminLegal')],
@@ -107,7 +107,7 @@ function Shell({ tabs, children, path }) {
   // Dans une conversation, la barre d'onglets laisse la place à la barre de saisie (comme WhatsApp)
   const hideTabs = /^\/(pro|client)\/messages\/[^/]+$|^\/pro\/clients\/[^/]+\/chat$/.test(path);
   // Titre de l'onglet = titre de la page (annoncé par les lecteurs d'écran à chaque changement de page)
-  useEffect(() => { const i = setTimeout(() => { const h = document.querySelector('.main h1')?.textContent?.trim(); document.title = (h ? h + ' · ' : '') + 'Artesa'; }, 400); return () => clearTimeout(i); }, [path]);
+  useEffect(() => { const i = setTimeout(() => { const h = document.querySelector('.main h1')?.textContent?.trim(); document.title = (h ? h + ' · ' : '') + 'Artis & You'; }, 400); return () => clearTimeout(i); }, [path]);
   const [tour, finishTour] = useTours(path); // Accueil artisan : pas de barre d'onglets (maquette 02)
   return (
     <div className="app">
@@ -121,8 +121,8 @@ function Shell({ tabs, children, path }) {
         </nav>
         <div className="spacer" />
         <Link to={profile?.kind === 'admin' ? '/pro/compte' : (isPro ? '/pro' : '/client') + '/compte'} className="me">
-          {company?.is_platform ? <Avatar src="/favicon.svg" name="Artesa" size="sm" /> : <Avatar name={profile?.first_name} last={profile?.last_name} path={profile?.avatar_path} size="sm" />}
-          <div><b>{company?.is_platform ? 'Artesa' : fullName(profile) || t('Mon compte')}</b><small>{profile?.kind === 'admin' ? t('Administrateur') : company?.name || t('Particulier')}</small></div>
+          {company?.is_platform ? <Avatar src="/favicon.svg" name="Artis & You" size="sm" /> : <Avatar name={profile?.first_name} last={profile?.last_name} path={profile?.avatar_path} size="sm" />}
+          <div><b>{company?.is_platform ? 'Artis & You' : fullName(profile) || t('Mon compte')}</b><small>{profile?.kind === 'admin' ? t('Administrateur') : company?.name || t('Particulier')}</small></div>
         </Link>
       </aside>
       <div className="main">
@@ -150,7 +150,7 @@ function LockScreen({ onUnlock }) {
     <div className="auth" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24 }}>
       <div style={{ display: 'grid', gap: 14, maxWidth: 360, width: '100%', textAlign: 'center' }}>
         <Wordmark size={54} style={{ margin: '0 auto' }} />
-        <h1 style={{ fontSize: 22, margin: 0 }}>{profile.kind === 'admin' ? 'Artesa' : t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
+        <h1 style={{ fontSize: 22, margin: 0 }}>{profile.kind === 'admin' ? 'Artis & You' : t('Bonjour {n}', { n: profile.first_name || '' })}</h1>
         <p className="muted" style={{ margin: 0 }}>{t('Application verrouillée. Utilisez Face ID, Touch ID, votre empreinte ou Windows Hello.')}</p>
         {err && <div className="error" role="alert">{err}</div>}
         <button className="btn" onClick={go}>{t('Déverrouiller')}</button>

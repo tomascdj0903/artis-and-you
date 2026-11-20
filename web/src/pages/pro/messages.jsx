@@ -16,7 +16,7 @@ async function loadConvCtx(company, teams, members) {
   const [convs, clients] = await Promise.all([api.select('conversations', {}, { order: 'last_at.desc', limit: 300 }), api.select('clients', { company_id: company.id })]);
   const others = [...new Set(convs.filter((c) => c.kind === 'pro' || c.kind === 'support').map((c) => (c.company_id === company.id ? c.other_company_id : c.company_id)).filter(Boolean))];
   const cos = others.length ? await api.select('companies', { id: others }) : [];
-  // Espace Artesa : nom des particuliers qui écrivent au service client
+  // Espace Artis & You : nom des particuliers qui écrivent au service client
   const uids = company.is_platform ? [...new Set(convs.filter((c) => c.kind === 'support' && c.client_user_id).map((c) => c.client_user_id))] : [];
   const us = uids.length ? await api.select('profiles', { id: uids }).catch(() => []) : [];
   return { convs, ctx: { mine: company.id, clients: Object.fromEntries(clients.map((c) => [c.id, c])), teams: Object.fromEntries(teams.map((x) => [x.id, x])), companies: Object.fromEntries(cos.map((c) => [c.id, c])), users: Object.fromEntries(us.map((u) => [u.id, u])), members }, clients };
@@ -101,7 +101,7 @@ export function Conversation({ params }) {
   const titleLink = b.c.kind === 'client' && b.c.client_id ? '/pro/clients/' + b.c.client_id : b.c.kind === 'pro' ? '/pro/reseau/' + b.m.otherId : null;
   return (
     <div className="content narrow">
-      <TopBar title={b.m.artesa ? <span className="row" style={{ gap: 8 }}><ArtesaAvatar size="sm" /> Artesa</span> : titleLink ? <Link to={titleLink}>{b.m.name}</Link> : b.m.name} sub={b.m.sub} right={b.c.kind === 'client' && <Link className="iconbtn" to={'/pro/clients/' + b.c.client_id} aria-label={t('Fiche client')}><LuChevronRight /></Link>} />
+      <TopBar title={b.m.artesa ? <span className="row" style={{ gap: 8 }}><ArtesaAvatar size="sm" /> Artis & You</span> : titleLink ? <Link to={titleLink}>{b.m.name}</Link> : b.m.name} sub={b.m.sub} right={b.c.kind === 'client' && <Link className="iconbtn" to={'/pro/clients/' + b.c.client_id} aria-label={t('Fiche client')}><LuChevronRight /></Link>} />
       <Chat convId={b.c.id} projects={b.projects} banner={b.shared && <div className="banner"><LuMapPin className="red-t" /><div><div className="small muted">{t('Chantier partagé')}</div><b>{b.shared.title}{b.shared.address ? ' · ' + b.shared.address : ''}</b></div></div>} />
     </div>
   );
@@ -133,7 +133,7 @@ export function Network() {
       <TopBar title={t('Mon réseau')} sub={t('Mes pros')} back={false} settings="/pro/compte/entreprise" />
       <SearchBar placeholder={t('Recherchez un pro')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={trades.length > 0} />
       <button className="card soft row" style={{ width: '100%', textAlign: 'left', cursor: 'pointer', border: 0, marginBottom: 6 }} onClick={() => navigate('/pro/reseau/inviter-clients')}>
-        <span style={{ fontSize: 26 }}>📣</span><div className="grow"><b>{t('Inviter mes clients sur Artesa')}</b><div className="small muted">{t('Gratuit pour eux : ils retrouvent leurs documents et vous écrivent directement.')}</div></div><LuChevronRight />
+        <span style={{ fontSize: 26 }}>📣</span><div className="grow"><b>{t('Inviter mes clients sur Artis & You')}</b><div className="small muted">{t('Gratuit pour eux : ils retrouvent leurs documents et vous écrivent directement.')}</div></div><LuChevronRight />
       </button>
       {b.reqs.length > 0 && <>
         <Sec title={t('Demandes de connexion')} />
@@ -198,12 +198,12 @@ export function NetworkAdd() {
     return m;
   }, []);
   const search = async (v) => { setQ(v); if (v.trim().length < 2) return setRes(null); const r = await api.rpc('directory_search', { p_query: v.trim(), p_trade: '', p_city: '' }); setRes(r.filter((x) => x.id !== company.id)); };
-  const inviteMsg = t('Bonjour, je vous invite à me rejoindre sur Artesa pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert en plus de l’essai : {u}', { c: company.referral_code, u: location.origin + '/inscription/artisan' });
+  const inviteMsg = t('Bonjour, je vous invite à me rejoindre sur Artis & You pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert en plus de l’essai : {u}', { c: company.referral_code, u: location.origin + '/inscription/artisan' });
   return (
     <div className="content narrow">
       <TopBar title={t('Ajouter un pro')} sub={t('Rechercher un professionnel')} />
       <label className="input row" style={{ borderRadius: 999, borderColor: 'var(--text)', padding: '6px 18px' }}><input autoFocus value={q} onChange={(e) => search(e.target.value)} placeholder={t('Nom, entreprise ou métier')} style={{ border: 0, outline: 0, flex: 1, padding: 8, background: 'transparent' }} /></label>
-      {res && <p className="muted">{t('{n} pros trouvés sur Artesa', { n: res.length })}</p>}
+      {res && <p className="muted">{t('{n} pros trouvés sur Artis & You', { n: res.length })}</p>}
       {res && <div className="list">{res.map((co) => (
         <div key={co.id} className="li">
           <span className="avatar sm" style={{ background: 'var(--petrole)' }}>{initials(...co.name.split(' '))}</span>
@@ -212,11 +212,11 @@ export function NetworkAdd() {
         </div>
       ))}</div>}
       <div className="alert mt" style={{ alignItems: 'flex-start' }}>
-        <div className="grow"><b>{t('Il n’est pas encore sur Artesa ?')}</b><div className="small">{t('Invitez-le par SMS ou e-mail : 1 mois offert pour lui.')}</div></div>
+        <div className="grow"><b>{t('Il n’est pas encore sur Artis & You ?')}</b><div className="small">{t('Invitez-le par SMS ou e-mail : 1 mois offert pour lui.')}</div></div>
         <div className="row" style={{ flexDirection: 'column', gap: 6 }}>
           <a className="btn xs ghost-red" href={`sms:?&body=${encodeURIComponent(inviteMsg)}`}>{t('SMS')}</a>
-          <a className="btn xs ghost-red" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artesa'))}&body=${encodeURIComponent(inviteMsg)}`}><LuMail /> {t('E-mail')}</a>
-          <ShareButton className="btn xs ghost-red" title={t('Rejoignez-moi sur Artesa')} text={inviteMsg} />
+          <a className="btn xs ghost-red" href={`mailto:?subject=${encodeURIComponent(t('Rejoignez-moi sur Artis & You'))}&body=${encodeURIComponent(inviteMsg)}`}><LuMail /> {t('E-mail')}</a>
+          <ShareButton className="btn xs ghost-red" title={t('Rejoignez-moi sur Artis & You')} text={inviteMsg} />
         </div>
       </div>
     </div>
@@ -296,7 +296,7 @@ export function RateBox({ score, label, onRate }) {
 
 // Bouche-à-oreille : inviter ses clients à créer leur compte gratuit (la conversation avec le pro s'ouvre à l'inscription)
 export const clientInviteLink = (company) => location.origin + '/inscription/particulier?pro=' + company.id;
-export const clientInviteMsg = (company, c) => t('Bonjour {p}, je gère désormais mes devis, factures et rendez-vous sur Artesa. Créez votre compte gratuit pour retrouver vos documents, prendre rendez-vous et m’écrire directement : {u} — {n}', { p: c?.first_name || '', u: clientInviteLink(company), n: company.trade_name || company.name });
+export const clientInviteMsg = (company, c) => t('Bonjour {p}, je gère désormais mes devis, factures et rendez-vous sur Artis & You. Créez votre compte gratuit pour retrouver vos documents, prendre rendez-vous et m’écrire directement : {u} — {n}', { p: c?.first_name || '', u: clientInviteLink(company), n: company.trade_name || company.name });
 export function InviteClientButtons({ c, onDone, small }) {
   const { company } = useApp();
   const msg = clientInviteMsg(company, c);
@@ -305,7 +305,7 @@ export function InviteClientButtons({ c, onDone, small }) {
   return (
     <div className="row" style={{ gap: 6 }}>
       {phone && <a className={'btn xs ' + (small ? 'ghost' : 'ghost-red')} href={`sms:${phone.replace(/\s/g, '')}?&body=${encodeURIComponent(msg)}`} onClick={mark}>{t('SMS')}</a>}
-      {c.email && <a className={'btn xs ' + (small ? 'ghost' : 'ghost-red')} href={`mailto:${c.email}?subject=${encodeURIComponent(t('Votre espace client sur Artesa'))}&body=${encodeURIComponent(msg)}`} onClick={mark}><LuMail /> {t('E-mail')}</a>}
+      {c.email && <a className={'btn xs ' + (small ? 'ghost' : 'ghost-red')} href={`mailto:${c.email}?subject=${encodeURIComponent(t('Votre espace client sur Artis & You'))}&body=${encodeURIComponent(msg)}`} onClick={mark}><LuMail /> {t('E-mail')}</a>}
       {!phone && !c.email && <button className="btn xs ghost" onClick={() => { navigator.clipboard?.writeText(msg); mark(); }}>{t('Copier le message')}</button>}
     </div>
   );
@@ -320,17 +320,17 @@ export function InviteClients() {
   return (
     <div className="content narrow">
       <TopBar title={t('Inviter mes clients')} sub={t('Gratuit pour les particuliers')} />
-      <div className="notice">{t('Vos clients créent leur compte gratuit en un clic depuis le lien : ils retrouvent leurs devis, factures et rendez-vous, et votre conversation s’ouvre directement. Plus ils sont nombreux sur Artesa, plus on vous recommande.')}</div>
+      <div className="notice">{t('Vos clients créent leur compte gratuit en un clic depuis le lien : ils retrouvent leurs devis, factures et rendez-vous, et votre conversation s’ouvre directement. Plus ils sont nombreux sur Artis & You, plus on vous recommande.')}</div>
       <div className="row mt" style={{ gap: 8 }}><input className="input grow" readOnly value={clientInviteLink(company)} onFocus={(e) => e.target.select()} /></div>
       <div className="row mt" style={{ gap: 8, flexWrap: 'wrap' }}>
         <a className="btn sm" href={`sms:?&body=${encodeURIComponent(clientInviteMsg(company))}`}>{t('SMS')}</a>
-        <a className="btn sm" href={`mailto:?subject=${encodeURIComponent(t('Votre espace client sur Artesa'))}&body=${encodeURIComponent(clientInviteMsg(company))}`}><LuMail /> {t('E-mail')}</a>
-        <ShareButton title={t('Votre espace client sur Artesa')} text={clientInviteMsg(company)} />
+        <a className="btn sm" href={`mailto:?subject=${encodeURIComponent(t('Votre espace client sur Artis & You'))}&body=${encodeURIComponent(clientInviteMsg(company))}`}><LuMail /> {t('E-mail')}</a>
+        <ShareButton title={t('Votre espace client sur Artis & You')} text={clientInviteMsg(company)} />
         <button className="btn sm ghost" onClick={() => navigator.clipboard?.writeText(clientInviteMsg(company))}>{t('Copier le message')}</button>
       </div>
       <Sec title={t('Clients sans compte')} meta={t('{n} clients', { n: todo.length })} />
       {todo.length > 8 && <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} />}
-      {!shown.length ? <Empty text={t('Tous vos clients particuliers ont déjà un compte Artesa.')} /> : <div className="list">{shown.map((c) => (
+      {!shown.length ? <Empty text={t('Tous vos clients particuliers ont déjà un compte Artis & You.')} /> : <div className="list">{shown.map((c) => (
         <div key={c.id} className="li">
           <div className="grow"><div className="t1">{clientName(c)}</div><div className="t2">{[c.billing_city, c.invited_at ? t('Invité le {d}', { d: date(c.invited_at) }) : ''].filter(Boolean).join(' · ')}</div></div>
           <InviteClientButtons c={c} onDone={reload} />

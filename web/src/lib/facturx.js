@@ -121,9 +121,9 @@ export function facturxXmp({ title, producer, created }) {
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description rdf:about="" xmlns:pdfaid="http://www.aiim.org/pdfa/ns/id/"><pdfaid:part>3</pdfaid:part><pdfaid:conformance>B</pdfaid:conformance></rdf:Description>
-    <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title><rdf:Alt><rdf:li xml:lang="x-default">${esc(title)}</rdf:li></rdf:Alt></dc:title><dc:creator><rdf:Seq><rdf:li>Artesa</rdf:li></rdf:Seq></dc:creator></rdf:Description>
+    <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:title><rdf:Alt><rdf:li xml:lang="x-default">${esc(title)}</rdf:li></rdf:Alt></dc:title><dc:creator><rdf:Seq><rdf:li>Artis &amp; You</rdf:li></rdf:Seq></dc:creator></rdf:Description>
     <rdf:Description rdf:about="" xmlns:pdf="http://ns.adobe.com/pdf/1.3/"><pdf:Producer>${esc(producer)}</pdf:Producer></rdf:Description>
-    <rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/"><xmp:CreatorTool>Artesa</xmp:CreatorTool><xmp:CreateDate>${iso}</xmp:CreateDate><xmp:ModifyDate>${iso}</xmp:ModifyDate></rdf:Description>
+    <rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/"><xmp:CreatorTool>Artis &amp; You</xmp:CreatorTool><xmp:CreateDate>${iso}</xmp:CreateDate><xmp:ModifyDate>${iso}</xmp:ModifyDate></rdf:Description>
     <rdf:Description rdf:about="" xmlns:pdfaExtension="http://www.aiim.org/pdfa/ns/extension/" xmlns:pdfaSchema="http://www.aiim.org/pdfa/ns/schema#" xmlns:pdfaProperty="http://www.aiim.org/pdfa/ns/property#">
       <pdfaExtension:schemas><rdf:Bag><rdf:li rdf:parseType="Resource">
         <pdfaSchema:schema>Factur-X PDFA Extension Schema</pdfaSchema:schema>
@@ -148,10 +148,10 @@ export async function attachFacturx(pdf, pdfLib, { xml, title }) {
   const { PDFName, PDFString, AFRelationship } = pdfLib;
   const bytes = new TextEncoder().encode(xml);
   await pdf.attach(bytes, 'factur-x.xml', { mimeType: 'text/xml', description: 'Factur-X invoice (EN 16931, BASIC)', creationDate: new Date(), modificationDate: new Date(), afRelationship: AFRelationship.Data });
-  const xmp = facturxXmp({ title, producer: 'Artesa (pdf-lib)', created: new Date() });
+  const xmp = facturxXmp({ title, producer: 'Artis & You (pdf-lib)', created: new Date() });
   const stream = pdf.context.stream(new TextEncoder().encode(xmp), { Type: 'Metadata', Subtype: 'XML' });
   pdf.catalog.set(PDFName.of('Metadata'), pdf.context.register(stream));
-  pdf.setTitle(title); pdf.setProducer('Artesa'); pdf.setCreator('Artesa');
+  pdf.setTitle(title); pdf.setProducer('Artis & You'); pdf.setCreator('Artis & You');
   // Marquage « Trapped » et langue, attendus par PDF/A
   pdf.catalog.set(PDFName.of('Lang'), PDFString.of('fr-FR'));
 }

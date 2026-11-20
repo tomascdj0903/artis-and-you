@@ -1,4 +1,4 @@
-// Prospection de l'équipe Artesa : carnet de prospects importable (Excel/CSV), qui s'en occupe (Tomas, Clément…),
+// Prospection de l'équipe Artis & You : carnet de prospects importable (Excel/CSV), qui s'en occupe (Tomas, Clément…),
 // qui a travaillé dessus, historique des échanges, relances, export. Pensé pour 2 personnes sur le même compte.
 import { useMemo, useRef, useState } from 'react';
 import { LuPlus, LuTrash2, LuSave, LuUpload, LuDownload, LuPhone, LuMail, LuGlobe, LuLayoutGrid, LuList, LuBellRing, LuUserCheck, LuNotebookPen, LuCalendarPlus, LuUserPlus, LuX } from 'react-icons/lu';
@@ -261,7 +261,7 @@ function DealForm({ d, set, plans, team, who, log, touch, onDone }) {
       <Field label={t('Étiquettes (séparées par des virgules)')}><input value={Array.isArray(d.tags) ? d.tags.join(', ') : d.tags || ''} onChange={(e) => set({ ...d, tags: e.target.value })} /></Field>
       <Field label={t('Notes')}><textarea rows={4} value={d.notes || ''} onChange={(e) => set({ ...d, notes: e.target.value })} /></Field>
       <button className="btn block mt" disabled={!String(d.title).trim()} onClick={save}><LuSave /> {t('Enregistrer')}</button>
-      {d.id && d.stage === 'client' && <button className="btn ghost block mt" onClick={toClient}><LuUserPlus /> {t('Créer la fiche client Artesa (devis, factures)')}</button>}
+      {d.id && d.stage === 'client' && <button className="btn ghost block mt" onClick={toClient}><LuUserPlus /> {t('Créer la fiche client Artis & You (devis, factures)')}</button>}
       {d.id && (!confirm ? <button className="btn ghost block mt" onClick={() => setConfirm(true)}><LuTrash2 /> {t('Supprimer')}</button>
         : <button className="btn red block mt" onClick={() => run(async () => { await api.remove('admin_deals', { id: d.id }); onDone(); }, t('Prospect supprimé'))}>{t('Confirmer la suppression (historique compris)')}</button>)}
       {d.id && <p className="small muted mt">{t('Créé {a} · modifié {b}', { a: rel(d.created_at), b: rel(d.updated_at) })}</p>}

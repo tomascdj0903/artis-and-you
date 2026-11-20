@@ -48,7 +48,7 @@ export function useGlassTint(ref, deps = []) {
     const run = () => {
       raf = 0; last = performance.now();
       if (mq.matches) shade(bar, BAR_X); // la barre du bas n'existe que sur mobile ; les en-têtes, partout
-      // En-têtes : seul le fond derrière le titre (« Espace administrateur / Artesa », nom de la page) décide ;
+      // En-têtes : seul le fond derrière le titre (« Espace administrateur / Artis & You », nom de la page) décide ;
       // la recherche et la cloche restent sur leur pastille claire, lisibles partout
       for (const h of document.querySelectorAll('.glass-tint')) shade(h, HEAD_X, h.querySelector('.hb-hello, .title') || h);
     };

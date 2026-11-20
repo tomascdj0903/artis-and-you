@@ -78,7 +78,7 @@ export function IdentityCard({ purpose = 'client', title }) {
   );
 }
 
-// Équipe Artesa : contrôle puis suppression immédiate de la copie
+// Équipe Artis & You : contrôle puis suppression immédiate de la copie
 const REFUSE = ['Pièce illisible ou incomplète', 'Pièce expirée', 'Le nom ne correspond pas au compte', 'Le nom ne correspond pas au dirigeant inscrit', 'Document non accepté'];
 export function AdminIdentities({ list, leftovers = [], reload }) {
   const { run } = useApp();

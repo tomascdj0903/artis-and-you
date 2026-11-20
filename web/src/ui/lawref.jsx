@@ -1,4 +1,4 @@
-// Références de loi cliquables : une bulle s'ouvre dans Artesa (résumé en clair + référence exacte),
+// Références de loi cliquables : une bulle s'ouvre dans Artis & You (résumé en clair + référence exacte),
 // avec un lien vers le texte officiel. Légifrance interdit l'affichage de ses pages dans un autre site
 // (en-tête X-Frame-Options : SAMEORIGIN), le texte complet s'ouvre donc dans un nouvel onglet.
 import { useState } from 'react';
@@ -23,7 +23,7 @@ export function LawSheet({ id, onClose }) {
         </a>
       )}
       <p className="small faint mt" style={{ lineHeight: 1.5 }}>
-        <LuInfo size={12} /> {t('Le texte officiel s’ouvre dans un nouvel onglet : le site de l’État ne peut pas s’afficher à l’intérieur d’Artesa. Résumé vérifié le {d}, il ne remplace pas l’avis d’un professionnel du droit.', { d: LAWS_CHECKED })}
+        <LuInfo size={12} /> {t('Le texte officiel s’ouvre dans un nouvel onglet : le site de l’État ne peut pas s’afficher à l’intérieur d’Artis & You. Résumé vérifié le {d}, il ne remplace pas l’avis d’un professionnel du droit.', { d: LAWS_CHECKED })}
       </p>
     </Sheet>
   );

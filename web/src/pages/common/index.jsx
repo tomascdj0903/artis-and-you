@@ -68,7 +68,7 @@ export function MyProfile() {
   if (profile.kind === 'admin') return (
     <div className="content narrow">
       <TopBar title={t('Connexion et sécurité')} />
-      <div className="mb" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, textAlign: 'center' }}><Avatar src="/favicon.svg" name="Artesa" size="lg" /><b style={{ fontSize: 19 }}>Artesa</b><span className="small muted">{t('Compte administrateur : vous apparaissez partout sous le nom « Artesa » avec le logo.')}</span></div>
+      <div className="mb" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, textAlign: 'center' }}><Avatar src="/favicon.svg" name="Artis & You" size="lg" /><b style={{ fontSize: 19 }}>Artis & You</b><span className="small muted">{t('Compte administrateur : vous apparaissez partout sous le nom « Artis & You » avec le logo.')}</span></div>
       <Field label={t('E-mail de connexion')} req><input type="email" value={p.email} onChange={(e) => setP({ ...p, email: e.target.value })} /></Field>
       <Sec title={t('Sécurité')} />
       <Field label={t('Nouveau mot de passe')} hint={t('laisser vide pour ne pas changer')}><input type="password" value={pw} onChange={(e) => setPw(e.target.value)} minLength={6} autoComplete="new-password" /></Field>
@@ -178,7 +178,7 @@ export function DataPrivacy() {
   const gerant = isPro && (profile.member_role || 'gerant') === 'gerant';
   const del = async () => {
     const what = !isPro ? t('Votre compte et vos accès seront supprimés. Les devis et factures restent chez vos artisans, qui doivent les conserver.')
-      : gerant ? t('Votre compte sera supprimé et votre entreprise retirée d’Artesa. Vos devis et factures sont conservés 10 ans (obligation légale) et restent consultables par vos clients. Exportez vos données avant.')
+      : gerant ? t('Votre compte sera supprimé et votre entreprise retirée d’Artis & You. Vos devis et factures sont conservés 10 ans (obligation légale) et restent consultables par vos clients. Exportez vos données avant.')
       : t('Votre compte et vos accès seront supprimés. Les données de l’entreprise restent chez votre employeur.');
     if (!(await confirm({ title: t('Supprimer mon compte ?'), text: what, ok: t('Continuer'), danger: true }))) return;
     if (!(await confirm({ title: t('Suppression définitive'), text: t('Cette action est immédiate et ne peut pas être annulée. Confirmez-vous la suppression du compte {e} ?', { e: profile.email }), ok: t('Supprimer définitivement'), danger: true }))) return;
@@ -186,7 +186,7 @@ export function DataPrivacy() {
       await api.rpc('delete_my_account');
     } catch (e) {
       if (/delete_my_account|PGRST202|Could not find|RPC inconnue/i.test(e.message || '')) {
-        window.location.href = `mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Suppression de mon compte'))}&body=${encodeURIComponent(t('Bonjour, je souhaite supprimer mon compte Artesa ({e}).', { e: profile.email }))}`;
+        window.location.href = `mailto:support@artisandyou.fr?subject=${encodeURIComponent(t('Suppression de mon compte'))}&body=${encodeURIComponent(t('Bonjour, je souhaite supprimer mon compte Artis & You ({e}).', { e: profile.email }))}`;
       } else toast(e.message, true);
       return;
     }
@@ -201,7 +201,7 @@ export function DataPrivacy() {
       {isPro && <><Sec title={t('Visibilité')} /><div className="kv"><Link className="r" to="/pro/compte/entreprise"><span className="k">{t('Profil public et visibilité')}</span><span className="v">›</span></Link></div></>}
       <Sec title={t('Vos choix')} />
       <div className="kv">
-        <SettingToggle label={t('Aider à améliorer Artesa')} hint={t('Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.')} checked={pv.audience} onChange={(v) => set('audience', v)} />
+        <SettingToggle label={t('Aider à améliorer Artis & You')} hint={t('Partager des statistiques d’utilisation anonymes (pages consultées, erreurs). Aucune donnée client, devis ou facture n’est transmise.')} checked={pv.audience} onChange={(v) => set('audience', v)} />
         <SettingToggle label={t('Recevoir les nouveautés')} hint={t('Un e-mail de temps en temps sur les nouvelles fonctionnalités')} checked={pv.news} onChange={(v) => set('news', v)} />
       </div>
       <Sec title={t('Vos données')} />
@@ -281,7 +281,7 @@ export function NotFound() {
   return <div className="content"><TopBar title={t('Page introuvable')} /><Empty text={t('Cette page n’existe pas.')}><button className="btn sm" onClick={() => navigate('/')}>{t("Retour à l'accueil")}</button></Empty></div>;
 }
 
-// ─────────────── Administration Artesa (vérification SIRET, avis) ───────────────
+// ─────────────── Administration Artis & You (vérification SIRET, avis) ───────────────
 // Signalements de contenus (DSA art. 16-17) : décision motivée, envoyée à l'auteur du signalement
 const REPORT_REASONS = { illicite: 'Contenu illicite', injure: 'Injure, menace, harcèlement', fraude: 'Arnaque ou fraude', vie_privee: 'Atteinte à la vie privée', droit_auteur: 'Droit d’auteur ou marque', faux_avis: 'Faux avis', autre: 'Autre' };
 function AdminReports({ list, reload }) {
@@ -396,7 +396,7 @@ export function Admin({ params }) {
     const idLeft = idc.filter((r) => r.status !== 'en_attente' && r.file_path);
     return { ids, idLeft, cos, revs, vault, trades, reports, cm: Object.fromEntries(cos.map((c) => [c.id, c])) };
   }, []);
-  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artesa.')} /></div>;
+  if (!profile.is_admin) return <div className="content"><TopBar title={t('Administration')} /><Empty text={t('Réservé à l’équipe Artis & You.')} /></div>;
   if (!b) return <div className="content"><TopBar title={t('Administration')} /><Loader /></div>;
   const st = (c) => c.verification_status || (c.verified ? 'approved' : 'pending');
   const pending = b.cos.filter((c) => st(c) === 'pending');
@@ -404,7 +404,7 @@ export function Admin({ params }) {
   const missing = (c) => companyMissing(c).map(([, l]) => t(l));
   return (
     <div className="content">
-      <TopBar title={t('Administration')} sub="Artesa" />
+      <TopBar title={t('Administration')} sub="Artis & You" />
       <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })], ['signal', t('Signalements ({n})', { n: b.reports.length })], ['identite', t('Identités ({n})', { n: b.ids.length })]]} value={tab} onChange={setTab} />
       {tab === 'identite' ? <AdminIdentities list={b.ids} leftovers={b.idLeft} reload={reload} /> : tab === 'signal' ? <AdminReports list={b.reports} cm={b.cm} reload={reload} /> : tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
         <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>

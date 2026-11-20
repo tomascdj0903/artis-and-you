@@ -31,7 +31,7 @@ export function ApptDetail({ params }) {
     if (!a.client_id) return;
     let conv = await api.one('conversations', { kind: 'client', company_id: company.id, client_id: a.client_id });
     if (!conv) conv = await api.insert('conversations', { kind: 'client', company_id: company.id, client_id: a.client_id, client_user_id: c?.user_id || null });
-    await api.insert('messages', { conversation_id: conv.id, sender_name: company.is_platform ? 'Artesa' : fullName(profile) || company.name, sender_company_id: company.id, card, body: body || '' });
+    await api.insert('messages', { conversation_id: conv.id, sender_name: company.is_platform ? 'Artis & You' : fullName(profile) || company.name, sender_company_id: company.id, card, body: body || '' });
   };
   const validate = () => run(async () => {
     await api.update('appointments', { id: a.id }, { status: 'valide', validated_at: new Date().toISOString() });

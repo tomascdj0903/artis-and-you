@@ -64,7 +64,7 @@ export function mockBackend({ saveSession, getSession }) {
     admin_notes: { folder: 'Général', pinned: false, content: '' },
     notifications: { read: false, category: 'rdv' },
     projects: { manual: {} },
-    teams: { color: '#2B1F1C' },
+    teams: { color: '#4B2014' },
   };
 
   function match(row, filters = {}) {
@@ -200,9 +200,9 @@ export function mockBackend({ saveSession, getSession }) {
   const rpcs = {
     is_admin() { return isAdmin(); },
     admin_setup_platform() {
-      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
       let c = db.companies.find((x) => x.is_platform);
-      if (!c) { c = { ...defaults.companies, id: id(), owner_id: me(), name: 'Artesa', trade_name: 'Artesa', legal_form: '', country: 'France', email: '', verification_status: 'approved', verified: true, verified_at: now(), visible_particuliers: false, visible_pros: false, is_platform: true, trades: [], trial_ends_at: null, created_at: now() }; db.companies.push(c); }
+      if (!c) { c = { ...defaults.companies, id: id(), owner_id: me(), name: 'Artis & You', trade_name: 'Artis & You', legal_form: '', country: 'France', email: '', verification_status: 'approved', verified: true, verified_at: now(), visible_particuliers: false, visible_pros: false, is_platform: true, trades: [], trial_ends_at: null, created_at: now() }; db.companies.push(c); }
       const p = db.profiles.find((x) => x.id === me()); Object.assign(p, { kind: 'admin', company_id: c.id, member_role: 'gerant', permissions: { planning: true, clients: true, devis: true, prix: true, kpi: true } });
       return c;
     },
@@ -215,13 +215,13 @@ export function mockBackend({ saveSession, getSession }) {
       return c.id;
     },
     admin_support_start({ p_company }) {
-      const plat = db.companies.find((x) => x.id === myCompany() && x.is_platform); if (!isAdmin() || !plat) throw new Error('Réservé à l’équipe Artesa.');
+      const plat = db.companies.find((x) => x.id === myCompany() && x.is_platform); if (!isAdmin() || !plat) throw new Error('Réservé à l’équipe Artis & You.');
       let c = db.conversations.find((x) => x.kind === 'support' && x.company_id === plat.id && x.other_company_id === p_company);
       if (!c) { c = { id: id(), kind: 'support', company_id: plat.id, other_company_id: p_company, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(c); }
       return c.id;
     },
     admin_support_start_user({ p_user }) {
-      const plat = db.companies.find((x) => x.id === myCompany() && x.is_platform); if (!isAdmin() || !plat) throw new Error('Réservé à l’équipe Artesa.');
+      const plat = db.companies.find((x) => x.id === myCompany() && x.is_platform); if (!isAdmin() || !plat) throw new Error('Réservé à l’équipe Artis & You.');
       const u = db.profiles.find((x) => x.id === p_user && x.kind === 'particulier'); if (!u) throw new Error('Compte introuvable');
       let c = db.conversations.find((x) => x.kind === 'support' && x.company_id === plat.id && x.client_user_id === p_user);
       if (!c) { c = { id: id(), kind: 'support', company_id: plat.id, other_company_id: null, client_user_id: p_user, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(c); }
@@ -232,7 +232,7 @@ export function mockBackend({ saveSession, getSession }) {
       const c = db.conversations.find((x) => x.id === m.conversation_id); const plat = c.company_id; const team = myCompany() === plat;
       const st = m.card.status;
       if (st === 'propose') { if (team || m.sender_company_id !== plat) throw new Error('C’est à la personne contactée de choisir.'); }
-      else if (st === 'demande') { if (!team) throw new Error('L’équipe Artesa doit confirmer.'); }
+      else if (st === 'demande') { if (!team) throw new Error('L’équipe Artis & You doit confirmer.'); }
       else throw new Error('Ce rendez-vous a déjà été traité.');
       if (!String(p_contact || '').trim()) throw new Error('Indiquez où vous joindre.');
       const lbl = { telephone: 'Téléphone', whatsapp: 'WhatsApp', visio: 'Visio' }[p_mode] || p_platform || 'Autre';
@@ -249,16 +249,16 @@ export function mockBackend({ saveSession, getSession }) {
         if (!cl) { cl = { ...defaults.clients, id: id(), company_id: plat, user_id: pr.id, type: 'particulier', first_name: pr.first_name, last_name: pr.last_name, email: pr.email, created_at: now() }; db.clients.push(cl); }
         cid = cl.id;
       }
-      const base = { ...defaults.appointments, type: 'Rendez-vous Artesa', title: 'Rendez-vous Artesa · ' + lbl, start_at: p_start, end_at: fin, mode: 'visio', status: 'valide', notes: lbl + ' · ' + p_contact, contact_phone: p_contact, validated_at: now(), created_at: now() };
+      const base = { ...defaults.appointments, type: 'Rendez-vous Artis & You', title: 'Rendez-vous Artis & You · ' + lbl, start_at: p_start, end_at: fin, mode: 'visio', status: 'valide', notes: lbl + ' · ' + p_contact, contact_phone: p_contact, validated_at: now(), created_at: now() };
       const appt = { ...base, id: id(), company_id: plat, client_id: cid, contact_name: pname }; db.appointments.push(appt);
-      let pro = null; if (c.other_company_id) { pro = { ...base, id: id(), company_id: c.other_company_id, contact_name: 'Artesa' }; db.appointments.push(pro); }
+      let pro = null; if (c.other_company_id) { pro = { ...base, id: id(), company_id: c.other_company_id, contact_name: 'Artis & You' }; db.appointments.push(pro); }
       m.card = { ...m.card, status: 'confirme', start: p_start, end: fin, mode: p_mode, contact: p_contact, platform: p_platform || '', note: p_note || '', appointment_id: appt.id, pro_appointment_id: pro?.id || null };
-      const msg = { ...defaults.messages, id: id(), conversation_id: c.id, sender_id: me(), sender_company_id: myCompany(), sender_name: team ? 'Artesa' : pname, body: '', card: { type: 'rdv', title: 'Rendez-vous confirmé', sub: lbl + ' · ' + p_contact }, created_at: now() };
+      const msg = { ...defaults.messages, id: id(), conversation_id: c.id, sender_id: me(), sender_company_id: myCompany(), sender_name: team ? 'Artis & You' : pname, body: '', card: { type: 'rdv', title: 'Rendez-vous confirmé', sub: lbl + ' · ' + p_contact }, created_at: now() };
       db.messages.push(msg); c.last_message = 'Rendez-vous confirmé'; c.last_at = now();
       return { appointment_id: appt.id, pro_appointment_id: pro?.id || null };
     },
     admin_stats() {
-      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
       const co = db.companies.filter((c) => !c.is_platform), pr = db.profiles.filter((p) => p.kind !== 'admin'), ago = (d) => new Date(Date.now() - d * 864e5).toISOString(), nowS = now();
       const cids = new Set(co.map((c) => c.id));
       const plans = {}; co.filter((c) => c.trial_ends_at && c.trial_ends_at <= nowS && c.verification_status === 'approved').forEach((c) => { plans[c.plan || 'solo'] = (plans[c.plan || 'solo'] || 0) + 1; });
@@ -293,7 +293,7 @@ export function mockBackend({ saveSession, getSession }) {
       db.identity_checks.push(r); return r.id;
     },
     admin_identity_review({ p_id, p_status, p_note = '' }) {
-      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa');
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You');
       if (p_status === 'refuse' && !String(p_note).trim()) throw new Error('Indiquez le motif du refus.');
       if (p_status === 'verifie' && String(p_note).trim()) throw new Error('Un motif de refus est indiqué : cliquez sur « Refuser », ou effacez le motif pour valider.');
       const r = db.identity_checks.find((x) => x.id === p_id && x.status === 'en_attente'); if (!r) throw new Error('Demande déjà traitée');
@@ -315,7 +315,7 @@ export function mockBackend({ saveSession, getSession }) {
       return v || null;
     },
     admin_review_file({ p_id, p_status, p_note = '' }) {
-      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
       const f = db.files.find((x) => x.id === p_id && x.kind === 'vault'); if (!f) throw new Error('Document introuvable');
       Object.assign(f, { review_status: p_status, review_note: p_note, reviewed_at: now() });
       db.profiles.filter((p) => p.company_id === f.company_id && p.member_role === 'gerant').forEach((p) => notify(p.id, 'documents', p_status === 'valide' ? 'Document validé' : 'Document refusé', f.name + (p_status === 'refuse' && p_note ? ' · ' + p_note : ''), '/pro/coffre-fort/' + f.doc_type));
@@ -327,14 +327,14 @@ export function mockBackend({ saveSession, getSession }) {
       const n = tradeNorm(nm);
       const built = ALL_TRADES.find((x) => tradeNorm(x) === n); if (built) return { name: built, status: 'valide', existing: true };
       const ex = db.trades.find((x) => x.norm === n);
-      if (ex) { if (ex.status === 'refuse') throw new Error('Ce métier a été refusé par l’équipe Artesa. Choisissez-en un dans la liste.'); return { name: ex.name, status: ex.status, existing: true }; }
+      if (ex) { if (ex.status === 'refuse') throw new Error('Ce métier a été refusé par l’équipe Artis & You. Choisissez-en un dans la liste.'); return { name: ex.name, status: ex.status, existing: true }; }
       if (db.trades.filter((x) => x.created_by === me() && x.status === 'en_attente').length >= 5) throw new Error('Vous avez déjà 5 métiers en attente de validation.');
       db.trades.push({ id: id(), name: nm, category: p_category || 'Autres métiers', norm: n, status: 'en_attente', builtin: false, created_by: me(), created_at: now() });
       notifyAdmins('systeme', 'Nouveau métier proposé', nm + ' (' + p_category + ')', 'admin?tab=metiers');
       return { name: nm, status: 'en_attente', existing: false };
     },
     admin_review_trade({ p_id, p_action, p_name = null, p_category = null }) {
-      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
       const tr = db.trades.find((x) => x.id === p_id); if (!tr) throw new Error('Métier introuvable');
       const swap = (from, to) => db.companies.forEach((c) => { if ((c.trades || []).includes(from)) c.trades = [...new Set(c.trades.map((x) => (x === from ? to : x)).filter(Boolean))]; });
       if (p_action === 'refuse') { tr.status = 'refuse'; swap(tr.name, null); if (tr.created_by) notify(tr.created_by, 'systeme', 'Métier non retenu', tr.name + ' : choisissez le métier le plus proche dans la liste.', '/pro/compte/entreprise'); return { status: 'refuse' }; }
@@ -346,7 +346,7 @@ export function mockBackend({ saveSession, getSession }) {
       return { status: 'valide', name: target || nm, merged: !!target };
     },
     admin_review_company({ p_id, p_status, p_note = '' }) {
-      if (!isAdmin()) throw new Error('Réservé à l’équipe Artesa.');
+      if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
       const c = db.companies.find((x) => x.id === p_id); if (!c) throw new Error('Entreprise introuvable');
       if (p_status === 'approved' && !db.identity_checks.some((i) => i.user_id === c.owner_id && i.purpose === 'dirigeant' && i.status === 'verifie')) throw new Error('La pièce d’identité du dirigeant n’est pas encore vérifiée.');
       Object.assign(c, { verification_status: p_status, verified: p_status === 'approved', verification_note: p_note, verified_at: now() });
@@ -369,16 +369,16 @@ export function mockBackend({ saveSession, getSession }) {
     create_company({ p }) {
       if (myCompany()) throw new Error('Vous avez déjà une entreprise');
       const sir = String(p.siret || '').replace(/\D/g, '');
-      if (sir && db.companies.some((c) => String(c.siret || '').replace(/\D/g, '') === sir)) throw new Error('Ce SIRET est déjà utilisé par une entreprise inscrite sur Artesa. Connectez-vous avec le compte existant ou contactez-nous.');
+      if (sir && db.companies.some((c) => String(c.siret || '').replace(/\D/g, '') === sir)) throw new Error('Ce SIRET est déjà utilisé par une entreprise inscrite sur Artis & You. Connectez-vous avec le compte existant ou contactez-nous.');
       let ref = p.referral ? db.companies.find((c) => c.referral_code === p.referral.toUpperCase()) : null;
       if (ref && db.companies.filter((c) => c.referred_by === ref.id).length >= 10) ref = null;
-      if (ref) { ref.trial_ends_at = new Date(Math.max(Date.now(), +new Date(ref.trial_ends_at || 0)) + 15 * 864e5).toISOString(); notifyCompany(ref.id, 'systeme', 'Parrainage réussi 🎁', p.name + ' a rejoint Artesa avec votre code : 15 jours offerts pour vous.', '/pro/compte/abonnement'); }
+      if (ref) { ref.trial_ends_at = new Date(Math.max(Date.now(), +new Date(ref.trial_ends_at || 0)) + 15 * 864e5).toISOString(); notifyCompany(ref.id, 'systeme', 'Parrainage réussi 🎁', p.name + ' a rejoint Artis & You avec votre code : 15 jours offerts pour vous.', '/pro/compte/abonnement'); }
       const c = { ...defaults.companies, id: id(), owner_id: me(), name: p.name, siret: p.siret || '', siren: (p.siret || '').replace(/\D/g, '').slice(0, 9), trades: p.trades || [], city: p.city || '', zip: p.zip || '', address: p.address || '', country: p.country || 'France', legal_form: p.legal_form || '', phone: p.phone || '', email: p.email || '', verification_status: 'pending', verified: false,
         referred_by: ref?.id || null, referral_code: Math.random().toString(36).slice(2, 10).toUpperCase(), trial_ends_at: new Date(Date.now() + (ref ? 60 : (db.platform_settings[0]?.trial_days ?? 30)) * 864e5).toISOString(), created_at: now(),
         settings: { planning: { view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true }, docs: { quotePrefix: 'DE', invoicePrefix: 'FA', creditPrefix: 'AV', vat: 20, validity: 30, paymentTerms: '30 jours fin de mois', penalties: "3 fois le taux d'intérêt légal", discount: 'Aucun pour paiement anticipé', onlinePayment: true, einvoice: true }, pdf: { color: '#B4432A', footer: '' }, notifications: { push: true, email: true, sms: false } } };
       db.companies.push(c);
       Object.assign(profile(), { kind: 'artisan', company_id: c.id, member_role: 'gerant' });
-      db.teams.push({ id: id(), company_id: c.id, name: 'Équipe principale', color: '#2B1F1C', created_at: now() });
+      db.teams.push({ id: id(), company_id: c.id, name: 'Équipe principale', color: '#4B2014', created_at: now() });
       db.profiles.filter((x) => ADMIN_EMAILS.includes(String(x.email).toLowerCase())).forEach((x) => notify(x.id, 'systeme', 'Nouvelle entreprise à valider', c.name + ' · SIRET ' + c.siret, '/' + (x.company_id ? 'pro' : 'client') + '/admin'));
       return c;
     },
@@ -521,14 +521,14 @@ export function mockBackend({ saveSession, getSession }) {
       return r.id;
     },
     admin_decide_report({ p_id, p_status, p_decision }) {
-      if (!isAdmin()) throw new Error("Réservé à l'équipe Artesa");
+      if (!isAdmin()) throw new Error("Réservé à l'équipe Artis & You");
       if (!['retire', 'rejete'].includes(p_status) || !String(p_decision || '').trim()) throw new Error('Indiquez la décision et son motif.');
       const r = db.content_reports.find((x) => x.id === p_id); if (!r) return;
       Object.assign(r, { status: p_status, decision: p_decision.trim(), decided_at: now() });
       if (r.reporter_id) notify(r.reporter_id, 'systeme', p_status === 'retire' ? 'Contenu retiré suite à votre signalement' : 'Signalement examiné : contenu maintenu', p_decision.trim(), '');
     },
     admin_moderate_review({ p_id, p_status, p_reason = '' }) {
-      if (!isAdmin()) throw new Error("Réservé à l'équipe Artesa");
+      if (!isAdmin()) throw new Error("Réservé à l'équipe Artis & You");
       if (p_status === 'refuse' && !String(p_reason).trim()) throw new Error('Indiquez le motif du refus.');
       const r = db.reviews.find((x) => x.id === p_id); if (!r) return;
       Object.assign(r, { status: p_status, refusal_reason: p_reason.trim() || null, decided_at: now() });
@@ -677,7 +677,7 @@ export function mockBackend({ saveSession, getSession }) {
     async update(table, filters, patch) { await ready;
       let last = null;
       for (const r of db[table].filter((x) => match(x, filters))) {
-        if (table === 'companies' && !isAdmin() && ('verified' in patch || 'verification_status' in patch)) return fail('Seule l’équipe Artesa peut valider une entreprise.');
+        if (table === 'companies' && !isAdmin() && ('verified' in patch || 'verification_status' in patch)) return fail('Seule l’équipe Artis & You peut valider une entreprise.');
         if (table === 'documents' && r.locked && ('lines' in patch || 'totals' in patch || 'client_id' in patch)) return fail('Cette facture est émise : elle ne peut plus être modifiée. Créez un avoir.');
         if (table === 'files' && !isAdmin()) {
           const p2 = { ...patch }; delete p2.review_status; delete p2.review_note; delete p2.reviewed_at;

@@ -1,5 +1,5 @@
-// Rendez-vous avec Artesa depuis le service client : Artesa propose des créneaux, la personne choisit et dit où la joindre
-// (ou l'inverse : la personne demande un RDV, l'équipe confirme). Le RDV confirmé va dans l'agenda d'Artesa,
+// Rendez-vous avec Artis & You depuis le service client : Artis & You propose des créneaux, la personne choisit et dit où la joindre
+// (ou l'inverse : la personne demande un RDV, l'équipe confirme). Le RDV confirmé va dans l'agenda d'Artis & You,
 // dans « Mes RDV » du particulier ou dans le planning du pro (fonction serveur support_rdv_book).
 import { useState } from 'react';
 import { LuPhone, LuVideo, LuCalendarCheck, LuCircleCheck, LuPlus, LuX } from 'react-icons/lu';
@@ -18,7 +18,7 @@ const localNow = (h = 1) => { const d = new Date(Date.now() + h * 36e5); d.setMi
 const when = (iso) => `${dateLong(iso)} · ${hm(iso)}`;
 const contactLabel = (mode) => (mode === 'telephone' || mode === 'whatsapp' ? t('Numéro où vous joindre') : mode === 'visio' ? t('Lien ou e-mail pour la visio') : t('Identifiant ou numéro'));
 
-// Artesa : proposer un rendez-vous
+// Artis & You : proposer un rendez-vous
 export function RdvProposeSheet({ open, onClose, onSend }) {
   const [f, setF] = useState({ topic: '', modes: ['telephone', 'whatsapp'], slots: [localNow(24)], free: true, duration: 30 });
   const setSlot = (i, v) => setF({ ...f, slots: f.slots.map((s, j) => (j === i ? v : s)) });
@@ -26,7 +26,7 @@ export function RdvProposeSheet({ open, onClose, onSend }) {
   const send = () => onSend({ type: 'artesa_rdv', status: 'propose', title: t('Proposition de rendez-vous'), sub: f.topic || '', topic: f.topic.trim(), modes: f.modes, slots: f.slots.filter(Boolean).map(toIso), free: f.free, duration: Number(f.duration) });
   return (
     <Sheet open={open} onClose={onClose} title={t('Proposer un rendez-vous')}>
-      <Field label={t('Objet (facultatif)')}><input value={f.topic} onChange={(e) => setF({ ...f, topic: e.target.value })} placeholder={t('Ex. : présentation d’Artesa, aide à la facturation…')} /></Field>
+      <Field label={t('Objet (facultatif)')}><input value={f.topic} onChange={(e) => setF({ ...f, topic: e.target.value })} placeholder={t('Ex. : présentation d’Artis & You, aide à la facturation…')} /></Field>
       <Field label={t('Comment ?')} hint={t('la personne choisira parmi ceux-ci')}><Chips multi options={RDV_MODES.map(([k, l]) => [k, t(l)])} value={f.modes} onChange={(v) => setF({ ...f, modes: v })} /></Field>
       <Field label={t('Créneaux proposés')}>
         <div style={{ display: 'grid', gap: 6 }}>{f.slots.map((s, i) => (
@@ -42,7 +42,7 @@ export function RdvProposeSheet({ open, onClose, onSend }) {
   );
 }
 
-// Pro / particulier : demander un rendez-vous à Artesa
+// Pro / particulier : demander un rendez-vous à Artis & You
 export function RdvRequestSheet({ open, onClose, onSend }) {
   const { profile } = useApp();
   const [f, setF] = useState({ mode: 'telephone', start: localNow(24), contact: profile.phone || '', platform: '', note: '' });
@@ -50,12 +50,12 @@ export function RdvRequestSheet({ open, onClose, onSend }) {
   const send = () => onSend({ type: 'artesa_rdv', status: 'demande', title: t('Demande de rendez-vous'), sub: t(MODE[f.mode].l) + ' · ' + when(toIso(f.start)), modes: [f.mode], slots: [toIso(f.start)], free: false, duration: 30,
     chosen: { start: toIso(f.start), mode: f.mode, contact: f.contact.trim(), platform: f.platform.trim(), note: f.note.trim() } });
   return (
-    <Sheet open={open} onClose={onClose} title={t('Demander un rendez-vous à Artesa')}>
+    <Sheet open={open} onClose={onClose} title={t('Demander un rendez-vous à Artis & You')}>
       <ModeFields f={f} setF={setF} modes={RDV_MODES.map(([k]) => k)} />
       <Field label={t('Quand ?')}><input type="datetime-local" value={f.start} onChange={(e) => setF({ ...f, start: e.target.value })} /></Field>
       <Field label={t('Message (facultatif)')}><textarea rows={2} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} placeholder={t('De quoi souhaitez-vous parler ?')} /></Field>
       <button className="btn block mt" disabled={!ok} onClick={send}><LuCalendarCheck /> {t('Envoyer la demande')}</button>
-      <p className="small muted mt">{t('L’équipe Artesa confirme le rendez-vous ou vous propose un autre horaire.')}</p>
+      <p className="small muted mt">{t('L’équipe Artis & You confirme le rendez-vous ou vous propose un autre horaire.')}</p>
     </Sheet>
   );
 }
@@ -100,7 +100,7 @@ export function RdvSupportCard({ m, mine, onDone }) {
       {status === 'propose' && !team && <button className="btn sm mt" onClick={() => setOpen(true)}>{t('Choisir mon créneau')}</button>}
       {status === 'propose' && team && <span className="small muted">{t('En attente de son choix')}</span>}
       {status === 'demande' && team && <button className="btn sm mt" onClick={() => book(c.chosen)}>{t('Confirmer ce rendez-vous')}</button>}
-      {status === 'demande' && !team && <span className="small muted">{t('En attente de confirmation par Artesa')}</span>}
+      {status === 'demande' && !team && <span className="small muted">{t('En attente de confirmation par Artis & You')}</span>}
       {link && <button className="link small bold" onClick={() => navigate(link)}>{team ? t('Voir dans l’agenda') : profile.company_id ? t('Voir dans mon planning') : t('Voir dans Mes RDV')} ›</button>}
 
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Choisir mon rendez-vous')}>

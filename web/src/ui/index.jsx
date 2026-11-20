@@ -26,10 +26,10 @@ export function useData(fn, deps = []) {
   return [state.data, load, state.loading, state.error];
 }
 
-// Compte administrateur : Artesa apparaît partout sous son nom et avec son logo, jamais sous un prénom
+// Compte administrateur : Artis & You apparaît partout sous son nom et avec son logo, jamais sous un prénom
 export const ARTESA_LOGO = '/favicon.svg';
 export const isArtesa = (company) => !!company?.is_platform;
-export const ArtesaAvatar = (p) => <Avatar {...p} src={ARTESA_LOGO} name="Artesa" />;
+export const ArtesaAvatar = (p) => <Avatar {...p} src={ARTESA_LOGO} name="Artis & You" />;
 export function Avatar({ name = '', last = '', path, src, ring, size = '', onClick, color }) {
   const [url, setUrl] = useState(src || (path ? cachedUrl(path) : null));
   useEffect(() => { if (src) setUrl(src); else if (path) fileUrls([path]).then((r) => setUrl(r[path])); else setUrl(null); }, [path, src]);
@@ -48,7 +48,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
     <header className={'topbar' + (home ? ' home-top' : ' glass-tint')}>
       <div>
         {back ? <button className="iconbtn" onClick={onBack || (() => (history.length > 1 ? navigate(-1) : navigate(base)))} aria-label={t('Retour')}><LuChevronLeft /></button>
-          : <Link to={base} className="logo-btn logo-full hide-desk" aria-label="Artesa"><Wordmark size={26} /></Link>}
+          : <Link to={base} className="logo-btn logo-full hide-desk" aria-label="Artis & You"><Wordmark size={26} /></Link>}
       </div>
       <div className="title">{title && <h1>{title}</h1>}{sub && <div className="sub">{sub}</div>}</div>
       <div className="right">
@@ -300,11 +300,11 @@ export function DeviceNotif() {
   return <div className="r set-row"><span className="k">{t('Notifications sur cet appareil')}<small>{hint}</small></span>{perm === 'default' ? <button className="btn xs" onClick={ask}>{t('Activer')}</button> : <span className={'toggle-wrap' + (perm === 'granted' ? ' on' : '')} style={{ fontSize: 12.5 }}>{perm === 'granted' ? '✓ ' + t('Activées') : '—'}</span>}</div>;
 }
 
-// Logo Artesa : le « A » dessiné + « rtesa » en Quicksand. light = sur fond sombre
+// Logo Artis & You : le « A » dessiné + « rtesa » en Quicksand. light = sur fond sombre
 export function Wordmark({ size = 28, light = false, style }) {
   return (
-    <span className={'wordmark' + (light ? ' light' : '')} style={{ fontSize: size, ...style }} role="img" aria-label="Artesa">
-      <img src={light ? '/logo-light.svg' : '/logo.svg'} alt="" style={{ width: size * 0.95, height: size * 0.95 }} />rtesa
+    <span className={'wordmark' + (light ? ' light' : '')} style={{ fontSize: size, ...style }} role="img" aria-label="Artis & You">
+      <img src={light ? '/logo-light.svg' : '/logo.svg'} alt="" style={{ width: size * 0.95, height: size * 0.95 }} />rtis<b>&amp;</b>You
     </span>
   );
 }

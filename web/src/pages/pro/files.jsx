@@ -200,7 +200,7 @@ function UploadSheet({ open, onClose, kind, types, clientId, onDone, presetType,
       const name = (v.name || '').trim() || (kind === 'vault' ? `${typeLabel} · ${date(v.issued_at)}` : file.name.replace(/\.[^.]+$/, ''));
       await api.insert('files', { company_id: company.id, client_id: clientId || null, kind, doc_type: v.doc_type, name, path: up.path, mime: file.type, size: file.size, issued_at: v.issued_at || null, valid_until: v.valid_until || null, shared_with_client: v.shared_with_client, meta: v.meta, ...(kind === 'vault' ? { remind_days: vaultPrefs(company, v.doc_type).remind } : {}) });
       onDone();
-    }, kind === 'vault' ? t('Document déposé : l’équipe Artesa le vérifie') : t('Document ajouté')).finally(() => { lock.current = false; setBusy(false); });
+    }, kind === 'vault' ? t('Document déposé : l’équipe Artis & You le vérifie') : t('Document ajouté')).finally(() => { lock.current = false; setBusy(false); });
   };
   const choose = async () => { const [f] = await pickFiles({ multiple: false, accept: 'application/pdf,image/*,.doc,.docx,.xls,.xlsx' }); if (f) setFile(f); };
   return (
@@ -215,7 +215,7 @@ function UploadSheet({ open, onClose, kind, types, clientId, onDone, presetType,
       </div>
       <Field label={t('Nom')} req={form.needName} hint={kind === 'vault' && !form.needName ? t('facultatif') : ''}><input value={v.name} placeholder={kind === 'vault' ? `${typeLabel} · ${date(v.issued_at)}` : ''} onChange={(e) => setV({ ...v, name: e.target.value, auto: false })} /></Field>
       <label className="check"><input type="checkbox" checked={v.shared_with_client} onChange={(e) => setV({ ...v, shared_with_client: e.target.checked })} />{kind === 'vault' ? t('Partager avec mes clients (visible dans leur espace)') : t('Partager avec le client')}</label>
-      {kind === 'vault' && <p className="small faint">{t('L’équipe Artesa vérifie chaque document avant qu’il soit visible de vos clients. Vous êtes prévenu dès qu’il est validé.')}</p>}
+      {kind === 'vault' && <p className="small faint">{t('L’équipe Artis & You vérifie chaque document avant qu’il soit visible de vos clients. Vous êtes prévenu dès qu’il est validé.')}</p>}
       <button className="btn block mt" onClick={save} disabled={busy}>{busy ? t('Envoi en cours…') : t('Enregistrer')}</button>
     </Sheet>
   );
@@ -228,7 +228,7 @@ function EditFile({ f, onClose, onDone, types }) {
     <Sheet open onClose={onClose} title={f.name}>
       <div className="kv">
         <div className="r"><span className="k">{t('Type')}</span><span className="v">{docTypeLabel(f.doc_type, types)}</span></div>
-        <SettingToggle label={t('Partagé avec le client')} hint={t('Visible dans son espace Artesa')} checked={f.shared_with_client} onChange={(v) => run(() => api.update('files', { id: f.id }, { shared_with_client: v })).then(onDone)} />
+        <SettingToggle label={t('Partagé avec le client')} hint={t('Visible dans son espace Artis & You')} checked={f.shared_with_client} onChange={(v) => run(() => api.update('files', { id: f.id }, { shared_with_client: v })).then(onDone)} />
       </div>
       <div className="btns" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
         <button className="btn ghost" onClick={() => openFile(f.path, f.name)}><LuDownload /> {t('Télécharger')}</button>
@@ -346,7 +346,7 @@ export function VaultType({ params }) {
       <div className="kv">
         <SettingToggle label={t('Me prévenir avant expiration')} hint={remind > 0 ? t('Notification {n} jours avant la date de fin de validité', { n: remind }) : t('Aucun rappel pour ce type de document')} checked={remind > 0} onChange={(v) => setAll({ remind_days: v ? 15 : 0 })} />
         {remind > 0 && <div className="r"><span className="k">{t('Délai du rappel')}</span><select value={remind} onChange={(e) => setAll({ remind_days: +e.target.value })}>{[7, 15, 30, 60, 90].map((n) => <option key={n} value={n}>{t('{n} jours avant', { n })}</option>)}</select></div>}
-        <SettingToggle label={t('Partager avec mes clients')} hint={shared ? t('Visible dans l’espace Artesa de vos clients (ex. attestation décennale)') : t('Visible uniquement par votre entreprise')} checked={shared} onChange={(v) => setAll({ shared_with_client: v })} />
+        <SettingToggle label={t('Partager avec mes clients')} hint={shared ? t('Visible dans l’espace Artis & You de vos clients (ex. attestation décennale)') : t('Visible uniquement par votre entreprise')} checked={shared} onChange={(v) => setAll({ shared_with_client: v })} />
       </div>
       {!files.length && <p className="small faint">{t('Ces réglages s’appliqueront aux documents que vous ajouterez.')}</p>}
       <PageFab primary={{ label: t('Ajouter'), onClick: () => setAdd(true) }} />

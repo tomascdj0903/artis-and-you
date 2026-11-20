@@ -1,4 +1,4 @@
-// Réglages de la plateforme (formules, prix, durée d'essai), modifiables par l'équipe Artesa depuis l'espace admin.
+// Réglages de la plateforme (formules, prix, durée d'essai), modifiables par l'équipe Artis & You depuis l'espace admin.
 // Lus dans la table platform_settings ; à défaut, valeurs par défaut de lib/docs.js.
 import { useEffect, useState } from 'react';
 import { api } from './api.js';

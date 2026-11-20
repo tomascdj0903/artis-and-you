@@ -13,7 +13,7 @@ import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, StatusPil
 
 
 export const DEFAULT_DURATIONS = { Diagnostic: 60, 'Dépannage': 90, Devis: 60, Entretien: 60, Chantier: 240 };
-const PALETTE = ['#2B1F1C', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
+const PALETTE = ['#4B2014', '#B4432A', '#1F6F78', '#6B4E9B', '#B5651D', '#2E7D32', '#AD1457', '#455A64'];
 const hashColor = (s = '') => PALETTE[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % PALETTE.length];
 export const planSettings = (company) => ({ view: 'week', hours: [7, 19], weekend: false, colorBy: 'team', days: [1, 2, 3, 4, 5, 6], slot: [8, 18], duration: 60, manual: true, reminder: 24, visio: true, ...(company?.settings?.planning || {}), durations: { ...DEFAULT_DURATIONS, ...(company?.settings?.planning?.durations || {}) }, offered: company?.settings?.planning?.offered || APPT_TYPES.filter((x) => x !== 'Diagnostic') });
 // Nombre de colonnes de la semaine : jusqu'au dernier jour travaillé (le dimanche s'affiche s'il est coché)
@@ -77,7 +77,7 @@ export function Planning() {
     setUndo({ a, prev, label: `${dateShort(start)} ${hm(start)}` }); reload();
     setTimeout(() => setUndo((u) => (u && u.a.id === a.id ? null : u)), 8000);
   };
-  const color = (a) => (a.company_id && a.company ? hashColor(a.company_id) : a.personal ? '#8A90A0' : s.colorBy === 'client' ? hashColor(a.client_id || a.title) : tm[a.team_id]?.color || '#2B1F1C');
+  const color = (a) => (a.company_id && a.company ? hashColor(a.company_id) : a.personal ? '#8A90A0' : s.colorBy === 'client' ? hashColor(a.client_id || a.title) : tm[a.team_id]?.color || '#4B2014');
   const all = data ? expandAppointments(data.appts, range[0], range[1]) : [];
   const nz = (x) => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const match = (a) => { const c = data?.cm[a.client_id]; const hay = nz([a.title, a.type, clientName(c), c?.company_name, c?.last_name, c?.first_name, a.address, a.contact_name, a.notes, dateShort(a.start_at)].join(' ')); return nz(q).trim().split(/\s+/).every((w) => hay.includes(w)); };

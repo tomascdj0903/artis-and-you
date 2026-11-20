@@ -1,4 +1,4 @@
-// Espace de travail de l'équipe Artesa : offres et tarifs, prospection, tâches, agenda, notes, fichiers,
+// Espace de travail de l'équipe Artis & You : offres et tarifs, prospection, tâches, agenda, notes, fichiers,
 // service client et intégrations. Tout est partagé entre les comptes administrateurs.
 import { useMemo, useRef, useState } from 'react';
 import { LuPlus, LuTrash2, LuSave, LuCheck, LuChevronLeft, LuChevronRight, LuUpload, LuDownload, LuPin, LuMessageSquare, LuExternalLink, LuCircleCheck, LuCircleAlert, LuCircleDashed, LuFilePen, LuMail, LuKanban } from 'react-icons/lu';
@@ -26,12 +26,12 @@ export function AdminOffers() {
   const save = () => run(async () => {
     const clean = P.map((p) => ({ ...p, quote: !!p.quote, name: String(p.name).trim(), price: Math.max(0, Number(p.price) || 0), users: Math.max(0, Number(p.users) || 0), features: p.features.map((f) => f.trim()).filter(Boolean) }));
     await savePlatform({ plans: clean, trial_days: Number(trial ?? s.trial_days), banner: banner ?? s.banner }, profile.id);
-    // Les formules deviennent aussi des lignes prêtes à facturer dans les devis et factures d'Artesa
+    // Les formules deviennent aussi des lignes prêtes à facturer dans les devis et factures d'Artis & You
     if (company?.id) {
       const items = await api.select('items', { company_id: company.id }).catch(() => []);
       for (const p of clean.filter((x) => !x.quote)) {
         const ref = 'ABO-' + p.id.toUpperCase(), ex = items.find((x) => x.ref === ref);
-        const row = { name: `Abonnement Artesa ${p.name} (1 mois)`, ref, family: 'Abonnements', unit: 'mois', sale_price: p.price, purchase_price: 0, coef: 1, vat_rate: 20 };
+        const row = { name: `Abonnement Artis & You ${p.name} (1 mois)`, ref, family: 'Abonnements', unit: 'mois', sale_price: p.price, purchase_price: 0, coef: 1, vat_rate: 20 };
         if (ex) await api.update('items', { id: ex.id }, row); else await api.insert('items', { ...row, company_id: company.id, kind: 'article' });
       }
     }
@@ -116,7 +116,7 @@ export function AdminCalendar() {
   const ev = (d) => {
     const k = iso(d);
     return [
-      ...b.appts.filter((a) => String(a.start_at).slice(0, 10) === k).map((a) => ({ c: 'navy', l: new Date(a.start_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + ' ' + (a.title || a.type || t('RDV')) + (a.contact_name && a.contact_name !== 'Artesa' ? ' · ' + a.contact_name : ''), to: '/pro/planning/rdv/' + a.id })),
+      ...b.appts.filter((a) => String(a.start_at).slice(0, 10) === k).map((a) => ({ c: 'navy', l: new Date(a.start_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) + ' ' + (a.title || a.type || t('RDV')) + (a.contact_name && a.contact_name !== 'Artis & You' ? ' · ' + a.contact_name : ''), to: '/pro/planning/rdv/' + a.id })),
       ...b.tasks.filter((x) => x.due_date === k).map((x) => ({ c: 'red', l: '☐ ' + (x.assignee ? x.assignee + ' : ' : '') + x.title, to: '/admin/taches' })),
       ...b.deals.filter((x) => x.next_date === k && !['client', 'perdu'].includes(x.stage)).map((x) => ({ c: 'green', l: '→ ' + (x.owner ? x.owner + ' : ' : '') + x.title, to: '/admin/prospection' })),
     ];
@@ -240,8 +240,8 @@ export function AdminSupport() {
     : b.users.filter((u) => !n || [uname(u), u.email, u.home?.city].join(' ').toLowerCase().includes(n)).slice(0, 40).map((u) => ({ id: u.id, t1: uname(u) || u.email, t2: [u.email, u.home?.city].filter(Boolean).join(' · '), go: () => startUser(u) }));
   return (
     <div className="content">
-      <TopBar title={t('Service client')} sub={t('Vous écrivez sous le nom « Artesa », avec votre logo')} right={<button className="btn sm" onClick={() => setPick(true)}><LuMessageSquare /> {t('Nouveau message')}</button>} />
-      <div className="notice small">{t('Les pros et les particuliers vous écrivent depuis Paramètres › Service client. Artesa reste invisible dans la recherche : seuls ceux que vous contactez, ou qui écrivent au support, vous voient.')}</div>
+      <TopBar title={t('Service client')} sub={t('Vous écrivez sous le nom « Artis & You », avec votre logo')} right={<button className="btn sm" onClick={() => setPick(true)}><LuMessageSquare /> {t('Nouveau message')}</button>} />
+      <div className="notice small">{t('Les pros et les particuliers vous écrivent depuis Paramètres › Service client. Artis & You reste invisible dans la recherche : seuls ceux que vous contactez, ou qui écrivent au support, vous voient.')}</div>
       {!b.convs.length ? <Empty text={t('Aucune conversation pour l’instant')} /> : <div className="list mt">{b.convs.map((c) => { const co = b.cm[c.other_company_id], u = b.um[c.client_user_id]; return (
         <button key={c.id} className="li click" onClick={() => open(c.id)}>
           <div className="grow"><div className="t1">{co ? co.trade_name || co.name : uname(u) || t('Particulier')} <Pill c={co ? 'yellow' : 'grey'}>{co ? t('Pro') : t('Particulier')}</Pill></div><div className="t2">{c.last_message || t('Nouvelle conversation')}</div></div>
@@ -330,7 +330,7 @@ export function AdminQuoteRequests() {
                 </div>
                 <div className="row wrap" style={{ gap: 8 }}>
                   <button className="btn sm" onClick={() => { if (q.status === 'nouvelle') save(q, { status: 'en_cours' }); navigate('/pro/documents/nouveau?kind=devis'); }}><LuFilePen /> {t('Faire le devis')}</button>
-                  <a className="btn sm ghost" href={'mailto:' + q.email + '?subject=' + encodeURIComponent(t('Votre devis Artesa'))}><LuMail /> {t('Écrire')}</a>
+                  <a className="btn sm ghost" href={'mailto:' + q.email + '?subject=' + encodeURIComponent(t('Votre devis Artis & You'))}><LuMail /> {t('Écrire')}</a>
                   <button className="btn sm ghost" onClick={() => toProspect(q)}><LuKanban /> {t('Ajouter aux prospects')}</button>
                 </div>
               </div>

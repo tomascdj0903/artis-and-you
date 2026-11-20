@@ -1,4 +1,4 @@
-// Liste des métiers : ceux de l'application + ceux proposés par les pros et validés par l'équipe Artesa.
+// Liste des métiers : ceux de l'application + ceux proposés par les pros et validés par l'équipe Artis & You.
 // TradePicker : choix multiple par catégorie, avec « Ajouter mon métier » (anti-doublons, validation par l'équipe).
 import { useEffect, useRef, useState } from 'react';
 import { LuPlus, LuClock } from 'react-icons/lu';
@@ -49,7 +49,7 @@ export function TradePicker({ value = [], onChange, canAdd = true }) {
       {extra.length > 0 && (
         <div><div className="small bold red-t" style={{ margin: '6px 0' }}>{t('Mes métiers ajoutés').toUpperCase()}</div>
           <Chips multi options={extra.map((x) => [x, x])} value={value} onChange={onChange} />
-          <p className="small faint"><LuClock size={12} /> {t('En attente de validation par l’équipe Artesa : visible des particuliers et des autres pros après validation.')}</p></div>
+          <p className="small faint"><LuClock size={12} /> {t('En attente de validation par l’équipe Artis & You : visible des particuliers et des autres pros après validation.')}</p></div>
       )}
       {canAdd && <button type="button" className="btn ghost sm mt" onClick={() => setAdd(true)}><LuPlus /> {t('Mon métier n’est pas dans la liste')}</button>}
       {add && <AddTrade cat={cat} onClose={() => setAdd(false)} onPick={(name) => { if (!value.includes(name)) onChange([...value, name]); setAdd(false); }} />}
@@ -85,7 +85,7 @@ function AddTrade({ cat, onClose, onPick }) {
           <div className="chips mt">{near.map((x) => <button key={x} type="button" className="chip" onClick={() => onPick(x)}>{t(x)}</button>)}</div>
         </div>
       )}
-      <p className="small faint">{t('Votre métier est ajouté à votre fiche tout de suite. L’équipe Artesa le relit (orthographe, doublons) avant de le proposer aux autres pros et aux particuliers.')}</p>
+      <p className="small faint">{t('Votre métier est ajouté à votre fiche tout de suite. L’équipe Artis & You le relit (orthographe, doublons) avant de le proposer aux autres pros et aux particuliers.')}</p>
       {err && <div className="error" role="alert">{err}</div>}
       <button type="button" className="btn block mt" disabled={busy || v.name.trim().length < 3} onClick={submit}>{busy ? t('Envoi…') : exact ? t('Choisir « {n} »', { n: t(exact) }) : t('Ajouter « {n} »', { n: v.name.trim() || '…' })}</button>
     </Sheet>

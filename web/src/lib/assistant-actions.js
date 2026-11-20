@@ -156,7 +156,7 @@ export async function runAction(question, { company, profile }) {
   // 1) Politesse / présentation
   if (/^(bonjour|salut|hello|coucou|bonsoir|hey|yo)\b/.test(q) && q.split(' ').length <= 3) return { text: t('Bonjour ! Que puis-je faire pour vous ?'), sugg: CAPS };
   if (/^(merci|top|super|parfait|ok|d accord|cool|genial)\b/.test(q) && q.split(' ').length <= 4) return { text: t('Avec plaisir ! Autre chose ?') };
-  if (has(q, /qui es.?tu|tu es qui|que (sais|peux).?tu|tu sais faire quoi|aide.?moi|comment tu marches/)) return { text: t('Je suis l’assistant Artesa. Je peux ouvrir une page, retrouver un client, préparer un devis ou un RDV, vous donner vos RDV, vos factures à encaisser, votre chiffre d’affaires, et répondre à vos questions sur l’app. Essayez :'), sugg: CAPS };
+  if (has(q, /qui es.?tu|tu es qui|que (sais|peux).?tu|tu sais faire quoi|aide.?moi|comment tu marches/)) return { text: t('Je suis l’assistant Artis & You. Je peux ouvrir une page, retrouver un client, préparer un devis ou un RDV, vous donner vos RDV, vos factures à encaisser, votre chiffre d’affaires, et répondre à vos questions sur l’app. Essayez :'), sugg: CAPS };
 
   // 2) Créer quelque chose
   const howTo = /^(comment|pourquoi|est.?ce que|est.?il possible|c est quoi|qu est.?ce|a quoi|ou (est|sont|se trouve|trouver)|quand|puis.?je|je peux|on peut|peut.?on)\b/.test(q);

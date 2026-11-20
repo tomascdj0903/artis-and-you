@@ -9,7 +9,7 @@ export class ErrorBoundary extends Component {
   state = { error: null };
   static getDerivedStateFromError(error) { return { error }; }
   componentDidCatch(error) {
-    console.error('Artesa', error);
+    console.error('Artis & You', error);
     if (isChunk(error)) {
       try { if (Date.now() - Number(sessionStorage.getItem('ay-reloaded') || 0) > 30000) { sessionStorage.setItem('ay-reloaded', String(Date.now())); location.reload(); } } catch {}
     }

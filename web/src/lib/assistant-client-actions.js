@@ -81,7 +81,7 @@ export async function runClientAction(question) {
   // 1) Politesse / présentation
   if (/^(bonjour|salut|hello|coucou|bonsoir|hey)\b/.test(q) && q.split(' ').length <= 3) return { text: t('Bonjour ! Que puis-je faire pour vous ?'), sugg: CLIENT_CAPS };
   if (/^(merci|top|super|parfait|ok|d accord|cool|genial)\b/.test(q) && q.split(' ').length <= 4) return { text: t('Avec plaisir ! Autre chose ?') };
-  if (/qui es.?tu|tu es qui|que (sais|peux).?tu|tu sais faire quoi|aide.?moi|comment tu marches/.test(q)) return { text: t('Je suis l’assistant Artesa. Je peux vous trouver un artisan, vous donner vos prochains rendez-vous, les devis à signer et les factures à payer, l’avancement de vos travaux, joindre un de vos artisans, et répondre à vos questions sur l’app. Essayez :'), sugg: CLIENT_CAPS };
+  if (/qui es.?tu|tu es qui|que (sais|peux).?tu|tu sais faire quoi|aide.?moi|comment tu marches/.test(q)) return { text: t('Je suis l’assistant Artis & You. Je peux vous trouver un artisan, vous donner vos prochains rendez-vous, les devis à signer et les factures à payer, l’avancement de vos travaux, joindre un de vos artisans, et répondre à vos questions sur l’app. Essayez :'), sugg: CLIENT_CAPS };
 
   // 2) Question « comment… » : aide (fiches / IA), sauf « où est… » qui ouvre la page
   if (/^(comment|pourquoi|c est quoi|qu est.?ce|a quoi|puis.?je|je peux|on peut|peut.?on|est.?ce que je peux|que veut dire|ca veut dire)\b/.test(q)) return null;

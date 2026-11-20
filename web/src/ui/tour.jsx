@@ -9,7 +9,7 @@ import { t } from '../lib/i18n.js';
 const S = (title, text, sel) => ({ title, text, sel });
 export const TOURS = {
   'welcome-pro': [
-    S('Bienvenue sur Artesa 👋', 'En 1 minute, voici l’essentiel. Vous pourrez revoir ce tutoriel à tout moment dans Mon compte › Aide.'),
+    S('Bienvenue sur Artis & You 👋', 'En 1 minute, voici l’essentiel. Vous pourrez revoir ce tutoriel à tout moment dans Mon compte › Aide.'),
     S('Votre barre de recherche', 'Cherchez un client, un devis, un rendez-vous ou une action (« nouveau devis »). Le micro permet de dicter.', '.searchrow'),
     S('Clients', 'Toutes vos fiches clients, particuliers et professionnels, avec leurs chantiers, devis et factures.', 'a[href="/pro/clients"]'),
     S('Planning', 'Vos rendez-vous et chantiers. Les demandes des particuliers arrivent ici « À valider ».', 'a[href="/pro/planning"]'),
@@ -20,7 +20,7 @@ export const TOURS = {
     S('C’est parti !', 'Commencez par compléter votre entreprise et votre logo, puis créez votre premier client.'),
   ],
   'welcome-client': [
-    S('Bienvenue sur Artesa 👋', 'Trouvez un artisan, prenez rendez-vous et retrouvez tous vos documents au même endroit.'),
+    S('Bienvenue sur Artis & You 👋', 'Trouvez un artisan, prenez rendez-vous et retrouvez tous vos documents au même endroit.'),
     S('Trouver un artisan', 'Cherchez par métier ou par ville, consultez les avis et demandez un rendez-vous en ligne.', '.searchrow, .search'),
     S('Mes rendez-vous', 'Suivez vos demandes et vos rendez-vous confirmés, déplacez-les ou annulez-les.', 'a[href="/client/rdv"]'),
     S('Messages', 'Discutez directement avec vos artisans, envoyez des photos.', 'a[href="/client/messages"]'),
@@ -59,7 +59,7 @@ export const TOURS = {
   ],
   '/pro/reseau': [
     S('Mon réseau', 'Les pros avec qui vous travaillez : échangez, partagez des chantiers, organisez-vous.'),
-    S('Ajouter un pro', 'Le bouton + cherche un pro sur Artesa et lui envoie une demande. Dès qu’il accepte, vous êtes connectés des deux côtés.', '.plus'),
+    S('Ajouter un pro', 'Le bouton + cherche un pro sur Artis & You et lui envoie une demande. Dès qu’il accepte, vous êtes connectés des deux côtés.', '.plus'),
     S('Inviter vos clients', 'La carte « Inviter mes clients » envoie à vos clients un lien d’inscription gratuite par SMS ou e-mail. À l’inscription, votre conversation s’ouvre directement.'),
     S('Demandes reçues', 'Les demandes de connexion apparaissent en haut de cette page et dans vos notifications : Accepter ou Refuser.'),
     S('Projets en commun', 'Depuis la fiche d’un pro, « Inviter sur un chantier » crée un projet en commun. Vous retrouvez ces projets ici et leur planning partagé dans Planning.'),
