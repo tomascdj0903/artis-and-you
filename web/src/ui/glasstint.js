@@ -27,8 +27,9 @@ function bgAt(x, y, zone) {
   return parse(getComputedStyle(document.body).backgroundColor);
 }
 // Luminosité moyenne sous quelques points d'une zone ; écart entre les deux seuils pour éviter le clignotement
-function shade(el, xs) {
-  const r = el.getBoundingClientRect(); if (!r.width) return;
+function shade(el, xs, zone) {
+  // zone : la partie de la barre dont on regarde le fond (ex. le titre), par défaut toute la barre
+  const r = (zone || el).getBoundingClientRect(); if (!r.width) return;
   let sum = 0, n = 0;
   for (const f of xs) { const c = bgAt(r.left + r.width * f, r.top + r.height / 2, el); if (c) { sum += lum(c); n++; } }
   const avg = n ? sum / n : 1;
@@ -47,7 +48,9 @@ export function useGlassTint(ref, deps = []) {
     const run = () => {
       raf = 0; last = performance.now();
       if (mq.matches) shade(bar, BAR_X); // la barre du bas n'existe que sur mobile ; les en-têtes, partout
-      for (const h of document.querySelectorAll('.glass-tint')) shade(h, HEAD_X);
+      // En-têtes : seul le fond derrière le titre (« Espace administrateur / Artesa », nom de la page) décide ;
+      // la recherche et la cloche restent sur leur pastille claire, lisibles partout
+      for (const h of document.querySelectorAll('.glass-tint')) shade(h, HEAD_X, h.querySelector('.hb-hello, .title') || h);
     };
     // Au plus une détection toutes les 140 ms pendant le défilement, plus une à l'arrêt
     const ask = () => {

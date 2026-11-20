@@ -1501,3 +1501,8 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
   .hb-head.on-dark, .hb-head.on-dark .hb-hello span { color: #fff; text-shadow: 0 0 8px rgba(0,0,0,.35); }
   .topbar.glass-tint.on-dark .iconbtn, .home-band .hb-head.on-dark .topbar .iconbtn { color: #fff; background: rgba(255,255,255,.18); }
 }
+
+/* En-têtes : seul le texte passe en blanc sur fond foncé ; la cloche et les boutons ronds gardent leur pastille claire */
+.topbar.glass-tint.on-dark .iconbtn, .home-band .hb-head.on-dark .topbar .iconbtn { color: var(--text) !important; background: rgba(255,255,255,.75) !important; text-shadow: none !important; }
+.hb-head.on-dark .hb-search, .hb-head.on-dark .search { text-shadow: none; }
+.hb-head.on-dark .hb-hello b, .topbar.glass-tint.on-dark .title, .topbar.glass-tint.on-dark h1 { color: #fff; }
