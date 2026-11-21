@@ -177,7 +177,7 @@ export function Pay({ params }) {
       <Sec title={t('Moyen de paiement')} />
       <button className={'opt' + (m === 'card' ? ' red' : '')} onClick={() => setM('card')}><LuCreditCard /><div><b>{t('Carte bancaire')}</b><small>Visa, Mastercard, CB</small></div></button>
       <button className={'opt' + (m === 'sepa' ? ' red' : '')} onClick={() => setM('sepa')}><LuLandmark /><div><b>{t('Virement SEPA')}</b><small>{t('Prélèvement sur votre compte')}</small></div></button>
-      <div className="notice mt">{t('Ou par virement classique : IBAN {i}, référence {r}.', { i: b.company.iban || '—', r: b.d.number })}</div>
+      <div className="notice mt">{b.company.iban ? t('Ou par virement classique : IBAN {i}, référence {r}.', { i: b.company.iban, r: b.d.number }) : t('Ou par virement classique : demandez le RIB à l’artisan dans la messagerie, référence {r}.', { r: b.d.number })}</div>
       <div className="btns"><button className="btn" onClick={() => wip(t('Le paiement en ligne'))}>{t('Payer {m}', { m: money(rest) })}</button><button className="btn ghost" onClick={() => navigate(`/client/factures/${b.d.id}/pdf`)}>{t('Télécharger la facture')}</button></div>
     </div>
   );

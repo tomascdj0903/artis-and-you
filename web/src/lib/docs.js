@@ -110,7 +110,7 @@ export function clientProgress(project, ctx) {
 
 export const APPT_TYPES = ['Diagnostic', 'Dépannage', 'Devis', 'Entretien', 'Chantier'];
 export const apptStatus = (s) => ({ a_valider: ['red-o', t('À valider')], valide: ['green', t('Validé')], refuse: ['grey', t('Refusé')], annule: ['grey', t('Annulé')], termine: ['grey', t('Terminé')] }[s] || ['grey', s]);
-export const clientApptStatus = (a) => ({ a_valider: ['navy-o', t('En attente de confirmation')], valide: ['green', t('Confirmé')], refuse: ['grey', t('Refusé')], annule: ['grey', t('Annulé')], termine: ['grey', t('Terminé')] }[a.status] || ['grey', a.status]);
+export const clientApptStatus = (a) => a.status === 'a_valider' && a.proposed_start_at ? ['red', t('Nouveau créneau proposé')] : ({ a_valider: ['navy-o', t('En attente de confirmation')], valide: ['green', t('Confirmé')], refuse: ['grey', t('Refusé')], annule: ['grey', t('Annulé')], termine: ['grey', t('Terminé')] }[a.status] || ['grey', a.status]);
 
 // Occurrences (RDV récurrents) dans une période
 export function expandAppointments(appts, from, to) {

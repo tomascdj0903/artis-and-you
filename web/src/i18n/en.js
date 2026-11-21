@@ -3141,4 +3141,9 @@ export default {"(copie)":"(copy)",
 "Offre {n} ans : {p} € HT au lieu de {q} €":"{n}-year offer: €{p} excl. VAT instead of €{q}",
 "Nom de domaine {d} · 1re année":"Domain name {d} · 1st year",
 "Ensuite : {p} € HT par an à partir de la 2e année (renouvellement).":"Then: €{p} excl. VAT per year from the 2nd year (renewal).",
-"Possible aussi : formule {n} ans à {p} € HT au lieu de {q} € HT ({m}).":"Also possible: {n}-year plan at €{p} excl. VAT instead of €{q} excl. VAT ({m})."};
+"Possible aussi : formule {n} ans à {p} € HT au lieu de {q} € HT ({m}).":"Also possible: {n}-year plan at €{p} excl. VAT instead of €{q} excl. VAT ({m}).",
+"Ou par virement classique : demandez le RIB à l’artisan dans la messagerie, référence {r}.":"Or by standard bank transfer: ask the tradesperson for their bank details in the chat, reference {r}.",
+"{n} a reçu votre demande et vos photos. Vous êtes prévenu dès qu’il répond.":"{n} has received your request and photos. You’ll be notified as soon as they reply.",
+"{n} a reçu votre demande. Vous êtes prévenu dès qu’il répond.":"{n} has received your request. You’ll be notified as soon as they reply.",
+"1 pro trouvé sur Artis & You":"1 professional found on Artis & You",
+"Aucun pro trouvé sur Artis & You":"No professional found on Artis & You"};

@@ -3141,4 +3141,9 @@ export default {"(copie)":"(cópia)",
 "Offre {n} ans : {p} € HT au lieu de {q} €":"Oferta de {n} anos: {p} € sem IVA em vez de {q} €",
 "Nom de domaine {d} · 1re année":"Nome de domínio {d} · 1.º ano",
 "Ensuite : {p} € HT par an à partir de la 2e année (renouvellement).":"Depois: {p} € sem IVA por ano a partir do 2.º ano (renovação).",
-"Possible aussi : formule {n} ans à {p} € HT au lieu de {q} € HT ({m}).":"Também possível: plano de {n} anos a {p} € sem IVA em vez de {q} € sem IVA ({m})."};
+"Possible aussi : formule {n} ans à {p} € HT au lieu de {q} € HT ({m}).":"Também possível: plano de {n} anos a {p} € sem IVA em vez de {q} € sem IVA ({m}).",
+"Ou par virement classique : demandez le RIB à l’artisan dans la messagerie, référence {r}.":"Ou por transferência bancária: peça o IBAN ao profissional nas mensagens, referência {r}.",
+"{n} a reçu votre demande et vos photos. Vous êtes prévenu dès qu’il répond.":"{n} recebeu o seu pedido e as suas fotos. Será avisado assim que responder.",
+"{n} a reçu votre demande. Vous êtes prévenu dès qu’il répond.":"{n} recebeu o seu pedido. Será avisado assim que responder.",
+"1 pro trouvé sur Artis & You":"1 profissional encontrado na Artis & You",
+"Aucun pro trouvé sur Artis & You":"Nenhum profissional encontrado na Artis & You"};

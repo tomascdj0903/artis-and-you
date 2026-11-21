@@ -113,7 +113,7 @@ export function DocSections({ d: d0, company, client, payments = [], source, for
         <KV rows={[
           [t('Total HT'), money(tot.ht)],
           ...(franchise ? [[t('TVA'), t('Non applicable, {a}', { a: franchiseArticle(d.issue_date) })]] : d.reverse_charge ? [[t('TVA'), t('Autoliquidation')]] : tot.vat.filter((v) => v.base).map((v) => [t('TVA {r} %', { r: String(v.rate).replace('.', ',') }), money(v.amount)])),
-          [t('Total TTC'), money(tot.ttc)],
+          (!isQuote || (tot.deductions || []).length > 0) && [t('Total TTC'), money(tot.ttc)],
           ...(tot.deductions || []).map((x) => [t('Acompte déduit {n}', { n: x.number || '' }), '− ' + money(x.ttc)]),
           !isQuote && payments.length > 0 && [t('Déjà réglé'), '− ' + money(d.paid_amount)],
           [isQuote ? t('Total TTC') : t('Net à payer'), money(isQuote ? tot.ttc : Math.max(0, tot.net - (d.kind === 'avoir' ? 0 : Number(d.paid_amount || 0)))), { total: true }],
@@ -204,7 +204,7 @@ export function A4({ d: d0, company, client, source, logoUrl }) {
               l.kind === 'section' ? <tr className="sec" key={l.id}><td colSpan={cols}>{l.label}</td></tr>
                 : l.kind === 'text' ? <tr key={l.id}><td colSpan={cols} className="small">{l.label}</td></tr>
                 : <tr key={l.id}><td>{l.label}{l.desc && <div className="small">{l.desc}</div>}</td><td className="n">{l.qty} {l.unit !== 'u' ? l.unit : ''}</td><td className="n">{money(l.price).replace(/\s?€/, '')}</td>{!franchise && !d.reverse_charge && <td className="n">{String(l.vat).replace('.', ',')} %</td>}<td className="n">{money(l.qty * l.price).replace(/\s?€/, '')}</td></tr>,
-              isLastOfSection && secId && Object.keys(subs).length > 0 && <tr className="sub" key={l.id + 's'}><td colSpan={cols - 1}>{t('Sous-total HT')}</td><td className="n">{money(subs[secId]).replace(/\s?€/, '')}</td></tr>,
+              isLastOfSection && secId && Object.keys(subs).length > 1 && <tr className="sub" key={l.id + 's'}><td colSpan={cols - 1}>{t('Sous-total HT')}</td><td className="n">{money(subs[secId]).replace(/\s?€/, '')}</td></tr>,
             ];
           })}
         </tbody>
@@ -213,7 +213,7 @@ export function A4({ d: d0, company, client, source, logoUrl }) {
         <div><span>{t('Total HT')}</span><b>{money(tot.ht)}</b></div>
         {franchise ? <div><span>{t('TVA')}</span><span>{t('non applicable')}</span></div> : d.reverse_charge ? <div><span>{t('TVA')}</span><span>{t('autoliquidation')}</span></div>
           : tot.vat.filter((v) => v.base).map((v) => <div key={v.rate}><span>{t('TVA {r} %', { r: String(v.rate).replace('.', ',') })}</span><span>{money(v.amount)}</span></div>)}
-        <div><span>{t('Total TTC')}</span><b>{money(tot.ttc)}</b></div>
+        {(!isQuote || (tot.deductions || []).length > 0) && <div><span>{t('Total TTC')}</span><b>{money(tot.ttc)}</b></div>}
         {(tot.deductions || []).map((x, i) => <div key={i}><span>{t('Acompte {n}', { n: x.number || '' })}</span><span>− {money(x.ttc)}</span></div>)}
         {!isQuote && Number(d.paid_amount) > 0 && <div><span>{t('Déjà réglé')}</span><span>− {money(d.paid_amount)}</span></div>}
         <div className="g"><span>{isQuote ? t('Total TTC') : d.kind === 'avoir' ? t('Montant de l’avoir') : t('Net à payer')}</span><span>{money(isQuote ? tot.ttc : d.kind === 'avoir' ? tot.net : rest)}</span></div>

@@ -34,7 +34,7 @@ begin
     select count(*) into d from public.documents where client_id = r.id and number is not null;
     if d > 0 then
       insert into public.notifications(user_id, category, title, body, link)
-      select auth.uid(), 'documents', 'Nouveaux documents', coalesce(co.trade_name, co.name) || ' a partagé ' || d || ' document(s) avec vous', '/client/documents'
+      select auth.uid(), 'documents', 'Nouveaux documents', coalesce(nullif(co.trade_name,''), co.name) || ' a partagé ' || case when d = 1 then 'un document' else d || ' documents' end || ' avec vous', '/client/documents'
       from public.companies co where co.id = r.company_id;
     end if;
     n := n + 1;

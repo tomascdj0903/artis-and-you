@@ -197,17 +197,17 @@ export function NetworkAdd() {
     ((await api.rpc('network_requests_list').catch(() => [])) || []).filter((r) => r.status === 'pending').forEach((r) => m.set(r.company.id, r.incoming ? 'incoming' : 'pending'));
     return m;
   }, []);
-  const search = async (v) => { setQ(v); if (v.trim().length < 2) return setRes(null); const r = await api.rpc('directory_search', { p_query: v.trim(), p_trade: '', p_city: '' }); setRes(r.filter((x) => x.id !== company.id)); };
+  const search = async (v) => { setQ(v); const k = (search.k = (search.k || 0) + 1); if (v.trim().length < 2) return setRes(null); const r = await api.rpc('directory_search', { p_query: v.trim(), p_trade: '', p_city: '' }); if (k === search.k) setRes(r.filter((x) => x.id !== company.id)); };
   const inviteMsg = t('Bonjour, je vous invite à me rejoindre sur Artis & You pour échanger sur nos chantiers. Avec mon code {c}, vous avez 1 mois offert en plus de l’essai : {u}', { c: company.referral_code, u: location.origin + '/inscription/artisan' });
   return (
     <div className="content narrow">
       <TopBar title={t('Ajouter un pro')} sub={t('Rechercher un professionnel')} />
       <label className="input row" style={{ borderRadius: 999, borderColor: 'var(--text)', padding: '6px 18px' }}><input autoFocus value={q} onChange={(e) => search(e.target.value)} placeholder={t('Nom, entreprise ou métier')} style={{ border: 0, outline: 0, flex: 1, padding: 8, background: 'transparent' }} /></label>
-      {res && <p className="muted">{t('{n} pros trouvés sur Artis & You', { n: res.length })}</p>}
+      {res && <p className="muted">{res.length === 1 ? t('1 pro trouvé sur Artis & You') : res.length ? t('{n} pros trouvés sur Artis & You', { n: res.length }) : t('Aucun pro trouvé sur Artis & You')}</p>}
       {res && <div className="list">{res.map((co) => (
         <div key={co.id} className="li">
           <span className="avatar sm" style={{ background: 'var(--petrole)' }}>{initials(...co.name.split(' '))}</span>
-          <div className="grow"><div className="t1 red-t">{co.trade_name || co.name}</div><div className="t2">{(co.trades || []).slice(0, 2).map(t).join(', ')} · {co.name} · {co.city}</div></div>
+          <div className="grow"><div className="t1 red-t">{co.trade_name || co.name}</div><div className="t2">{[(co.trades || []).slice(0, 2).map(t).join(', '), co.trade_name && co.trade_name !== co.name ? co.name : '', co.city].filter(Boolean).join(' · ')}</div></div>
           {mine?.get(co.id) === 'connected' ? <span className="small muted">{t('Déjà dans vos pros')}</span> : mine?.get(co.id) === 'pending' ? <span className="small muted">{t('Demande envoyée')}</span> : <button className="btn xs" onClick={() => run(() => api.rpc('network_request', { p_to: co.id, p_message: '' }), mine?.get(co.id) === 'incoming' ? t('Vous êtes maintenant connectés') : t('Demande envoyée')).then(reload)}>{mine?.get(co.id) === 'incoming' ? t('Accepter') : t('Ajouter')}</button>}
         </div>
       ))}</div>}

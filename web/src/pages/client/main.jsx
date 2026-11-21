@@ -19,6 +19,9 @@ import { CityInput, distanceKm } from '../../ui/address.jsx';
 import { RgeBadge } from '../../ui/checks.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
+// première phrase du besoin, coupée sur un mot (avec « … ») si elle est longue
+const cap = (x) => { const s = String(x || ''); return s.charAt(0).toUpperCase() + s.slice(1); };
+const shortTitle = (x) => { const f = String(x).split(/[.\n?!]/)[0].trim(); if (f.length <= 60) return f; const c = f.slice(0, 60); return c.slice(0, c.lastIndexOf(' ') > 30 ? c.lastIndexOf(' ') : 60) + '…'; };
 let linked = null;
 export async function loadMine() {
   // fiches créées par un artisan avec mon e-mail avant / après mon inscription : rattachement une fois par session
@@ -34,7 +37,7 @@ function RdvCard({ a, co, dark }) {
   const st = clientApptStatus(a);
   return (
     <Link to={'/client/rdv/' + a.id} className={'rdvcard' + (dark ? ' dark' : '')}>
-      <div className="top"><span style={{ textTransform: 'capitalize' }}>{dateShort(a.start_at)}</span><span>{time(a.start_at)}</span></div>
+      <div className="top"><span>{cap(dateShort(a.start_at))}</span><span>{time(a.start_at)}</span></div>
       <div className="tt">{a.title}</div>
       <div className="small" style={{ opacity: .85 }}>{coName(co)} · {(co?.trades || [])[0] ? t(co.trades[0]) : ''}</div>
       <div className="row small"><StatusPill s={st} />{a.mode === 'visio' ? <span><LuVideo /> {t('Visio')}</span> : <span><LuMapPin /> {t('Sur site')}</span>}</div>
@@ -224,7 +227,7 @@ export function NewRequest({ params }) {
         const ups = [];
         for (const f of photos) ups.push(await uploadTo('u/' + profile.id + '/demandes', f));
         const dur = mode === 'visio' ? 30 : (s.durations?.[type] || s.duration || 60);
-        const id = await api.rpc('request_appointment', { p: { company_id: params.id, type, title: type + (text ? ' · ' + text.split(/[.\n]/)[0].slice(0, 50) : ''), text, mode, start_at: slot.toISOString(), end_at: new Date(+slot + dur * 6e4).toISOString(), photos: ups } });
+        const id = await api.rpc('request_appointment', { p: { company_id: params.id, type, title: type + (text ? ' · ' + shortTitle(text) : ''), text, mode, start_at: slot.toISOString(), end_at: new Date(+slot + dur * 6e4).toISOString(), photos: ups } });
         navigate('/client/demande-envoyee/' + id, { replace: true });
       });
     } finally { setBusy(false); }
@@ -266,9 +269,9 @@ export function RequestSent({ params }) {
     <div className="content narrow">
       <TopBar title={t('Demande envoyée')} sub={coName(co)} />
       <div className="center"><div className="big-ico" style={{ width: 86, height: 86, borderRadius: '50%', background: 'var(--bordeaux-100)', display: 'grid', placeItems: 'center', margin: '0 auto' }}><span style={{ width: 62, height: 62, borderRadius: '50%', background: 'var(--navy)', color: '#fff', display: 'grid', placeItems: 'center', fontSize: 30 }}><LuCheck /></span></div>
-        <h2 className="mt" style={{ fontSize: 24 }}>{t('Votre demande est envoyée')}</h2><p className="muted">{t('{n} a reçu votre demande et vos photos. Il répond en général en moins de 2 h.', { n: coName(co) })}</p></div>
+        <h2 className="mt" style={{ fontSize: 24 }}>{t('Votre demande est envoyée')}</h2><p className="muted">{(a.photos || []).length ? t('{n} a reçu votre demande et vos photos. Vous êtes prévenu dès qu’il répond.', { n: coName(co) }) : t('{n} a reçu votre demande. Vous êtes prévenu dès qu’il répond.', { n: coName(co) })}</p></div>
       <Sec title={t('Récapitulatif')} />
-      <KV rows={[[t('Besoin'), a.title], [t('Photos'), t('{n} photos', { n: (a.photos || []).length })], [t('Rendez-vous souhaité'), `${a.mode === 'visio' ? t('Visio') : t('Sur place')} · ${dateShort(a.start_at)} · ${time(a.start_at)}`], [t('Statut'), <Pill key="v" c="navy-o">{t('En attente de confirmation')}</Pill>]]} />
+      <KV rows={[[t('Besoin'), a.title], (a.photos || []).length > 0 && [t('Photos'), t('{n} photos', { n: (a.photos || []).length })], [t('Rendez-vous souhaité'), `${a.mode === 'visio' ? t('Visio') : t('Sur place')} · ${dateShort(a.start_at)} · ${time(a.start_at)}`], [t('Statut'), <Pill key="v" c="navy-o">{t('En attente de confirmation')}</Pill>]]} />
       <Sec title={t('Et ensuite ?')} />
       <div className="steps">
         {[[t('{n} confirme le créneau', { n: coName(co) }), t('Vous recevez une notification.')], a.mode === 'visio' ? [t('Vous recevez le lien de la visio'), t('Dans vos messages et dans le détail du RDV.')] : [t('Il vous prévient quand il est en route'), t('Avec son heure d’arrivée.')], [t('Un rappel avant'), t('Pour ne pas oublier le rendez-vous.')]].map(([x, y], i) => <div key={i} className="step cur"><span className="b">{i + 1}</span><div><b>{x}</b><div className="small muted">{y}</div></div></div>)}
@@ -296,7 +299,7 @@ export function Appointments() {
       {!list.length ? <Empty icon={LuCalendarPlus} text={tab === 'next' ? t('Aucun rendez-vous à venir.') : t('Aucun rendez-vous passé.')}>{tab === 'next' && <button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button>}</Empty> : (
         <div className="grid2">{list.map((a) => { const co = b.cm[a.company_id]; return (
           <Link key={a.id} to={'/client/rdv/' + a.id} className="rdvcard">
-            <div className="top"><span style={{ textTransform: 'capitalize' }}>{dateLong(a.start_at)}</span><span>{a.status === 'a_valider' && !a.validated_at ? hm(a.start_at) : hm(a.start_at)}</span></div>
+            <div className="top"><span>{cap(dateLong(a.start_at))}</span><span>{hm(a.start_at)}</span></div>
             <div className="row"><Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} /><div><b style={{ fontSize: 17 }}>{coName(co)}</b><div className="small muted">{(co?.trades || [])[0] ? t(co.trades[0]) : ''} · {a.mode === 'visio' ? t('en visio') : t('chez vous')}</div></div></div>
             <div className="row between"><b>{a.title}</b><StatusPill s={clientApptStatus(a)} /></div>
           </Link>
@@ -332,12 +335,12 @@ export function ApptDetail({ params }) {
         <span className="tag pill" style={{ border: '1.5px solid #fff', color: '#fff' }}>{a.mode === 'visio' ? <><LuVideo /> {t('Visio')}</> : <><LuMapPin /> {t('Sur site')}</>}</span>
         <h2 style={{ paddingRight: 90 }}>{a.title}</h2>
         <div className="l2">{coName(co)}</div>
-        <div className="row"><b style={{ textTransform: 'capitalize' }}>{dateShort(a.start_at)} · {time(a.start_at)} – {time(a.end_at)}</b><StatusPill s={clientApptStatus(a)} /></div>
+        <div className="row"><b>{cap(dateShort(a.start_at))} · {time(a.start_at)} – {time(a.end_at)}</b><StatusPill s={clientApptStatus(a)} /></div>
       </div>
       {a.proposed_start_at && a.status === 'a_valider' && (
         <div className="alert mt" role="status"><LuCalendarCheck className="red-t" /><div className="grow">
           <b>{t('{n} vous propose un autre créneau', { n: coName(co) })}</b>
-          <div className="small" style={{ textTransform: 'capitalize' }}>{dateShort(a.proposed_start_at)} · {time(a.proposed_start_at)} – {time(a.proposed_end_at)}</div>
+          <div className="small">{cap(dateShort(a.proposed_start_at))} · {time(a.proposed_start_at)} – {time(a.proposed_end_at)}</div>
           <div className="row wrap mt" style={{ gap: 8 }}>
             <button className="btn sm" onClick={() => run(async () => { await api.rpc('appointment_proposal_answer', { p_id: a.id, p_accept: true }); reload(); }, t('Créneau accepté, votre RDV est confirmé'))}>{t('Accepter ce créneau')}</button>
             <button className="btn ghost sm" onClick={() => run(async () => { await api.rpc('appointment_proposal_answer', { p_id: a.id, p_accept: false }); reload(); }, t('Créneau refusé, l’artisan est prévenu'))}>{t('Refuser')}</button>
@@ -424,7 +427,7 @@ export function Conversation({ params }) {
   );
   return (
     <div className="content narrow">
-      <TopBar title={<Link to={'/client/artisans/' + b.c.company_id}>{coName(b.co)}</Link>} sub={b.co?.name} />
+      <TopBar title={<Link to={'/client/artisans/' + b.c.company_id}>{coName(b.co)}</Link>} sub={b.co?.trade_name && b.co.trade_name !== b.co.name ? b.co.name : t((b.co?.trades || [])[0] || '')} />
       <Chat convId={b.c.id} />
     </div>
   );
