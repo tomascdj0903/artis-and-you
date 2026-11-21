@@ -2,6 +2,7 @@ import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useRef, useState } from 'react';
 import { LuFilePen, LuFileText, LuCamera, LuFolderOpen, LuLock, LuPlus, LuTrash2, LuArrowUp, LuArrowDown, LuBookOpen, LuMail, LuSend, LuPrinter, LuDownload, LuCopy, LuPencil, LuEye, LuCheck } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
+import { loadPlatform } from '../../lib/platform.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
@@ -134,6 +135,29 @@ export function DocEdit({ params }) {
         validity_days: ds.validity || 30, start_date: '', duration: '', deposit_pct: kind === 'devis' ? Number(ds.depositPct ?? 0) : 0, reverse_charge: false, vat_on_debits: false, operations_nature: 'Biens et services',
         work_address: cl ? [cl.site_name, [cl.site_address, cl.site_zip, cl.site_city].filter(Boolean).join(' ')].filter(Boolean).join(' · ') : '', delivery_address: '',
         lines: from ? structuredClone(from.lines) : defaultLines().map((l) => ({ ...l, vat: franchise ? 0 : ds.vat ?? 20 })), conditions: { paymentTerms: terms }, source_id: from?.id || null, totals: {} };
+      // Devis Artis & You préparé depuis une demande de devis (Admin › Demandes de devis › Faire le devis) :
+      // formule demandée + offres complémentaires cochées, aux prix décidés dans Offres et tarifs
+      if (!from && query.get('quote')) {
+        const q = (await api.select('quote_requests', { id: query.get('quote') }).catch(() => []))[0];
+        if (q) {
+          const ps = await loadPlatform();
+          const plan = ps.plans.find((p) => p.id === q.plan) || ps.plans.find((p) => p.quote) || ps.plans[ps.plans.length - 1];
+          const vat = franchise ? 0 : ds.vat ?? 20;
+          const opts = q.options || [];
+          const feats = opts.filter((o) => ps.plans.some((p) => (p.features || []).includes(o)));
+          const ex = (ps.extras || []).filter((x) => opts.includes(x.label));
+          const users = Number(q.users_needed) || 0;
+          const item = (label, unit, price) => newLine('item', { label, qty: 1, unit, price: Number(price) || 0, vat });
+          doc.object = t('Abonnement Artis & You {p}', { p: plan?.name || '' }) + ' · ' + q.company_name;
+          doc.lines = [
+            newLine('section', { label: t('Abonnement (par mois)') }),
+            item(t('Abonnement Artis & You {p}', { p: plan?.name || '' }) + (users ? ' · ' + t('{n} utilisateur(s)', { n: users }) : ''), 'mois', plan?.price),
+            ...(feats.length ? [newLine('text', { label: t('Inclus : {l}', { l: feats.map((f) => t(f)).join(', ') }) })] : []),
+            ...(ex.some((x) => x.unit === 'mois') ? [newLine('section', { label: t('Options (par mois)') }), ...ex.filter((x) => x.unit === 'mois').map((x) => item(t(x.label) + (x.desc ? ' · ' + x.desc : ''), 'mois', x.price))] : []),
+            ...(ex.some((x) => x.unit !== 'mois') ? [newLine('section', { label: t('Mise en place (une fois)') }), ...ex.filter((x) => x.unit !== 'mois').map((x) => item(t(x.label) + (x.desc ? ' · ' + x.desc : ''), 'forfait', x.price))] : []),
+          ];
+        }
+      }
       if (from && kind === 'acompte') {
         const pct = Number(query.get('pct') || from.deposit_pct || 30);
         const tot = computeTotals(from.lines, { franchise });
@@ -199,7 +223,7 @@ export function DocEdit({ params }) {
         <div className="lg">
           <input value={l.label} onChange={(e) => setLine(i, { label: e.target.value })} placeholder={t('Désignation')} aria-label={t('Désignation')} />
           <input type="number" step="any" value={l.qty} onChange={(e) => setLine(i, { qty: e.target.value })} aria-label={t('Quantité')} />
-          <select value={l.unit} onChange={(e) => setLine(i, { unit: e.target.value })} aria-label={t('Unité')}>{['u', 'h', 'j', 'm', 'm²', 'm³', 'ml', 'kg', 'l', 'forfait', 'lot', 'kit', 'boîte'].map((x) => <option key={x}>{x}</option>)}</select>
+          <select value={l.unit} onChange={(e) => setLine(i, { unit: e.target.value })} aria-label={t('Unité')}>{['u', 'h', 'j', 'mois', 'm', 'm²', 'm³', 'ml', 'kg', 'l', 'forfait', 'lot', 'kit', 'boîte'].map((x) => <option key={x}>{x}</option>)}</select>
           <input type="number" step="any" value={l.price} onChange={(e) => setLine(i, { price: e.target.value })} aria-label={t('Prix unitaire HT')} placeholder={t('PU HT')} />
           <select value={l.vat} onChange={(e) => setLine(i, { vat: Number(e.target.value) })} disabled={franchise || d.reverse_charge} aria-label={t('TVA')}>{VAT_RATES.map((r) => <option key={r} value={r}>{r} %</option>)}</select>
           <b style={{ textAlign: 'right' }}>{money((Number(l.qty) || 0) * (Number(l.price) || 0))}</b>

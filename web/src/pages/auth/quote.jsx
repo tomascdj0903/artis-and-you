@@ -7,18 +7,18 @@ import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { usePlans } from '../../lib/platform.js';
+import { usePlatform } from '../../lib/platform.js';
 import { Field, Wordmark } from '../../ui/index.jsx';
 
 const TEAM = ['6 à 10 personnes', '11 à 20 personnes', '21 à 50 personnes', 'Plus de 50 personnes'];
 const SITES = ['Moins de 10', '10 à 30', '30 à 100', 'Plus de 100'];
 const START = ['Dès que possible', 'Dans le mois', 'Dans les 3 mois', 'Je me renseigne'];
-// Ce qu'on peut proposer en plus des formules : l'entreprise coche ce qui l'intéresse
-const EXTRAS = ['Reprise de nos données (clients, devis, factures)', 'Formation de l’équipe', 'Accompagnement à la mise en place', 'Plusieurs agences ou établissements', 'Lien avec notre logiciel de comptabilité', 'Facturation électronique', 'Un interlocuteur dédié'];
 
 export function QuoteRequest() {
   const { profile, company } = useApp() || {};
-  const plans = usePlans();
+  const { plans, extras } = usePlatform();
+  // Ce qu'on peut proposer en plus des formules (réglé dans Admin › Offres et tarifs › Compléments) : l'entreprise coche ce qui l'intéresse
+  const EXTRAS = (extras || []).filter((x) => x.active !== false && String(x.label || '').trim());
   const planId = new URLSearchParams(location.search).get('formule') || 'entreprise';
   const plan = plans.find((p) => p.id === planId) || plans.find((p) => p.quote) || plans[plans.length - 1];
   // Toutes les fonctions proposées dans les formules (sans les lignes « Tout Solo », « Tout Équipe »)
@@ -84,11 +84,11 @@ export function QuoteRequest() {
           <h2 className="quote-h">{t('Ce qui vous intéresse')}</h2>
           <p className="small muted" style={{ marginTop: 0 }}>{t('Cochez tout ce dont vous avez besoin : nous construisons le devis à partir de vos choix.')}</p>
           <div className="quote-opts">
-            {[...features, ...EXTRAS].map((o) => (
+            {[...features.map((o) => ({ label: o })), ...EXTRAS].map(({ label: o, desc }) => (
               <label key={o} className={'quote-opt' + (f.options.includes(o) ? ' on' : '')}>
                 <input type="checkbox" checked={f.options.includes(o)} onChange={() => toggle(o)} />
                 <span className="qo-box" aria-hidden="true">{f.options.includes(o) && <LuCheck />}</span>
-                <span>{t(o)}</span>
+                <span>{t(o)}{desc && <small className="muted" style={{ display: 'block', fontWeight: 400 }}>{desc}</small>}</span>
               </label>
             ))}
           </div>

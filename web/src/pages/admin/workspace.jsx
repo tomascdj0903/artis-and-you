@@ -21,6 +21,7 @@ export function AdminOffers() {
   const [plans, setPlans] = useState(null);
   const [trial, setTrial] = useState(null);
   const [banner, setBanner] = useState(null);
+  const [tab, setTab] = useState('abonnements');
   const P = plans ?? s.plans.map((p) => ({ ...p, features: [...(p.features || [])] }));
   const set = (i, k, v) => setPlans(P.map((p, j) => (j === i ? { ...p, [k]: v } : p)));
   const save = () => run(async () => {
@@ -40,12 +41,14 @@ export function AdminOffers() {
   return (
     <div className="content">
       <TopBar title={t('Offres et tarifs')} sub={t('Ce que voient les artisans sur le site et dans leur abonnement')} />
-      <div className="grid3">
+      <Chips options={[['abonnements', t('Abonnements')], ['complements', t('Compléments')]]} value={tab} onChange={setTab} />
+      {tab === 'complements' ? <AdminExtras /> : <>
+      <div className="grid3 mt">
         {P.map((p, i) => (
           <div key={p.id} className="card soft">
             <Field label={t('Nom de la formule')}><input value={p.name} onChange={(e) => set(i, 'name', e.target.value)} /></Field>
             <div className="form-grid two">
-              <Field label={t('Prix HT / mois (€)')}>{p.quote ? <input value={t('Sur devis')} disabled /> : <input type="number" min={0} step="1" value={p.price} onChange={(e) => set(i, 'price', e.target.value)} />}</Field>
+              <Field label={p.quote ? t('Prix de base du devis, HT / mois (€)') : t('Prix HT / mois (€)')} hint={p.quote ? t('repris dans « Faire le devis »') : ''}><input type="number" min={0} step="1" value={p.price} onChange={(e) => set(i, 'price', e.target.value)} /></Field>
               <Field label={t('Utilisateurs (0 = illimité)')}><input type="number" min={0} value={p.users} onChange={(e) => set(i, 'users', e.target.value)} /></Field>
             </div>
             <label className="check"><input type="checkbox" checked={!!p.quote} onChange={(e) => set(i, 'quote', e.target.checked)} /><span><b>{t('Sur devis')}</b> · {t('le site affiche « Sur devis » et un bouton « Demander un devis » au lieu du prix')}</span></label>
@@ -61,7 +64,48 @@ export function AdminOffers() {
       </div>
       <p className="small muted">{t('Les artisans déjà inscrits gardent leur formule ; le nouveau prix s’affiche partout dès l’enregistrement. Pensez à prévenir les abonnés 15 jours avant une hausse (CGV).')}</p>
       <div className="btns"><button className="btn" onClick={save}><LuSave /> {t('Enregistrer les tarifs')}</button></div>
+      </>}
     </div>
+  );
+}
+
+// Offres complémentaires : prix décidés par l'équipe, proposées dans la demande de devis et reprises dans « Faire le devis »
+function AdminExtras() {
+  const { profile, run } = useApp();
+  const s = usePlatform();
+  const [list, setList] = useState(null);
+  const L = list ?? (s.extras || []).map((x) => ({ ...x }));
+  const set = (i, k, v) => setList(L.map((x, j) => (j === i ? { ...x, [k]: v } : x)));
+  const add = () => setList([...L, { id: 'o' + Date.now().toString(36), label: '', unit: 'forfait', price: 0, desc: '', active: true, fresh: true }]);
+  const save = () => run(async () => {
+    const clean = L.map(({ fresh, ...x }) => ({ ...x, label: String(x.label || '').trim(), desc: String(x.desc || '').trim(), price: Math.max(0, Number(x.price) || 0), active: x.active !== false })).filter((x) => x.label);
+    await savePlatform({ extras: clean }, profile.id);
+    setList(null);
+  }, t('Offres complémentaires enregistrées'));
+  return (
+    <>
+      <p className="small muted mt">{t('Ce que vous proposez en plus des formules. Les offres actives apparaissent dans la page « Demander un devis » ; quand l’entreprise les coche, « Faire le devis » les ajoute avec ce prix.')}</p>
+      <div className="grid3">
+        {L.map((x, i) => (
+          <div key={x.id} className={'card soft' + (x.active === false ? ' muted' : '')}>
+            <Field label={t('Nom de l’offre')}><input value={x.label} autoFocus={!!x.fresh} onChange={(e) => set(i, 'label', e.target.value)} placeholder={t('ex. Paramétrage des modèles de devis')} /></Field>
+            <div className="form-grid two">
+              <Field label={t('Prix HT (€)')}><input type="number" min={0} step="1" value={x.price} onChange={(e) => set(i, 'price', e.target.value)} /></Field>
+              <Field label={t('Facturé')}><select value={x.unit} onChange={(e) => set(i, 'unit', e.target.value)}><option value="forfait">{t('une fois (forfait)')}</option><option value="mois">{t('chaque mois')}</option></select></Field>
+            </div>
+            <Field label={t('Précision affichée au client')} hint={t('facultatif')}><input value={x.desc || ''} onChange={(e) => set(i, 'desc', e.target.value)} placeholder={t('ex. jusqu’à 3 sessions d’une heure')} /></Field>
+            <div className="row between">
+              <label className="check"><input type="checkbox" checked={x.active !== false} onChange={(e) => set(i, 'active', e.target.checked)} /><span>{t('Proposée dans la demande de devis')}</span></label>
+              <button type="button" className="iconbtn" onClick={() => setList(L.filter((_, j) => j !== i))} aria-label={t('Supprimer l’offre')}><LuTrash2 /></button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="btns">
+        <button className="btn ghost" onClick={add}><LuPlus /> {t('Ajouter une nouvelle offre')}</button>
+        <button className="btn" onClick={save}><LuSave /> {t('Enregistrer les offres')}</button>
+      </div>
+    </>
   );
 }
 
@@ -289,7 +333,7 @@ export function AdminIntegrations() {
 // ─────────────── Demandes de devis (formules « sur devis ») ───────────────
 const QR_STATUS = [['nouvelle', 'Nouvelle'], ['en_cours', 'En cours'], ['devis_envoye', 'Devis envoyé'], ['gagnee', 'Gagnée'], ['perdue', 'Perdue']];
 export function AdminQuoteRequests() {
-  const { profile, run } = useApp();
+  const { profile, company, run } = useApp();
   const { plans } = usePlatform();
   const [who] = useWho(profile);
   const [tab, setTab] = useState('ouvertes');
@@ -298,6 +342,15 @@ export function AdminQuoteRequests() {
   if (!list) return <div className="content"><TopBar title={t('Demandes de devis')} /><Loader /></div>;
   const shown = list.filter((q) => (tab === 'ouvertes' ? ['nouvelle', 'en_cours'].includes(q.status) : tab === 'toutes' ? true : q.status === tab));
   const save = (q, patch, msg) => run(async () => { await api.update('quote_requests', { id: q.id }, { ...patch, updated_at: new Date().toISOString(), handled_by: who || q.handled_by }); reload(); }, msg);
+  // « Faire le devis » : retrouve ou crée la fiche client de l'entreprise, puis ouvre un devis pré-rempli (formule + offres cochées, aux prix décidés)
+  const makeQuote = (q) => run(async () => {
+    const cls = await api.select('clients', { company_id: company.id }).catch(() => []);
+    const mail = String(q.email || '').trim().toLowerCase();
+    let c = cls.find((x) => mail && String(x.email || '').trim().toLowerCase() === mail) || cls.find((x) => q.siret && String(x.siret || '').replace(/\D/g, '') === String(q.siret).replace(/\D/g, ''));
+    if (!c) c = await api.insert('clients', { company_id: company.id, type: 'pro', company_name: q.company_name, contact_name: q.contact_name, email: q.email, phone: q.phone, siret: q.siret || '', billing_city: q.city || '', note: t('Demande de devis du {d}', { d: date(q.created_at) }) });
+    if (q.status === 'nouvelle') await api.update('quote_requests', { id: q.id }, { status: 'en_cours', handled_by: who || q.handled_by || '' });
+    navigate('/pro/documents/nouveau?kind=devis&client=' + c.id + '&quote=' + q.id);
+  });
   const toProspect = (q) => run(async () => {
     await api.insert('admin_deals', { title: q.company_name, company_name: q.company_name, contact_name: q.contact_name, email: q.email, phone: q.phone, city: q.city, trade: q.trades, siret: q.siret, source: t('Demande de devis (site)'), stage: 'prospect', owner: who || '', worked_by: [], tags: [], priority: 'haute', plan: q.plan, value: 0, next_action: t('Envoyer le devis'), next_date: '', notes: t('Demande de devis du {d}', { d: date(q.created_at) }) + (q.message ? ' : ' + q.message : '') });
     if (q.status === 'nouvelle') await api.update('quote_requests', { id: q.id }, { status: 'en_cours', handled_by: who || '' });
@@ -329,7 +382,7 @@ export function AdminQuoteRequests() {
                   <Field label={t('Note interne')}><input defaultValue={q.admin_note || ''} onBlur={(e) => e.target.value !== (q.admin_note || '') && save(q, { admin_note: e.target.value }, t('Note enregistrée'))} placeholder={t('ex. rappelé le 21/11, devis à 129 €/mois')} /></Field>
                 </div>
                 <div className="row wrap" style={{ gap: 8 }}>
-                  <button className="btn sm" onClick={() => { if (q.status === 'nouvelle') save(q, { status: 'en_cours' }); navigate('/pro/documents/nouveau?kind=devis'); }}><LuFilePen /> {t('Faire le devis')}</button>
+                  <button className="btn sm" onClick={() => makeQuote(q)}><LuFilePen /> {t('Faire le devis')}</button>
                   <a className="btn sm ghost" href={'mailto:' + q.email + '?subject=' + encodeURIComponent(t('Votre devis Artis & You'))}><LuMail /> {t('Écrire')}</a>
                   <button className="btn sm ghost" onClick={() => toProspect(q)}><LuKanban /> {t('Ajouter aux prospects')}</button>
                 </div>

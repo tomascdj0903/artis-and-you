@@ -1947,3 +1947,27 @@ Créer, suivre, signer|Create, track, sign|Criar, acompanhar, assinar|Crea, segu
 Paiements et relances|Payments and reminders|Pagamentos e lembretes|Pagamenti e solleciti
 Discuter avec le client|Chat with the client|Conversar com o cliente|Parla con il cliente
 macOS 11+ · Apple Silicon et Intel · .dmg|macOS 11+ · Apple Silicon and Intel · .dmg|macOS 11+ · Apple Silicon e Intel · .dmg|macOS 11+ · Apple Silicon e Intel · .dmg
+Abonnements|Subscriptions|Assinaturas|Abbonamenti
+Compléments|Add-ons|Complementos|Servizi aggiuntivi
+Prix de base du devis, HT / mois (€)|Base price for the quote, excl. VAT / month (€)|Preço base do orçamento, sem IVA / mês (€)|Prezzo base del preventivo, IVA esclusa / mese (€)
+repris dans « Faire le devis »|used in “Make the quote”|usado em «Fazer o orçamento»|usato in «Fai il preventivo»
+Offres complémentaires enregistrées|Add-on offers saved|Ofertas complementares guardadas|Servizi aggiuntivi salvati
+Ce que vous proposez en plus des formules. Les offres actives apparaissent dans la page « Demander un devis » ; quand l’entreprise les coche, « Faire le devis » les ajoute avec ce prix.|What you offer on top of the plans. Active offers appear on the “Request a quote” page; when the company ticks them, “Make the quote” adds them at this price.|O que propõe além dos planos. As ofertas ativas aparecem na página «Pedir um orçamento»; quando a empresa as seleciona, «Fazer o orçamento» adiciona-as com este preço.|Ciò che proponi oltre ai piani. I servizi attivi compaiono nella pagina «Richiedi un preventivo»; quando l'azienda li seleziona, «Fai il preventivo» li aggiunge con questo prezzo.
+Nom de l’offre|Offer name|Nome da oferta|Nome del servizio
+ex. Paramétrage des modèles de devis|e.g. Setting up quote templates|ex.: configuração dos modelos de orçamento|es. Configurazione dei modelli di preventivo
+Prix HT (€)|Price excl. VAT (€)|Preço sem IVA (€)|Prezzo IVA esclusa (€)
+Facturé|Billed|Faturado|Fatturato
+une fois (forfait)|once (flat fee)|uma vez (valor fixo)|una volta (forfait)
+chaque mois|every month|todos os meses|ogni mese
+Précision affichée au client|Detail shown to the client|Detalhe mostrado ao cliente|Dettaglio mostrato al cliente
+ex. jusqu’à 3 sessions d’une heure|e.g. up to 3 one-hour sessions|ex.: até 3 sessões de uma hora|es. fino a 3 sessioni di un'ora
+Proposée dans la demande de devis|Offered in the quote request|Proposta no pedido de orçamento|Proposto nella richiesta di preventivo
+Supprimer l’offre|Delete the offer|Eliminar a oferta|Elimina il servizio
+Ajouter une nouvelle offre|Add a new offer|Adicionar uma nova oferta|Aggiungi un nuovo servizio
+Enregistrer les offres|Save the offers|Guardar as ofertas|Salva i servizi
+Abonnement Artis & You {p}|Artis & You {p} subscription|Assinatura Artis & You {p}|Abbonamento Artis & You {p}
+Abonnement (par mois)|Subscription (per month)|Assinatura (por mês)|Abbonamento (al mese)
+{n} utilisateur(s)|{n} user(s)|{n} utilizador(es)|{n} utenti
+Inclus : {l}|Included: {l}|Incluído: {l}|Incluso: {l}
+Options (par mois)|Options (per month)|Opções (por mês)|Opzioni (al mese)
+Mise en place (une fois)|Setup (one-off)|Implementação (uma vez)|Avvio (una tantum)
