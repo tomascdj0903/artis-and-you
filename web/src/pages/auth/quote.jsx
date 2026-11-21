@@ -7,7 +7,7 @@ import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { usePlatform, domainQuote, domainSale, domainFromName } from '../../lib/platform.js';
+import { usePlatform, domainQuote, domainOffer, domainFromName, eur2 } from '../../lib/platform.js';
 import { Field, Wordmark } from '../../ui/index.jsx';
 
 const TEAM = ['6 à 10 personnes', '11 à 20 personnes', '21 à 50 personnes', 'Plus de 50 personnes'];
@@ -110,7 +110,7 @@ export function QuoteRequest() {
             <div className="card soft mb">
               <Field label={t('Nom de domaine souhaité')} hint={t('facultatif')}><input value={dn} onChange={(e) => setDn(e.target.value.trim().toLowerCase())} placeholder={domainFromName(f.company_name || 'votre-entreprise', dom.ext || '.fr')} autoCapitalize="none" spellCheck={false} /></Field>
               {dq === '…' && <p className="small muted" style={{ margin: 0 }}>{t('Vérification…')}</p>}
-              {dq && typeof dq === 'object' && <p className="small" style={{ margin: 0 }}>{dq.available === false ? <span className="red-t">{t('{d} est déjà pris : essayez un autre nom.', { d: dq.domain })}</span> : <>{dq.available ? <b className="green-t">{t('{d} est disponible', { d: dq.domain })}</b> : <b>{dq.domain}</b>} · {t('{p} € HT par an', { p: domainSale(dq.renew_ht, dom).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) })}</>}</p>}
+              {dq && typeof dq === 'object' && <p className="small" style={{ margin: 0 }}>{dq.available === false ? <span className="red-t">{t('{d} est déjà pris : essayez un autre nom.', { d: dq.domain })}</span> : (() => { const o = domainOffer(dq, dom); return <>{dq.available ? <b className="green-t">{t('{d} est disponible', { d: dq.domain })}</b> : <b>{dq.domain}</b>} · {t('{a} € HT la 1re année, puis {b} € HT par an', { a: eur2(o.first), b: eur2(o.next) })}{o.pack && <><br /><span className="bold">{t('Offre {n} ans : {p} € HT au lieu de {q} €', { n: o.pack.years, p: eur2(o.pack.price), q: eur2(o.pack.normal) })}</span></>}</>; })()}</p>}
             </div>
           )}
           <div className="form-grid two">

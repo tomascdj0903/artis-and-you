@@ -9,19 +9,27 @@ const cors = (req: Request) => {
 };
 const HOURLY = 60;
 const hits = new Map<string, number[]>();
-let cat: { at: number; plans: Record<string, { create: number; renew: number }> } | null = null;
+type Promo = { label: string; ends: string; minMonths: number; months: number; renew: number; start?: string; startDate?: string; endDate?: string; isForTestingPurpose?: boolean };
+type Plan = { create: number; renew: number; promos: Promo[] };
+let cat: { at: number; plans: Record<string, Plan> } | null = null;
+const live = (x: any, now = Date.now()) => (!x.startDate || Date.parse(x.startDate) <= now) && (!x.endDate || Date.parse(x.endDate) > now) && !x.isForTestingPurpose;
 
 async function catalog() {
   if (cat && Date.now() - cat.at < 6 * 3600_000) return cat.plans;
   const r = await fetch('https://eu.api.ovh.com/1.0/order/catalog/public/domain?ovhSubsidiary=FR');
   if (!r.ok) throw new Error('ovh_' + r.status);
   const d = await r.json();
-  const plans: Record<string, { create: number; renew: number }> = {};
+  const plans: Record<string, Plan> = {};
   for (const p of d.plans || []) {
     const pr = (p.pricings || []).filter((x: any) => x.mode === 'create-default' && x.interval === 12 && x.intervalUnit === 'month');
     const create = pr.find((x: any) => (x.capacities || []).includes('installation'));
     const renew = pr.find((x: any) => !(x.capacities || []).includes('installation'));
-    if (create || renew) plans[String(p.planCode).toLowerCase()] = { create: (create?.price ?? renew?.price) / 1e8, renew: (renew?.price ?? create?.price) / 1e8 };
+    if (!create && !renew) continue;
+    // Promotions OVH sur le renouvellement (ex. « 1 an offert pour toute souscription 3 ans ») : prix forcé sur une période, à condition d'une durée minimale
+    const promos: Promo[] = [...(renew?.promotions || []), ...(create?.promotions || [])].filter((x: any) => x.total?.value != null).map((x: any) => ({
+      label: String(x.description || x.name || ''), ends: x.endDate || '', minMonths: Number(x.minimumDuration || 0), months: Number(x.duration || 12), renew: Number(x.total.value) / 1e8, start: x.startDate, startDate: x.startDate, endDate: x.endDate, isForTestingPurpose: x.isForTestingPurpose,
+    }));
+    plans[String(p.planCode).toLowerCase()] = { create: (create?.price ?? renew?.price) / 1e8, renew: (renew?.price ?? create?.price) / 1e8, promos };
   }
   cat = { at: Date.now(), plans };
   return plans;
@@ -64,5 +72,20 @@ Deno.serve(async (req) => {
   for (let i = 1; i < parts.length; i++) { const c = parts.slice(i).join('.'); if (plans[c]) { tld = c; break; } }
   if (!tld) return json({ error: 'unknown_extension' }, 404);
   const p = plans[tld];
-  return json({ domain: domain || null, ext: '.' + tld, create_ht: Math.round(p.create * 100) / 100, renew_ht: Math.round(p.renew * 100) / 100, available: domain ? await available(domain) : null, source: 'OVHcloud, catalogue public FR, prix HT' });
+  const r2 = (n: number) => Math.round(n * 100) / 100;
+  // Coût total d'achat HT pour 1, 2, 3 et 5 ans : 1re année au prix de création, puis renouvellements,
+  // avec la promotion OVH en cours si la durée choisie la déclenche (durée minimale de renouvellement atteinte)
+  const promos = p.promos.filter((x: any) => live(x));
+  const packs = [1, 2, 3, 5].map((years) => {
+    const renewMonths = (years - 1) * 12;
+    let cost = p.create + p.renew * (years - 1), promo = '';
+    for (const pr of promos) {
+      if (renewMonths >= Math.max(pr.minMonths, pr.months)) {
+        const saving = (p.renew * pr.months / 12) - pr.renew;
+        if (saving > 0 && cost - saving < cost) { cost -= saving; promo = pr.label + (pr.ends ? ' (jusqu’au ' + new Date(pr.ends).toLocaleDateString('fr-FR') + ')' : ''); }
+      }
+    }
+    return { years, cost_ht: r2(cost), promo };
+  });
+  return json({ domain: domain || null, ext: '.' + tld, create_ht: r2(p.create), renew_ht: r2(p.renew), packs, promos: promos.map((x) => ({ label: x.label, ends: x.ends, min_months: x.minMonths, renew_ht: r2(x.renew) })), available: domain ? await available(domain) : null, source: 'OVHcloud, catalogue public FR, prix HT' });
 });

@@ -153,10 +153,22 @@ export function useWho(profile) {
 
 // Nom de domaine relié à OVH : prix d'achat HT chez OVHcloud (TVA d'achat récupérée) + marge, arrondi à ,99 au-dessus.
 // La marge se règle sur l'offre (Admin › Offres et tarifs › Compléments) : margin_pct (%) et margin_fixed (€ par an).
-export const domainSale = (costHt, x = {}) => {
-  const raw = Number(costHt || 0) * (1 + Number(x.margin_pct ?? 50) / 100) + Number(x.margin_fixed ?? 3);
+// years : nombre d'années couvertes par ce prix (la marge fixe s'applique par année)
+export const domainSale = (costHt, x = {}, years = 1) => {
+  const raw = Number(costHt || 0) * (1 + Number(x.margin_pct ?? 50) / 100) + Number(x.margin_fixed ?? 3) * years;
   return raw > 0 ? Math.ceil(raw) - 0.01 : 0;
 };
+// Offre client à partir de la réponse OVH : 1re année, années suivantes, et formule pluriannuelle si une promotion OVH la rend plus avantageuse
+export function domainOffer(dq, x = {}) {
+  if (!dq) return null;
+  const first = domainSale(dq.create_ht, x), next = domainSale(dq.renew_ht, x);
+  const promo = (dq.packs || []).filter((p) => p.promo && p.years > 1).sort((a, b) => a.years - b.years)[0];
+  let pack = null;
+  if (promo) { const price = domainSale(promo.cost_ht, x, promo.years), normal = Math.round((first + next * (promo.years - 1)) * 100) / 100; if (price < normal) pack = { years: promo.years, price, normal, promo: promo.promo }; }
+  return { first, next, pack };
+}
+const eur = (n) => Number(n).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+export { eur as eur2 };
 // Prix OVH d'un domaine (ou d'une extension) via la fonction serveur domain-price
 export async function domainQuote(domainOrExt) {
   const v = String(domainOrExt || '').trim().toLowerCase();

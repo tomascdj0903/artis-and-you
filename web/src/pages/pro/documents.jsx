@@ -2,7 +2,7 @@ import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useRef, useState } from 'react';
 import { LuFilePen, LuFileText, LuCamera, LuFolderOpen, LuLock, LuPlus, LuTrash2, LuArrowUp, LuArrowDown, LuBookOpen, LuMail, LuSend, LuPrinter, LuDownload, LuCopy, LuPencil, LuEye, LuCheck } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
-import { loadPlatform, domainQuote, domainSale, domainFromName } from '../../lib/platform.js';
+import { loadPlatform, domainQuote, domainOffer, domainFromName, eur2 } from '../../lib/platform.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
@@ -152,7 +152,12 @@ export function DocEdit({ params }) {
           const domX = ex.find((x) => x.ovh);
           const wanted = (opts.find((o) => o.startsWith('Nom de domaine souhaité : ')) || '').replace('Nom de domaine souhaité : ', '') || (domX ? domainFromName(q.company_name, domX.ext || '.fr') : '');
           const dq = domX ? await domainQuote(wanted) : null;
-          const domLine = domX ? [item(t('Nom de domaine {d} (1 an)', { d: wanted }) + (dq?.available === false ? ' · ' + t('déjà pris, à choisir avec le client') : ''), 'an', dq ? domainSale(dq.renew_ht, domX) : 0)] : [];
+          const off = domainOffer(dq, domX || {});
+          const domLine = domX ? [
+            item(t('Nom de domaine {d} · 1re année', { d: wanted }) + (dq?.available === false ? ' · ' + t('déjà pris, à choisir avec le client') : ''), 'an', off?.first || 0),
+            ...(off ? [newLine('text', { label: t('Ensuite : {p} € HT par an à partir de la 2e année (renouvellement).', { p: eur2(off.next) }) })] : []),
+            ...(off?.pack ? [newLine('text', { label: t('Possible aussi : formule {n} ans à {p} € HT au lieu de {q} € HT ({m}).', { n: off.pack.years, p: eur2(off.pack.price), q: eur2(off.pack.normal), m: off.pack.promo }) })] : []),
+          ] : [];
           doc.object = t('Abonnement Artis & You {p}', { p: plan?.name || '' }) + ' · ' + q.company_name;
           doc.lines = [
             newLine('section', { label: t('Abonnement (par mois)') }),

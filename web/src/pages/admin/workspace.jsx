@@ -7,7 +7,7 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { date, rel, iso } from '../../lib/format.js';
-import { usePlatform, savePlatform, useWho, domainQuote, domainSale } from '../../lib/platform.js';
+import { usePlatform, savePlatform, useWho, domainQuote, domainOffer, eur2 } from '../../lib/platform.js';
 import { WhoBar } from './prospects.jsx';
 import { TopBar, Sec, Pill, useData, Loader, Empty, Chips, Sheet, Field, Table, SearchBar, suggestList } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
@@ -103,9 +103,9 @@ function AdminExtras() {
                 <button type="button" className="btn xs ghost" onClick={async () => { set(i, 'test', '…'); const r = await domainQuote(x.ext || '.fr'); set(i, 'test', r ? r : 'ko'); }}>{t('Voir le prix OVH du .fr')}</button>
                 {x.test === '…' && <span className="small muted">{t('Calcul…')}</span>}
                 {x.test === 'ko' && <span className="small red-t">{t('OVH ne répond pas pour le moment')}</span>}
-                {x.test && typeof x.test === 'object' && <span className="small">{t('OVH : {a} € HT la 1re année, {b} € HT / an ensuite · notre prix : {c} € HT / an', { a: x.test.create_ht.toFixed(2), b: x.test.renew_ht.toFixed(2), c: domainSale(x.test.renew_ht, x).toFixed(2) })}</span>}
+                {x.test && typeof x.test === 'object' && (() => { const o = domainOffer(x.test, x); return <span className="small">{t('OVH : {a} € HT la 1re année, puis {b} € HT / an', { a: eur2(x.test.create_ht), b: eur2(x.test.renew_ht) })}<br /><b>{t('Notre prix : {a} € HT la 1re année, puis {b} € HT / an', { a: eur2(o.first), b: eur2(o.next) })}</b>{o.pack && <><br />{t('Formule {n} ans : {p} € HT au lieu de {q} € ({m})', { n: o.pack.years, p: eur2(o.pack.price), q: eur2(o.pack.normal), m: o.pack.promo })}</>}</span>; })()}
               </div>
-              <p className="small muted" style={{ margin: '6px 0 0' }}>{t('Prix de revente = prix OVH hors taxes du renouvellement (TVA d’achat récupérée) + marge, arrondi à ,99. Le devis ajoute une ligne « Nom de domaine … (1 an) » à ce prix.')}</p>
+              <p className="small muted" style={{ margin: '6px 0 0' }}>{t('Prix de revente = prix OVH hors taxes (TVA d’achat récupérée) + marge, arrondi à ,99 : 1re année au prix de création OVH, puis prix de renouvellement. Si OVH fait une promotion sur plusieurs années, le devis propose aussi cette formule.')}</p>
             </div>}
             {x.unit === 'mois' && <Field label={t('Frais de mise en place HT (€)')} hint={t('facultatif, payés une fois')}><input type="number" min={0} step="0.01" value={x.setup || ''} onChange={(e) => set(i, 'setup', e.target.value)} placeholder="0" /></Field>}
             <Field label={t('Précision affichée au client')} hint={t('facultatif')}><input value={x.desc || ''} onChange={(e) => set(i, 'desc', e.target.value)} placeholder={t('ex. jusqu’à 3 sessions d’une heure')} /></Field>
