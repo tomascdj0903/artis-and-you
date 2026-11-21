@@ -9,7 +9,7 @@ import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
 import { clientName, dateShort, hm, startOfWeek, addDays, weekNumber, iso, date } from '../../lib/format.js';
 import { apptStatus, APPT_TYPES, expandAppointments } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, StatusPill, Picker } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Sheet, Chips, useData, Loader, Empty, StatusPill, Picker } from '../../ui/index.jsx';
 
 
 export const DEFAULT_DURATIONS = { Diagnostic: 60, 'Dépannage': 90, Devis: 60, Entretien: 60, Chantier: 240 };
@@ -107,7 +107,7 @@ export function Planning() {
         <div className="sh-members">{sp.members.map((m) => <button type="button" key={m.id} className={hide.has('co:' + m.id) ? 'off' : ''} onClick={() => tog('co:' + m.id)} aria-pressed={!hide.has('co:' + m.id)}><i style={{ background: hashColor(m.id) }} />{m.name}{m.trades?.[0] ? ' · ' + t(m.trades[0]) : ''}</button>)}</div>
         <div className="small muted">{t('Touchez un pro pour l’afficher ou le masquer. Seuls vos propres rendez-vous sont modifiables.')}</div>
       </div>}
-      <SearchBar placeholder={t('Recherchez un rendez-vous (client, objet, adresse)')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={teamF.length > 0} />
+      <SearchBar placeholder={t('Recherchez un rendez-vous (client, objet, adresse)')} value={q} onChange={setQ} suggest={() => suggestList((allData || []).filter((a) => match(a)), { label: (a) => a.title || t(a.type), sub: (a) => [clientName(data?.cm[a.client_id]), dateShort(a.start_at) + ' ' + hm(a.start_at)].filter(Boolean).join(' · '), go: (a) => navigate('/pro/planning/rdv/' + a.id) })} onFilter={() => setOpen(true)} filterActive={teamF.length > 0} />
       <div className="cal-head">
         <button className="round" onClick={() => move(-1)} aria-label={t('Précédent')}><LuChevronLeft /></button>
         <span style={{ position: 'relative' }}>

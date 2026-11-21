@@ -2,12 +2,12 @@ import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useEffect, useState } from 'react';
 import { checkVaultReminders } from './files.jsx';
 import { dueReminders, autoReminders } from '../../lib/relances.js';
-import { LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
+import { LuUser, LuPackage, LuShieldAlert, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuSearch } from 'react-icons/lu';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { api } from '../../lib/api.js';
-import { TopBar, SearchBar, useData, Loader, Sec, Empty, StatusPill } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestFrom, useData, Loader, Sec, Empty, StatusPill } from '../../ui/index.jsx';
 import { clientName, money, date, dateShort, hm } from '../../lib/format.js';
 import { statusPill, kindLabel, apptStatus, effectiveStatus } from '../../lib/docs.js';
 
@@ -117,6 +117,16 @@ export function GlobalSearch() {
   const { company } = useApp();
   const [q, setQ] = useState(query.get('q') || '');
   const [term, setTerm] = useState(q);
+  // Propositions pendant la frappe : clients, devis / factures et produits de l'entreprise (chargés une fois)
+  const [pool] = useData(async () => {
+    const [clients, docs, items] = await Promise.all([api.select('clients', { company_id: company.id }), api.select('documents', { company_id: company.id }, { order: 'issue_date.desc', limit: 800 }), api.select('items', { company_id: company.id })]);
+    return { clients, docs, items, cm: Object.fromEntries(clients.map((c) => [c.id, c])) };
+  }, [company.id]);
+  const suggest = (v) => !pool ? [] : [
+    ...suggestFrom(pool.clients, v, { label: clientName, sub: (c) => c.billing_city || c.site_city || '', go: (c) => navigate('/pro/clients/' + c.id), icon: LuUser, group: 'Clients', max: 4 }),
+    ...suggestFrom(pool.docs.filter((d) => d.number || d.object), v, { label: (d) => [kindLabel(d.kind), d.number].filter(Boolean).join(' '), also: (d) => d.object + ' ' + clientName(pool.cm[d.client_id]), sub: (d) => [clientName(pool.cm[d.client_id]), d.object].filter(Boolean).join(' · '), go: (d) => navigate('/pro/documents/' + d.id), icon: LuFileText, group: 'Devis et factures', max: 4 }),
+    ...suggestFrom(pool.items, v, { label: (i) => i.name, sub: (i) => money(i.sale_price || 0), go: (i) => navigate('/pro/crm/bibliotheque/' + i.id), icon: LuPackage, group: 'Produits', max: 3 }),
+  ];
   const [res, , loading] = useData(async () => {
     if (!term) return null;
     const cid = company.id;
@@ -135,7 +145,7 @@ export function GlobalSearch() {
   return (
     <div className="content">
       <TopBar title={t('Recherche')} />
-      <SearchBar placeholder={t('Que recherchez-vous ?')} value={q} onChange={setQ} onSubmit={() => setTerm(q.trim())} />
+      <SearchBar placeholder={t('Que recherchez-vous ?')} value={q} onChange={setQ} onSubmit={() => setTerm(q.trim())} suggest={suggest} />
       {loading && term ? <Loader /> : !res ? <Empty icon={LuSearch} text={t('Client, n° de devis ou facture, produit, rendez-vous…')} /> : (
         <>
           {!res.clients.length && !res.docs.length && !res.items.length && !res.appts.length && <Empty text={t('Aucun résultat pour « {q} »', { q: term })} />}

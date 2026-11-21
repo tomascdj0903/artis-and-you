@@ -10,7 +10,7 @@ import { t } from '../../lib/i18n.js';
 import { money, date, clientName, fullName, dateMed, hm } from '../../lib/format.js';
 import { LEGAL_FORMS } from '../../lib/docs.js';
 import { AddressFields } from '../../ui/address.jsx';
-import { TopBar, SearchBar, Sec, KV, Table, Pill, Sheet, Chips, Field, useData, Loader, Empty, Seg } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, KV, Table, Pill, Sheet, Chips, Field, useData, Loader, Empty, Seg } from '../../ui/index.jsx';
 import { KpiView } from './kpi.jsx';
 import { DocList } from './doclist.jsx';
 import { Chat } from '../common/chat.jsx';
@@ -74,7 +74,7 @@ export function Clients() {
   return (
     <div className="content">
       <TopBar title={t('Clients')} back={false} />
-      <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={active.length > 0} />
+      <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={active.length > 0} suggest={() => suggestList(list, { label: clientName, sub: (c) => [c.number, city(c)].filter(Boolean).join(' · '), go: (c) => navigate('/pro/clients/' + c.id) })} />
       {active.length > 0 && <div className="chips">{active.map(([l, patch], i) => <button key={i} className="chip on" onClick={() => setFilter({ ...f, ...patch })}>{l} ✕</button>)}<button className="link red small" onClick={() => setFilter({ ...EMPTY_F, sort: f.sort })}>{t('Tout effacer')}</button></div>}
       {data.some((c) => !c.user_id && c.type !== 'pro') && <button className="invite-strip" onClick={() => navigate('/pro/reseau/inviter-clients')}>📣 <span className="grow"><b>{t('Inviter mes clients sur Artis & You')}</b><small>{t('Gratuit pour eux : ils retrouvent leurs documents et vous écrivent directement.')}</small></span><span className="red-t bold">›</span></button>}
       <Sec title={t('Mes clients')} meta={<span className="row" style={{ gap: 8 }}>{list.length !== data.length ? t('{n} sur {m}', { n: list.length, m: data.length }) : t('{n} clients', { n: data.length })}

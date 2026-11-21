@@ -7,7 +7,7 @@ import { t } from '../../lib/i18n.js';
 import { money, date, dateMed, dateShort, hm, fullName } from '../../lib/format.js';
 import { DrawPad, textSignature } from '../../ui/signature.jsx';
 import { statusPill, effectiveStatus, kindLabel, clientProgress, DOC_TYPES, VAULT_TYPES, docTypeLabel } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Chips, Field, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Chips, Field, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet } from '../../ui/index.jsx';
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
 import { MenuRow } from '../pro/account.jsx';
 import { RetractationInfo, RetractationBox } from '../../ui/retractation.jsx';
@@ -16,10 +16,13 @@ import { loadMine, coName } from './main.jsx';
 
 export function DocumentsHome() {
   const [q, setQ] = useState('');
+  const [b] = useMyDocs();
+  const qq = q.trim().toLowerCase();
+  const found = qq && b ? b.docs.filter((d) => (d.number + ' ' + d.object + ' ' + coName(b.cm[d.company_id])).toLowerCase().includes(qq)) : [];
   return (
     <div className="content">
       <TopBar back={false} title={t('Documents')} />
-      <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onSubmit={() => navigate('/client/devis?q=' + encodeURIComponent(q))} />
+      <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onSubmit={() => navigate('/client/devis?q=' + encodeURIComponent(q))} suggest={() => suggestList(found, { label: (d) => [kindLabel(d.kind), d.number, coName(b.cm[d.company_id])].filter(Boolean).join(' · '), sub: (d) => [d.object, money(d.totals?.ttc || 0)].filter(Boolean).join(' · '), go: (d) => navigate((d.kind === 'devis' ? '/client/devis/' : '/client/factures/') + d.id) })} />
       <div className="tiles home" style={{ marginTop: 10 }}>
         <button className="tile" onClick={() => navigate('/client/devis')}><LuFilePen />{t('Devis')}</button>
         <button className="tile" onClick={() => navigate('/client/factures')}><LuFileText />{t('Factures')}</button>
@@ -80,7 +83,7 @@ export function Quotes() {
   return (
     <div className="content">
       <TopBar title={t('Mes devis')} />
-      <SearchBar placeholder={t('Recherchez un devis')} value={q} onChange={setQ} />
+      <SearchBar placeholder={t('Recherchez un devis')} value={q} onChange={setQ} suggest={() => suggestList(list, { label: (d) => [d.number, coName(b.cm[d.company_id])].filter(Boolean).join(' · '), sub: (d) => [d.object, money(d.totals?.ttc || 0)].filter(Boolean).join(' · '), go: (d) => navigate('/client/devis/' + d.id) })} />
       <Chips options={[['', t('Tous')], ['sign', t('À signer')], ['ok', t('Signés')], ['ko', t('Refusés')]]} value={f} onChange={setF} />
       <DocCards docs={list} cm={b.cm} base="/client/devis/" />
     </div>
@@ -96,7 +99,7 @@ export function Invoices() {
   return (
     <div className="content">
       <TopBar title={t('Mes factures')} />
-      <SearchBar placeholder={t('Recherchez une facture')} value={q} onChange={setQ} />
+      <SearchBar placeholder={t('Recherchez une facture')} value={q} onChange={setQ} suggest={() => suggestList(list, { label: (d) => [d.number, coName(b.cm[d.company_id])].filter(Boolean).join(' · '), sub: (d) => [d.object, money(d.totals?.ttc || 0)].filter(Boolean).join(' · '), go: (d) => navigate('/client/factures/' + d.id) })} />
       <Chips options={[['', t('Toutes')], ['pay', t('À payer')], ['paid', t('Payées')]]} value={f} onChange={setF} />
       <DocCards docs={list} cm={b.cm} base="/client/factures/" />
     </div>

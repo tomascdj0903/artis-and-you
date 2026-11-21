@@ -9,7 +9,7 @@ import { t } from '../../lib/i18n.js';
 import { money0, date, rel, iso } from '../../lib/format.js';
 import { usePlatform, useWho } from '../../lib/platform.js';
 import { readSheet, makeXlsx, download } from '../../lib/xlsx.js';
-import { TopBar, Pill, useData, Loader, Empty, Chips, Sheet, Field, Table, SearchBar } from '../../ui/index.jsx';
+import { TopBar, Pill, useData, Loader, Empty, Chips, Sheet, Field, Table, SearchBar, suggestList } from '../../ui/index.jsx';
 
 export const STAGES = [['prospect', 'À contacter'], ['contacte', 'Contacté'], ['demo', 'Démo prévue'], ['essai', 'En essai'], ['client', 'Abonné'], ['perdu', 'Perdu']];
 const STAGE = Object.fromEntries(STAGES);
@@ -121,7 +121,7 @@ export function AdminPipeline() {
         {who && <button className="kpi" style={{ textAlign: 'left' }} onClick={() => { setOwner(who); setDue(false); }}><small>{t('Mes prospects ({n})', { n: who })}</small><b>{mine}</b></button>}
         <div className="kpi"><small>{t('Abonnés gagnés')}</small><b>{won.length}</b><span className="small muted">{deals.length ? Math.round((won.length / deals.length) * 100) : 0} % {t('de conversion')}</span></div>
       </div>
-      <SearchBar value={q} onChange={setQ} placeholder={t('Nom, ville, métier, téléphone…')} />
+      <SearchBar value={q} onChange={setQ} placeholder={t('Nom, ville, métier, téléphone…')} suggest={() => suggestList(list, { label: (d) => d.title, sub: (d) => [d.contact_name, d.city, d.trade].filter(Boolean).join(' · '), go: (d) => setEdit({ ...EMPTY, ...d, next_date: d.next_date || '' }) })} />
       <div className="row wrap between" style={{ gap: 8 }}>
         <Chips scroll options={[['all', t('Tous')], ...team.map((n) => [n, n]), ['none', t('Non attribués')]]} value={owner} onChange={setOwner} />
         <div className="row" style={{ gap: 6 }}>

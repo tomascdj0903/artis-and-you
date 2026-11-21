@@ -14,7 +14,7 @@ import { resetTours } from '../../ui/tour.jsx';
 import { t, LANGS } from '../../lib/i18n.js';
 import { rel, dateMed, fullName, date } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
-import { TopBar, SearchBar, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet, openFile } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet, openFile } from '../../ui/index.jsx';
 import { uploadTo } from './chat.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 
@@ -33,7 +33,7 @@ export function Notifications() {
     <div className="content narrow">
       <TopBar title={t('Notifications')} back={isPro} settings={isPro ? '/pro/compte/notifications' : '/client/compte/notifications'}  />
       {list.some((n) => !n.read) && <div className="row" style={{ justifyContent: 'flex-end', marginBottom: 8 }}><button className="btn xs ghost" onClick={readAll}>{t('Tout marquer comme lu')}</button></div>}
-      <SearchBar placeholder={isPro ? t('Rechercher') : t('Recherchez un pro')} value={q} onChange={setQ} />
+      <SearchBar placeholder={isPro ? t('Rechercher') : t('Recherchez un pro')} value={q} onChange={setQ} suggest={() => suggestList(shown, { label: (n) => n.title, sub: (n) => n.body, go: open })} />
       <Chips options={[['', t('Toutes')], ['rdv', t('RDV et chantier')], ['documents', t('Documents')], ['paiement', t('Paiement')]]} value={f} onChange={setF} />
       {!shown.length ? <Empty icon={LuBell} text={t('Aucune notification')} /> : shown.map((n) => {
         const day = n.created_at.slice(0, 10); const show = day !== last; last = day; const I = NICON[n.category] || LuBell;
@@ -259,7 +259,7 @@ export function Help() {
     <div className="content narrow">
       <TopBar title={t('Aide et support')} />
       <button className="btn ghost sm mb" onClick={async () => { await resetTours(profile, setProfile); navigate(isPro ? '/pro' : '/client'); }}>🎓 {t('Revoir le tutoriel')}</button>
-      <SearchBar placeholder={t('Comment faire… (ex. relancer une facture, dimanche, logo)')} value={q} onChange={setQ} />
+      <SearchBar placeholder={t('Comment faire… (ex. relancer une facture, dimanche, logo)')} value={q} onChange={setQ} suggest={() => suggestList(list, { label: (x) => x.title, sub: (x) => x.sum, go: (x) => setArt(x.i) })} />
       {!words.length && <div className="help-cats">{cats.map(([k, l, e]) => <button key={k} className={'help-cat' + (cat === k ? ' on' : '')} onClick={() => setCat(cat === k ? '' : k)}><span>{e}</span>{t(l)}<small>{t('{n} articles', { n: all.filter((x) => x.cat === k).length })}</small></button>)}</div>}
       <Sec title={words.length ? (list.length > 1 ? t('{n} résultats', { n: list.length }) : t('{n} résultat', { n: list.length })) : cat ? t(cats.find((c) => c[0] === cat)[1]) : t('Tous les articles')} />
       {list.length ? <div className="list">{list.map((x) => <button key={x.i} className="li click" style={{ display: 'flex' }} onClick={() => setArt(x.i)}><div className="grow"><div className="small red-t bold">{t(cats.find((c) => c[0] === x.cat)?.[1] || '')}</div><div className="t1">{x.title}</div><div className="t2">{x.sum}</div></div><span>›</span></button>)}</div>

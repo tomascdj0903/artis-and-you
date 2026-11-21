@@ -3107,4 +3107,6 @@ export default {"(copie)":"(copy)",
 "{n} utilisateur(s)":"{n} user(s)",
 "Inclus : {l}":"Included: {l}",
 "Options (par mois)":"Options (per month)",
-"Mise en place (une fois)":"Setup (one-off)"};
+"Mise en place (une fois)":"Setup (one-off)",
+"Produits":"Products",
+"Général":"General"};

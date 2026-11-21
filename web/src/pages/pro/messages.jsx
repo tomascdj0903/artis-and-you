@@ -9,7 +9,7 @@ import { t } from '../../lib/i18n.js';
 import { clientName, rel, date, initials } from '../../lib/format.js';
 import { useTrades } from '../../ui/trades.jsx';
 
-import { TopBar, SearchBar, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, ShareButton, ArtesaAvatar } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Sheet, Chips, useData, Loader, Empty, Avatar, Pill, Stars, KV, ShareButton, ArtesaAvatar } from '../../ui/index.jsx';
 import { Chat, convMeta } from '../common/chat.jsx';
 
 async function loadConvCtx(company, teams, members) {
@@ -38,7 +38,7 @@ export function Messages() {
   return (
     <div className="content">
       <TopBar title={t('Messages')} back={false} settings="/pro/compte/notifications" />
-      <SearchBar placeholder={t('Recherchez un contact')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={kinds.length > 0} />
+      <SearchBar placeholder={t('Recherchez un contact')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={kinds.length > 0} suggest={() => suggestList(list, { label: (x) => x.m.name, sub: (x) => [x.m.tag, x.c.last_message].filter(Boolean).join(' · '), go: (x) => navigate('/pro/messages/' + x.c.id) })} />
       <Sec title={t('Conversations')} meta={t('{n} non lues', { n: unreadN })} />
       {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation pour le moment.')}><button className="btn sm" onClick={() => setNw(true)}><LuPlus /> {t('Nouvelle conversation')}</button></Empty> : (
         <div className="list">{list.map(({ c, m }) => {
@@ -131,7 +131,7 @@ export function Network() {
   return (
     <div className="content">
       <TopBar title={t('Mon réseau')} sub={t('Mes pros')} back={false} settings="/pro/compte/entreprise" />
-      <SearchBar placeholder={t('Recherchez un pro')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={trades.length > 0} />
+      <SearchBar placeholder={t('Recherchez un pro')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={trades.length > 0} suggest={() => suggestList(list, { label: (x) => x.co.trade_name || x.co.name, sub: (x) => [(x.co.trades || []).slice(0, 2).map(t).join(' · '), x.co.city].filter(Boolean).join(' · '), go: (x) => navigate('/pro/reseau/' + x.co.id) })} />
       <button className="card soft row" style={{ width: '100%', textAlign: 'left', cursor: 'pointer', border: 0, marginBottom: 6 }} onClick={() => navigate('/pro/reseau/inviter-clients')}>
         <span style={{ fontSize: 26 }}>📣</span><div className="grow"><b>{t('Inviter mes clients sur Artis & You')}</b><div className="small muted">{t('Gratuit pour eux : ils retrouvent leurs documents et vous écrivent directement.')}</div></div><LuChevronRight />
       </button>
@@ -329,7 +329,7 @@ export function InviteClients() {
         <button className="btn sm ghost" onClick={() => navigator.clipboard?.writeText(clientInviteMsg(company))}>{t('Copier le message')}</button>
       </div>
       <Sec title={t('Clients sans compte')} meta={t('{n} clients', { n: todo.length })} />
-      {todo.length > 8 && <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} />}
+      {todo.length > 8 && <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} suggest={() => suggestList(shown, { label: clientName, sub: (c) => c.email || c.mobile || '', go: (c) => navigate('/pro/clients/' + c.id) })} />}
       {!shown.length ? <Empty text={t('Tous vos clients particuliers ont déjà un compte Artis & You.')} /> : <div className="list">{shown.map((c) => (
         <div key={c.id} className="li">
           <div className="grow"><div className="t1">{clientName(c)}</div><div className="t2">{[c.billing_city, c.invited_at ? t('Invité le {d}', { d: date(c.invited_at) }) : ''].filter(Boolean).join(' · ')}</div></div>

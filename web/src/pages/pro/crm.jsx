@@ -11,7 +11,7 @@ import { starterFor, starterOf, STARTER } from '../../lib/starter.js';
 import { money, money0, date, dateShort, clientName, iso } from '../../lib/format.js';
 import { STEPS, autoSteps, stepState, ALL_TRADES, VAT_RATES, kindLabel } from '../../lib/docs.js';
 import { makeXlsx, download } from '../../lib/xlsx.js';
-import { TopBar, SearchBar, Sec, Sheet, Field, Chips, Seg, useData, Loader, Empty, Pill, Table , Picker } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Sheet, Field, Chips, Seg, useData, Loader, Empty, Pill, Table , Picker } from '../../ui/index.jsx';
 import { KpiView } from './kpi.jsx';
 
 export function CrmHome() {
@@ -89,7 +89,7 @@ export function ProjectStatus() {
   return (
     <div className="content" style={{ maxWidth: 1300 }}>
       <TopBar title={t('Statut projet')} sub={t('{n} projets en cours', { n: enCours.length })} />
-      <SearchBar placeholder={t('Recherchez un projet, un client, une adresse')} value={q} onChange={setQ} />
+      <SearchBar placeholder={t('Recherchez un projet, un client, une adresse')} value={q} onChange={setQ} suggest={() => suggestList(all.filter((r) => r.p.client_id), { label: (r) => r.p.title || clientName(b.cm[r.p.client_id]), sub: (r) => [clientName(b.cm[r.p.client_id]), r.p.address].filter(Boolean).join(' · '), go: (r) => navigate('/pro/clients/' + r.p.client_id) })} />
       <div className="kpis" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
         <div className="kpi"><div className="l">{t('Projets en cours')}</div><div className="n">{enCours.length}</div><div className="small muted">{money0(enCours.reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
         <div className="kpi"><div className="l">{t('Devis en attente de réponse')}</div><div className="n">{all.filter((r) => r.info.waiting).length}</div><div className="small muted">{money0(all.filter((r) => r.info.waiting).reduce((s, r) => s + r.info.amount, 0))} {t('HT')}</div></div>
@@ -379,7 +379,7 @@ export function Library() {
   return (
     <div className="content">
       <TopBar title={t('Ma bibliothèque')} sub={(company.trades || []).slice(0, 2).map(t).join(' · ')} />
-      <SearchBar placeholder={t('Recherchez un produit')} value={q} onChange={setQ} />
+      <SearchBar placeholder={t('Recherchez un produit')} value={q} onChange={setQ} suggest={() => suggestList(list, { label: (i) => i.name, sub: (i) => [i.ref, i.family].filter(Boolean).join(' · '), go: (i) => navigate('/pro/crm/bibliotheque/' + i.id) })} />
       <Seg options={[['article', t('Articles · {n}', { n: items.filter((i) => i.kind === 'article').length })], ['ouvrage', t('Ouvrages · {n}', { n: items.filter((i) => i.kind === 'ouvrage').length })]]} value={tab} onChange={(v) => { setTab(v); setFam(''); }} />
       <button className="btn ghost sm mb" onClick={() => setCat(true)}><LuBookOpen /> {t('Catalogue par métier')}</button>
       {cat && <TradeCatalog items={items} onClose={() => setCat(false)} onDone={() => { setCat(false); reload(); }} />}

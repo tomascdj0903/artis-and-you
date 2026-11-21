@@ -1971,3 +1971,5 @@ Abonnement (par mois)|Subscription (per month)|Assinatura (por mês)|Abbonamento
 Inclus : {l}|Included: {l}|Incluído: {l}|Incluso: {l}
 Options (par mois)|Options (per month)|Opções (por mês)|Opzioni (al mese)
 Mise en place (une fois)|Setup (one-off)|Implementação (uma vez)|Avvio (una tantum)
+Produits|Products|Produtos|Prodotti
+Général|General|Geral|Generale

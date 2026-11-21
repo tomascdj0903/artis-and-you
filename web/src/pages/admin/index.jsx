@@ -13,7 +13,7 @@ import { t } from '../../lib/i18n.js';
 import { money, money0, date, clientName, fullName } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
 import { usePlans } from '../../lib/platform.js';
-import { TopBar, Sec, Pill, useData, Loader, Empty, Chips, Table, SearchBar } from '../../ui/index.jsx';
+import { TopBar, Sec, Pill, useData, Loader, Empty, Chips, Table, SearchBar, suggestList } from '../../ui/index.jsx';
 import { LawRefs } from '../../ui/lawref.jsx';
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 export * from './workspace.jsx';
@@ -129,7 +129,7 @@ export function AdminAccounts() {
     <div className="content">
       <TopBar title={t('Comptes')} sub={t('{n} comptes', { n: b.ps.length })} />
       <div className="row wrap mb" style={{ gap: 8 }}>
-        <div style={{ flex: 1, minWidth: 220 }}><SearchBar value={q} onChange={setQ} placeholder={t('Nom, e-mail, entreprise…')} /></div>
+        <div style={{ flex: 1, minWidth: 220 }}><SearchBar value={q} onChange={setQ} placeholder={t('Nom, e-mail, entreprise…')} suggest={() => suggestList(list, { label: (p) => [p.first_name, p.last_name].filter(Boolean).join(' ') || p.email, sub: (p) => [p.email, b.cm[p.company_id]?.name].filter(Boolean).join(' · '), go: (p) => setQ(p.email || p.last_name || '') })} /></div>
         <button className="btn ghost sm" onClick={csv}><LuDownload /> {t('Exporter (CSV)')}</button>
       </div>
       <Chips options={[['all', t('Tous')], ['artisan', t('Artisans')], ['particulier', t('Particuliers')]]} value={kind} onChange={setKind} />

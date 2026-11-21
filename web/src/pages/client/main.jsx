@@ -10,7 +10,7 @@ import { dateLong, dateShort, hm, rel, iso, addDays, date, dateTime, time } from
 import { useTrades } from '../../ui/trades.jsx';
 import { clientApptStatus } from '../../lib/docs.js';
 import { icsFile } from '../../lib/ics.js';
-import { TopBar, SearchBar, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox, ArtesaAvatar } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox, ArtesaAvatar } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
 import { planSettings, freeWindows } from '../pro/planning.jsx';
 import { MoveSheet } from '../pro/planning-rdv.jsx';
@@ -289,7 +289,7 @@ export function Appointments() {
   return (
     <div className="content">
       <TopBar back={false} title={t('Mes RDV')} />
-      <SearchBar placeholder={t('Rechercher un pro')} value={q} onChange={setQ} />
+      <SearchBar placeholder={t('Rechercher un pro')} value={q} onChange={setQ} suggest={() => suggestList(list, { label: (a) => coName(b.cm[a.company_id]) || a.title, sub: (a) => [a.title, dateShort(a.start_at)].filter(Boolean).join(' · '), go: (a) => navigate('/client/rdv/' + a.id) })} />
       {!list.length ? <Empty icon={LuCalendarPlus} text={tab === 'next' ? t('Aucun rendez-vous à venir.') : t('Aucun rendez-vous passé.')}>{tab === 'next' && <button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button>}</Empty> : (
         <div className="grid2">{list.map((a) => { const co = b.cm[a.company_id]; return (
           <Link key={a.id} to={'/client/rdv/' + a.id} className="rdvcard">
@@ -388,7 +388,7 @@ export function Messages() {
   return (
     <div className="content">
       <TopBar back={false} title={t('Messages')} />
-      <SearchBar placeholder={t('Rechercher un pro')} value={q} onChange={setQ} />
+      <SearchBar placeholder={t('Rechercher un pro')} value={q} onChange={setQ} suggest={() => suggestList(list, { label: nameOf, sub: (c) => c.last_message, go: (c) => navigate('/client/messages/' + c.id) })} />
       <Sec title={t('Conversations')} meta={t('{n} non lue', { n })} />
       {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button></Empty> : (
         <div className="list">{list.map((c) => { const co = b.cm[c.company_id]; const un = !reads[c.id] || reads[c.id] < c.last_at; return (

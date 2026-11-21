@@ -9,7 +9,7 @@ import { t } from '../../lib/i18n.js';
 import { date, rel, iso } from '../../lib/format.js';
 import { usePlatform, savePlatform, useWho } from '../../lib/platform.js';
 import { WhoBar } from './prospects.jsx';
-import { TopBar, Sec, Pill, useData, Loader, Empty, Chips, Sheet, Field, Table, SearchBar } from '../../ui/index.jsx';
+import { TopBar, Sec, Pill, useData, Loader, Empty, Chips, Sheet, Field, Table, SearchBar, suggestList } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
 export { AdminPipeline, STAGES } from './prospects.jsx';
@@ -205,7 +205,7 @@ export function AdminNotes() {
       <TopBar title={t('Notes et wiki')} sub={t('Procédures, idées, comptes rendus, partagés entre vous')} right={<button className="btn sm" onClick={() => setCur({ title: '', content: '', folder: 'Général', pinned: false })}><LuPlus /> {t('Nouvelle note')}</button>} />
       <div className="grid2" style={{ gridTemplateColumns: 'minmax(220px, 1fr) 2fr' }}>
         <div>
-          <SearchBar value={q} onChange={setQ} placeholder={t('Chercher dans les notes…')} />
+          <SearchBar value={q} onChange={setQ} placeholder={t('Chercher dans les notes…')} suggest={() => suggestList(list, { label: (x) => x.title, sub: (x) => x.folder || t('Général'), go: (x) => setCur({ ...x }) })} />
           {!list.length ? <Empty text={t('Aucune note')}>{!q && <button className="btn sm" onClick={() => setCur({ title: '', content: '', folder: 'Général', pinned: false })}><LuPlus /> {t('Nouvelle note')}</button>}</Empty> : folders.map((f) => (
             <div key={f}><Sec title={f} />
               <div className="list">{list.filter((x) => (x.folder || 'Général') === f).map((x) => (
@@ -248,7 +248,7 @@ export function AdminDrive() {
     <div className="content">
       <TopBar title={t('Fichiers partagés')} sub={t('Statuts, contrats, logos, présentations…')} right={<button className="btn sm" onClick={() => input.current?.click()}><LuUpload /> {t('Ajouter')}</button>} />
       <input ref={input} type="file" multiple hidden onChange={(e) => { if (e.target.files?.length) up([...e.target.files]); e.target.value = ''; }} />
-      <SearchBar value={q} onChange={setQ} placeholder={t('Chercher un fichier…')} />
+      <SearchBar value={q} onChange={setQ} placeholder={t('Chercher un fichier…')} suggest={() => suggestList(list, { label: (f) => f.name, sub: (f) => date(f.created_at), go: open })} />
       <Table rows={list} empty={t('Aucun fichier. Glissez-en avec « Ajouter ».')} cols={[
         { label: t('Nom'), render: (f) => <button className="link bold" onClick={() => open(f)}>{f.name}</button> },
         { label: t('Taille'), render: (f) => <span className="small">{f.size > 1048576 ? (f.size / 1048576).toFixed(1) + ' Mo' : Math.max(1, Math.round(f.size / 1024)) + ' ko'}</span> },
@@ -293,7 +293,7 @@ export function AdminSupport() {
         </button>); })}</div>}
       <Sheet open={pick} onClose={() => setPick(false)} title={t('Écrire à…')}>
         <Chips options={[['pro', t('Un pro')], ['particulier', t('Un particulier')]]} value={who} onChange={(v) => { setWhoK(v); setQ(''); }} />
-        <SearchBar value={q} onChange={setQ} placeholder={who === 'pro' ? t('Entreprise, ville, e-mail…') : t('Nom, e-mail, ville…')} />
+        <SearchBar value={q} onChange={setQ} placeholder={who === 'pro' ? t('Entreprise, ville, e-mail…') : t('Nom, e-mail, ville…')} suggest={() => suggestList(cands, { label: (x) => x.t1, sub: (x) => x.t2, go: (x) => x.go() })} />
         {!cands.length ? <Empty text={t('Personne ne correspond')} /> : <div className="list">{cands.map((x) => <button key={x.id} className="li click" onClick={x.go}><div className="grow"><div className="t1">{x.t1}</div><div className="t2">{x.t2}</div></div></button>)}</div>}
       </Sheet>
     </div>

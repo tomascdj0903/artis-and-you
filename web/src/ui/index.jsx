@@ -1,6 +1,6 @@
 // Composants d'interface partagés
 import { kbd, kbdRow } from '../lib/a11y.js';
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, Fragment } from 'react';
 import { createPortal } from 'react-dom';
 import { LuSettings, LuChevronLeft, LuChevronRight, LuSlidersHorizontal, LuSearch, LuX, LuCamera, LuInbox } from 'react-icons/lu';
 import { navigate, Link } from '../lib/router.jsx';
@@ -63,24 +63,81 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
 
 // Barre de recherche avec dictée : une phrase dictée qui est un ordre (« ouvre la fiche de Rossi »,
 // « fais un devis pour Faure ») est exécutée par l'assistant ; sinon elle sert de recherche.
-export function SearchBar({ placeholder, value, onChange, onFilter, filterActive, onSubmit, onFocus, onBlur }) {
+// Recherche : sans accents ni majuscules, les résultats qui commencent par le texte tapé passent avant ceux qui le contiennent
+const snorm = (x) => String(x ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+// Propositions sous une barre de recherche (comme Doctolib) à partir d'une liste déjà chargée :
+// suggestFrom(clients, q, { label: clientName, sub: (c) => c.city, go: (c) => navigate('/pro/clients/' + c.id), icon: LuUser, group: 'Clients' })
+export function suggestFrom(list, q, { label, sub, go, icon, group, max = 5, also } = {}) {
+  const n = snorm(q).trim(); if (n.length < 1 || !Array.isArray(list)) return [];
+  const out = [];
+  for (const x of list) {
+    const l = String(label(x) ?? ''), L = snorm(l), extra = snorm(also ? also(x) : '');
+    const r = L.startsWith(n) ? 0 : L.split(/[\s'’-]+/).some((w) => w.startsWith(n)) ? 1 : L.includes(n) ? 2 : extra.includes(n) ? 3 : -1;
+    if (r >= 0 && l) out.push([r, { key: (group || '') + ':' + (x.id ?? l), label: l, sub: sub ? sub(x) : '', icon, group, go: () => go(x) }]);
+  }
+  return out.sort((a, b) => a[0] - b[0]).slice(0, max).map((x) => x[1]);
+}
+
+// Propositions = premiers éléments d'une liste déjà filtrée par la page (même ordre que la liste affichée)
+export const suggestList = (list, { label, sub, go, icon, group, max = 5 } = {}) => (list || []).slice(0, max).map((x, i) => ({ key: (group || '') + ':' + (x.id ?? i), label: String(label(x) ?? ''), sub: sub ? sub(x) : '', icon, group, go: () => go(x) })).filter((x) => x.label);
+
+export function SearchBar({ placeholder, value, onChange, onFilter, filterActive, onSubmit, onFocus, onBlur, suggest }) {
   const { company, isPro } = useApp();
+  const [open, setOpen] = useState(false);
+  const [hi, setHi] = useState(-1);
+  const box = useRef(null);
+  const q = String(value || '').trim();
+  const items = suggest && open && q ? (suggest(q) || []).filter(Boolean) : [];
   const voice = async (text) => {
     if (isPro && company && text.trim().split(/\s+/).length >= 2) {
       const [{ runAction }, { nz }] = await Promise.all([import('../lib/assistant-actions.js'), import('../lib/assistant-kb.js')]);
       const act = await runAction(text, { company }).catch(() => null);
       if (act?.go && /^(ouvr|affich|montre|va |vas |aller|nouveau|nouvelle|cree|creer|fais|fait|prepare|ajoute|programme|planifie|cale|ecri)/.test(nz(text))) { navigate(act.go); return; }
     }
-    onChange(text);
+    onChange(text); setOpen(true);
   };
-  return (
+  useEffect(() => { setHi(-1); }, [q]);
+  useEffect(() => {
+    if (!suggest) return undefined;
+    const out = (e) => { if (box.current && !box.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('pointerdown', out); return () => document.removeEventListener('pointerdown', out);
+  }, [!!suggest]);
+  const pick = (it) => { setOpen(false); it.go(); };
+  const onKey = (e) => {
+    if (e.key === 'Enter') { if (items.length && hi >= 0 && items[hi]) { e.preventDefault(); pick(items[hi]); return; } setOpen(false); onSubmit?.(); return; }
+    if (!items.length) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setHi((h) => Math.min(items.length - 1, h + 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setHi((h) => Math.max(-1, h - 1)); }
+    else if (e.key === 'Escape') setOpen(false);
+  };
+  const bar = (
     <div className="searchrow">
       <label className="search">
-        <input value={value} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur} onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && onSubmit?.()} aria-label={placeholder} />
+        <input value={value} placeholder={placeholder} onFocus={(e) => { setOpen(true); onFocus?.(e); }} onBlur={onBlur} onChange={(e) => { onChange(e.target.value); setOpen(true); }} onKeyDown={onKey} aria-label={placeholder} aria-autocomplete={suggest ? 'list' : undefined} aria-expanded={suggest ? items.length > 0 : undefined} />
         <DictateButton className="link" style={{ color: '#fff' }} onText={voice} />
         {value ? <button className="link" style={{ color: '#fff' }} onClick={() => onChange('')} aria-label={t('Effacer')}><LuX /></button> : <LuSearch />}
       </label>
       {onFilter && <button className="filterbtn" onClick={onFilter} aria-label={t('Filtrer')}><LuSlidersHorizontal />{filterActive && <span className="dot" />}</button>}
+    </div>
+  );
+  if (!suggest) return bar;
+  let last = null;
+  return (
+    <div className="asg" ref={box}>
+      {bar}
+      {items.length > 0 && (
+        <div className="asg-list" role="listbox" aria-label={t('Suggestions')}>
+          {items.map((it, i) => {
+            const head = it.group && it.group !== last ? <div className="asg-h">{t(it.group)}</div> : null; last = it.group;
+            const I = it.icon;
+            return (<Fragment key={it.key}>{head}
+              <button type="button" role="option" aria-selected={hi === i} className={'asg-it' + (hi === i ? ' on' : '')} onMouseEnter={() => setHi(i)} onClick={() => pick(it)}>
+                <span className={'asg-ic' + (I ? '' : ' av')}>{I ? <I /> : String(it.label).slice(0, 1).toUpperCase()}</span>
+                <span className="grow"><b>{it.label}</b>{it.sub && <small>{it.sub}</small>}</span><LuChevronRight />
+              </button></Fragment>);
+          })}
+        </div>
+      )}
     </div>
   );
 }

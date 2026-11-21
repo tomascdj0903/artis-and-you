@@ -5,7 +5,7 @@ import { navigate, useLocation } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, date, clientName, iso } from '../../lib/format.js';
 import { statusPill, effectiveStatus, kindLabel } from '../../lib/docs.js';
-import { SearchBar, Sec, Table, StatusPill, Sheet, Chips, Field } from '../../ui/index.jsx';
+import { SearchBar, suggestList, Sec, Table, StatusPill, Sheet, Chips, Field } from '../../ui/index.jsx';
 
 // Recherche tolérante : sans accents, sans espaces ni tirets (« de 2026 1 » trouve « DE-2026-001 »)
 const norm = (s) => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -69,7 +69,7 @@ export function DocList({ docs, clients, kind, newHref, from }) {
   const total = list.reduce((s, d) => s + (d.kind === 'avoir' ? -1 : 1) * Math.abs(Number(d.totals?.ht || 0)), 0);
   return (
     <>
-      <SearchBar placeholder={isQ ? t('N°, client, objet, montant…') : t('N°, client, objet, montant…')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={chips.length > 0} />
+      <SearchBar placeholder={isQ ? t('N°, client, objet, montant…') : t('N°, client, objet, montant…')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={chips.length > 0} suggest={() => suggestList(list, { label: (d) => [d.number || kindLabel(d.kind), clientName(clients[d.client_id])].filter(Boolean).join(' · '), sub: (d) => [d.object, money(ttc(d))].filter(Boolean).join(' · '), go: (d) => navigate('/pro/documents/' + d.id + (from ? '?from=' + from : '')) })} />
       {chips.length > 0 && (
         <div className="chips" style={{ marginTop: -4 }}>
           {chips.map(([l, rm], i) => <button key={i} className="chip on" style={{ padding: '5px 12px', fontSize: 13 }} onClick={rm}>{l} <LuX /></button>)}

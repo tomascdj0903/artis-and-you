@@ -8,7 +8,7 @@ import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { clientName, dateMed, date, iso, rel } from '../../lib/format.js';
 import { DOC_TYPES, VAULT_TYPES, VAULT_REQUIRED, VAULT_FORM, addMonths, reviewPill, docTypeLabel, validity } from '../../lib/docs.js';
-import { TopBar, SearchBar, Sec, Sheet, Field, Chips, useData, Loader, Empty, Img, openFile, pickFiles, Toggle, SettingToggle, StatusPill, Pill } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Sheet, Field, Chips, useData, Loader, Empty, Img, openFile, pickFiles, Toggle, SettingToggle, StatusPill, Pill } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
 
 function useClientsWith(kind) {
@@ -31,7 +31,7 @@ function ClientFileList({ kind, title, to }) {
   return (
     <div className="content">
       <TopBar title={title} sub={t('Tous les clients')} />
-      <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={onlyWith} />
+      <SearchBar placeholder={t('Recherchez un client')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={onlyWith} suggest={() => suggestList(list, { label: clientName, sub: (c) => c.billing_city || '', go: (c) => navigate(to + c.id) })} />
       <Sec title={t('Mes clients')} meta={t('{n} clients · {m} {k}', { n: b.clients.length, m: b.total, k: kind === 'photo' ? t('photos') : t('documents') })} />
       {!list.length ? <Empty text={b.clients.length ? t('Aucun client ne correspond à votre recherche.') : t('Aucun client pour le moment.')}>{!b.clients.length && <button className="btn sm" onClick={() => navigate('/pro/clients/nouveau')}><LuPlus /> {t('Ajouter un client')}</button>}</Empty> : (
         <div className="list">{list.map((c) => (
@@ -151,7 +151,7 @@ export function OtherDocsClient({ params }) {
   return (
     <div className="content">
       <TopBar title={t('Autres docs')} sub={clientName(b.c)} />
-      <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={types.length > 0} />
+      <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={types.length > 0} suggest={() => suggestList(list, { label: (f) => f.name, sub: (f) => t(docTypeLabel(f.doc_type)), go: (f) => setEdit(f) })} />
       <Sec title={t('Documents')} meta={t('{n} documents', { n: b.files.length })} />
       {!list.length ? <Empty text={b.files.length ? t('Aucun document ne correspond.') : t('Attestations, Kbis, contrats, plans… Rangez ici les documents de ce client.')}>{!b.files.length && <button className="btn sm" onClick={() => setAdd(true)}><LuPlus /> {t('Ajouter un document')}</button>}</Empty> : <div className="list">{list.map((f) => <FileRow key={f.id} f={f} onOpen={() => setEdit(f)} extra={f.shared_with_client ? t('Partagé avec le client') : ''} />)}</div>}
       <PageFab primary={{ label: t('Ajouter un document'), onClick: () => setAdd(true) }} />
@@ -260,7 +260,7 @@ export function Vault() {
   return (
     <div className="content">
       <TopBar title={t('Mon coffre-fort')} sub={company.name} />
-      <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={f.st.length + f.types.length > 0} />
+      <SearchBar placeholder={t('Recherchez un document')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={f.st.length + f.types.length > 0} suggest={() => suggestList(shown, { label: (x) => t(x.l), sub: (x) => x.cur?.name || '', go: (x) => navigate('/pro/coffre-fort/' + x.k) })} />
       {alerts.length > 0 && <div className="alert"><LuTriangleAlert className="red-t" size={26} /><div><b>{t('{n} documents à renouveler', { n: alerts.length })}</b><div className="small">{alerts.map((x) => `${t(x.l)} ${stKey(x.cur) === 'exp' ? t('expiré') : t('expire le {d}', { d: date(x.cur.valid_until) })}`).join(' · ')}</div></div></div>}
       <Sec title={<><LuLock className="red-t" /> {t('Mes documents')}</>} meta={t('{n} documents', { n: files.length })} />
       <p className="small faint" style={{ marginTop: -6 }}><b className="req-star">*</b> {t('document obligatoire pour exercer (à présenter sur demande d’un client ou d’un donneur d’ordre)')}</p>
