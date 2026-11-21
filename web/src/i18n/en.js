@@ -3109,4 +3109,12 @@ export default {"(copie)":"(copy)",
 "Options (par mois)":"Options (per month)",
 "Mise en place (une fois)":"Setup (one-off)",
 "Produits":"Products",
-"Général":"General"};
+"Général":"General",
+"Frais de mise en place HT (€)":"Setup fee excl. VAT (€)",
+"facultatif, payés une fois":"optional, paid once",
+"{l} · mise en place":"{l} · setup",
+"Bibliothèque d’articles et d’ouvrages sur mesure":"Custom library of items and work packages",
+"Fiche Artis & You mise en forme":"Polished Artis & You profile",
+"Fiche Google":"Google Business profile",
+"Nom de domaine et e-mail pro":"Domain name and business e-mail",
+"Mise en avant de la fiche":"Featured profile"};

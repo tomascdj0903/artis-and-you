@@ -1973,3 +1973,11 @@ Options (par mois)|Options (per month)|Opções (por mês)|Opzioni (al mese)
 Mise en place (une fois)|Setup (one-off)|Implementação (uma vez)|Avvio (una tantum)
 Produits|Products|Produtos|Prodotti
 Général|General|Geral|Generale
+Frais de mise en place HT (€)|Setup fee excl. VAT (€)|Custo de implementação sem IVA (€)|Costo di attivazione IVA esclusa (€)
+facultatif, payés une fois|optional, paid once|opcional, pago uma vez|facoltativo, pagato una volta
+{l} · mise en place|{l} · setup|{l} · implementação|{l} · attivazione
+Bibliothèque d’articles et d’ouvrages sur mesure|Custom library of items and work packages|Biblioteca de artigos e trabalhos à medida|Libreria di articoli e lavorazioni su misura
+Fiche Artis & You mise en forme|Polished Artis & You profile|Ficha Artis & You formatada|Scheda Artis & You curata
+Fiche Google|Google Business profile|Ficha Google|Scheda Google
+Nom de domaine et e-mail pro|Domain name and business e-mail|Nome de domínio e e-mail profissional|Nome di dominio ed e-mail professionale
+Mise en avant de la fiche|Featured profile|Destaque da ficha|Scheda in evidenza

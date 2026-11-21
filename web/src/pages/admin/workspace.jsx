@@ -78,7 +78,7 @@ function AdminExtras() {
   const set = (i, k, v) => setList(L.map((x, j) => (j === i ? { ...x, [k]: v } : x)));
   const add = () => setList([...L, { id: 'o' + Date.now().toString(36), label: '', unit: 'forfait', price: 0, desc: '', active: true, fresh: true }]);
   const save = () => run(async () => {
-    const clean = L.map(({ fresh, ...x }) => ({ ...x, label: String(x.label || '').trim(), desc: String(x.desc || '').trim(), price: Math.max(0, Number(x.price) || 0), active: x.active !== false })).filter((x) => x.label);
+    const clean = L.map(({ fresh, ...x }) => ({ ...x, label: String(x.label || '').trim(), desc: String(x.desc || '').trim(), price: Math.max(0, Number(x.price) || 0), setup: x.unit === 'mois' ? Math.max(0, Number(x.setup) || 0) : 0, active: x.active !== false })).filter((x) => x.label);
     await savePlatform({ extras: clean }, profile.id);
     setList(null);
   }, t('Offres complémentaires enregistrées'));
@@ -90,9 +90,10 @@ function AdminExtras() {
           <div key={x.id} className={'card soft' + (x.active === false ? ' muted' : '')}>
             <Field label={t('Nom de l’offre')}><input value={x.label} autoFocus={!!x.fresh} onChange={(e) => set(i, 'label', e.target.value)} placeholder={t('ex. Paramétrage des modèles de devis')} /></Field>
             <div className="form-grid two">
-              <Field label={t('Prix HT (€)')}><input type="number" min={0} step="1" value={x.price} onChange={(e) => set(i, 'price', e.target.value)} /></Field>
+              <Field label={t('Prix HT (€)')}><input type="number" min={0} step="0.01" value={x.price} onChange={(e) => set(i, 'price', e.target.value)} /></Field>
               <Field label={t('Facturé')}><select value={x.unit} onChange={(e) => set(i, 'unit', e.target.value)}><option value="forfait">{t('une fois (forfait)')}</option><option value="mois">{t('chaque mois')}</option></select></Field>
             </div>
+            {x.unit === 'mois' && <Field label={t('Frais de mise en place HT (€)')} hint={t('facultatif, payés une fois')}><input type="number" min={0} step="0.01" value={x.setup || ''} onChange={(e) => set(i, 'setup', e.target.value)} placeholder="0" /></Field>}
             <Field label={t('Précision affichée au client')} hint={t('facultatif')}><input value={x.desc || ''} onChange={(e) => set(i, 'desc', e.target.value)} placeholder={t('ex. jusqu’à 3 sessions d’une heure')} /></Field>
             <div className="row between">
               <label className="check"><input type="checkbox" checked={x.active !== false} onChange={(e) => set(i, 'active', e.target.checked)} /><span>{t('Proposée dans la demande de devis')}</span></label>

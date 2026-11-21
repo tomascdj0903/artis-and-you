@@ -3109,4 +3109,12 @@ export default {"(copie)":"(cópia)",
 "Options (par mois)":"Opções (por mês)",
 "Mise en place (une fois)":"Implementação (uma vez)",
 "Produits":"Produtos",
-"Général":"Geral"};
+"Général":"Geral",
+"Frais de mise en place HT (€)":"Custo de implementação sem IVA (€)",
+"facultatif, payés une fois":"opcional, pago uma vez",
+"{l} · mise en place":"{l} · implementação",
+"Bibliothèque d’articles et d’ouvrages sur mesure":"Biblioteca de artigos e trabalhos à medida",
+"Fiche Artis & You mise en forme":"Ficha Artis & You formatada",
+"Fiche Google":"Ficha Google",
+"Nom de domaine et e-mail pro":"Nome de domínio e e-mail profissional",
+"Mise en avant de la fiche":"Destaque da ficha"};

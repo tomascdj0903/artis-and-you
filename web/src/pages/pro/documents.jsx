@@ -154,7 +154,7 @@ export function DocEdit({ params }) {
             item(t('Abonnement Artis & You {p}', { p: plan?.name || '' }) + (users ? ' · ' + t('{n} utilisateur(s)', { n: users }) : ''), 'mois', plan?.price),
             ...(feats.length ? [newLine('text', { label: t('Inclus : {l}', { l: feats.map((f) => t(f)).join(', ') }) })] : []),
             ...(ex.some((x) => x.unit === 'mois') ? [newLine('section', { label: t('Options (par mois)') }), ...ex.filter((x) => x.unit === 'mois').map((x) => item(t(x.label) + (x.desc ? ' · ' + x.desc : ''), 'mois', x.price))] : []),
-            ...(ex.some((x) => x.unit !== 'mois') ? [newLine('section', { label: t('Mise en place (une fois)') }), ...ex.filter((x) => x.unit !== 'mois').map((x) => item(t(x.label) + (x.desc ? ' · ' + x.desc : ''), 'forfait', x.price))] : []),
+            ...(ex.some((x) => x.unit !== 'mois' || Number(x.setup) > 0) ? [newLine('section', { label: t('Mise en place (une fois)') }), ...ex.filter((x) => x.unit !== 'mois').map((x) => item(t(x.label) + (x.desc ? ' · ' + x.desc : ''), 'forfait', x.price)), ...ex.filter((x) => x.unit === 'mois' && Number(x.setup) > 0).map((x) => item(t('{l} · mise en place', { l: t(x.label) }), 'forfait', x.setup))] : []),
           ];
         }
       }

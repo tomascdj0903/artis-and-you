@@ -3109,4 +3109,12 @@ export default {"(copie)":"(copia)",
 "Options (par mois)":"Opzioni (al mese)",
 "Mise en place (une fois)":"Avvio (una tantum)",
 "Produits":"Prodotti",
-"Général":"Generale"};
+"Général":"Generale",
+"Frais de mise en place HT (€)":"Costo di attivazione IVA esclusa (€)",
+"facultatif, payés une fois":"facoltativo, pagato una volta",
+"{l} · mise en place":"{l} · attivazione",
+"Bibliothèque d’articles et d’ouvrages sur mesure":"Libreria di articoli e lavorazioni su misura",
+"Fiche Artis & You mise en forme":"Scheda Artis & You curata",
+"Fiche Google":"Scheda Google",
+"Nom de domaine et e-mail pro":"Nome di dominio ed e-mail professionale",
+"Mise en avant de la fiche":"Scheda in evidenza"};
