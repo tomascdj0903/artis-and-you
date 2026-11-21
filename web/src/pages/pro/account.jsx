@@ -197,6 +197,8 @@ export function CompanySettings() {
           </div>
           <div className="kv"><SettingToggle label={t('Afficher mon assurance décennale')} hint={c.insurer ? t('Assureur et couverture visibles sur votre fiche (pas le n° de contrat)') : t('Renseignez d’abord votre assureur ci-contre')} checked={!!pp.show_insurance && !!c.insurer} onChange={(v) => setP({ show_insurance: v })} /></div>
           <p className="small faint">{t('Votre délai de réponse moyen et le nombre d’interventions réalisées via Artis & You s’affichent automatiquement, calculés sur votre activité réelle.')}</p>
+          <Sec title={t('Mes tarifs')} meta={t('Prix TTC affichés sur votre fiche')} />
+          <TarifsEditor value={pp.tarifs || {}} onChange={(tarifs) => setP({ tarifs })} />
           <div className="card soft"><b>{c.trade_name || c.name}</b><div className="small muted">{(c.trades || []).slice(0, 2).map(t).join(' · ')} · {c.zone || c.city}</div><p className="small">{c.description}</p></div>
           <div className="kv mt">
             <SettingToggle label={t('Visible par les particuliers')} hint={t('Votre fiche apparaît dans la recherche d’artisans')} checked={c.visible_particuliers} onChange={(v) => setC({ ...c, visible_particuliers: v })} />
@@ -471,6 +473,36 @@ export function Reviews() {
           ) : <button className="link red" onClick={() => setReply({ id: r.id, text: '' })}>{t('Répondre')}</button>}
         </div>
       ))}
+    </div>
+  );
+}
+
+// Tarifs affichés sur la fiche publique (obligation d'information des prix pour le dépannage, la réparation et l'entretien à domicile)
+export function TarifsEditor({ value, onChange }) {
+  const v = value || {};
+  const set = (k, x) => onChange({ ...v, [k]: x });
+  const num = (x) => (x === '' ? null : Math.max(0, Number(String(x).replace(',', '.')) || 0));
+  const items = v.items || [];
+  return (
+    <div className="tarifs-edit">
+      <div className="form-grid two">
+        <Field label={t('Déplacement (€ TTC)')}><input inputMode="decimal" placeholder="0" value={v.deplacement ?? ''} onChange={(e) => set('deplacement', num(e.target.value))} /></Field>
+        <Field label={t('Taux horaire main-d’œuvre (€ TTC / h)')}><input inputMode="decimal" placeholder="—" value={v.horaire ?? ''} onChange={(e) => set('horaire', num(e.target.value))} /></Field>
+        <Field label={t('Majoration de nuit (%)')}><input inputMode="numeric" placeholder="0" value={v.maj_nuit ?? ''} onChange={(e) => set('maj_nuit', num(e.target.value))} /></Field>
+        <Field label={t('Majoration week-end et jours fériés (%)')}><input inputMode="numeric" placeholder="0" value={v.maj_we ?? ''} onChange={(e) => set('maj_we', num(e.target.value))} /></Field>
+      </div>
+      <div className="kv"><SettingToggle label={t('Devis gratuit')} checked={v.devis_gratuit !== false} onChange={(x) => set('devis_gratuit', x)} /></div>
+      <div className="small bold mt mb">{t('Prestations courantes')}</div>
+      {items.map((it, i) => (
+        <div key={i} className="row tarif-row" style={{ gap: 6, marginBottom: 6 }}>
+          <input className="input grow" placeholder={t('ex. Remplacement d’un mitigeur')} value={it.label} onChange={(e) => set('items', items.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+          <input className="input" style={{ width: 110 }} inputMode="decimal" placeholder={t('Prix TTC')} value={it.price ?? ''} onChange={(e) => set('items', items.map((x, j) => (j === i ? { ...x, price: num(e.target.value) } : x)))} />
+          <button type="button" className={'chip' + (it.from ? ' on' : '')} title={t('Afficher « à partir de » devant le prix')} onClick={() => set('items', items.map((x, j) => (j === i ? { ...x, from: !x.from } : x)))}>{t('dès')}</button>
+          <button className="btn ghost sm" aria-label={t('Retirer')} onClick={() => set('items', items.filter((_, j) => j !== i))}>×</button>
+        </div>
+      ))}
+      {items.length < 12 && <button className="btn ghost sm" onClick={() => set('items', [...items, { label: '', price: null }])}>+ {t('Ajouter une prestation')}</button>}
+      <p className="small faint mt">{t('Pour le dépannage, la réparation et l’entretien à domicile, vos tarifs doivent être communiqués au client avant l’intervention (arrêté du 24 janvier 2017). Ils s’affichent sur votre fiche et avant l’envoi d’une demande. Pensez à enregistrer.')}</p>
     </div>
   );
 }

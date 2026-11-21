@@ -12,10 +12,13 @@ Deno.serve(async (req) => {
   if (req.headers.get('x-push-secret') !== p.secret) return new Response('forbidden', { status: 403 });
   if (!p.n || !p.subs?.length) return new Response('no subs');
   webpush.setVapidDetails('mailto:contact@artisandyou.fr', p.vapid_public, p.vapid_private);
-  const payload = JSON.stringify({ title: p.n.title, body: p.n.body || '', link: p.n.link || '/', tag: p.n.id });
+  // Demande urgente : priorité haute, courte durée de vie, la notification reste affichée jusqu'à ce que l'artisan la touche
+  const urgent = /^URGENT/.test(p.n.title || '');
+  const payload = JSON.stringify({ title: p.n.title, body: p.n.body || '', link: p.n.link || '/', tag: p.n.id, urgent });
+  const opts = urgent ? { TTL: 1800, urgency: 'high' as const } : { TTL: 86400 };
   let sent = 0;
   for (const s of p.subs) {
-    try { await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 86400 }); sent++; }
+    try { await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, opts); sent++; }
     catch (e) { if (e?.statusCode === 404 || e?.statusCode === 410) await db.from('push_subscriptions').delete().eq('endpoint', s.endpoint); }
   }
   return new Response(JSON.stringify({ sent }), { headers: { 'content-type': 'application/json' } });

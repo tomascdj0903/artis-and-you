@@ -422,7 +422,7 @@ export function mockBackend({ saveSession, getSession }) {
       const profile = { cover_path: pf.cover_path || null, founded_year: pf.founded_year || null, languages: pf.languages || null, team_size: db.profiles.filter((x) => x.company_id === c.id).length,
         insurer: pf.show_insurance ? c.insurer : null, insurance_coverage: pf.show_insurance ? c.insurance_coverage : null, response_minutes: null,
         jobs_done: db.appointments.filter((a) => a.company_id === c.id && ['valide', 'termine'].includes(a.status) && a.start_at < now()).length, member_since: c.created_at };
-      return { ...c, profile, is_fav: db.client_favorites.some((f) => f.user_id === me() && f.company_id === c.id), is_mine: !!mine, planning: c.settings?.planning, rating: avg(rs), distribution, reviews: rs.slice().reverse().map((r) => ({ rating: r.rating, comment: r.comment, author: r.author_label, reply: r.reply, created_at: r.created_at })), photos: db.files.filter((f) => f.company_id === c.id && f.kind === 'photo' && f.shared_with_pros).map((f) => f.path) };
+      return { ...c, profile, tarifs: pf.tarifs || null, is_fav: db.client_favorites.some((f) => f.user_id === me() && f.company_id === c.id), is_mine: !!mine, planning: c.settings?.planning, rating: avg(rs), distribution, reviews: rs.slice().reverse().map((r) => ({ rating: r.rating, comment: r.comment, author: r.author_label, reply: r.reply, created_at: r.created_at })), photos: db.files.filter((f) => f.company_id === c.id && f.kind === 'photo' && f.shared_with_pros).map((f) => f.path) };
     },
     my_artisans() {
       return db.companies.filter((c) => !c.is_platform && !c.archived_at).map((c) => {

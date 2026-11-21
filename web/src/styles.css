@@ -1633,3 +1633,15 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 .cmp tr:last-child th, .cmp tr:last-child td { border-bottom: 0; }
 .cmp .block { display: block; font-weight: 600; font-size: 12px; }
 .cmp-lines { margin: 0; padding-left: 16px; } .cmp-lines li { margin: 2px 0; }
+
+/* ── Tarifs de l'artisan ── */
+.tarifs { border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; background: var(--surface); }
+.tarifs.urgent { border-color: var(--bordeaux); }
+.tarifs svg { width: 16px; height: 16px; color: var(--bordeaux); }
+.tarifs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
+.tarifs-grid > div { display: grid; gap: 2px; padding: 8px 10px; border-radius: 12px; background: var(--bg-soft); font-size: 13px; }
+.tarifs-grid span { color: var(--text-3); }
+.tarifs-grid b { font-size: 15px; }
+.tarifs-items { list-style: none; margin: 10px 0 0; padding: 0; }
+.tarifs-items li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.tarif-row .chip { margin: 0; }

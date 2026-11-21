@@ -103,7 +103,7 @@ export function Home() {
         <div className="card" style={{ marginBottom: 12 }}>
           <div className="row" style={{ justifyContent: 'space-between' }}><b>📥 {reqs.length > 1 ? t('{n} demandes de rendez-vous à traiter', { n: reqs.length }) : t('1 demande de rendez-vous à traiter')}</b><Link to="/pro/planning" className="small bold">{t('Planning')} ›</Link></div>
           <div className="list" style={{ marginTop: 8 }}>{reqs.slice(0, 4).map((a) => (
-            <Link key={a.id} to={'/pro/planning/rdv/' + a.id} className="li click"><div className="grow"><div className="t1">{clientName(a.c) || a.contact_name} · {t(a.type)}</div><div className="t2">{dateShort(a.start_at)} {hm(a.start_at)}{a.mode === 'visio' ? ' · ' + t('Visio') : a.address ? ' · ' + a.address : ''}</div>{a.request_text && <div className="small muted ellipsis">« {a.request_text} »</div>}</div><span className="pill red-o">{t('À valider')}</span></Link>
+            <Link key={a.id} to={'/pro/planning/rdv/' + a.id} className="li click"><div className="grow"><div className="t1">{a.urgent && <span className="pill red" style={{ marginRight: 6 }}>{t('Urgent')}</span>}{clientName(a.c) || a.contact_name} · {t(a.type)}</div><div className="t2">{dateShort(a.start_at)} {hm(a.start_at)}{a.mode === 'visio' ? ' · ' + t('Visio') : a.address ? ' · ' + a.address : ''}</div>{a.request_text && <div className="small muted ellipsis">« {a.request_text} »</div>}</div><span className="pill red-o">{t('À valider')}</span></Link>
           ))}</div>
         </div>
       )}

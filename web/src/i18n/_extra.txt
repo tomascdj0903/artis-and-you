@@ -2129,3 +2129,31 @@ Pendant ces horaires, vous pouvez recevoir des demandes urgentes, même en dehor
 Horaires d’urgence à régler dans Planning › Réglages|Set your emergency hours in Planning › Settings|Defina o horário de urgência em Agenda › Definições|Imposta gli orari di emergenza in Agenda › Impostazioni
 Mêmes horaires|Same hours|Mesmo horário|Stessi orari
 Horaires à part|Separate hours|Horário próprio|Orari dedicati
+Une demande urgente vous est signalée tout de suite (notification prioritaire qui reste affichée). Sans réponse au bout de 10 minutes, vous êtes relancé ; au bout de 30 minutes, le client est invité à contacter un autre artisan.|An urgent request is flagged to you right away (priority notification that stays on screen). With no reply after 10 minutes you get a reminder; after 30 minutes the client is invited to contact another tradesperson.|Um pedido urgente é-lhe assinalado de imediato (notificação prioritária que fica no ecrã). Sem resposta ao fim de 10 minutos, recebe um lembrete; ao fim de 30 minutos, o cliente é convidado a contactar outro profissional.|Una richiesta urgente ti viene segnalata subito (notifica prioritaria che resta sullo schermo). Senza risposta dopo 10 minuti ricevi un promemoria; dopo 30 minuti il cliente è invitato a contattare un altro artigiano.
+Mes tarifs|My prices|Os meus preços|I miei prezzi
+Prix TTC affichés sur votre fiche|Prices incl. VAT shown on your profile|Preços com IVA mostrados no seu perfil|Prezzi IVA inclusa mostrati sul tuo profilo
+Déplacement (€ TTC)|Call-out fee (€ incl. VAT)|Deslocação (€ com IVA)|Uscita (€ IVA inclusa)
+Taux horaire main-d’œuvre (€ TTC / h)|Hourly labour rate (€ incl. VAT / h)|Taxa horária de mão de obra (€ com IVA / h)|Tariffa oraria manodopera (€ IVA inclusa / h)
+Majoration de nuit (%)|Night surcharge (%)|Acréscimo noturno (%)|Maggiorazione notturna (%)
+Majoration week-end et jours fériés (%)|Weekend and holiday surcharge (%)|Acréscimo de fim de semana e feriados (%)|Maggiorazione weekend e festivi (%)
+Devis gratuit|Free quote|Orçamento gratuito|Preventivo gratuito
+Prestations courantes|Common services|Serviços habituais|Prestazioni abituali
+ex. Remplacement d’un mitigeur|e.g. Mixer tap replacement|ex. Substituição de uma torneira misturadora|es. Sostituzione di un miscelatore
+Prix TTC|Price incl. VAT|Preço com IVA|Prezzo IVA inclusa
+Afficher « à partir de » devant le prix|Show “from” before the price|Mostrar «a partir de» antes do preço|Mostra «a partire da» davanti al prezzo
+dès|from|desde|da
+Ajouter une prestation|Add a service|Adicionar um serviço|Aggiungi una prestazione
+Pour le dépannage, la réparation et l’entretien à domicile, vos tarifs doivent être communiqués au client avant l’intervention (arrêté du 24 janvier 2017). Ils s’affichent sur votre fiche et avant l’envoi d’une demande. Pensez à enregistrer.|For call-outs, repairs and maintenance at home, your prices must be given to the client before the job (French order of 24 January 2017). They appear on your profile and before a request is sent. Remember to save.|Para reparações, assistência e manutenção ao domicílio, os seus preços devem ser comunicados ao cliente antes da intervenção (decreto francês de 24 de janeiro de 2017). Aparecem no seu perfil e antes do envio de um pedido. Não se esqueça de guardar.|Per interventi, riparazioni e manutenzione a domicilio, i tuoi prezzi devono essere comunicati al cliente prima dell’intervento (decreto francese del 24 gennaio 2017). Compaiono sul tuo profilo e prima dell’invio di una richiesta. Ricordati di salvare.
+Cet artisan n’a pas encore publié ses tarifs : demandez-les avant l’intervention.|This tradesperson hasn’t published prices yet: ask for them before the job.|Este profissional ainda não publicou os preços: peça-os antes da intervenção.|Questo artigiano non ha ancora pubblicato i prezzi: chiedili prima dell’intervento.
+Déplacement|Call-out|Deslocação|Uscita
+Offert|Free|Oferecido|Gratuito
+Main-d’œuvre|Labour|Mão de obra|Manodopera
+{p} / h|{p} / h|{p} / h|{p} / h
+Majoration de nuit|Night surcharge|Acréscimo noturno|Maggiorazione notturna
+Week-end et jours fériés|Weekends and holidays|Fins de semana e feriados|Weekend e festivi
+Payant|Paid|Pago|A pagamento
+Gratuit|Free|Gratuito|Gratuito
+Tarifs de l’artisan (TTC)|Tradesperson’s prices (incl. VAT)|Preços do profissional (com IVA)|Prezzi dell’artigiano (IVA inclusa)
+dès {p}|from {p}|desde {p}|da {p}
+Prix indicatifs communiqués par l’artisan. Le devis ou la note remise avant le paiement fait foi.|Indicative prices given by the tradesperson. The quote or the bill given before payment is what counts.|Preços indicativos comunicados pelo profissional. Vale o orçamento ou a nota entregue antes do pagamento.|Prezzi indicativi comunicati dall’artigiano. Fa fede il preventivo o la nota consegnata prima del pagamento.
+Tarifs|Prices|Preços|Prezzi

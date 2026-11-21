@@ -17,7 +17,7 @@ import { MoveSheet } from '../pro/planning-rdv.jsx';
 import { InfoBubble } from '../../ui/lawref.jsx';
 import { CityInput, distanceKm } from '../../ui/address.jsx';
 import { RgeBadge } from '../../ui/checks.jsx';
-import { useNextFree, dispoLabel, soonDays, EMERGENCIES } from './find.jsx';
+import { useNextFree, dispoLabel, soonDays, EMERGENCIES, TarifsBox } from './find.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
 // première phrase du besoin, coupée sur un mot (avec « … ») si elle est longue
@@ -276,6 +276,7 @@ export function ArtisanCard({ params }) {
       </div>
       {!p.is_platform && <div className="row wrap mt" style={{ gap: 8 }}><FavButton big on={isFav} onClick={flip} /></div>}
       {facts.length > 0 && <><Sec title={t('En bref')} /><div className="facts">{facts.map(([I, x], k) => <div key={k} className="fact"><I /><span>{x}</span></div>)}</div></>}
+      {!p.is_platform && <><Sec title={t('Tarifs')} /><TarifsBox tarifs={p.tarifs} /></>}
       <Sec title={t('Présentation')} />
       {p.description && <p className="wsb">{p.description}</p>}
       <RgeBadge siren={p.siren} />
@@ -377,6 +378,7 @@ export function NewRequest({ params }) {
           <div className="slots">{slots.map(([x, ok]) => <button key={+x} className={'slot' + (slot && +slot === +x ? ' on' : '')} disabled={!ok} onClick={() => setSlot(x)}>{hm(x)}</button>)}</div>
         </>
       )}
+      {(urgent || ['Dépannage', 'Entretien', 'Diagnostic'].includes(type)) && <><Sec title={t('Tarifs')} /><TarifsBox tarifs={b.p.tarifs} urgent={urgent} /></>}
       <div className="btns"><button className="btn" onClick={send} disabled={busy}>{busy ? '…' : t('Envoyer la demande')}</button></div>
     </div>
   );

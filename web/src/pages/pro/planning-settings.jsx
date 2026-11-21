@@ -6,7 +6,7 @@ import { Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { APPT_TYPES } from '../../lib/docs.js';
 import { icsFile, rrule } from '../../lib/ics.js';
-import { TopBar, Sec, Sheet, Chips, Seg, SettingToggle, Loader } from '../../ui/index.jsx';
+import { TopBar, Sec, Sheet, Chips, Seg, SettingToggle, Loader, DeviceNotif } from '../../ui/index.jsx';
 
 import { planSettings } from './planning.jsx';
 import { DUR_OPTS, fmtDur } from './planning-rdv.jsx';
@@ -68,6 +68,8 @@ export function PlanningSettings() {
             )}
           </div>
         )}
+        {s.urgence && <DeviceNotif />}
+        {s.urgence && <div className="r" style={{ display: 'block' }}><p className="small muted" style={{ margin: 0 }}>{t('Une demande urgente vous est signalée tout de suite (notification prioritaire qui reste affichée). Sans réponse au bout de 10 minutes, vous êtes relancé ; au bout de 30 minutes, le client est invité à contacter un autre artisan.')}</p></div>}
       </div>
       <Sec title={t('Types de rendez-vous proposés')} />
       <p className="small muted" style={{ marginTop: -4 }}>{t('Cochez ce que vos clients peuvent réserver en ligne, et la durée de chacun (comme sur Doctolib). Vous pouvez toujours créer tous les types vous-même.')}</p>

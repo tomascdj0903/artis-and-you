@@ -6,6 +6,7 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
 import { hm, money, date, iso, addDays } from '../../lib/format.js';
+import { LuReceiptEuro } from 'react-icons/lu';
 import { effectiveStatus } from '../../lib/docs.js';
 import { TopBar, Sec, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
@@ -106,6 +107,7 @@ export function GroupRequest() {
           <div key={c.id} className="li">
             <Avatar name={coName(c).split(' ')[0]} last={coName(c).split(' ')[1]} path={c.logo_path} />
             <div className="grow"><div className="t1">{coName(c)}</div>
+              {hasTarifs(c.tarifs) && <TarifsBox tarifs={c.tarifs} compact />}
               <div className="t2">{free[c.id] === undefined ? '…' : free[c.id]?.next_at ? t('Premier créneau libre : {d}', { d: new Date(free[c.id].next_at).toLocaleString(locale(), { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) }) : t('Pas de créneau libre sous 14 jours : il ne recevra pas cette demande')}</div></div>
             {free[c.id]?.next_at ? <LuCheck className="green-t" /> : null}
           </div>
@@ -185,6 +187,30 @@ export function CompareQuotes() {
           <p className="small faint mt">{t('Comparez aussi ce qui est inclus : un prix plus bas peut correspondre à moins de prestations. Artis & You ne recommande aucun artisan en particulier.')}</p>
         </>
       )}
+    </div>
+  );
+}
+
+// Tarifs communiqués par l'artisan (fiche, demande de dépannage, demande urgente)
+export const hasTarifs = (x) => !!x && (x.deplacement != null || x.horaire != null || (x.items || []).some((i) => i.label));
+export function TarifsBox({ tarifs, urgent, compact }) {
+  const x = tarifs || {};
+  if (!hasTarifs(x)) return compact ? null : <p className="small faint">{t('Cet artisan n’a pas encore publié ses tarifs : demandez-les avant l’intervention.')}</p>;
+  const rows = [
+    x.deplacement != null && [t('Déplacement'), x.deplacement ? money(x.deplacement) : t('Offert')],
+    x.horaire != null && [t('Main-d’œuvre'), t('{p} / h', { p: money(x.horaire) })],
+    x.maj_nuit ? [t('Majoration de nuit'), '+ ' + x.maj_nuit + ' %'] : null,
+    x.maj_we ? [t('Week-end et jours fériés'), '+ ' + x.maj_we + ' %'] : null,
+    [t('Devis'), x.devis_gratuit === false ? t('Payant') : t('Gratuit')],
+  ].filter(Boolean);
+  const items = (x.items || []).filter((i) => i.label);
+  if (compact) return <span className="small muted">{rows.slice(0, 2).map(([k, v]) => k + ' ' + v).join(' · ')}</span>;
+  return (
+    <div className={'tarifs' + (urgent ? ' urgent' : '')}>
+      <div className="row small bold" style={{ gap: 6 }}><LuReceiptEuro /> {t('Tarifs de l’artisan (TTC)')}</div>
+      <div className="tarifs-grid">{rows.map(([k, v]) => <div key={k}><span>{k}</span><b>{v}</b></div>)}</div>
+      {items.length > 0 && <ul className="tarifs-items">{items.map((i, k) => <li key={k}><span>{i.label}</span><b>{i.price != null ? (i.from ? t('dès {p}', { p: money(i.price) }) : money(i.price)) : '—'}</b></li>)}</ul>}
+      <p className="small faint" style={{ margin: '6px 0 0' }}>{t('Prix indicatifs communiqués par l’artisan. Le devis ou la note remise avant le paiement fait foi.')}</p>
     </div>
   );
 }
