@@ -2157,3 +2157,86 @@ Tarifs de l’artisan (TTC)|Tradesperson’s prices (incl. VAT)|Preços do profi
 dès {p}|from {p}|desde {p}|da {p}
 Prix indicatifs communiqués par l’artisan. Le devis ou la note remise avant le paiement fait foi.|Indicative prices given by the tradesperson. The quote or the bill given before payment is what counts.|Preços indicativos comunicados pelo profissional. Vale o orçamento ou a nota entregue antes do pagamento.|Prezzi indicativi comunicati dall’artigiano. Fa fede il preventivo o la nota consegnata prima del pagamento.
 Tarifs|Prices|Preços|Prezzi
+Photos du résultat (facultatif)|Photos of the result (optional)|Fotos do resultado (opcional)|Foto del risultato (facoltative)
+Évitez les photos où l’on voit des personnes, des plaques d’immatriculation ou votre adresse.|Avoid photos showing people, number plates or your address.|Evite fotos onde se vejam pessoas, matrículas ou a sua morada.|Evita foto in cui si vedono persone, targhe o il tuo indirizzo.
+Mes équipements|My equipment|Os meus equipamentos|I miei impianti
+Rappels d’entretien|Maintenance reminders|Lembretes de manutenção|Promemoria di manutenzione
+Ajoutez vos équipements (chaudière, clim, cheminée…) : nous vous rappelons leur entretien au bon moment.|Add your equipment (boiler, air conditioning, fireplace…): we’ll remind you when servicing is due.|Adicione os seus equipamentos (caldeira, ar condicionado, lareira…): lembramos a manutenção na altura certa.|Aggiungi i tuoi impianti (caldaia, climatizzatore, camino…): ti ricordiamo la manutenzione al momento giusto.
+À prévoir|Due soon|A prever|Da programmare
+Dernier entretien : {d}|Last service: {d}|Última manutenção: {d}|Ultima manutenzione: {d}
+Date du dernier entretien inconnue|Last service date unknown|Data da última manutenção desconhecida|Data dell’ultima manutenzione sconosciuta
+Prochain : {d}|Next: {d}|Próxima: {d}|Prossima: {d}
+Reprendre RDV avec {n}|Book again with {n}|Marcar de novo com {n}|Prenota di nuovo con {n}
+Entretien noté|Service recorded|Manutenção registada|Manutenzione registrata
+Entretien fait aujourd’hui|Serviced today|Manutenção feita hoje|Manutenzione fatta oggi
+Ajouter un équipement|Add equipment|Adicionar um equipamento|Aggiungi un impianto
+Équipement|Equipment|Equipamento|Impianto
+Installé en (année)|Installed in (year)|Instalado em (ano)|Installato nel (anno)
+Dernier entretien|Last service|Última manutenção|Ultima manutenzione
+Artisan qui s’en occupe|Tradesperson in charge|Profissional responsável|Artigiano che se ne occupa
+Équipement retiré|Equipment removed|Equipamento removido|Impianto rimosso
+Équipement enregistré|Equipment saved|Equipamento guardado|Impianto salvato
+Liste|List|Lista|Elenco
+Carte|Map|Mapa|Mappa
+Certains artisans n’ont pas encore indiqué leur zone : ils n’apparaissent que dans la liste.|Some tradespeople haven’t set their area yet: they only appear in the list.|Alguns profissionais ainda não indicaram a sua zona: só aparecem na lista.|Alcuni artigiani non hanno ancora indicato la loro zona: compaiono solo nell’elenco.
+{n} entretiens à prévoir|{n} services due|{n} manutenções a prever|{n} manutenzioni da programmare
+1 entretien à prévoir|1 service due|1 manutenção a prever|1 manutenzione da programmare
+en retard|overdue|em atraso|in ritardo
+avant le {d}|before {d}|antes de {d}|entro il {d}
+urgences|emergencies|urgências|emergenze
+Alerte active : {l}|Alert on: {l}|Alerta ativo: {l}|Avviso attivo: {l}
+Pas le bon artisan ? Soyez prévenu dès qu’un nouveau arrive.|Not the right one? Get notified when a new tradesperson joins.|Não é o profissional certo? Seja avisado quando chegar um novo.|Non è quello giusto? Ricevi un avviso quando arriva un nuovo artigiano.
+Alerte supprimée|Alert deleted|Alerta eliminado|Avviso eliminato
+Alerte créée : vous serez prévenu|Alert created: you’ll be notified|Alerta criado: será avisado|Avviso creato: riceverai una notifica
+Me prévenir|Notify me|Avisar-me|Avvisami
+Tous métiers|All trades|Todas as profissões|Tutti i mestieri
+Partout|Everywhere|Em todo o lado|Ovunque
+créée le {d}|created on {d}|criado a {d}|creato il {d}
+Je te recommande {n}, {m} à {v}, sur Artis & You :|I recommend {n}, {m} in {v}, on Artis & You:|Recomendo-te {n}, {m} em {v}, na Artis & You:|Ti consiglio {n}, {m} a {v}, su Artis & You:
+WhatsApp|WhatsApp|WhatsApp|WhatsApp
+Les avis sont vérifiés (seulement après un vrai rendez-vous, un devis signé ou une facture réglée) et relus par Artis & You avant publication.|Reviews are verified (only after a real appointment, a signed quote or a paid invoice) and checked by Artis & You before publication.|As avaliações são verificadas (só após uma marcação real, um orçamento assinado ou uma fatura paga) e revistas pela Artis & You antes da publicação.|Le recensioni sono verificate (solo dopo un vero appuntamento, un preventivo firmato o una fattura pagata) e controllate da Artis & You prima della pubblicazione.
+Commentaire du client|Client’s comment|Comentário do cliente|Commento del cliente
+Étape envoyée au client|Step sent to the client|Etapa enviada ao cliente|Fase inviata al cliente
+Étape enregistrée|Step saved|Etapa guardada|Fase salvata
+Ce client n’a pas encore de compte Artis & You : il verra les étapes dès qu’il en créera un avec son e-mail.|This client has no Artis & You account yet: they’ll see the steps as soon as they create one with their email.|Este cliente ainda não tem conta Artis & You: verá as etapas assim que criar uma com o seu e-mail.|Questo cliente non ha ancora un account Artis & You: vedrà le fasi appena ne creerà uno con la sua e-mail.
+Nouvelle étape|New step|Nova etapa|Nuova fase
+ex. Dépose de l’ancienne baignoire|e.g. Removal of the old bathtub|ex. Remoção da banheira antiga|es. Rimozione della vecchia vasca
+Ce qui a été fait, ce qui reste à faire…|What has been done, what’s left…|O que foi feito, o que falta fazer…|Cosa è stato fatto, cosa resta da fare…
+Envoyer l’étape au client|Send the step to the client|Enviar a etapa ao cliente|Invia la fase al cliente
+Étapes publiées|Published steps|Etapas publicadas|Fasi pubblicate
+Publiez chaque étape avec des photos : le client suit l’avancement et valide au fur et à mesure.|Post each step with photos: the client follows progress and approves as you go.|Publique cada etapa com fotos: o cliente acompanha o avanço e valida à medida.|Pubblica ogni fase con foto: il cliente segue l’avanzamento e convalida man mano.
+Étape validée|Step approved|Etapa validada|Fase convalidata
+Demande de reprise envoyée|Rework request sent|Pedido de correção enviado|Richiesta di ripresa inviata
+Étapes en photos|Steps in photos|Etapas em fotos|Fasi in foto
+{n} à valider|{n} to approve|{n} a validar|{n} da convalidare
+Qu’est-ce qui doit être repris ?|What needs to be redone?|O que deve ser corrigido?|Cosa va ripreso?
+Valider l’étape|Approve step|Validar etapa|Convalida la fase
+Demander une reprise|Ask for rework|Pedir correção|Chiedi una ripresa
+Suivi photos|Photo updates|Acompanhamento em fotos|Avanzamento in foto
+contributeurs OpenStreetMap|OpenStreetMap contributors|colaboradores do OpenStreetMap|collaboratori di OpenStreetMap
+Ponctualité|Punctuality|Pontualidade|Puntualità
+Propreté|Tidiness|Limpeza|Pulizia
+Respect du devis|Kept to the quote|Cumprimento do orçamento|Rispetto del preventivo
+Rapport qualité-prix|Value for money|Relação qualidade-preço|Rapporto qualità-prezzo
+À valider par le client|Awaiting client approval|A validar pelo cliente|Da convalidare dal cliente
+Validée|Approved|Validada|Convalidata
+Reprise demandée|Rework requested|Correção pedida|Ripresa richiesta
+Chaudière (gaz, fioul, bois)|Boiler (gas, oil, wood)|Caldeira (gás, gasóleo, lenha)|Caldaia (gas, gasolio, legna)
+Pompe à chaleur|Heat pump|Bomba de calor|Pompa di calore
+Climatisation|Air conditioning|Ar condicionado|Climatizzazione
+Cheminée ou poêle (ramonage)|Fireplace or stove (chimney sweeping)|Lareira ou salamandra (limpeza da chaminé)|Camino o stufa (spazzacamino)
+Chauffe-eau / ballon d’eau chaude|Water heater / hot water tank|Esquentador / cilindro de água quente|Scaldabagno / bollitore
+VMC|Mechanical ventilation|Ventilação mecânica|Ventilazione meccanica
+Piscine|Swimming pool|Piscina|Piscina
+Détecteur de fumée|Smoke detector|Detetor de fumo|Rilevatore di fumo
+Autre équipement|Other equipment|Outro equipamento|Altro impianto
+Entretien annuel obligatoire par un professionnel.|Annual servicing by a professional is mandatory.|Manutenção anual obrigatória por um profissional.|Manutenzione annuale obbligatoria da parte di un professionista.
+Entretien obligatoire au moins tous les 2 ans (4 à 70 kW, décret n° 2020-912).|Servicing required at least every 2 years (4 to 70 kW, French decree no. 2020-912).|Manutenção obrigatória pelo menos de 2 em 2 anos (4 a 70 kW, decreto francês n.º 2020-912).|Manutenzione obbligatoria almeno ogni 2 anni (da 4 a 70 kW, decreto francese n. 2020-912).
+Ramonage obligatoire, en général 1 à 2 fois par an selon le règlement sanitaire de votre département.|Chimney sweeping is mandatory, usually 1 to 2 times a year depending on your local health regulations.|Limpeza da chaminé obrigatória, geralmente 1 a 2 vezes por ano conforme o regulamento sanitário local.|Pulizia della canna fumaria obbligatoria, di solito 1 o 2 volte l’anno secondo il regolamento sanitario locale.
+Contrôle conseillé chaque année (groupe de sécurité, anode).|Yearly check recommended (safety valve, anode).|Verificação aconselhada todos os anos (grupo de segurança, ânodo).|Controllo consigliato ogni anno (gruppo di sicurezza, anodo).
+Nettoyage des bouches conseillé chaque année.|Vent cleaning recommended every year.|Limpeza das bocas aconselhada todos os anos.|Pulizia delle bocchette consigliata ogni anno.
+Révision conseillée avant chaque saison.|Service recommended before each season.|Revisão aconselhada antes de cada época.|Revisione consigliata prima di ogni stagione.
+Test et changement de pile conseillés chaque année.|Test and battery change recommended every year.|Teste e troca de pilha aconselhados todos os anos.|Test e cambio batteria consigliati ogni anno.
+Zoomer|Zoom in|Aproximar|Ingrandisci
+Dézoomer|Zoom out|Afastar|Riduci
+Aucun de ces artisans n’a encore indiqué sa zone d’intervention sur la carte.|None of these tradespeople has set their area on the map yet.|Nenhum destes profissionais indicou ainda a sua zona no mapa.|Nessuno di questi artigiani ha ancora indicato la sua zona sulla mappa.

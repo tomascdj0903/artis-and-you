@@ -14,7 +14,7 @@ import { resetTours } from '../../ui/tour.jsx';
 import { t, LANGS } from '../../lib/i18n.js';
 import { rel, dateMed, fullName, date } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
-import { TopBar, SearchBar, suggestList, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet, openFile } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet, openFile, Img } from '../../ui/index.jsx';
 import { uploadTo } from './chat.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 
@@ -407,7 +407,7 @@ export function Admin({ params }) {
       <TopBar title={t('Administration')} sub="Artis & You" />
       <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })], ['signal', t('Signalements ({n})', { n: b.reports.length })], ['identite', t('Identités ({n})', { n: b.ids.length })]]} value={tab} onChange={setTab} />
       {tab === 'identite' ? <AdminIdentities list={b.ids} leftovers={b.idLeft} reload={reload} /> : tab === 'signal' ? <AdminReports list={b.reports} cm={b.cm} reload={reload} /> : tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
-        <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>
+        <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p>{r.criteria && <div className="small muted">{Object.entries(r.criteria).map(([k, v]) => t({ ponctualite: 'Ponctualité', proprete: 'Propreté', devis: 'Respect du devis', prix: 'Rapport qualité-prix' }[k] || k) + ' ' + v + '/5').join(' · ')}</div>}{(r.photos || []).length > 0 && <div className="photos-grid sm">{r.photos.map((ph) => <Img key={ph} path={ph} />)}</div>}<div className="small muted">{r.author_label} · {date(r.created_at)}</div>
           <div className="row mt"><button className="btn xs" onClick={() => run(() => api.rpc('admin_moderate_review', { p_id: r.id, p_status: 'publie', p_reason: '' }), t('Avis publié')).then(reload)}><LuCheck /> {t('Publier')}</button><button className="btn xs ghost" onClick={() => setRevRefuse({ r, note: '' })}><LuX /> {t('Refuser')}</button></div></div>
       ))) : (
         (tab === 'siret' ? pending : b.cos).length === 0 ? <Empty text={t('Aucune entreprise en attente')} /> : (tab === 'siret' ? pending : b.cos).map((c) => {

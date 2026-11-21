@@ -1645,3 +1645,40 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 .tarifs-items { list-style: none; margin: 10px 0 0; padding: 0; }
 .tarifs-items li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 14px; }
 .tarif-row .chip { margin: 0; }
+
+/* ── Avis : critères et photos ── */
+.crit-avg { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 10px; }
+.crit-avg > div { display: grid; gap: 2px; padding: 8px 10px; border-radius: 12px; background: var(--bg-soft); font-size: 13px; }
+.crit-avg span { color: var(--text-3); }
+.crit-line { margin-bottom: 6px; }
+.crit-pick { display: grid; gap: 6px; margin: 6px 0 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 14px; }
+.starpick.sm button { font-size: 22px; padding: 0 2px; }
+.photos-grid.sm { grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
+
+/* ── Équipements du logement ── */
+.eq-list { display: grid; gap: 8px; }
+.card.eq { display: grid; gap: 4px; }
+.card.eq.late { border-color: var(--bordeaux); }
+.alert-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 4px 0 8px; padding: 8px 12px; border-radius: 14px; background: var(--bg-soft); }
+.alert-row svg { vertical-align: -2px; }
+
+/* ── Suivi de chantier en photos ── */
+.step-card { display: grid; gap: 4px; margin-bottom: 8px; }
+.step-card.envoye { border-color: #E3B341; }
+.step-card.a_revoir { border-color: var(--bordeaux); }
+.step-card .faint svg { vertical-align: -2px; }
+
+/* ── Carte OpenStreetMap ── */
+.omap { position: relative; overflow: hidden; border-radius: 18px; border: 1px solid var(--line); background: #e9e4dc; touch-action: none; cursor: grab; user-select: none; }
+.omap:active { cursor: grabbing; }
+.omap-tiles img { position: absolute; width: 256px; height: 256px; pointer-events: none; }
+.omap-pin { position: absolute; transform: translate(-50%, -100%); width: 30px; height: 38px; border: 0; padding: 0; background: none; cursor: pointer; }
+.omap-pin::before { content: ''; position: absolute; left: 3px; top: 0; width: 24px; height: 24px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--bordeaux); box-shadow: 0 2px 6px rgba(0,0,0,.3); border: 2px solid #fff; }
+.omap-pin.hi::before { background: #2E7D32; }
+.omap-pin.on::before { background: var(--marine, #4B2014); width: 28px; height: 28px; left: 1px; top: -4px; }
+.omap-pin span { position: relative; z-index: 1; display: block; color: #fff; font: 700 11px/24px var(--font, system-ui); text-align: center; width: 30px; }
+.omap-home { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #1F6F78; border: 3px solid #fff; box-shadow: 0 0 0 6px rgba(31,111,120,.25); }
+.omap-zoom { position: absolute; right: 10px; top: 10px; display: grid; gap: 4px; }
+.omap-zoom button { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: 18px; font-weight: 700; cursor: pointer; }
+.omap-attr { position: absolute; right: 6px; bottom: 4px; font-size: 10px; background: rgba(255,255,255,.85); padding: 1px 6px; border-radius: 6px; color: #333; }
+.map-pick { margin-top: 8px; }

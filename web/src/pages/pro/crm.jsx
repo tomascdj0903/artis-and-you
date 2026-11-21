@@ -2,7 +2,7 @@ import { kbd, kbdRow } from '../../lib/a11y.js';
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useState } from 'react';
 import { PageFab } from '../../ui/fab.jsx';
-import { LuBookOpen, LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuTrash2, LuCopy, LuX } from 'react-icons/lu';
+import { LuBookOpen, LuFileSpreadsheet, LuListChecks, LuChartColumn, LuLibrary, LuPlus, LuChevronRight, LuDownload, LuMail, LuTrash2, LuCopy, LuX, LuCamera } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
@@ -110,6 +110,7 @@ export function ProjectStatus() {
                 <Pill c={{ devis: 'navy-o', planifier: 'yellow', chantier: 'navy', facturer: 'red-o', encaisser: 'red', termine: 'green' }[info.phase]}>{t(PHASES.find((x) => x[0] === info.phase)[1])}</Pill>
               </div>
               <div className="progress" style={{ margin: '12px 0 4px' }}><i style={{ width: `${(info.done / STEPS.length) * 100}%` }} /></div>
+              <button className="btn ghost xs mt" onClick={() => navigate('/pro/chantiers/' + p.id)}><LuCamera /> {t('Suivi photos')}</button>
               <div className="row small muted" style={{ justifyContent: 'space-between' }}><span>{t('{n}/{m} étapes', { n: info.done, m: STEPS.length })}</span><span>{info.amount ? money0(info.amount) + ' ' + t('HT') : ''}{info.due > 0.005 ? ' · ' + t('{m} dû', { m: money0(info.due) }) : ''}</span></div>
               <div className="small faint" style={{ marginTop: 2 }}>{info.last ? t('Dernière activité : {d}', { d: date(info.last) }) : ''}</div>
               {info.next && <button className="btn sm block" style={{ marginTop: 10 }} onClick={() => go(p, info.next[1])}>{info.next[0]} <LuChevronRight /></button>}
@@ -129,7 +130,7 @@ export function ProjectStatus() {
               <thead><tr><th>{t('Client')}</th>{STEPS.map(([k, l]) => <th key={k} className="v"><span>{t(l)}</span></th>)}</tr></thead>
               <tbody>{rows.map(({ p, auto }) => (
                 <tr key={p.id}>
-                  <td><b {...kbd} style={{ cursor: 'pointer' }} onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small faint">{p.title}</div></td>
+                  <td><b {...kbd} style={{ cursor: 'pointer' }} onClick={() => p.client_id && navigate('/pro/clients/' + p.client_id)}>{clientName(b.cm[p.client_id])}</b><div className="small faint">{p.title}</div><button className="link small" onClick={() => navigate('/pro/chantiers/' + p.id)}><LuCamera /> {t('Suivi photos')}</button></td>
                   {STEPS.map(([k, l]) => { const s = stepState(p, auto, k); return <td key={k}><button className={'ck ' + (s === 'auto' ? 'auto' : s === 'man' ? 'man' : '')} onClick={() => toggle(p, auto, k)} aria-label={t(l)} title={t(l)}>✓</button></td>; })}
                 </tr>
               ))}</tbody>

@@ -2,7 +2,7 @@ import { PLANS } from './docs.js';
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['platform_settings', 'quote_requests', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', 'client_favorites', '_users'];
+const TABLES = ['platform_settings', 'quote_requests', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', 'client_favorites', 'search_alerts', 'project_steps', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
@@ -180,13 +180,14 @@ export function mockBackend({ saveSession, getSession }) {
     switch (table) {
       case 'conversations': return convOk(r);
       case 'messages': return convOk(db.conversations.find((c) => c.id === r.conversation_id));
-      case 'notifications': case 'conversation_reads': case 'client_favorites': return r.user_id === me();
+      case 'notifications': case 'conversation_reads': case 'client_favorites': case 'search_alerts': return r.user_id === me();
       case 'clients': return r.company_id === mc || r.user_id === me();
       case 'documents': return r.company_id === mc || (r.number && mine.includes(r.client_id) && approvedCo(r.company_id));
       case 'identity_checks': return r.user_id === me() || isAdmin();
       case 'admin_deals': case 'admin_deal_events': case 'admin_tasks': case 'admin_notes': case 'quote_requests': return isAdmin();
       case 'platform_settings': return true;
       case 'appointments': case 'projects': return r.company_id === mc || mine.includes(r.client_id);
+      case 'project_steps': return r.company_id === mc || mine.includes(db.projects.find((p) => p.id === r.project_id)?.client_id);
       case 'trades': return r.status === 'valide' || r.created_by === me() || isAdmin();
       case 'files': return r.company_id === mc || (r.kind === 'vault' && isAdmin()) || (mine.includes(r.client_id) && (r.shared_with_client || r.kind === 'photo')) || (r.kind === 'vault' && r.shared_with_client && r.review_status === 'valide' && db.clients.some((c) => c.user_id === me() && c.company_id === r.company_id));
       case 'payments': case 'purchases': case 'items': case 'teams': case 'company_invites': case 'network': return r.company_id === mc;
@@ -422,7 +423,8 @@ export function mockBackend({ saveSession, getSession }) {
       const profile = { cover_path: pf.cover_path || null, founded_year: pf.founded_year || null, languages: pf.languages || null, team_size: db.profiles.filter((x) => x.company_id === c.id).length,
         insurer: pf.show_insurance ? c.insurer : null, insurance_coverage: pf.show_insurance ? c.insurance_coverage : null, response_minutes: null,
         jobs_done: db.appointments.filter((a) => a.company_id === c.id && ['valide', 'termine'].includes(a.status) && a.start_at < now()).length, member_since: c.created_at };
-      return { ...c, profile, tarifs: pf.tarifs || null, is_fav: db.client_favorites.some((f) => f.user_id === me() && f.company_id === c.id), is_mine: !!mine, planning: c.settings?.planning, rating: avg(rs), distribution, reviews: rs.slice().reverse().map((r) => ({ rating: r.rating, comment: r.comment, author: r.author_label, reply: r.reply, created_at: r.created_at })), photos: db.files.filter((f) => f.company_id === c.id && f.kind === 'photo' && f.shared_with_pros).map((f) => f.path) };
+      const criteria = {}; ['ponctualite', 'proprete', 'devis', 'prix'].forEach((k) => { const v = rs.filter((r) => r.criteria?.[k]).map((r) => r.criteria[k]); if (v.length) criteria[k] = Math.round((v.reduce((a, b) => a + b, 0) / v.length) * 10) / 10; });
+      return { ...c, profile, criteria, tarifs: pf.tarifs || null, is_fav: db.client_favorites.some((f) => f.user_id === me() && f.company_id === c.id), is_mine: !!mine, planning: c.settings?.planning, rating: avg(rs), distribution, reviews: rs.slice().reverse().map((r) => ({ rating: r.rating, comment: r.comment, author: r.author_label, reply: r.reply, created_at: r.created_at, criteria: r.criteria || null, photos: r.photos || [] })), photos: db.files.filter((f) => f.company_id === c.id && f.kind === 'photo' && f.shared_with_pros).map((f) => f.path) };
     },
     my_artisans() {
       return db.companies.filter((c) => !c.is_platform && !c.archived_at).map((c) => {
@@ -438,6 +440,20 @@ export function mockBackend({ saveSession, getSession }) {
       return db.appointments.filter((a) => a.company_id === p_company && ['a_valider', 'valide'].includes(a.status) && a.start_at < p_to && a.end_at > p_from).map((a) => ({ start_at: a.start_at, end_at: a.end_at }));
     },
     ensure_client({ p_company }) { return ensureClient(p_company); },
+    add_project_step({ p_project, p_title, p_note, p_photos }) {
+      const pr = db.projects.find((p) => p.id === p_project && p.company_id === myCompany()); if (!pr) throw new Error('Chantier introuvable');
+      if (!String(p_title || '').trim()) throw new Error("Donnez un titre à l'étape.");
+      const sid = id(); db.project_steps.push({ id: sid, project_id: p_project, company_id: pr.company_id, title: p_title.trim(), note: p_note || '', photos: (p_photos || []).slice(0, 12), status: 'envoye', created_at: now() });
+      const cl = db.clients.find((c) => c.id === pr.client_id);
+      if (cl?.user_id) notify(cl.user_id, 'documents', 'Nouvelle étape de chantier', p_title, '/client/chantiers/' + p_project);
+      return sid;
+    },
+    decide_project_step({ p_id, p_ok, p_comment = '' }) {
+      const st = db.project_steps.find((x) => x.id === p_id); if (!st) throw new Error('Étape introuvable');
+      if (!p_ok && !String(p_comment).trim()) throw new Error('Expliquez ce qui doit être repris.');
+      Object.assign(st, { status: p_ok ? 'valide' : 'a_revoir', client_comment: String(p_comment).trim() || null, decided_at: now() });
+      notifyCompany(st.company_id, 'documents', p_ok ? 'Étape validée par le client' : 'Le client demande une reprise', st.title, '/pro/chantiers/' + st.project_id);
+    },
     link_my_clients() { return 0; },
     appointment_proposal_answer({ p_id, p_accept }) {
       const a = db.appointments.find((x) => x.id === p_id);
@@ -675,13 +691,13 @@ export function mockBackend({ saveSession, getSession }) {
       db.appointments.filter((a) => a.company_id === mc && a.status === 'valide' && a.end_at < now()).forEach((a) => { a.status = 'termine'; n++; });
       return n;
     },
-    post_review({ p_company, p_rating, p_comment }) {
+    post_review({ p_company, p_rating, p_comment, p_criteria = null, p_photos = [] }) {
       if (db.reviews.some((r) => r.company_id === p_company && r.author_id === me())) throw new Error('Vous avez déjà donné votre avis sur ce pro.');
       const a = db.appointments.filter((x) => x.company_id === p_company && myClientIds().includes(x.client_id) && ['valide', 'termine'].includes(x.status) && x.start_at < now()).sort((x, y) => (x.start_at < y.start_at ? 1 : -1))[0];
       const paid = db.documents.some((d) => d.company_id === p_company && myClientIds().includes(d.client_id) && ((['facture', 'acompte'].includes(d.kind) && ['payee', 'partielle'].includes(d.status)) || (d.kind === 'devis' && d.status === 'accepte')));
       if (!a && !paid) throw new Error("Un avis ne peut être donné qu'après un vrai rendez-vous ou une facture réglée.");
       const p = profile();
-      db.reviews.push({ id: id(), company_id: p_company, author_id: me(), author_label: `${p.first_name} ${(p.last_name || '').slice(0, 1)}.`, appointment_id: a?.id || null, rating: p_rating, comment: p_comment, status: 'en_attente', created_at: now() });
+      db.reviews.push({ id: id(), company_id: p_company, author_id: me(), author_label: `${p.first_name} ${(p.last_name || '').slice(0, 1)}.`, appointment_id: a?.id || null, rating: p_rating, comment: p_comment, criteria: p_criteria && Object.keys(p_criteria).length ? p_criteria : null, photos: (p_photos || []).slice(0, 6), status: 'en_attente', created_at: now() });
       notifyCompany(p_company, 'systeme', 'Nouvel avis client', p_rating + '/5', '/pro/reglages/profil-public');
     },
   };
@@ -697,6 +713,7 @@ export function mockBackend({ saveSession, getSession }) {
       const out = (many ? row : [row]).map((r) => {
         const x = { ...(defaults[table] || {}), id: id(), created_at: now(), ...r };
         if (table === 'messages' && !x.sender_id) x.sender_id = me();
+        if (table === 'search_alerts') { x.user_id = me(); x.created_at = x.created_at || now(); }
         if (table === 'client_favorites') { x.user_id = me(); if (db.client_favorites.some((f) => f.user_id === me() && f.company_id === x.company_id)) return x; }
         if (table === 'files' && !x.uploaded_by) x.uploaded_by = me();
         if (table === 'files' && !isAdmin()) { x.review_status = x.kind === 'vault' ? 'en_attente' : 'valide'; x.review_note = ''; }

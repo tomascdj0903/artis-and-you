@@ -463,11 +463,11 @@ export function Reviews() {
   return (
     <div className="content narrow">
       <TopBar title={t('Mes avis clients')} sub={pub.length ? `${avg.toFixed(1).replace('.', ',')} / 5 · ${t('{n} avis', { n: pub.length })}` : ''} />
-      <p className="small muted">{t('Les avis sont vérifiés (seulement après un vrai RDV) et relus par Artis & You avant publication.')}</p>
+      <p className="small muted">{t('Les avis sont vérifiés (seulement après un vrai rendez-vous, un devis signé ou une facture réglée) et relus par Artis & You avant publication.')}</p>
       {!list.length ? <Empty icon={LuStar} text={t('Pas encore d’avis.')} /> : list.map((r) => (
         <div key={r.id} className="card soft mb">
           <div className="row between"><Stars n={r.rating} /><Pill c={r.status === 'publie' ? 'green' : r.status === 'refuse' ? 'grey' : 'yellow'}>{t({ publie: 'Publié', en_attente: 'En relecture', refuse: 'Refusé' }[r.status])}</Pill></div>
-          <p>{r.comment}</p><div className="small muted">{r.author_label} · {date(r.created_at)}</div>
+          <p>{r.comment}</p>{r.criteria && <div className="small muted">{Object.entries(r.criteria).map(([k, v]) => t({ ponctualite: 'Ponctualité', proprete: 'Propreté', devis: 'Respect du devis', prix: 'Rapport qualité-prix' }[k] || k) + ' ' + v + '/5').join(' · ')}</div>}{(r.photos || []).length > 0 && <div className="photos-grid sm">{r.photos.map((ph) => <Img key={ph} path={ph} />)}</div>}<div className="small muted">{r.author_label} · {date(r.created_at)}</div>
           {r.reply ? <div className="notice"><b>{t('Votre réponse')} :</b> {r.reply}</div> : reply?.id === r.id ? (
             <div className="mt"><textarea className="input" value={reply.text} onChange={(e) => setReply({ ...reply, text: e.target.value })} /><button className="btn sm mt" onClick={() => run(() => api.update('reviews', { id: r.id }, { reply: reply.text }), t('Réponse publiée')).then(() => { setReply(null); reload(); })}>{t('Publier ma réponse')}</button></div>
           ) : <button className="link red" onClick={() => setReply({ id: r.id, text: '' })}>{t('Répondre')}</button>}

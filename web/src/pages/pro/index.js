@@ -9,3 +9,4 @@ export { CrmHome, ProjectStatus, CompanyKpi, Export, Library, ItemEdit } from '.
 export { Messages, Conversation, Network, NetworkAdd, ProProfile, InviteClients } from './messages.jsx';
 export { Account, Subscription, CompanySettings, TeamSettings, MemberSettings, DocSettings, QuoteSettings, InvoiceSettings, PdfSettings, NotifSettings, Integrations, Reviews } from './account.jsx';
 export { Relances } from './relances.jsx';
+export { ProjectSteps } from './chantier.jsx';

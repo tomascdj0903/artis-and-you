@@ -42,7 +42,7 @@ const PRO = [
   ['/pro/photos', L('pro', 'PhotosClients')], ['/pro/photos/:id', L('pro', 'PhotosClient')],
   ['/pro/autres-docs', L('pro', 'OtherDocsClients')], ['/pro/autres-docs/:id', L('pro', 'OtherDocsClient')],
   ['/pro/coffre-fort', L('pro', 'Vault')], ['/pro/coffre-fort/:type', L('pro', 'VaultType')],
-  ['/pro/crm', L('pro', 'CrmHome')], ['/pro/crm/statut', L('pro', 'ProjectStatus')], ['/pro/crm/kpi', L('pro', 'CompanyKpi')], ['/pro/crm/export', L('pro', 'Export')],
+  ['/pro/crm', L('pro', 'CrmHome')], ['/pro/crm/statut', L('pro', 'ProjectStatus')], ['/pro/chantiers/:id', L('pro', 'ProjectSteps')], ['/pro/crm/kpi', L('pro', 'CompanyKpi')], ['/pro/crm/export', L('pro', 'Export')],
   ['/pro/crm/bibliotheque', L('pro', 'Library')], ['/pro/crm/bibliotheque/:id', L('pro', 'ItemEdit')],
   ['/pro/messages', L('pro', 'Messages')], ['/pro/messages/:id', L('pro', 'Conversation')],
   ['/pro/reseau', L('pro', 'Network')], ['/pro/reseau/ajouter', L('pro', 'NetworkAdd')], ['/pro/reseau/inviter-clients', L('pro', 'InviteClients')], ['/pro/reseau/:id', L('pro', 'ProProfile')],
@@ -181,8 +181,13 @@ function App() {
     if (session?.recovery && path !== '/nouveau-mot-de-passe') { navigate('/nouveau-mot-de-passe', { replace: true }); return; }
     const isPublic = !!find(PUBLIC, path);
     const home = adminUser ? '/admin' : isPro ? '/pro' : '/client';
-    if ((path === '/' && (logged || navigator.userAgent.includes('Electron'))) || (!logged && !isPublic)) { navigate(logged ? home : '/connexion', { replace: true }); return; }
-    if (logged && ['/connexion', '/inscription', '/inscription/particulier', '/inscription/artisan'].includes(path) && (adminUser || path !== '/inscription/artisan')) { navigate(home, { replace: true }); return; }
+    // lien partagé (ex. fiche d'un artisan) ouvert sans être connecté : on y revient après la connexion ou l'inscription
+    if (!logged && !isPublic && path.startsWith('/client/')) { try { sessionStorage.setItem('ay-next', path + location.search); } catch {} }
+    if ((path === '/' && (logged || navigator.userAgent.includes('Electron'))) || (!logged && !isPublic)) { navigate(logged ? home : path.startsWith('/client/artisans/') ? '/inscription/particulier' : '/connexion', { replace: true }); return; }
+    if (logged && ['/connexion', '/inscription', '/inscription/particulier', '/inscription/artisan'].includes(path) && (adminUser || path !== '/inscription/artisan')) {
+      let next = null; try { next = sessionStorage.getItem('ay-next'); sessionStorage.removeItem('ay-next'); } catch {}
+      navigate(next && !isPro && !adminUser ? next : home, { replace: true }); return;
+    }
     if (logged && !adminUser && profile.kind === 'artisan' && !profile.company_id && path !== '/inscription/artisan') { navigate('/inscription/artisan', { replace: true }); return; }
     if (logged && path.startsWith('/admin') && !adminUser) { navigate(home, { replace: true }); return; }
     if (logged && adminUser && (path === '/pro' || path.startsWith('/client') || (path.startsWith('/pro') && !isPro))) { navigate('/admin', { replace: true }); return; }

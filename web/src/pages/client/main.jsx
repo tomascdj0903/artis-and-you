@@ -1,7 +1,7 @@
 import { kbd } from '../../lib/a11y.js';
 import { useState, useMemo } from 'react';
 import { ArtisanSearch } from '../../ui/suggest.jsx';
-import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck, LuHeart, LuUsers, LuLanguages, LuClock, LuHammer, LuUmbrella, LuAward, LuBadgeCheck, LuPencil, LuSiren, LuSquareCheck, LuSquare, LuX, LuScale } from 'react-icons/lu';
+import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck, LuHeart, LuUsers, LuLanguages, LuClock, LuHammer, LuUmbrella, LuAward, LuBadgeCheck, LuPencil, LuSiren, LuSquareCheck, LuSquare, LuX, LuScale, LuBellPlus, LuBellRing } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
@@ -10,7 +10,7 @@ import { dateLong, dateShort, hm, rel, iso, addDays, date, dateTime, time } from
 import { useTrades } from '../../ui/trades.jsx';
 import { clientApptStatus } from '../../lib/docs.js';
 import { icsFile } from '../../lib/ics.js';
-import { TopBar, SearchBar, suggestList, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox, ArtesaAvatar } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox, ArtesaAvatar, ShareButton, Seg } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
 import { planSettings, bookWindow } from '../pro/planning.jsx';
 import { MoveSheet } from '../pro/planning-rdv.jsx';
@@ -18,6 +18,8 @@ import { InfoBubble } from '../../ui/lawref.jsx';
 import { CityInput, distanceKm } from '../../ui/address.jsx';
 import { RgeBadge } from '../../ui/checks.jsx';
 import { useNextFree, dispoLabel, soonDays, EMERGENCIES, TarifsBox } from './find.jsx';
+import { MapView } from '../../ui/map.jsx';
+import { nextDue, dueState, eqInfo } from './docs.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
 // première phrase du besoin, coupée sur un mot (avec « … ») si elle est longue
@@ -72,6 +74,7 @@ export function Home() {
         <button className="find-act urg" onClick={() => navigate('/client/urgence')}><LuSiren /><span><b>{t('Urgence')}</b><small>{t('Fuite, panne, serrure…')}</small></span></button>
         <button className="find-act" onClick={() => navigate('/client/artisans?plusieurs=1')}><LuUsers /><span><b>{t('Demander à plusieurs')}</b><small>{t('Jusqu’à 3 artisans d’un coup')}</small></span></button>
       </div>
+      <MaintenanceDue />
       {!b ? <Loader /> : (
         <>
           <Sec title={t('Mes RDV')} to="/client/rdv" meta={t('{n} à venir', { n: b.appts.length })} />
@@ -108,6 +111,8 @@ export function Search() {
   const need = EMERGENCIES.find((e) => e[0] === query.get('besoin'));
   const [multi, setMulti] = useState([]); // artisans cochés pour une demande groupée
   const [picking, setPicking] = useState(query.get('plusieurs') === '1');
+  const [view, setView] = useState('list');
+  const [sel, setSel] = useState(null);
   // Ville choisie avec ses coordonnées : on garde les artisans dont la zone d'intervention couvre cette ville
   const [res] = useData(() => api.rpc('directory_search', { p_query: term, p_trade: trade, p_city: place ? '' : city }), [term, trade, place ? 'geo:' + place.city : city]);
   const withDist = (res || []).map((r) => ({ ...r, dist: place && r.zone_lat ? distanceKm(place, { lat: r.zone_lat, lon: r.zone_lon }) : null }));
@@ -134,6 +139,7 @@ export function Search() {
         {!urgent && <button className={'chip' + (soon ? ' on' : '')} onClick={() => setSoon(!soon)}><LuClock /> {t('Dispo sous 7 jours')}</button>}
       </div>
       {picking && <div className="notice"><span>{t('Cochez 2 ou 3 artisans, puis décrivez votre besoin une seule fois : chacun reçoit votre demande.')}</span></div>}
+      {(trade || city || urgent) && <AlertButton trade={need ? need[3] : trade} city={place?.city || city} place={place} urgent={urgent} />}
       <div className="row between wrap" style={{ margin: '4px 0 8px' }}><span className="small muted">{list?.length ? (list.length > 1 ? t('{n} artisans', { n: list.length }) : t('{n} artisan', { n: list.length })) : ''}</span>
         <InfoBubble label={t('Comment sont classés les résultats ?')} laws={['conso-L111-7', 'conso-D111-7']}>
           <p>{t('Les artisans sont affichés dans cet ordre :')}</p>
@@ -143,8 +149,14 @@ export function Search() {
           <Link to="/cgu" className="bold">{t('Lire les conditions d’utilisation')}</Link>
         </InfoBubble>
       </div>
+      {res && list.length > 0 && <div className="row" style={{ justifyContent: 'flex-end', margin: '0 0 8px' }}><div style={{ minWidth: 200 }}><Seg options={[['list', t('Liste')], ['map', t('Carte')]]} value={view} onChange={(v) => { setView(v); setSel(null); }} /></div></div>}
+      {res && list.length > 0 && view === 'map' && <>
+        <MapView center={place?.lat ? { lat: place.lat, lon: place.lon } : null} markers={list.map((a, i) => ({ id: a.id, lat: a.zone_lat, lon: a.zone_lon, label: coName(a), short: String(i + 1), hi: soonDays(nx(a)) <= 2 }))} selected={sel} onPick={(m) => setSel(m.id)} />
+        {list.every((a) => a.zone_lat == null) && <Empty text={t('Aucun de ces artisans n’a encore indiqué sa zone d’intervention sur la carte.')} />}
+        {list.some((a) => a.zone_lat == null) && <p className="small faint">{t('Certains artisans n’ont pas encore indiqué leur zone : ils n’apparaissent que dans la liste.')}</p>}
+      </>}
       {!res ? <Loader /> : !list.length ? <Empty icon={LuSearch} text={t('Aucun artisan trouvé. Essayez un autre métier ou une autre ville.')} /> : (
-        <div className="grid2">{list.map((a) => (
+        <div className="grid2">{(view === 'map' ? list.filter((a) => !sel || a.id === sel) : list).map((a) => (
           <div key={a.id} {...kbd} className={'card row findcard' + (multi.includes(a.id) ? ' picked' : '')} style={{ textAlign: 'left', background: 'var(--surface)', color: 'inherit', borderColor: a.is_mine || multi.includes(a.id) ? 'var(--bordeaux)' : 'var(--line)', borderWidth: a.is_mine || multi.includes(a.id) ? 2 : 1 }} onClick={() => (picking ? tick(a.id) : navigate('/client/artisans/' + a.id + (urgent ? '/demande?urgence=1' : '')))}>
             {picking && <span className="pick-box" aria-hidden>{multi.includes(a.id) ? <LuSquareCheck /> : <LuSquare />}</span>}
             <Avatar name={coName(a).split(' ')[0]} last={coName(a).split(' ')[1]} path={a.logo_path} src={a.is_platform ? '/favicon.svg' : undefined} size="lg" />
@@ -172,6 +184,51 @@ export function Search() {
   );
 }
 
+
+// Accueil : entretiens à prévoir dans les 30 jours (ou en retard)
+function MaintenanceDue() {
+  const { profile } = useApp();
+  const due = (profile.home?.equipments || []).map((eq) => ({ eq, d: nextDue(eq) })).filter(({ d }) => ['late', 'soon'].includes(dueState(d)));
+  if (!due.length) return null;
+  return (
+    <div className="card soft mb" {...kbd} onClick={() => navigate('/client/compte/logement')} style={{ cursor: 'pointer' }}>
+      <b>🛠 {due.length > 1 ? t('{n} entretiens à prévoir', { n: due.length }) : t('1 entretien à prévoir')}</b>
+      <div className="small muted">{due.map(({ eq, d }) => (eq.label || t(eqInfo(eq.type)[1])) + ' · ' + (dueState(d) === 'late' ? t('en retard') : t('avant le {d}', { d: date(d) }))).join(' — ')}</div>
+    </div>
+  );
+}
+
+// « Me prévenir » : alerte quand un nouvel artisan correspondant arrive (ou active les urgences)
+function AlertButton({ trade, city, place, urgent }) {
+  const { run } = useApp();
+  const [list, reload] = useData(() => api.select('search_alerts', { user_id: uid() }).catch(() => []), []);
+  const same = (list || []).find((a) => a.trade === (trade || '') && a.city.toLowerCase() === (city || '').toLowerCase() && a.urgent === !!urgent);
+  const label = [trade && t(trade), city, urgent && t('urgences')].filter(Boolean).join(' · ');
+  return (
+    <div className="alert-row">
+      {same ? <span className="small"><LuBellRing /> {t('Alerte active : {l}', { l: label })}</span> : <span className="small muted">{t('Pas le bon artisan ? Soyez prévenu dès qu’un nouveau arrive.')}</span>}
+      {same ? <button className="btn ghost xs" onClick={() => run(async () => { await api.remove('search_alerts', { id: same.id }); reload(); }, t('Alerte supprimée'))}>{t('Supprimer')}</button>
+        : <button className="btn ghost sm" onClick={() => run(async () => { await api.insert('search_alerts', { trade: trade || '', city: city || '', lat: place?.lat ?? null, lon: place?.lon ?? null, urgent: !!urgent }); reload(); }, t('Alerte créée : vous serez prévenu'))}><LuBellPlus /> {t('Me prévenir')}</button>}
+    </div>
+  );
+}
+
+function MyAlerts() {
+  const { run } = useApp();
+  const [list, reload] = useData(() => api.select('search_alerts', { user_id: uid() }, { order: 'created_at.desc' }).catch(() => []), []);
+  if (!list?.length) return null;
+  return (
+    <>
+      <Sec title={t('Mes alertes')} meta={String(list.length)} />
+      <div className="list">{list.map((a) => (
+        <div key={a.id} className="li"><LuBellRing /><div className="grow"><div className="t1">{[a.trade ? t(a.trade) : t('Tous métiers'), a.urgent && t('urgences')].filter(Boolean).join(' · ')}</div><div className="t2">{a.city || t('Partout')} · {t('créée le {d}', { d: date(a.created_at) })}</div></div>
+          <button className="btn ghost xs" onClick={() => run(async () => { await api.remove('search_alerts', { id: a.id }); reload(); }, t('Alerte supprimée'))}>{t('Supprimer')}</button></div>
+      ))}</div>
+    </>
+  );
+}
+
+export const CRITERIA = [['ponctualite', 'Ponctualité'], ['proprete', 'Propreté'], ['devis', 'Respect du devis'], ['prix', 'Rapport qualité-prix']];
 
 // ─────────────── Ma sélection (favoris) ───────────────
 export async function toggleFav(companyId, on) {
@@ -235,6 +292,7 @@ export function Selection() {
       <Sec title={t('Enregistrés')} meta={favs.length ? String(favs.length) : ''} />
       {favs.length ? <div className="grid2">{favs.map(card)}</div> : <Empty icon={LuHeart} text={t('Touchez le cœur sur la fiche d’un artisan pour le retrouver ici.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}><LuSearch /> {t('Trouver un artisan')}</button></Empty>}
       {past.length > 0 && <><Sec title={t('Déjà travaillé avec')} meta={String(past.length)} /><div className="grid2">{past.map(card)}</div></>}
+      <MyAlerts />
       <Sheet open={!!edit} onClose={() => setEdit(null)} title={t('Note personnelle')}>
         <p className="small muted">{t('Visible par vous seul. Par exemple : « devis de 1 200 € pour la salle de bain », « recommandé par un voisin ».')}</p>
         <Field label={coName(edit || {})}><textarea maxLength={300} value={edit?.note || ''} onChange={(e) => setEdit({ ...edit, note: e.target.value })} /></Field>
@@ -274,7 +332,9 @@ export function ArtisanCard({ params }) {
           <div className="grow"><h2>{coName(p)}</h2><div className="l2">{[p.trade_name && p.trade_name !== p.name ? p.name : '', p.city].filter(Boolean).join(' · ')}</div><div className="row wrap mt" style={{ gap: 6 }}>{p.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}{p.rating && <Pill c="white">★ {String(p.rating).replace('.', ',')} · {total}</Pill>}{p.is_mine && <Pill c="red">{t('Votre artisan')}</Pill>}</div></div>
         </div>
       </div>
-      {!p.is_platform && <div className="row wrap mt" style={{ gap: 8 }}><FavButton big on={isFav} onClick={flip} /></div>}
+      {!p.is_platform && <div className="row wrap mt" style={{ gap: 8 }}><FavButton big on={isFav} onClick={flip} />
+        <ShareButton className="btn ghost sm share-btn" title={coName(p)} text={t('Je te recommande {n}, {m} à {v}, sur Artis & You :', { n: coName(p), m: t((p.trades || [])[0] || ''), v: p.city || '' })} url={location.origin + '/client/artisans/' + p.id} />
+        <a className="btn ghost sm" href={'https://wa.me/?text=' + encodeURIComponent(t('Je te recommande {n}, {m} à {v}, sur Artis & You :', { n: coName(p), m: t((p.trades || [])[0] || ''), v: p.city || '' }) + ' ' + location.origin + '/client/artisans/' + p.id)} target="_blank" rel="noopener noreferrer">{t('WhatsApp')}</a></div>}
       {facts.length > 0 && <><Sec title={t('En bref')} /><div className="facts">{facts.map(([I, x], k) => <div key={k} className="fact"><I /><span>{x}</span></div>)}</div></>}
       {!p.is_platform && <><Sec title={t('Tarifs')} /><TarifsBox tarifs={p.tarifs} /></>}
       <Sec title={t('Présentation')} />
@@ -292,8 +352,11 @@ export function ArtisanCard({ params }) {
         <p>{t('Chaque avis est relu par l’équipe Artis & You avant publication (sous 48 h ouvrées). Il est refusé s’il est injurieux, hors sujet, contient des données personnelles ou en cas de conflit d’intérêts ; son auteur est informé du motif.')}</p>
         <p>{t('Les avis sont affichés du plus récent au plus ancien, avec leur date. Artis & You ne les modifie pas et ne reçoit aucune contrepartie. L’artisan peut répondre.')}</p>
       </InfoBubble></div>
+      {p.criteria && Object.keys(p.criteria).length > 0 && <div className="crit-avg">{CRITERIA.filter(([k]) => p.criteria[k] != null).map(([k, l]) => <div key={k}><span>{t(l)}</span><b><Stars n={p.criteria[k]} /> {String(p.criteria[k]).replace('.', ',')}</b></div>)}</div>}
       {!total ? <Empty icon={LuStar} text={t('Pas encore d’avis.')} /> : p.reviews.map((r, i) => (
-        <div key={i} className="card soft mb"><div className="row between"><Stars n={r.rating} /><span className="small faint">{date(r.created_at)}</span></div><p style={{ margin: '6px 0' }}>{r.comment}</p><div className="small bold red-t">{r.author}</div>{r.reply && <div className="notice small"><b>{t('Réponse de l’artisan')} :</b> {r.reply}</div>}<Link className="small faint" to={`/signaler?type=avis&id=${p.id}-${i}&url=${encodeURIComponent(location.href)}`}>{t('Signaler cet avis')}</Link></div>
+        <div key={i} className="card soft mb"><div className="row between"><Stars n={r.rating} /><span className="small faint">{date(r.created_at)}</span></div><p style={{ margin: '6px 0' }}>{r.comment}</p>
+          {r.criteria && <div className="crit-line small muted">{CRITERIA.filter(([k]) => r.criteria[k]).map(([k, l]) => t(l) + ' ' + r.criteria[k] + '/5').join(' · ')}</div>}
+          {(r.photos || []).length > 0 && <div className="photos-grid sm">{r.photos.map((ph) => <Img key={ph} path={ph} onClick={() => setBig(ph)} />)}</div>}<div className="small bold red-t">{r.author}</div>{r.reply && <div className="notice small"><b>{t('Réponse de l’artisan')} :</b> {r.reply}</div>}<Link className="small faint" to={`/signaler?type=avis&id=${p.id}-${i}&url=${encodeURIComponent(location.href)}`}>{t('Signaler cet avis')}</Link></div>
       ))}
       <p className="center mt"><Link className="small faint" to={`/signaler?type=fiche&id=${p.id}&url=${encodeURIComponent(location.href)}`}>{t('Signaler cette fiche')}</Link></p>
       <Lightbox path={big} onClose={() => setBig(null)} />

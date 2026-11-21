@@ -7,12 +7,14 @@ import { t } from '../../lib/i18n.js';
 import { money, date, dateMed, dateShort, hm, fullName } from '../../lib/format.js';
 import { DrawPad, textSignature } from '../../ui/signature.jsx';
 import { statusPill, effectiveStatus, kindLabel, clientProgress, DOC_TYPES, VAULT_TYPES, docTypeLabel } from '../../lib/docs.js';
-import { TopBar, SearchBar, suggestList, Sec, Chips, Field, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Chips, Field, SettingToggle, DeviceNotif, useData, Loader, Empty, Avatar, Pill, StatusPill, Img, Lightbox, openFile, Sheet, pickFiles } from '../../ui/index.jsx';
 import { loadDoc, DocHero, DocSections, A4Preview, exportPdf, pdfName, totalsOf } from '../common/docview.jsx';
 import { MenuRow } from '../pro/account.jsx';
 import { RetractationInfo, RetractationBox } from '../../ui/retractation.jsx';
 import { IdentityCard } from '../../ui/identity.jsx';
-import { loadMine, coName } from './main.jsx';
+import { loadMine, coName, CRITERIA } from './main.jsx';
+import { uploadTo } from '../common/chat.jsx';
+import { ClientSteps } from '../pro/chantier.jsx';
 
 export function DocumentsHome() {
   const [q, setQ] = useState('');
@@ -188,15 +190,38 @@ export function Review({ params }) {
   const { run } = useApp();
   const [n, setN] = useState(0);
   const [c, setC] = useState('');
+  const [crit, setCrit] = useState({});
+  const [photos, setPhotos] = useState([]);
+  const [busy, setBusy] = useState(false);
   const [co] = useData(() => api.rpc('directory_get', { p_id: params.id }), [params.id]);
+  const send = async () => {
+    setBusy(true);
+    try {
+      await run(async () => {
+        const ups = [];
+        for (const f of photos) ups.push((await uploadTo('u/' + uid() + '/avis', f)).path);
+        await api.rpc('post_review', { p_company: params.id, p_rating: n, p_comment: c, p_criteria: crit, p_photos: ups });
+      }, t('Merci ! Votre avis sera publié après relecture.'));
+      navigate('/client/documents', { replace: true });
+    } catch {} finally { setBusy(false); }
+  };
   if (!co) return <div className="content"><TopBar title={t('Donner mon avis')} /><Loader /></div>;
   return (
     <div className="content narrow">
       <TopBar title={t('Donner mon avis')} sub={coName(co)} />
       <div className="notice"><LuStar /><span>{t('Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.')}</span></div>
       <div className="center starpick">{[1, 2, 3, 4, 5].map((i) => <button key={i} className={i <= n ? 'on' : ''} onClick={() => setN(i)} aria-label={i + '/5'}>★</button>)}</div>
+      <div className="crit-pick">{CRITERIA.map(([k, l]) => (
+        <div key={k} className="row between"><span>{t(l)}</span><span className="starpick sm">{[1, 2, 3, 4, 5].map((i) => <button key={i} className={i <= (crit[k] || 0) ? 'on' : ''} onClick={() => setCrit({ ...crit, [k]: i })} aria-label={t(l) + ' ' + i + '/5'}>★</button>)}</span></div>
+      ))}</div>
       <Field label={t('Votre commentaire')}><textarea value={c} onChange={(e) => setC(e.target.value)} placeholder={t('Ponctualité, qualité du travail, propreté, explications…')} /></Field>
-      <button className="btn block" disabled={!n} onClick={() => run(() => api.rpc('post_review', { p_company: params.id, p_rating: n, p_comment: c }), t('Merci ! Votre avis sera publié après relecture.')).then(() => navigate('/client/documents', { replace: true }), () => {})}>{t('Publier mon avis')}</button>
+      <Sec title={t('Photos du résultat (facultatif)')} meta={photos.length + '/6'} />
+      <div className="photos-grid">
+        {photos.map((f, i) => <img key={i} src={URL.createObjectURL(f)} alt="" role="button" tabIndex={0} aria-label={t('Retirer')} onClick={() => setPhotos(photos.filter((_, j) => j !== i))} />)}
+        {photos.length < 6 && <button className="ph" style={{ border: '2px dashed var(--bordeaux)', color: 'var(--bordeaux)', fontSize: 28 }} onClick={async () => { const fs = await pickFiles({ accept: 'image/*' }); setPhotos([...photos, ...fs].slice(0, 6)); }} aria-label={t('Ajouter des photos')}>+</button>}
+      </div>
+      <p className="small faint">{t('Évitez les photos où l’on voit des personnes, des plaques d’immatriculation ou votre adresse.')}</p>
+      <button className="btn block" disabled={!n || busy} onClick={send}>{busy ? '…' : t('Publier mon avis')}</button>
     </div>
   );
 }
@@ -248,6 +273,7 @@ export function ProjectDetail({ params }) {
       <div className="card navy"><div className="small muted">{t('Où en est le chantier ?')}</div><b style={{ fontSize: 20 }}>{pr.cur >= 5 ? t('Chantier terminé') : t(pr.list[Math.max(0, pr.cur - 1)][0])}</b><div className="small muted">{pr.cur < 5 && t('Prochaine étape : {s}', { s: t(pr.list[pr.cur][0]) })}</div><div className="small muted">{coName(co)}{next ? ' · ' + t('prochain RDV {d} à {h}', { d: dateShort(next.start_at), h: hm(next.start_at) }) : ''}</div></div>
       <Sec title={t('Étapes')} />
       <div className="steps">{pr.list.map(([l], i) => <div key={l} className={'step ' + (i < pr.cur ? 'done' : i === pr.cur ? 'cur' : '')}><span className="b">{i < pr.cur ? '✓' : i + 1}</span><div><b>{t(l)}</b></div></div>)}</div>
+      <ClientSteps projectId={p.id} />
       <Sec title={t('Photos du chantier')} meta={photos ? t('{n} photos', { n: photos.length }) : ''} />
       {photos?.length ? <div className="photos-grid">{photos.map((f) => <Img key={f.id} path={f.path} onClick={() => setBig(f.path)} />)}</div> : <Empty icon={LuCamera} text={t('Pas encore de photo. Ajoutez-en depuis un chantier ou un rendez-vous.')} />}
       <div className="btns"><button className="btn" onClick={async () => { const id = await api.rpc('start_conversation', { p_company: p.company_id }); navigate('/client/messages/' + id); }}>{t("Écrire à l'artisan")}</button></div>
@@ -315,8 +341,79 @@ export function Home2() {
         <Field label={t('Statut')}><select value={h.status} onChange={(e) => setH({ ...h, status: e.target.value })}>{['Propriétaire', 'Locataire', 'Syndic / copropriété'].map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
       </div>
       <p className="small muted">{t('Ces infos aident l’artisan à préparer son intervention (TVA à taux réduit si le logement a plus de 2 ans).')}</p>
-      <button className="btn block" onClick={() => run(async () => { await api.update('profiles', { id: profile.id }, { home: h }); setProfile({ ...profile, home: h }); }, t('Logement enregistré'))}>{t('Enregistrer')}</button>
+      <button className="btn block" onClick={() => run(async () => { const nh = { ...h, equipments: profile.home?.equipments || [] }; await api.update('profiles', { id: profile.id }, { home: nh }); setProfile({ ...profile, home: nh }); }, t('Logement enregistré'))}>{t('Enregistrer')}</button>
+      <Equipments />
     </div>
+  );
+}
+
+// ─────────────── Équipements du logement et rappels d'entretien ───────────────
+// months : périodicité ; legal : obligation réglementaire (sinon simple conseil)
+export const EQUIPMENTS = [
+  ['chaudiere', 'Chaudière (gaz, fioul, bois)', 12, true, 'Plomberie et chauffage', 'Entretien annuel obligatoire par un professionnel.'],
+  ['pac', 'Pompe à chaleur', 24, true, 'Climatisation', 'Entretien obligatoire au moins tous les 2 ans (4 à 70 kW, décret n° 2020-912).'],
+  ['clim', 'Climatisation', 24, true, 'Climatisation', 'Entretien obligatoire au moins tous les 2 ans (4 à 70 kW, décret n° 2020-912).'],
+  ['cheminee', 'Cheminée ou poêle (ramonage)', 12, true, 'Ramonage', 'Ramonage obligatoire, en général 1 à 2 fois par an selon le règlement sanitaire de votre département.'],
+  ['chauffe_eau', 'Chauffe-eau / ballon d’eau chaude', 12, false, 'Plomberie et chauffage', 'Contrôle conseillé chaque année (groupe de sécurité, anode).'],
+  ['vmc', 'VMC', 12, false, 'Électricité', 'Nettoyage des bouches conseillé chaque année.'],
+  ['piscine', 'Piscine', 12, false, 'Piscine', 'Révision conseillée avant chaque saison.'],
+  ['detecteur', 'Détecteur de fumée', 12, false, '', 'Test et changement de pile conseillés chaque année.'],
+];
+export const eqInfo = (type) => EQUIPMENTS.find((e) => e[0] === type) || ['autre', 'Autre équipement', 12, false, '', ''];
+export function nextDue(eq) {
+  const [, , months] = eqInfo(eq.type);
+  const base = eq.last_service || (eq.installed ? eq.installed + '-01' : null);
+  if (!base) return null;
+  const d = new Date(base); d.setMonth(d.getMonth() + (Number(eq.months) || months)); return d;
+}
+export const dueState = (d) => (!d ? 'unknown' : d < new Date() ? 'late' : (d - Date.now()) / 864e5 <= 30 ? 'soon' : 'ok');
+
+function Equipments() {
+  const { profile, setProfile, run } = useApp();
+  const list = profile.home?.equipments || [];
+  const [edit, setEdit] = useState(null);
+  const [b] = useData(async () => loadMine(), []);
+  const artisans = b ? Object.values(b.cm).filter((co) => !co.is_platform) : [];
+  const save = (equipments, msg) => run(async () => { const home = { ...(profile.home || {}), equipments }; await api.update('profiles', { id: profile.id }, { home }); setProfile({ ...profile, home }); }, msg);
+  const today = new Date().toISOString().slice(0, 10);
+  const book = (eq) => { const [, , , , trade] = eqInfo(eq.type); if (eq.company_id) navigate('/client/artisans/' + eq.company_id + '/demande'); else navigate('/client/artisans' + (trade ? '?metier=' + encodeURIComponent(trade) : '')); };
+  return (
+    <>
+      <Sec title={t('Mes équipements')} meta={t('Rappels d’entretien')} />
+      {!list.length && <p className="small muted">{t('Ajoutez vos équipements (chaudière, clim, cheminée…) : nous vous rappelons leur entretien au bon moment.')}</p>}
+      <div className="eq-list">{list.map((eq) => {
+        const [, label, , legal, , note] = eqInfo(eq.type); const d = nextDue(eq); const st = dueState(d);
+        const co = artisans.find((a) => a.id === eq.company_id);
+        return (
+          <div key={eq.id} className={'card eq ' + st}>
+            <div className="row between"><b>{eq.label || t(label)}</b>{st !== 'unknown' && <Pill c={st === 'late' ? 'red' : st === 'soon' ? 'yellow' : 'green'}>{st === 'late' ? t('En retard') : st === 'soon' ? t('À prévoir') : t('À jour')}</Pill>}</div>
+            <div className="small muted">{eq.last_service ? t('Dernier entretien : {d}', { d: date(eq.last_service) }) : t('Date du dernier entretien inconnue')}{d ? ' · ' + t('Prochain : {d}', { d: date(d) }) : ''}{co ? ' · ' + coName(co) : ''}</div>
+            <div className="small faint">{legal ? '⚖️ ' : ''}{t(note)}</div>
+            <div className="row wrap mt" style={{ gap: 6 }}>
+              <button className="btn sm" onClick={() => book(eq)}>{co ? t('Reprendre RDV avec {n}', { n: coName(co) }) : t('Trouver un artisan')}</button>
+              <button className="btn ghost sm" onClick={() => save(list.map((x) => (x.id === eq.id ? { ...x, last_service: today } : x)), t('Entretien noté'))}>{t('Entretien fait aujourd’hui')}</button>
+              <button className="btn ghost sm" onClick={() => setEdit({ ...eq })}>{t('Modifier')}</button>
+            </div>
+          </div>
+        );
+      })}</div>
+      <button className="btn ghost block mt" onClick={() => setEdit({ id: Math.random().toString(36).slice(2, 10), type: 'chaudiere', installed: '', last_service: '', company_id: '' })}>+ {t('Ajouter un équipement')}</button>
+      <Sheet open={!!edit} onClose={() => setEdit(null)} title={t('Équipement')}>
+        {edit && <>
+          <Field label={t('Type')}><select value={edit.type} onChange={(e) => setEdit({ ...edit, type: e.target.value })}>{EQUIPMENTS.map(([k, l]) => <option key={k} value={k}>{t(l)}</option>)}</select></Field>
+          <div className="form-grid two">
+            <Field label={t('Installé en (année)')}><input inputMode="numeric" maxLength={4} value={edit.installed || ''} onChange={(e) => setEdit({ ...edit, installed: e.target.value.replace(/\D/g, '').slice(0, 4) })} /></Field>
+            <Field label={t('Dernier entretien')}><input type="date" max={today} value={edit.last_service || ''} onChange={(e) => setEdit({ ...edit, last_service: e.target.value })} /></Field>
+          </div>
+          <Field label={t('Artisan qui s’en occupe')}><select value={edit.company_id || ''} onChange={(e) => setEdit({ ...edit, company_id: e.target.value })}><option value="">—</option>{artisans.map((a) => <option key={a.id} value={a.id}>{coName(a)}</option>)}</select></Field>
+          <p className="small faint">{t(eqInfo(edit.type)[5])}</p>
+          <div className="btns"><div className="two">
+            {list.some((x) => x.id === edit.id) ? <button className="btn ghost" onClick={() => { save(list.filter((x) => x.id !== edit.id), t('Équipement retiré')); setEdit(null); }}>{t('Supprimer')}</button> : <span />}
+            <button className="btn" onClick={() => { const eq = { ...edit, installed: edit.installed || null, last_service: edit.last_service || null, company_id: edit.company_id || null }; save(list.some((x) => x.id === eq.id) ? list.map((x) => (x.id === eq.id ? eq : x)) : [...list, eq], t('Équipement enregistré')); setEdit(null); }}>{t('Enregistrer')}</button>
+          </div></div>
+        </>}
+      </Sheet>
+    </>
   );
 }
 
