@@ -2013,3 +2013,46 @@ Nouveau créneau proposé|New time slot proposed|Novo horário proposto|Nuovo or
 Aucun pro trouvé sur Artis & You|No professional found on Artis & You|Nenhum profissional encontrado na Artis & You|Nessun professionista trovato su Artis & You
 Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.|Verified review: only after a real appointment or a paid invoice. It will be checked before publication.|Avaliação verificada: apenas após uma marcação real ou uma fatura paga. Será revista antes de ser publicada.|Recensione verificata: solo dopo un vero appuntamento o una fattura pagata. Sarà controllata prima della pubblicazione.
 Seul un client qui a eu un rendez-vous, signé un devis ou réglé une facture avec cet artisan via Artis & You peut donner un avis : chaque avis correspond à une vraie prestation.|Only a client who had an appointment, signed a quote or paid an invoice with this tradesperson through Artis & You can leave a review: each review matches a real job.|Só um cliente que teve uma marcação, assinou um orçamento ou pagou uma fatura com este profissional através da Artis & You pode deixar uma avaliação: cada avaliação corresponde a um trabalho real.|Solo un cliente che ha avuto un appuntamento, firmato un preventivo o pagato una fattura con questo artigiano tramite Artis & You può lasciare una recensione: ogni recensione corrisponde a un lavoro reale.
+Trouver|Find|Encontrar|Trova
+Ma sélection|My shortlist|A minha seleção|La mia selezione
+Retirer de ma sélection|Remove from my shortlist|Retirar da minha seleção|Rimuovi dalla mia selezione
+Ajouter à ma sélection|Add to my shortlist|Adicionar à minha seleção|Aggiungi alla mia selezione
+Dans ma sélection|In my shortlist|Na minha seleção|Nella mia selezione
+depuis {y} · {n} ans|in {y} · {n} years ago|em {y} · há {n} anos|nel {y} · {n} anni fa
+depuis {y}|in {y}|em {y}|nel {y}
+moins d’1 h|within an hour|em menos de 1 h|entro un’ora
+moins de 3 h|within 3 hours|em menos de 3 h|entro 3 ore
+dans la journée|within the day|no mesmo dia|in giornata
+sous 48 h|within 48 hours|em 48 h|entro 48 ore
+en quelques jours|within a few days|em poucos dias|in pochi giorni
+Dernier échange le {d}|Last contact on {d}|Último contacto a {d}|Ultimo contatto il {d}
+Ajouter une note|Add a note|Adicionar uma nota|Aggiungi una nota
+Vos artisans enregistrés et ceux avec qui vous avez travaillé|Saved tradespeople and those you have worked with|Os profissionais guardados e aqueles com quem já trabalhou|Gli artigiani salvati e quelli con cui hai già lavorato
+Enregistrés|Saved|Guardados|Salvati
+Touchez le cœur sur la fiche d’un artisan pour le retrouver ici.|Tap the heart on a tradesperson’s profile to find them here.|Toque no coração no perfil de um profissional para o encontrar aqui.|Tocca il cuore sul profilo di un artigiano per ritrovarlo qui.
+Déjà travaillé avec|Already worked with|Já trabalhou com|Hai già lavorato con
+Note personnelle|Personal note|Nota pessoal|Nota personale
+Visible par vous seul. Par exemple : « devis de 1 200 € pour la salle de bain », « recommandé par un voisin ».|Only visible to you. For example: “€1,200 quote for the bathroom”, “recommended by a neighbour”.|Visível só para si. Por exemplo: «orçamento de 1 200 € para a casa de banho», «recomendado por um vizinho».|Visibile solo a te. Per esempio: «preventivo di 1 200 € per il bagno», «consigliato da un vicino».
+Répond en général {d}|Usually replies {d}|Costuma responder {d}|Di solito risponde {d}
+1 intervention via Artis & You|1 job done through Artis & You|1 intervenção através da Artis & You|1 intervento tramite Artis & You
+{n} interventions via Artis & You|{n} jobs done through Artis & You|{n} intervenções através da Artis & You|{n} interventi tramite Artis & You
+Entreprise créée {d}|Business founded {d}|Empresa criada {d}|Impresa fondata {d}
+Équipe de {n} personnes|Team of {n} people|Equipa de {n} pessoas|Squadra di {n} persone
+Parle {l}|Speaks {l}|Fala {l}|Parla {l}
+Assurance décennale : {a}|10-year liability insurance: {a}|Seguro decenal: {a}|Assicurazione decennale: {a}
+Sur Artis & You depuis {d}|On Artis & You since {d}|Na Artis & You desde {d}|Su Artis & You da {d}
+En bref|At a glance|Em resumo|In breve
+Photo ajoutée : pensez à enregistrer|Photo added: remember to save|Foto adicionada: não se esqueça de guardar|Foto aggiunta: ricordati di salvare
+Ce que voient les particuliers|What homeowners see|O que os particulares veem|Ciò che vedono i privati
+Changer la photo de couverture|Change cover photo|Alterar a foto de capa|Cambia foto di copertina
+Ajouter une photo de couverture|Add a cover photo|Adicionar uma foto de capa|Aggiungi una foto di copertina
+Année de création|Year founded|Ano de criação|Anno di fondazione
+Langues parlées|Languages spoken|Línguas faladas|Lingue parlate
+Français, anglais, portugais…|French, English, Portuguese…|Francês, inglês, português…|Francese, inglese, portoghese…
+Afficher mon assurance décennale|Show my 10-year liability insurance|Mostrar o meu seguro decenal|Mostra la mia assicurazione decennale
+Assureur et couverture visibles sur votre fiche (pas le n° de contrat)|Insurer and coverage shown on your profile (not the policy number)|Seguradora e cobertura visíveis no seu perfil (não o n.º de apólice)|Assicuratore e copertura visibili sul tuo profilo (non il n° di polizza)
+Renseignez d’abord votre assureur ci-contre|Enter your insurer first|Indique primeiro a sua seguradora|Inserisci prima il tuo assicuratore
+Votre délai de réponse moyen et le nombre d’interventions réalisées via Artis & You s’affichent automatiquement, calculés sur votre activité réelle.|Your usual reply time and the number of jobs done through Artis & You are shown automatically, based on your real activity.|O seu tempo médio de resposta e o número de intervenções feitas através da Artis & You aparecem automaticamente, calculados com base na sua atividade real.|Il tuo tempo medio di risposta e il numero di interventi svolti tramite Artis & You compaiono automaticamente, calcolati sulla tua attività reale.
+Mes artisans enregistrés et habituels|My saved and regular tradespeople|Os meus profissionais guardados e habituais|I miei artigiani salvati e abituali
+Entreprise créée en {y} · {n} ans d’activité|Founded in {y} · {n} years in business|Empresa criada em {y} · {n} anos de atividade|Impresa fondata nel {y} · {n} anni di attività
+Entreprise créée en {y}|Founded in {y}|Empresa criada em {y}|Impresa fondata nel {y}

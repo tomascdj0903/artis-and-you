@@ -11,7 +11,7 @@ import { TradePicker } from '../../ui/trades.jsx';
 import { AddressFields, CityInput } from '../../ui/address.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 import { siretValid } from '../auth/index.jsx';
-import { TopBar, Sec, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, ShareButton } from '../../ui/index.jsx';
+import { TopBar, Sec, Field, Chips, Seg, Toggle, SettingToggle, DeviceNotif, Sheet, useData, Loader, Empty, Avatar, Pill, Stars, pickFiles, ShareButton, Img } from '../../ui/index.jsx';
 import { A4, useLogo } from '../common/docview.jsx';
 import { uploadTo } from '../common/chat.jsx';
 import { SignatureEditor } from '../../ui/signature.jsx';
@@ -134,6 +134,9 @@ export function CompanySettings() {
   };
   const logo = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (f) setCrop(f); };
   const saveLogo = (f) => { setCrop(null); run(async () => { const up = await uploadTo(company.id + '/logo', f); setC((x) => ({ ...x, logo_path: up.path })); await api.update('companies', { id: company.id }, { logo_path: up.path }); setCompany({ ...company, logo_path: up.path }); }, t('Logo enregistré')); };
+  const pp = c.settings?.profile || {};
+  const setP = (x) => setC((y) => ({ ...y, settings: { ...(y.settings || {}), profile: { ...(y.settings?.profile || {}), ...x } } }));
+  const cover = async () => { const [f] = await pickFiles({ accept: 'image/*', multiple: false }); if (!f) return; run(async () => { const up = await uploadTo(company.id + '/logo', f); setP({ cover_path: up.path }); }, t('Photo ajoutée : pensez à enregistrer')); };
   const km = Number(c.zone_km || 30);
   const zoneText = (city, n) => (city ? `${city} + ${n} km` : '');
   return (
@@ -182,7 +185,18 @@ export function CompanySettings() {
           {F('certifications', t('Certifications'), { placeholder: 'RGE, Qualibat, Qualifelec…' })}
           <RgeCard siren={c.siren || String(c.siret || '').slice(0, 9)} />
           <Field label={t('Présentation')}><textarea value={c.description || ''} onChange={(e) => setC({ ...c, description: e.target.value })} /></Field>
-          <Sec title={t('Profil public')} />
+          <Sec title={t('Profil public')} meta={t('Ce que voient les particuliers')} />
+          <div className="cover-edit">
+            {pp.cover_path ? <Img path={pp.cover_path} alt="" className="cover-img" /> : <div className="cover-img ph" />}
+            <div className="row" style={{ gap: 6 }}><button className="btn ghost sm" onClick={cover}><LuImage /> {pp.cover_path ? t('Changer la photo de couverture') : t('Ajouter une photo de couverture')}</button>
+              {pp.cover_path && <button className="btn ghost sm" onClick={() => setP({ cover_path: null })}>{t('Retirer')}</button>}</div>
+          </div>
+          <div className="form-grid two">
+            <Field label={t('Année de création')}><input inputMode="numeric" maxLength={4} placeholder="2012" value={pp.founded_year ?? ''} onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 4); setP({ founded_year: v ? Number(v) : null }); }} /></Field>
+            <Field label={t('Langues parlées')}><input placeholder={t('Français, anglais, portugais…')} value={(pp.languages || []).join(', ')} onChange={(e) => setP({ languages: e.target.value.split(',').map((x) => x.trim()).filter(Boolean).slice(0, 8) })} onBlur={(e) => setP({ languages: e.target.value.split(',').map((x) => x.trim()).filter(Boolean).slice(0, 8) })} /></Field>
+          </div>
+          <div className="kv"><SettingToggle label={t('Afficher mon assurance décennale')} hint={c.insurer ? t('Assureur et couverture visibles sur votre fiche (pas le n° de contrat)') : t('Renseignez d’abord votre assureur ci-contre')} checked={!!pp.show_insurance && !!c.insurer} onChange={(v) => setP({ show_insurance: v })} /></div>
+          <p className="small faint">{t('Votre délai de réponse moyen et le nombre d’interventions réalisées via Artis & You s’affichent automatiquement, calculés sur votre activité réelle.')}</p>
           <div className="card soft"><b>{c.trade_name || c.name}</b><div className="small muted">{(c.trades || []).slice(0, 2).map(t).join(' · ')} · {c.zone || c.city}</div><p className="small">{c.description}</p></div>
           <div className="kv mt">
             <SettingToggle label={t('Visible par les particuliers')} hint={t('Votre fiche apparaît dans la recherche d’artisans')} checked={c.visible_particuliers} onChange={(v) => setC({ ...c, visible_particuliers: v })} />

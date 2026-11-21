@@ -5,7 +5,7 @@ import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { useGlassTint } from './ui/glasstint.js';
 import { GlobalFab } from './ui/fab.jsx';
 import { ErrorBoundary } from './ui/errors.jsx';
-import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog, LuKanban, LuListChecks } from 'react-icons/lu';
+import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog, LuKanban, LuListChecks, LuSearch, LuHeart } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
 import { Landing } from './pages/auth/landing.jsx';
@@ -53,7 +53,7 @@ const PRO = [
   ['/pro/compte/aide', L('common', 'Help')], ['/pro/compte/apparence', L('common', 'Appearance')], ['/pro/compte/avis', L('pro', 'Reviews')], ['/pro/reglages/profil-public', L('pro', 'Reviews')],
 ];
 const CLIENT = [
-  ['/client', L('cli', 'Home')], ['/client/artisans', L('cli', 'Search')], ['/client/artisans/:id', L('cli', 'ArtisanCard')], ['/client/artisans/:id/demande', L('cli', 'NewRequest')], ['/client/demande-envoyee/:id', L('cli', 'RequestSent')],
+  ['/client', L('cli', 'Home')], ['/client/artisans', L('cli', 'Search')], ['/client/selection', L('cli', 'Selection')], ['/client/artisans/:id', L('cli', 'ArtisanCard')], ['/client/artisans/:id/demande', L('cli', 'NewRequest')], ['/client/demande-envoyee/:id', L('cli', 'RequestSent')],
   ['/client/rdv', L('cli', 'Appointments')], ['/client/rdv/:id', L('cli', 'ApptDetail')],
   ['/client/messages', L('cli', 'Messages')], ['/client/messages/:id', L('cli', 'Conversation')],
   ['/client/notifications', L('common', 'Notifications')], ['/client/admin', L('common', 'Admin')],
@@ -61,7 +61,7 @@ const CLIENT = [
   ['/client/devis/:id', L('cli', 'DocDetail')], ['/client/factures/:id', L('cli', 'DocDetail')], ['/client/devis/:id/pdf', L('cli', 'DocPdf')], ['/client/factures/:id/pdf', L('cli', 'DocPdf')],
   ['/client/factures/:id/payer', L('cli', 'Pay')], ['/client/avis/:id', L('cli', 'Review')],
   ['/client/chantiers', L('cli', 'Projects')], ['/client/chantiers/:id', L('cli', 'ProjectDetail')], ['/client/autres-docs', L('cli', 'OtherDocs')],
-  ['/client/compte', L('cli', 'Account')], ['/client/compte/profil', L('common', 'MyProfile')], ['/client/compte/logement', L('cli', 'Home2')], ['/client/compte/artisans', L('cli', 'MyArtisans')],
+  ['/client/compte', L('cli', 'Account')], ['/client/compte/profil', L('common', 'MyProfile')], ['/client/compte/logement', L('cli', 'Home2')], ['/client/compte/artisans', L('cli', 'Selection')],
   ['/client/compte/notifications', L('cli', 'NotifSettings')], ['/client/compte/donnees', L('common', 'DataPrivacy')], ['/client/compte/aide', L('common', 'Help')], ['/client/compte/apparence', L('common', 'Appearance')],
 ];
 
@@ -88,11 +88,11 @@ const ADMIN_TABS = [
   ['/admin/compta', LuCalculator, 'Comptabilité', false, true], ['/admin/comptes', LuUserCog, 'Comptes', false, true],
 ];
 const CLI_TABS = [
-  ['/client', LuHouse, 'Accueil', true], ['/client/rdv', LuCalendar, 'Mes RDV'], ['/client/messages', LuMessageSquare, 'Messages'],
-  ['/client/notifications', LuBell, 'Notifications'], ['/client/documents', LuFileText, 'Documents'],
+  ['/client', LuHouse, 'Accueil', true], ['/client/artisans', LuSearch, 'Trouver'], ['/client/rdv', LuCalendar, 'Mes RDV'], ['/client/messages', LuMessageSquare, 'Messages'],
+  ['/client/documents', LuFileText, 'Documents'], ['/client/selection', LuHeart, 'Ma sélection', false, true], ['/client/notifications', LuBell, 'Notifications', false, true],
 ];
 // Pages rattachées à un onglet sans être sous son chemin
-const ALIAS = { '/pro/photos': '/pro/documents', '/pro/autres-docs': '/pro/documents', '/pro/coffre-fort': '/pro/documents', '/client/devis': '/client/documents', '/client/factures': '/client/documents', '/client/chantiers': '/client/documents', '/client/autres-docs': '/client/documents', '/client/artisans': '/client', '/client/demande-envoyee': '/client/rdv', '/client/avis': '/client/documents' };
+const ALIAS = { '/pro/photos': '/pro/documents', '/pro/autres-docs': '/pro/documents', '/pro/coffre-fort': '/pro/documents', '/client/devis': '/client/documents', '/client/factures': '/client/documents', '/client/chantiers': '/client/documents', '/client/autres-docs': '/client/documents', '/client/selection': '/client/artisans', '/client/demande-envoyee': '/client/rdv', '/client/avis': '/client/documents' };
 
 function Shell({ tabs, children, path }) {
   const barRef = useRef(null);
@@ -102,7 +102,7 @@ function Shell({ tabs, children, path }) {
   for (const [a, b] of Object.entries(ALIAS)) if (p.startsWith(a)) p = b;
   if (/^\/pro\/clients\/[^/]+\/(factures|devis)/.test(path)) p = '/pro/documents';
   if (/^\/pro\/documents\/[^/]+/.test(path) && history.state?.from === 'client') p = '/pro/clients';
-  const active = (to, exact) => (exact ? p === to : p === to || p.startsWith(to + '/'));
+  const active = (to, exact) => (exact ? p === to : p === to || p.startsWith(to + '/') || path === to);
   const badge = (to) => (to.endsWith('/messages') ? unread.messages : to.endsWith('/notifications') ? unread.notifs : to === '/pro/planning' ? unread.rdv || 0 : 0);
   // Dans une conversation, la barre d'onglets laisse la place à la barre de saisie (comme WhatsApp)
   const hideTabs = /^\/(pro|client)\/messages\/[^/]+$|^\/pro\/clients\/[^/]+\/chat$/.test(path);

@@ -1,7 +1,7 @@
 import { kbd } from '../../lib/a11y.js';
 import { useState, useMemo } from 'react';
 import { ArtisanSearch } from '../../ui/suggest.jsx';
-import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck } from 'react-icons/lu';
+import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck, LuHeart, LuUsers, LuLanguages, LuClock, LuHammer, LuUmbrella, LuAward, LuBadgeCheck, LuPencil } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
@@ -102,10 +102,11 @@ export function Search() {
   const [res] = useData(() => api.rpc('directory_search', { p_query: term, p_trade: trade, p_city: place ? '' : city }), [term, trade, place ? 'geo:' + place.city : city]);
   const withDist = (res || []).map((r) => ({ ...r, dist: place && r.zone_lat ? distanceKm(place, { lat: r.zone_lat, lon: r.zone_lon }) : null }));
   const covers = (r) => !place || (r.dist != null ? r.dist <= (r.zone_km || 30) : (r.city + ' ' + (r.zone || '')).toLowerCase().includes(place.city.toLowerCase()));
+  const [favIds, flipFav] = useFavIds();
   const list = withDist.filter((r) => covers(r) && (!visio || r.visio) && (!good || (r.rating || 0) >= 4)).sort((a, b) => b.is_mine - a.is_mine || (a.dist ?? 999) - (b.dist ?? 999));
   return (
     <div className="content">
-      <TopBar title={t('Rechercher un artisan')} />
+      <TopBar back={false} title={t('Trouver un artisan')} right={<button className="btn ghost sm" onClick={() => navigate('/client/selection')}><LuHeart /> <span className="hide-mob">{t('Ma sélection')}</span></button>} />
       <ArtisanSearch placeholder={t('Métier, nom, besoin…')} value={q} onChange={(v) => { setQ(v); if (v.length === 0 || v.length > 2) setTerm(v); }} onSubmit={() => setTerm(q)} onFilter={() => setOpen(true)} filterActive={!!(trade || city)} />
       <div className="chips scroll">
         <button className={'chip' + (trade ? ' on' : '')} onClick={() => setOpen(true)}>{trade ? t(trade) : t('Métier')}</button>
@@ -131,7 +132,7 @@ export function Search() {
               <div className="small muted">{(a.trades || []).slice(0, 2).map(t).join(' · ')} · {a.city}{a.dist != null ? ' · ' + t('à {n} km', { n: a.dist }) : ''}</div>
               <div className="row small wrap" style={{ marginTop: 4, gap: 6 }}>{a.rating ? <span><Stars n={a.rating} /> {String(a.rating).replace('.', ',')} ({a.reviews_count})</span> : <span className="faint">{t('Nouveau')}</span>}
                 {a.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}{a.is_mine && <Pill c="red">{t('Votre artisan')}</Pill>}{a.visio && <Pill c="grey"><LuVideo /> {t('Visio')}</Pill>}</div>
-            </div><LuChevronRight />
+            </div><FavButton on={favIds.has(a.id)} onClick={() => flipFav(a.id)} />
           </button>
         ))}</div>
       )}
@@ -146,23 +147,114 @@ export function Search() {
   );
 }
 
+
+// ─────────────── Ma sélection (favoris) ───────────────
+export async function toggleFav(companyId, on) {
+  if (on) await api.insert('client_favorites', { company_id: companyId });
+  else await api.remove('client_favorites', { user_id: uid(), company_id: companyId });
+}
+function useFavIds() {
+  const [rows] = useData(() => api.select('client_favorites', { user_id: uid() }).catch(() => []), []);
+  const [over, setOver] = useState({}); // changements locaux, affichés tout de suite
+  const ids = new Set((rows || []).map((r) => r.company_id).filter((id) => over[id] !== false));
+  Object.entries(over).forEach(([id, on]) => on && ids.add(id));
+  const flip = async (id) => { const on = !ids.has(id); setOver((o) => ({ ...o, [id]: on })); try { await toggleFav(id, on); } catch { setOver((o) => ({ ...o, [id]: !on })); } };
+  return [ids, flip];
+}
+export function FavButton({ on, onClick, big }) {
+  return (
+    <button type="button" className={'favbtn' + (on ? ' on' : '') + (big ? ' big' : '')} aria-pressed={on} aria-label={on ? t('Retirer de ma sélection') : t('Ajouter à ma sélection')} title={on ? t('Retirer de ma sélection') : t('Ajouter à ma sélection')}
+      onClick={(e) => { e.stopPropagation(); e.preventDefault(); onClick(); }}>
+      <LuHeart />{big && <span>{on ? t('Dans ma sélection') : t('Ajouter à ma sélection')}</span>}
+    </button>
+  );
+}
+const ago = (y) => { const n = new Date().getFullYear() - Number(y); return n > 1 ? t('Entreprise créée en {y} · {n} ans d’activité', { y, n }) : t('Entreprise créée en {y}', { y }); };
+export const respLabel = (m) => (m == null ? '' : m < 60 ? t('moins d’1 h') : m < 180 ? t('moins de 3 h') : m < 1440 ? t('dans la journée') : m < 2880 ? t('sous 48 h') : t('en quelques jours'));
+
+export function Selection() {
+  const [data, reload] = useData(() => api.rpc('my_artisans'), []);
+  const [loc, setList] = useState(null);
+  const list = loc || data;
+  const [edit, setEdit] = useState(null);
+  const { run } = useApp();
+  if (!list) return <div className="content"><TopBar title={t('Ma sélection')} /><Loader /></div>;
+  const favs = list.filter((a) => a.is_fav), past = list.filter((a) => a.is_mine && !a.is_fav);
+  const unfav = async (a) => { setList(list.map((x) => (x.id === a.id ? { ...x, is_fav: false } : x)).filter((x) => x.is_fav || x.is_mine)); try { await toggleFav(a.id, false); } catch { reload(); } };
+  const fav = async (a) => { setList(list.map((x) => (x.id === a.id ? { ...x, is_fav: true, saved_at: new Date().toISOString() } : x))); try { await toggleFav(a.id, true); } catch { reload(); } };
+  const card = (a) => (
+    <div key={a.id} className="card row selcard" {...kbd} onClick={() => navigate('/client/artisans/' + a.id)}>
+      <Avatar name={coName(a).split(' ')[0]} last={coName(a).split(' ')[1]} path={a.logo_path} size="lg" />
+      <div className="grow">
+        <div className="bold">{coName(a)}</div>
+        <div className="small muted">{[(a.trades || []).slice(0, 2).map(t).join(' · '), a.city].filter(Boolean).join(' · ')}</div>
+        <div className="row small wrap" style={{ marginTop: 4, gap: 6 }}>
+          {a.rating ? <span><Stars n={a.rating} /> {String(a.rating).replace('.', ',')} ({a.reviews_count})</span> : <span className="faint">{t('Nouveau')}</span>}
+          {a.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}
+          {a.is_mine && <Pill c="red">{t('Votre artisan')}</Pill>}
+          {a.last_at && <span className="faint">{t('Dernier échange le {d}', { d: date(a.last_at) })}</span>}
+        </div>
+        {a.is_fav && (a.note ? <div className="small selnote" {...kbd} onClick={(e) => { e.stopPropagation(); setEdit({ ...a }); }}><LuPencil /> {a.note}</div>
+          : <button className="btn xs ghost mt" onClick={(e) => { e.stopPropagation(); setEdit({ ...a, note: '' }); }}><LuPencil /> {t('Ajouter une note')}</button>)}
+      </div>
+      <div className="selside">
+        <FavButton on={a.is_fav} onClick={() => (a.is_fav ? unfav(a) : fav(a))} />
+        <button className="favbtn" aria-label={t('Message')} title={t('Message')} onClick={async (e) => { e.stopPropagation(); const id = await api.rpc('start_conversation', { p_company: a.id }); navigate('/client/messages/' + id); }}><LuMessageSquare /></button>
+        <button className="favbtn" aria-label={t('Prendre RDV')} title={t('Prendre RDV')} onClick={(e) => { e.stopPropagation(); navigate(`/client/artisans/${a.id}/demande`); }}><LuCalendarPlus /></button>
+      </div>
+    </div>
+  );
+  return (
+    <div className="content">
+      <TopBar title={t('Ma sélection')} sub={t('Vos artisans enregistrés et ceux avec qui vous avez travaillé')} />
+      <Sec title={t('Enregistrés')} meta={favs.length ? String(favs.length) : ''} />
+      {favs.length ? <div className="grid2">{favs.map(card)}</div> : <Empty icon={LuHeart} text={t('Touchez le cœur sur la fiche d’un artisan pour le retrouver ici.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}><LuSearch /> {t('Trouver un artisan')}</button></Empty>}
+      {past.length > 0 && <><Sec title={t('Déjà travaillé avec')} meta={String(past.length)} /><div className="grid2">{past.map(card)}</div></>}
+      <Sheet open={!!edit} onClose={() => setEdit(null)} title={t('Note personnelle')}>
+        <p className="small muted">{t('Visible par vous seul. Par exemple : « devis de 1 200 € pour la salle de bain », « recommandé par un voisin ».')}</p>
+        <Field label={coName(edit || {})}><textarea maxLength={300} value={edit?.note || ''} onChange={(e) => setEdit({ ...edit, note: e.target.value })} /></Field>
+        <button className="btn block" onClick={() => run(async () => { await api.update('client_favorites', { user_id: uid(), company_id: edit.id }, { note: edit.note.trim() || null }); setList(list.map((x) => (x.id === edit.id ? { ...x, note: edit.note.trim() || null } : x))); setEdit(null); }, t('Note enregistrée'))}>{t('Enregistrer')}</button>
+      </Sheet>
+    </div>
+  );
+}
+
 export function ArtisanCard({ params }) {
   const [big, setBig] = useState(null);
   const [p] = useData(() => api.rpc('directory_get', { p_id: params.id }), [params.id]);
+  const [fav, setFav] = useState(null);
   if (!p) return <div className="content"><TopBar title={t('Artisan')} /><Loader /></div>;
   const total = Object.values(p.distribution || {}).reduce((s, n) => s + n, 0);
   const msg = async () => { const id = await api.rpc('start_conversation', { p_company: p.id }); navigate('/client/messages/' + id); };
+  const isFav = fav ?? p.is_fav;
+  const flip = async () => { const on = !isFav; setFav(on); try { await toggleFav(p.id, on); } catch { setFav(!on); } };
+  const pr = p.profile || {};
+  const facts = [
+    pr.response_minutes != null && [LuClock, t('Répond en général {d}', { d: respLabel(pr.response_minutes) })],
+    pr.jobs_done > 0 && [LuHammer, pr.jobs_done === 1 ? t('1 intervention via Artis & You') : t('{n} interventions via Artis & You', { n: pr.jobs_done })],
+    pr.founded_year && [LuBadgeCheck, ago(pr.founded_year)],
+    pr.team_size > 1 && [LuUsers, t('Équipe de {n} personnes', { n: pr.team_size })],
+    (pr.languages || []).length > 0 && [LuLanguages, t('Parle {l}', { l: pr.languages.join(', ') })],
+    p.certifications && [LuAward, p.certifications],
+    pr.insurer && [LuUmbrella, t('Assurance décennale : {a}', { a: pr.insurer }) + (pr.insurance_coverage ? ' · ' + pr.insurance_coverage : '')],
+    pr.member_since && [LuCalendarCheck, t('Sur Artis & You depuis {d}', { d: new Date(pr.member_since).toLocaleDateString(locale(), { month: 'long', year: 'numeric' }) })],
+  ].filter(Boolean);
   return (
     <div className="content narrow">
-      <TopBar title={coName(p)} sub={(p.trades || [])[0] ? t(p.trades[0]) : ''} />
-      <div className="hero row" style={{ gap: 16 }}>
-        <Avatar name={coName(p).split(' ')[0]} last={coName(p).split(' ')[1]} path={p.logo_path} src={p.is_platform ? '/favicon.svg' : undefined} size="lg" />
-        <div><h2>{coName(p)}</h2><div className="l2">{p.name} · {p.city}</div><div className="row wrap mt" style={{ gap: 6 }}>{p.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}{p.rating && <Pill c="white">★ {String(p.rating).replace('.', ',')} · {t('{n} avis', { n: total })}</Pill>}</div></div>
+      <TopBar title={coName(p)} sub={(p.trades || [])[0] ? t(p.trades[0]) : ''} right={!p.is_platform && <FavButton on={isFav} onClick={flip} />} />
+      <div className={'profile-head' + (pr.cover_path ? ' has-cover' : '')}>
+        {pr.cover_path && <Img path={pr.cover_path} alt="" className="profile-cover" onClick={() => setBig(pr.cover_path)} />}
+        <div className="hero row" style={{ gap: 16 }}>
+          <Avatar name={coName(p).split(' ')[0]} last={coName(p).split(' ')[1]} path={p.logo_path} src={p.is_platform ? '/favicon.svg' : undefined} size="lg" />
+          <div className="grow"><h2>{coName(p)}</h2><div className="l2">{[p.trade_name && p.trade_name !== p.name ? p.name : '', p.city].filter(Boolean).join(' · ')}</div><div className="row wrap mt" style={{ gap: 6 }}>{p.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}{p.rating && <Pill c="white">★ {String(p.rating).replace('.', ',')} · {total}</Pill>}{p.is_mine && <Pill c="red">{t('Votre artisan')}</Pill>}</div></div>
+        </div>
       </div>
+      {!p.is_platform && <div className="row wrap mt" style={{ gap: 8 }}><FavButton big on={isFav} onClick={flip} /></div>}
+      {facts.length > 0 && <><Sec title={t('En bref')} /><div className="facts">{facts.map(([I, x], k) => <div key={k} className="fact"><I /><span>{x}</span></div>)}</div></>}
       <Sec title={t('Présentation')} />
       {p.description && <p className="wsb">{p.description}</p>}
       <RgeBadge siren={p.siren} />
-      <KV rows={[[t('Métier'), (p.trades || []).map(t).join(', ')], [t("Zone d'intervention"), p.zone || p.city], [t('Téléphone'), p.phone, { href: p.phone && 'tel:' + p.phone }], [t('Visio possible'), p.planning?.visio !== false ? t('Oui, sur WhatsApp') : t('Non')], p.certifications && [t('Certifications'), p.certifications]]} />
+      <KV rows={[[t('Métier'), (p.trades || []).map(t).join(', ')], [t("Zone d'intervention"), p.zone || p.city], [t('Téléphone'), p.phone, { href: p.phone && 'tel:' + p.phone }], [t('Visio possible'), p.planning?.visio !== false ? t('Oui, sur WhatsApp') : t('Non')], p.website && [t('Site web'), p.website.replace(/^https?:\/\//, ''), { href: /^https?:\/\//.test(p.website) ? p.website : 'https://' + p.website }]]} />
       <div className="btns">
         <button className="btn" onClick={() => navigate(`/client/artisans/${p.id}/demande`)}>{t('Demander un RDV')}</button>
         <div className="two">{p.phone ? <a className="btn ghost" href={'tel:' + p.phone}><LuPhone /> {t('Appeler')}</a> : <span />}<button className="btn ghost" onClick={msg}><LuMessageSquare /> {t('Envoyer un message')}</button></div>

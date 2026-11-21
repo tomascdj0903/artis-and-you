@@ -2,7 +2,7 @@ import { PLANS } from './docs.js';
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['platform_settings', 'quote_requests', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', '_users'];
+const TABLES = ['platform_settings', 'quote_requests', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', 'client_favorites', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
 const today = () => new Date().toISOString().slice(0, 10);
@@ -180,7 +180,7 @@ export function mockBackend({ saveSession, getSession }) {
     switch (table) {
       case 'conversations': return convOk(r);
       case 'messages': return convOk(db.conversations.find((c) => c.id === r.conversation_id));
-      case 'notifications': case 'conversation_reads': return r.user_id === me();
+      case 'notifications': case 'conversation_reads': case 'client_favorites': return r.user_id === me();
       case 'clients': return r.company_id === mc || r.user_id === me();
       case 'documents': return r.company_id === mc || (r.number && mine.includes(r.client_id) && approvedCo(r.company_id));
       case 'identity_checks': return r.user_id === me() || isAdmin();
@@ -417,7 +417,22 @@ export function mockBackend({ saveSession, getSession }) {
       const c = db.companies.find((x) => x.id === p_id); if (!c) return null;
       const rs = reviewsOf(c.id);
       const distribution = {}; [1, 2, 3, 4, 5].forEach((s) => { distribution[s] = rs.filter((r) => r.rating === s).length; });
-      return { ...c, planning: c.settings?.planning, rating: avg(rs), distribution, reviews: rs.slice().reverse().map((r) => ({ rating: r.rating, comment: r.comment, author: r.author_label, reply: r.reply, created_at: r.created_at })), photos: db.files.filter((f) => f.company_id === c.id && f.kind === 'photo' && f.shared_with_pros).map((f) => f.path) };
+      const mine = db.clients.find((cl) => cl.company_id === c.id && cl.user_id === me());
+      const pf = c.settings?.profile || {};
+      const profile = { cover_path: pf.cover_path || null, founded_year: pf.founded_year || null, languages: pf.languages || null, team_size: db.profiles.filter((x) => x.company_id === c.id).length,
+        insurer: pf.show_insurance ? c.insurer : null, insurance_coverage: pf.show_insurance ? c.insurance_coverage : null, response_minutes: null,
+        jobs_done: db.appointments.filter((a) => a.company_id === c.id && ['valide', 'termine'].includes(a.status) && a.start_at < now()).length, member_since: c.created_at };
+      return { ...c, profile, is_fav: db.client_favorites.some((f) => f.user_id === me() && f.company_id === c.id), is_mine: !!mine, planning: c.settings?.planning, rating: avg(rs), distribution, reviews: rs.slice().reverse().map((r) => ({ rating: r.rating, comment: r.comment, author: r.author_label, reply: r.reply, created_at: r.created_at })), photos: db.files.filter((f) => f.company_id === c.id && f.kind === 'photo' && f.shared_with_pros).map((f) => f.path) };
+    },
+    my_artisans() {
+      return db.companies.filter((c) => !c.is_platform && !c.archived_at).map((c) => {
+        const f = db.client_favorites.find((x) => x.user_id === me() && x.company_id === c.id);
+        const cl = db.clients.find((x) => x.company_id === c.id && x.user_id === me());
+        if (!f && !cl) return null;
+        const rs = reviewsOf(c.id);
+        const last = [...db.appointments.filter((a) => cl && a.client_id === cl.id).map((a) => a.start_at), ...db.documents.filter((d) => cl && d.client_id === cl.id && d.number).map((d) => d.created_at)].sort().pop() || null;
+        return { id: c.id, name: c.name, trade_name: c.trade_name, city: c.city, trades: c.trades, verified: c.verified, logo_path: c.logo_path, rating: avg(rs), reviews_count: rs.length, is_fav: !!f, is_mine: !!cl, note: f?.note || null, saved_at: f?.created_at || null, last_at: last };
+      }).filter(Boolean).sort((a, b) => (b.saved_at || '').localeCompare(a.saved_at || '') || a.name.localeCompare(b.name));
     },
     busy_slots({ p_company, p_from, p_to }) {
       return db.appointments.filter((a) => a.company_id === p_company && ['a_valider', 'valide'].includes(a.status) && a.start_at < p_to && a.end_at > p_from).map((a) => ({ start_at: a.start_at, end_at: a.end_at }));
@@ -662,6 +677,7 @@ export function mockBackend({ saveSession, getSession }) {
       const out = (many ? row : [row]).map((r) => {
         const x = { ...(defaults[table] || {}), id: id(), created_at: now(), ...r };
         if (table === 'messages' && !x.sender_id) x.sender_id = me();
+        if (table === 'client_favorites') { x.user_id = me(); if (db.client_favorites.some((f) => f.user_id === me() && f.company_id === x.company_id)) return x; }
         if (table === 'files' && !x.uploaded_by) x.uploaded_by = me();
         if (table === 'files' && !isAdmin()) { x.review_status = x.kind === 'vault' ? 'en_attente' : 'valide'; x.review_note = ''; }
         if (table === 'files' && x.review_status === 'en_attente') notifyAdmins('documents', 'Document à vérifier', (db.companies.find((c) => c.id === x.company_id)?.name || '') + ' · ' + x.name, 'admin?tab=coffre');

@@ -288,7 +288,7 @@ export function Account() {
       <div className="card navy row" style={{ gap: 14 }}><Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} size="lg" ring /><div><b style={{ fontSize: 19 }}>{profile.first_name} {profile.last_name}</b><div className="muted">{profile.email}</div></div></div>
       <div className="mt"><IdentityCard purpose="client" /></div>
       <Sec title={t('Compte')} />
-      <div className="list"><MenuRow to="/client/compte/profil" icon={LuUser} label={t('Mon profil')} /><MenuRow to="/client/compte/logement" icon={LuHouse} label={t('Mon logement')} sub={[profile.home?.address, profile.home?.city].filter(Boolean).join(', ')} /><MenuRow to="/client/compte/artisans" icon={LuUsers} label={t('Mes artisans')} /></div>
+      <div className="list"><MenuRow to="/client/compte/profil" icon={LuUser} label={t('Mon profil')} /><MenuRow to="/client/compte/logement" icon={LuHouse} label={t('Mon logement')} sub={[profile.home?.address, profile.home?.city].filter(Boolean).join(', ')} /><MenuRow to="/client/selection" icon={LuUsers} label={t('Ma sélection')} sub={t('Mes artisans enregistrés et habituels')} /></div>
       <Sec title={t('Application')} />
       <div className="list"><MenuRow to="/client/compte/notifications" icon={LuBell} label={t('Notifications')} /><MenuRow to="/client/compte/apparence" icon={LuPalette} label={t('Langue et apparence')} /><MenuRow to="/client/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />{profile.is_admin && <MenuRow to="/client/admin" icon={LuShield} label={t('Administration Artis & You')} />}</div>
       <Sec title={t('Aide')} />
