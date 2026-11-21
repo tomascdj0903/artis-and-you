@@ -1,7 +1,9 @@
 // Côté particulier : urgences, demande envoyée à plusieurs artisans, comparateur de devis.
 import { useState } from 'react';
 import { LuDroplets, LuZap, LuKeyRound, LuFlame, LuSquareSplitHorizontal, LuWrench, LuPhone, LuSiren, LuPlus, LuMapPin, LuVideo, LuCheck, LuShieldCheck, LuTriangleAlert } from 'react-icons/lu';
-import { api } from '../../lib/api.js';
+import { api, OFFLINE } from '../../lib/api.js';
+import { ALL_TRADES } from '../../lib/docs.js';
+import { LuCamera, LuSparkles } from 'react-icons/lu';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation } from '../../lib/router.jsx';
 import { t, locale } from '../../lib/i18n.js';
@@ -30,6 +32,66 @@ export function useNextFree(ids, minutes = 60, urgent = false) {
   const map = {};
   (rows || []).forEach((r) => { map[r.company_id] = r; });
   return map;
+}
+
+// ─────────────── Demande avec photo ───────────────
+// Le particulier prend son problème en photo (et/ou le décrit) : l'assistant propose le métier, puis on affiche les artisans
+const KEYWORDS = [
+  [/fuite|robinet|wc|toilette|chauffe-eau|ballon|évier|lavabo|canalisation|tuyau|radiateur|chaudière|douche/i, 'Plomberie et chauffage'],
+  [/prise|interrupteur|disjonct|tableau électrique|courant|électri|lumière|ampoule|câble/i, 'Électricité'],
+  [/serrure|porte claquée|clé|cylindre|verrou/i, 'Serrurerie'],
+  [/fissure|mur|cloison|placo|plâtre|enduit/i, 'Plâtrerie'],
+  [/peinture|repeindre|papier peint/i, 'Peinture'],
+  [/toit|tuile|gouttière|toiture|ardoise/i, 'Couverture'],
+  [/carrelage|faïence|joint/i, 'Carrelage'],
+  [/fenêtre|volet|vitre|baie/i, 'Menuiserie'],
+  [/clim|climatisation|pompe à chaleur|pac/i, 'Climatisation'],
+];
+const guessFromText = (text) => { const k = KEYWORDS.find(([re]) => re.test(text || '')); const trade = k && ALL_TRADES.find((x) => x.toLowerCase().startsWith(k[1].toLowerCase().slice(0, 8))); return trade || ''; };
+async function photoData(file) {
+  const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+  const k = Math.min(1, 1024 / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(bmp, 0, 0, c.width, c.height); bmp.close?.();
+  return c.toDataURL('image/jpeg', 0.72);
+}
+export function PhotoRequest() {
+  const [img, setImg] = useState('');
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [res, setRes] = useState(null);
+  const [trade, setTrade] = useState('');
+  const pick = async (capture) => { const [f] = await pickFiles({ accept: 'image/*', multiple: false, ...(capture ? { capture: 'environment' } : {}) }); if (!f) return; try { setImg(await photoData(f)); setRes(null); } catch { setImg(''); } };
+  const analyse = async () => {
+    setBusy(true); setRes(null);
+    const local = guessFromText(text);
+    const r = OFFLINE ? null : await api.fn('assistant', { mode: 'photo', image: img || undefined, text, trades: ALL_TRADES }).catch(() => null);
+    const out = r && !r.error ? r : { trade: local, besoin: '', urgent: false, confidence: local ? 0.5 : 0, fallback: true };
+    if (!out.trade && local) out.trade = local;
+    setRes(out); setTrade(out.trade || ''); setBusy(false);
+  };
+  const emergency = res?.urgent && EMERGENCIES.find((e) => e[3] === trade);
+  const go = () => { const q = new URLSearchParams({ metier: trade }); if (emergency) { q.set('urgence', '1'); q.set('besoin', emergency[0]); } try { sessionStorage.setItem('ay-photo-need', JSON.stringify({ text: [res?.besoin, text].filter(Boolean).join(' · '), img, at: Date.now() })); } catch {} navigate('/client/artisans?' + q.toString()); };
+  return (
+    <div className="content narrow">
+      <TopBar title={t('Demande avec photo')} sub={t('On vous aide à trouver le bon artisan')} />
+      <p className="small muted">{t('Prenez votre problème en photo ou décrivez-le : nous vous proposons le métier à contacter. Vous choisissez ensuite l’artisan.')}</p>
+      <div className="photo-req">
+        {img ? <img src={img} alt={t('Votre photo')} /> : <div className="ph"><LuCamera size={32} /></div>}
+        <div className="two"><button className="btn ghost sm" onClick={() => pick(true)}><LuCamera /> {img ? t('Reprendre') : t('Prendre une photo')}</button><button className="btn ghost sm" onClick={() => pick(false)}>{t('Choisir une photo')}</button></div>
+      </div>
+      <Field label={t('Ce qui se passe')} hint={t('facultatif')}><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={t('ex. De l’eau coule sous l’évier depuis ce matin')} /></Field>
+      <button className="btn block" disabled={busy || (!img && !text.trim())} onClick={analyse}><LuSparkles /> {busy ? t('Analyse en cours…') : t('Trouver le bon métier')}</button>
+      {res && <div className="card soft mt">
+        {res.trade ? <><div className="small muted">{t('Métier proposé')}</div><b style={{ fontSize: 18 }}>{t(res.trade)}</b>{res.besoin && <p className="small">{res.besoin}</p>}</>
+          : <p>{t('Nous n’avons pas pu deviner le métier. Choisissez-le ci-dessous.')}</p>}
+        <Field label={t('Métier')}><select value={trade} onChange={(e) => setTrade(e.target.value)}><option value="">—</option>{ALL_TRADES.map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
+        {emergency && <div className="notice red">{t('Cela ressemble à une urgence : nous afficherons d’abord les artisans qui interviennent en urgence.')}</div>}
+        <p className="small faint">{res.fallback ? t('Suggestion faite à partir de votre texte.') : t('Suggestion automatique : vérifiez-la avant de contacter un artisan.')}</p>
+        <button className="btn block" disabled={!trade} onClick={go}>{t('Voir les artisans')}</button>
+      </div>}
+    </div>
+  );
 }
 
 // ─────────────── Urgence ───────────────

@@ -1,6 +1,6 @@
 import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useRef, useState } from 'react';
-import { LuFilePen, LuFileText, LuCamera, LuFolderOpen, LuLock, LuPlus, LuTrash2, LuArrowUp, LuArrowDown, LuBookOpen, LuMail, LuSend, LuPrinter, LuDownload, LuCopy, LuPencil, LuEye, LuCheck } from 'react-icons/lu';
+import { LuFilePen, LuFileText, LuCamera, LuFolderOpen, LuLock, LuPlus, LuTrash2, LuArrowUp, LuArrowDown, LuBookOpen, LuMail, LuSend, LuPrinter, LuDownload, LuCopy, LuPencil, LuEye, LuCheck, LuTag } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { loadPlatform, domainQuote, domainOffer, domainFromName, eur2 } from '../../lib/platform.js';
 import { useApp } from '../../lib/store.jsx';
@@ -119,6 +119,7 @@ export function DocEdit({ params }) {
   const franchise = company.vat_regime === 'franchise';
   const [d, setD] = useState(null);
   const [lib, setLib] = useState(false);
+  const [tarifsOpen, setTarifsOpen] = useState(false);
   const [b] = useData(async () => {
     const [clients, projects, items] = await Promise.all([
       api.select('clients', { company_id: company.id }, { order: 'last_name.asc' }), api.select('projects', { company_id: company.id }, { order: 'created_at.desc' }), api.select('items', { company_id: company.id }, { order: 'name.asc' }),
@@ -210,6 +211,16 @@ export function DocEdit({ params }) {
     const line = newLine('item', { label: it.name, desc: it.ref ? t('Réf. {r}', { r: it.ref }) : '', qty: 1, unit: it.unit === 'pièce' ? 'u' : it.unit, price: Number(it.sale_price), vat: franchise ? 0 : Number(it.vat_rate), cost: comps ? comps.reduce((s, c) => s + Number(c.cost || 0) * Number(c.qty || 1), 0) : Number(it.purchase_price), item_id: it.id });
     upd({ lines: [...d.lines, line] }); setLib(false); toast(t('« {n} » ajouté', { n: it.name }));
   };
+  // Mes tarifs (fiche publique, en TTC) → lignes du devis en HT selon la TVA par défaut
+  const tf = company.settings?.profile?.tarifs || {};
+  const defVat = franchise ? 0 : Number(ds.vat ?? 20);
+  const ht = (ttc) => Math.round((Number(ttc) || 0) / (1 + defVat / 100) * 100) / 100;
+  const tarifChoices = [
+    Number(tf.deplacement) > 0 && { key: 'dep', label: t('Déplacement'), unit: 'forfait', price: ht(tf.deplacement), ttc: tf.deplacement },
+    (Number(tf.horaire) > 0 || Number(ds.labourRate) > 0) && { key: 'mo', label: t('Main-d’œuvre'), unit: 'h', price: Number(ds.labourRate) > 0 ? Number(ds.labourRate) : ht(tf.horaire), ttc: Number(ds.labourRate) > 0 ? null : tf.horaire },
+    ...(tf.items || []).filter((x) => x.label && Number(x.price) > 0).map((x, i) => ({ key: 'it' + i, label: x.label, unit: 'forfait', price: ht(x.price), ttc: x.price, from: x.from })),
+  ].filter(Boolean);
+  const addTarif = (c) => { upd({ lines: [...d.lines, newLine('item', { label: c.label, qty: 1, unit: c.unit, price: c.price, vat: defVat })] }); toast(t('« {n} » ajouté', { n: c.label })); };
   const save = async () => {
     if (!d.client_id) return toast(t('Choisissez un client.'), true);
     if (!d.lines.some((l) => l.kind === 'item' && l.label && Number(l.qty) && Number(l.price))) return toast(t('Ajoutez au moins une ligne avec un prix.'), true);
@@ -285,13 +296,18 @@ export function DocEdit({ params }) {
         </div>
       </div>
       <div>
-          <Sec title={t('Lignes')} meta={<button className="btn xs ghost" onClick={() => setLib(true)}><LuBookOpen /> {t('Bibliothèque')}</button>} />
+          <Sec title={t('Lignes')} meta={<span className="row" style={{ gap: 6 }}>{tarifChoices.length > 0 && <button className="btn xs ghost" onClick={() => setTarifsOpen(true)}><LuTag /> {t('Mes tarifs')}</button>}<button className="btn xs ghost" onClick={() => setLib(true)}><LuBookOpen /> {t('Bibliothèque')}</button></span>} />
           <div className="lines">{d.lines.map(L)}</div>
           <div className="row wrap mt">
             <button className="btn xs ghost" onClick={() => upd({ lines: [...d.lines, newLine('item', { vat: franchise ? 0 : ds.vat ?? 20 })] })}><LuPlus /> {t('Ligne')}</button>
             <button className="btn xs ghost" onClick={() => upd({ lines: [...d.lines, newLine('section', { label: '' })] })}><LuPlus /> {t('Section')}</button>
             <button className="btn xs ghost" onClick={() => upd({ lines: [...d.lines, newLine('text', { label: '' })] })}><LuPlus /> {t('Texte')}</button>
           </div>
+          <Sheet open={tarifsOpen} onClose={() => setTarifsOpen(false)} title={t('Ajouter depuis mes tarifs')}>
+            <p className="small muted">{t('Les prix de votre fiche sont en TTC : ils sont convertis en HT avec une TVA de {v} %. Vous pouvez les modifier ensuite.', { v: defVat })}</p>
+            <div className="list">{tarifChoices.map((c) => <button key={c.key} className="li click" onClick={() => addTarif(c)}><div className="grow"><div className="t1">{c.label}{c.from ? ' · ' + t('à partir de') : ''}</div><div className="t2">{money(c.price)} {t('HT')} / {c.unit}{c.ttc ? ' · ' + money(c.ttc) + ' ' + t('TTC') : ''}</div></div><LuPlus /></button>)}</div>
+            <button className="btn ghost block mt" onClick={() => { upd({ lines: [...d.lines, ...tarifChoices.filter((c) => c.key === 'dep' || c.key === 'mo').map((c) => newLine('item', { label: c.label, qty: 1, unit: c.unit, price: c.price, vat: defVat }))] }); setTarifsOpen(false); }}>{t('Ajouter déplacement + main-d’œuvre')}</button>
+          </Sheet>
       </div>
       <div className="grid2">
         <div>

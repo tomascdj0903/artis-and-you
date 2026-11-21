@@ -12,9 +12,9 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { resetTours } from '../../ui/tour.jsx';
 import { t, LANGS } from '../../lib/i18n.js';
-import { rel, dateMed, fullName, date } from '../../lib/format.js';
+import { rel, dateMed, fullName, date, dateTime } from '../../lib/format.js';
 import { download } from '../../lib/xlsx.js';
-import { TopBar, SearchBar, suggestList, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet, openFile, Img } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Chips, Field, Toggle, SettingToggle, useData, Loader, Empty, Avatar, pickFiles, Stars, Pill, KV, Sheet, openFile, Img, Lightbox } from '../../ui/index.jsx';
 import { uploadTo } from './chat.jsx';
 import { CropSheet } from '../../ui/crop.jsx';
 
@@ -172,6 +172,10 @@ export function DataPrivacy() {
     const convs = await api.select('conversations', {});
     for (const c of convs) zip.file(`messages/${c.id}.json`, JSON.stringify(await api.select('messages', { conversation_id: c.id }), null, 2));
     zip.file('notifications.json', JSON.stringify(await api.select('notifications', { user_id: profile.id }), null, 2));
+    // données ajoutées depuis : sélection, alertes, avis rédigés, étapes de chantier, statistiques de fiche
+    const extra = isPro ? { project_steps: { company_id: company.id }, profile_stats: { company_id: company.id } } : { client_favorites: { user_id: profile.id }, search_alerts: { user_id: profile.id }, reviews: { author_id: profile.id }, project_steps: {} };
+    for (const [tb, f] of Object.entries(extra)) { try { zip.file(tb + '.json', JSON.stringify(await api.select(tb, f), null, 2)); } catch {} }
+    // photos envoyées (avis, chantier) : listées avec leur chemin dans les fichiers JSON ci-dessus
     download(await zip.generateAsync({ type: 'blob' }), `artis-and-you-mes-donnees-${new Date().toISOString().slice(0, 10)}.zip`);
   }, t('Export téléchargé'));
   // Suppression du compte depuis l'app (double confirmation). Tant que la fonction n'existe pas en base, on retombe sur la demande par e-mail.
@@ -376,6 +380,55 @@ function AdminTrades({ list, cos, reload }) {
   });
 }
 
+// Modération a posteriori des photos (avis et suivi de chantier) : l'équipe peut retirer une photo inappropriée
+function AdminPhotos() {
+  const { run, confirm } = useApp();
+  const [list, reload] = useData(() => api.rpc('admin_recent_photos', { p_limit: 120 }).then((l) => l || []), []);
+  const [big, setBig] = useState(null);
+  if (!list) return <Loader />;
+  if (!list.length) return <Empty text={t('Aucune photo publiée pour le moment')} />;
+  const remove = async (p) => { if (!(await confirm({ title: t('Retirer cette photo ?'), text: t('Elle disparaîtra de l’avis ou du suivi de chantier. L’artisan et le client ne sont pas prévenus automatiquement.'), ok: t('Retirer'), danger: true }))) return; await run(() => api.rpc('admin_remove_photo', { p_kind: p.kind, p_ref: p.ref, p_path: p.path }), t('Photo retirée')); reload(); };
+  return (
+    <>
+      <p className="small muted">{t('Les {n} dernières photos ajoutées aux avis et aux suivis de chantier.', { n: list.length })}</p>
+      <div className="mod-grid">{list.map((p) => (
+        <div key={p.kind + p.path} className="mod-card">
+          <Img path={p.path} alt="" onClick={() => setBig(p.path)} />
+          <div className="small"><b>{p.company}</b> · {p.kind === 'avis' ? t('Avis') : t('Chantier')}</div>
+          <div className="small faint">{p.title || '—'} · {dateTime(p.created_at)}</div>
+          <button className="btn xs light" onClick={() => remove(p)}>{t('Retirer')}</button>
+        </div>
+      ))}</div>
+      <Lightbox path={big} onClose={() => setBig(null)} />
+    </>
+  );
+}
+
+// Erreurs remontées par les navigateurs (regroupées par message et page)
+function AdminErrors() {
+  const { run } = useApp();
+  const [all, setAll] = useState(false);
+  const [list, reload] = useData(() => api.select('app_errors', all ? {} : { resolved: false }, { order: 'last_at.desc', limit: 200 }).catch(() => []), [all]);
+  const [open, setOpen] = useState(null);
+  if (!list) return <Loader />;
+  return (
+    <>
+      <div className="row between mb"><span className="small muted">{t('{n} erreurs', { n: list.length })}</span><label className="check small"><input type="checkbox" checked={all} onChange={(e) => setAll(e.target.checked)} /> {t('Afficher aussi les erreurs réglées')}</label></div>
+      {!list.length ? <Empty text={t('Aucune erreur signalée')} /> : list.map((e) => (
+        <div key={e.id} className={'card soft mb' + (e.resolved ? ' faded' : '')}>
+          <div className="row between"><b className="err-msg">{e.message}</b><Pill c={e.count > 20 ? 'red' : 'grey'}>×{e.count}</Pill></div>
+          <div className="small faint">{e.path || '/'} · {t('dernière fois {d}', { d: dateTime(e.last_at) })}</div>
+          {open === e.id && <pre className="err-stack">{e.stack || '—'}{'\n\n'}{e.agent}</pre>}
+          <div className="row mt" style={{ gap: 6 }}>
+            <button className="btn xs ghost" onClick={() => setOpen(open === e.id ? null : e.id)}>{open === e.id ? t('Masquer le détail') : t('Voir le détail')}</button>
+            {!e.resolved && <button className="btn xs" onClick={() => run(() => api.update('app_errors', { id: e.id }, { resolved: true }), t('Marquée comme réglée')).then(reload)}><LuCheck /> {t('Réglée')}</button>}
+          </div>
+        </div>
+      ))}
+    </>
+  );
+}
+
 export function Admin({ params }) {
   const { run, profile } = useApp();
   const [tab, setTab] = useState(() => params?.tab || new URLSearchParams(location.search).get('tab') || 'siret');
@@ -405,8 +458,8 @@ export function Admin({ params }) {
   return (
     <div className="content">
       <TopBar title={t('Administration')} sub="Artis & You" />
-      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })], ['signal', t('Signalements ({n})', { n: b.reports.length })], ['identite', t('Identités ({n})', { n: b.ids.length })]]} value={tab} onChange={setTab} />
-      {tab === 'identite' ? <AdminIdentities list={b.ids} leftovers={b.idLeft} reload={reload} /> : tab === 'signal' ? <AdminReports list={b.reports} cm={b.cm} reload={reload} /> : tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
+      <Chips options={[['siret', t('Entreprises à valider ({n})', { n: pending.length })], ['all', t('Toutes les entreprises ({n})', { n: b.cos.length })], ['avis', t('Avis à relire ({n})', { n: b.revs.length })], ['coffre', t('Documents à vérifier ({n})', { n: b.vault.length })], ['metiers', t('Métiers proposés ({n})', { n: b.trades.length })], ['signal', t('Signalements ({n})', { n: b.reports.length })], ['identite', t('Identités ({n})', { n: b.ids.length })], ['photos', t('Photos publiées')], ['erreurs', t('Erreurs de l’app')]]} value={tab} onChange={setTab} />
+      {tab === 'photos' ? <AdminPhotos /> : tab === 'erreurs' ? <AdminErrors /> : tab === 'identite' ? <AdminIdentities list={b.ids} leftovers={b.idLeft} reload={reload} /> : tab === 'signal' ? <AdminReports list={b.reports} cm={b.cm} reload={reload} /> : tab === 'coffre' ? <AdminVault list={b.vault} cm={b.cm} reload={reload} /> : tab === 'metiers' ? <AdminTrades list={b.trades} cos={b.cos} reload={reload} /> : tab === 'avis' ? (!b.revs.length ? <Empty text={t('Aucun avis en attente')} /> : b.revs.map((r) => (
         <div key={r.id} className="card soft mb"><div className="row between"><b>{b.cm[r.company_id]?.name}</b><Stars n={r.rating} /></div><p>{r.comment}</p>{r.criteria && <div className="small muted">{Object.entries(r.criteria).map(([k, v]) => t({ ponctualite: 'Ponctualité', proprete: 'Propreté', devis: 'Respect du devis', prix: 'Rapport qualité-prix' }[k] || k) + ' ' + v + '/5').join(' · ')}</div>}{(r.photos || []).length > 0 && <div className="photos-grid sm">{r.photos.map((ph) => <Img key={ph} path={ph} />)}</div>}<div className="small muted">{r.author_label} · {date(r.created_at)}</div>
           <div className="row mt"><button className="btn xs" onClick={() => run(() => api.rpc('admin_moderate_review', { p_id: r.id, p_status: 'publie', p_reason: '' }), t('Avis publié')).then(reload)}><LuCheck /> {t('Publier')}</button><button className="btn xs ghost" onClick={() => setRevRefuse({ r, note: '' })}><LuX /> {t('Refuser')}</button></div></div>
       ))) : (

@@ -77,6 +77,77 @@ await step('La recherche globale trouve le client', async () => {
 await step('La cloche affiche les notifications', async () => {
   await pg.click('.notifbell .iconbtn'); await pg.waitForSelector('.notifpop');
 });
+// ── Nouveautés : conversation, tarifs, statistiques, avis, suivi des erreurs ──
+const idb = (fn) => pg.evaluate((src) => new Promise((res, rej) => { const r = indexedDB.open('artis-and-you', 2); r.onsuccess = () => { const st = r.result.transaction('kv', 'readwrite').objectStore('kv'); const g = st.get('ay-local-db'); g.onsuccess = () => { const db = g.result; const out = new Function('db', src)(db); const p = st.put(db, 'ay-local-db'); p.onsuccess = () => res(out); p.onerror = () => rej(p.error); }; }; r.onerror = () => rej(r.error); }), fn);
+let clientId, quoteId;
+await step('Réponses rapides dans la conversation', async () => {
+  clientId = await pg.evaluate(async () => (await window.__ayApi.select('clients', {}))[0]?.id);
+  await pg.goto(BASE + '/pro/clients/' + clientId + '/chat'); await pg.waitForTimeout(600); await skipTour();
+  await pg.locator('.quick-replies .qr').first().click();
+  if (!(await pg.inputValue('form.composer input[type=text]')).trim()) throw new Error('Le champ ne s’est pas rempli');
+  await pg.fill('form.composer input[type=text]', '');
+});
+await step('Envoyer un devis depuis la conversation (menu « Devis et factures »)', async () => {
+  quoteId = await idb("const d = db.documents.find((x) => x.kind === 'devis'); d.status = 'envoye'; d.number = d.number || 'D-2026-0001'; return d.id;");
+  await pg.reload(); await pg.waitForTimeout(800); await skipTour();
+  await pg.click('form.composer button.att >> nth=0'); await pg.click('.sheet button.opt:has-text("Devis et factures")');
+  await pg.click('.sheet button.opt:has-text("Envoyer un devis")'); await pg.click('.sheet .li:has-text("D-2026-0001")');
+  await pg.waitForSelector('.doc-card:has-text("D-2026-0001")');
+});
+await step('Mes tarifs ajoutés au devis', async () => {
+  await idb("const c = db.companies.find((x) => !x.is_platform); c.settings = { ...(c.settings || {}), profile: { ...(c.settings?.profile || {}), tarifs: { deplacement: 48, horaire: 60, items: [{ label: 'Débouchage', price: 120 }] } } }; return c.id;");
+  await pg.goto(BASE + '/pro/documents/nouveau?kind=devis'); await pg.waitForTimeout(600); await skipTour();
+  await pg.click('button:has-text("Mes tarifs")'); await pg.click('.sheet .li:has-text("Déplacement")');
+  const vals = await pg.locator('input[placeholder="Désignation"]').evaluateAll((l) => l.map((x) => x.value));
+  if (!vals.includes('Déplacement')) throw new Error('Ligne absente : ' + vals.join(', '));
+  const price = await pg.locator('.lg:has(input[value="Déplacement"]) input[type=number]').nth(1).inputValue();
+  if (Math.abs(Number(price) - 40) > 0.01) throw new Error('Prix HT attendu 40, obtenu ' + price);
+});
+await step('Statistiques de la fiche et demande d’avis automatique', async () => {
+  await pg.goto(BASE + '/pro/compte/entreprise'); await pg.waitForTimeout(700); await skipTour();
+  await pg.waitForSelector('.pstat:has-text("Vues de la fiche")');
+  await pg.goto(BASE + '/pro/compte/avis'); await pg.waitForTimeout(500);
+  await pg.waitForSelector('text=Demander un avis automatiquement');
+});
+await step('Les erreurs de l’app sont enregistrées (regroupées)', async () => {
+  const n = await pg.evaluate(async () => { await window.__ayApi.rpc('log_client_error', { p_message: 'test e2e', p_path: '/pro/x/12345678-1234-1234-1234-123456789abc' }); await window.__ayApi.rpc('log_client_error', { p_message: 'test e2e', p_path: '/pro/x/12345678-1234-1234-1234-123456789abc' }); return 1; });
+  const e = await idb("const e = db.app_errors.find((x) => x.message === 'test e2e'); return e && { c: e.count, p: e.path };");
+  if (!e || e.c !== 2 || e.p !== '/pro/x/:id') throw new Error(JSON.stringify(e));
+});
+// ── Côté particulier ──
+await step('Inscription d’un particulier', async () => {
+  await pg.evaluate(() => { localStorage.removeItem('ay-session'); sessionStorage.removeItem('ay-session'); });
+  await pg.goto(BASE + '/inscription/particulier'); await pg.waitForTimeout(800);
+  for (const [l, v] of [['Prénom', 'Lucie'], ['Nom', 'Faure'], ['E-mail', 'lucie@ex.fr'], ['Téléphone mobile', '06 11 22 33 44'], ['Adresse', '3 rue Test'], ['Code postal', '06600'], ['Ville', 'Antibes']]) await field(l).fill(v).catch(() => {});
+  await pg.fill('input[type=password]', 'secret123');
+  if (await pg.locator('label.field:has(span:text-is("Civilité"))').count()) await field('Civilité').selectOption({ index: 1 });
+  await pg.check('form label.check input').catch(() => {}); await pg.click('button:has-text("Continuer"), button:has-text("Créer mon compte")');
+  await pg.waitForTimeout(800); const m = (await pg.locator('.notice').first().innerText().catch(() => '')).match(/(\d{6})/);
+  if (m) { await pg.fill('input[autocomplete="one-time-code"]', m[1]); await pg.click('form button.btn'); }
+  await pg.waitForURL('**/client**'); await pg.waitForTimeout(600); await skipTour();
+});
+await step('Demande avec photo : le métier est proposé', async () => {
+  await pg.goto(BASE + '/client/photo'); await pg.waitForTimeout(500); await skipTour();
+  await pg.fill('textarea', 'Une fuite sous l’évier depuis ce matin');
+  await pg.click('button:has-text("Trouver le bon métier")'); await pg.waitForSelector('text=Métier proposé');
+  const v = await pg.locator('.card select').inputValue(); if (!/Plomberie/.test(v)) throw new Error('Métier : ' + v);
+});
+await step('Devis signé à deux', async () => {
+  const uid = await pg.evaluate(() => JSON.parse(localStorage.getItem('ay-session') || sessionStorage.getItem('ay-session') || '{}')?.user?.id);
+  await idb(`const c = db.clients.find((x) => x.id === '${clientId}'); c.user_id = '${uid}'; const co = db.companies.find((x) => x.id === c.company_id); co.verification_status = 'approved'; co.verified = true; return 1;`);
+  await pg.reload(); await pg.waitForTimeout(600);
+  await pg.goto(BASE + '/client/devis/' + quoteId + '/pdf'); await pg.waitForTimeout(1200); await skipTour();
+  await pg.click('button:has-text("Signer le devis électroniquement")'); await pg.check('.sheet label.check:has-text("Nous sommes deux") input');
+  await pg.locator('.sheet .cosign input').fill('Marc Faure');
+  await pg.check('.sheet label.check:has-text("Bon pour accord") input');
+  await pg.click('.sheet button.btn.block:has-text("Signer")'); await pg.waitForTimeout(1200);
+  const d = await idb(`const d = db.documents.find((x) => x.id === '${quoteId}'); return { s: d.status, n: d.signed_name, co: d.conditions?.signature?.cosigner?.name };`);
+  if (d.s !== 'accepte' || d.co !== 'Marc Faure' || !/ et Marc Faure$/.test(d.n)) throw new Error(JSON.stringify(d));
+});
+await step('Carnet du logement', async () => {
+  await pg.goto(BASE + '/client/carnet'); await pg.waitForTimeout(700); await skipTour();
+  await pg.waitForSelector('.carnet h1:has-text("Carnet du logement")'); await pg.waitForSelector('button:has-text("Télécharger en PDF")');
+});
 await step('Aucune erreur JavaScript', async () => { if (errors.length) throw new Error(errors.slice(0, 3).join(' | ')); });
 
 await browser.close(); server.close();

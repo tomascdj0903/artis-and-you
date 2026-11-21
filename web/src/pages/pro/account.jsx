@@ -17,6 +17,7 @@ import { uploadTo } from '../common/chat.jsx';
 import { SignatureEditor } from '../../ui/signature.jsx';
 import { VatCheck, RgeCard } from '../../ui/checks.jsx';
 import { IdentityCard } from '../../ui/identity.jsx';
+import { ProfileStats } from './stats.jsx';
 
 export function MenuRow({ to, icon: I, label, sub, onClick, red }) {
   const C = to ? Link : 'button';
@@ -186,6 +187,7 @@ export function CompanySettings() {
           <RgeCard siren={c.siren || String(c.siret || '').slice(0, 9)} />
           <Field label={t('Présentation')}><textarea value={c.description || ''} onChange={(e) => setC({ ...c, description: e.target.value })} /></Field>
           <Sec title={t('Profil public')} meta={t('Ce que voient les particuliers')} />
+          <ProfileStats />
           <div className="cover-edit">
             {pp.cover_path ? <Img path={pp.cover_path} alt="" className="cover-img" /> : <div className="cover-img ph" />}
             <div className="row" style={{ gap: 6 }}><button className="btn ghost sm" onClick={cover}><LuImage /> {pp.cover_path ? t('Changer la photo de couverture') : t('Ajouter une photo de couverture')}</button>
@@ -454,7 +456,9 @@ export function Integrations() {
 }
 
 export function Reviews() {
-  const { company, run } = useApp();
+  const { company, setCompany, run } = useApp();
+  const autoAsk = company.settings?.reviews?.auto !== false;
+  const setAuto = (v) => run(async () => { const settings = { ...company.settings, reviews: { ...(company.settings?.reviews || {}), auto: v } }; await api.update('companies', { id: company.id }, { settings }); setCompany({ ...company, settings }); }, t('Réglage enregistré'));
   const [list, reload] = useData(() => api.select('reviews', { company_id: company.id }, { order: 'created_at.desc' }), []);
   const [reply, setReply] = useState(null);
   if (!list) return <div className="content"><TopBar title={t('Mes avis clients')} /><Loader /></div>;
@@ -464,6 +468,7 @@ export function Reviews() {
     <div className="content narrow">
       <TopBar title={t('Mes avis clients')} sub={pub.length ? `${avg.toFixed(1).replace('.', ',')} / 5 · ${t('{n} avis', { n: pub.length })}` : ''} />
       <p className="small muted">{t('Les avis sont vérifiés (seulement après un vrai rendez-vous, un devis signé ou une facture réglée) et relus par Artis & You avant publication.')}</p>
+      <div className="kv mb"><SettingToggle label={t('Demander un avis automatiquement')} hint={t('3 jours après le paiement d’une facture, votre client reçoit une notification l’invitant à laisser un avis (une seule fois).')} checked={autoAsk} onChange={setAuto} /></div>
       {!list.length ? <Empty icon={LuStar} text={t('Pas encore d’avis.')} /> : list.map((r) => (
         <div key={r.id} className="card soft mb">
           <div className="row between"><Stars n={r.rating} /><Pill c={r.status === 'publie' ? 'green' : r.status === 'refuse' ? 'grey' : 'yellow'}>{t({ publie: 'Publié', en_attente: 'En relecture', refuse: 'Refusé' }[r.status])}</Pill></div>

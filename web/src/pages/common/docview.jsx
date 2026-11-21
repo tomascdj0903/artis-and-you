@@ -7,13 +7,20 @@ import { money, date, dateTime, clientName, fullName } from '../../lib/format.js
 import { computeTotals, franchiseMention, franchiseArticle, sectionSubtotals, dropEmptySections, kindLabel, statusPill, effectiveStatus } from '../../lib/docs.js';
 import { KV, Sec, StatusPill } from '../../ui/index.jsx';
 
+// Entreprise gardée en mémoire le temps de la session (elle change rarement) : une requête de moins à chaque document
+const coCache = new Map();
+const companyOf = (cid) => { const c = coCache.get(cid); if (c && Date.now() - c.t < 60e3) return c.p; const p = api.one('companies', { id: cid }).catch(() => { coCache.delete(cid); return null; }); coCache.set(cid, { p, t: Date.now() }); return p; };
+export const forgetCompany = (cid) => coCache.delete(cid);
 export async function loadDoc(id) {
+  // le document et ses paiements partent en même temps (2 allers-retours au lieu de 3)
+  const payP = api.select('payments', { document_id: id }, { order: 'paid_on.asc' }); // pas de repli silencieux : sans les paiements, le reste à payer serait faux
+  payP.catch(() => {});
   const d = await api.one('documents', { id });
   if (!d) return null;
   const [companyLive, clientLive, payments, source] = await Promise.all([
-    api.one('companies', { id: d.company_id }).catch(() => null),
+    companyOf(d.company_id),
     d.client_id ? api.one('clients', { id: d.client_id }).catch(() => null) : null,
-    api.select('payments', { document_id: id }, { order: 'paid_on.asc' }), // pas de repli silencieux : sans les paiements, le reste à payer serait faux
+    payP,
     d.source_id ? api.one('documents', { id: d.source_id }).catch(() => null) : null,
   ]);
   const company = d.snapshot?.company ? { ...companyLive, ...d.snapshot.company, settings: companyLive?.settings || {} } : companyLive || {};
@@ -230,7 +237,7 @@ export function A4({ d: d0, company, client, source, logoUrl }) {
       {isQuote ? (
         <div className="sig">
           <div className="box"><div className="lab">{t("L'entreprise")}</div>{company.settings?.pdf?.signature && <img src={company.settings.pdf.signature} alt="" style={{ maxHeight: 60 }} />}</div>
-          <div className="box"><div className="lab">{t('Bon pour accord')}</div><div className="small">{t('Date, signature et mention « Bon pour accord »')}</div>{d.status === 'accepte' && <div style={{ marginTop: 8 }}>{d.conditions?.signature?.image && <img src={d.conditions.signature.image} alt="" style={{ maxHeight: 54, display: 'block' }} />}<b>{t('Bon pour accord')} · {t('Signé par {n} le {d}', { n: d.signed_name || '', d: dateTime(d.accepted_at) })}</b>{d.conditions?.signature?.hash && <div style={{ fontSize: 8, color: '#888', wordBreak: 'break-all' }}>{t('Signature électronique')} · {d.conditions.signature.hash.slice(0, 32)}</div>}</div>}</div>
+          <div className="box"><div className="lab">{t('Bon pour accord')}</div><div className="small">{t('Date, signature et mention « Bon pour accord »')}</div>{d.status === 'accepte' && <div style={{ marginTop: 8 }}><div style={{ display: 'flex', gap: 10 }}>{d.conditions?.signature?.image && <img src={d.conditions.signature.image} alt="" style={{ maxHeight: 54, display: 'block' }} />}{d.conditions?.signature?.cosigner?.image && <img src={d.conditions.signature.cosigner.image} alt="" style={{ maxHeight: 54, display: 'block' }} />}</div><b>{t('Bon pour accord')} · {t('Signé par {n} le {d}', { n: d.signed_name || '', d: dateTime(d.accepted_at) })}</b>{d.conditions?.signature?.hash && <div style={{ fontSize: 8, color: '#888', wordBreak: 'break-all' }}>{t('Signature électronique')} · {d.conditions.signature.hash.slice(0, 32)}</div>}</div>}</div>
         </div>
       ) : d.kind !== 'avoir' && (
         <div className="pay">

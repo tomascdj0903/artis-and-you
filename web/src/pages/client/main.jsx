@@ -1,7 +1,7 @@
 import { kbd } from '../../lib/a11y.js';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ArtisanSearch } from '../../ui/suggest.jsx';
-import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck, LuHeart, LuUsers, LuLanguages, LuClock, LuHammer, LuUmbrella, LuAward, LuBadgeCheck, LuPencil, LuSiren, LuSquareCheck, LuSquare, LuX, LuScale, LuBellPlus, LuBellRing } from 'react-icons/lu';
+import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck, LuHeart, LuUsers, LuLanguages, LuClock, LuHammer, LuUmbrella, LuAward, LuBadgeCheck, LuPencil, LuSiren, LuSquareCheck, LuSquare, LuX, LuScale, LuBellPlus, LuBellRing, LuCamera } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
@@ -73,6 +73,7 @@ export function Home() {
       <div className="find-actions home">
         <button className="find-act urg" onClick={() => navigate('/client/urgence')}><LuSiren /><span><b>{t('Urgence')}</b><small>{t('Fuite, panne, serrure…')}</small></span></button>
         <button className="find-act" onClick={() => navigate('/client/artisans?plusieurs=1')}><LuUsers /><span><b>{t('Demander à plusieurs')}</b><small>{t('Jusqu’à 3 artisans d’un coup')}</small></span></button>
+        <button className="find-act" onClick={() => navigate('/client/photo')}><LuCamera /><span><b>{t('Avec une photo')}</b><small>{t('On trouve le bon métier')}</small></span></button>
       </div>
       <MaintenanceDue />
       {!b ? <Loader /> : (
@@ -129,6 +130,7 @@ export function Search() {
       {urgent ? <div className="notice red"><LuSiren /><span>{t('Artisans qui acceptent les urgences et interviennent chez vous, du plus tôt disponible au plus tard.')}</span></div>
         : <div className="find-actions"><button className="find-act urg" onClick={() => navigate('/client/urgence')}><LuSiren /><span><b>{t('Urgence')}</b><small>{t('Fuite, panne, serrure…')}</small></span></button>
           <button className={'find-act' + (picking ? ' on' : '')} onClick={() => { setPicking(!picking); setMulti([]); }}><LuUsers /><span><b>{t('Demander à plusieurs')}</b><small>{t('Jusqu’à 3 artisans d’un coup')}</small></span></button>
+          <button className="find-act" onClick={() => navigate('/client/photo')}><LuCamera /><span><b>{t('Avec une photo')}</b><small>{t('On trouve le bon métier')}</small></span></button>
           <button className="find-act" onClick={() => navigate('/client/devis/comparer')}><LuScale /><span><b>{t('Comparer mes devis')}</b><small>{t('Côte à côte')}</small></span></button></div>}
       <ArtisanSearch placeholder={t('Métier, nom, besoin…')} value={q} onChange={(v) => { setQ(v); if (v.length === 0 || v.length > 2) setTerm(v); }} onSubmit={() => setTerm(q)} onFilter={() => setOpen(true)} filterActive={!!(trade || city)} />
       <div className="chips scroll">
@@ -302,10 +304,19 @@ export function Selection() {
   );
 }
 
+// Statistiques de fiche : une vue comptée par artisan et par jour sur cet appareil ; appels et partages à chaque clic
+export function trackProfile(id, kind) {
+  try {
+    if (kind === 'view') { const k = 'ay-seen-' + id + '-' + new Date().toISOString().slice(0, 10); if (sessionStorage.getItem(k)) return; sessionStorage.setItem(k, '1'); }
+  } catch {}
+  api.rpc('track_profile', { p_company: id, p_kind: kind }).catch(() => {});
+}
+
 export function ArtisanCard({ params }) {
   const [big, setBig] = useState(null);
   const [p] = useData(() => api.rpc('directory_get', { p_id: params.id }), [params.id]);
   const [fav, setFav] = useState(null);
+  useEffect(() => { if (p && !p.is_mine) trackProfile(p.id, 'view'); }, [p?.id]);
   if (!p) return <div className="content"><TopBar title={t('Artisan')} /><Loader /></div>;
   const total = Object.values(p.distribution || {}).reduce((s, n) => s + n, 0);
   const msg = async () => { const id = await api.rpc('start_conversation', { p_company: p.id }); navigate('/client/messages/' + id); };
@@ -333,17 +344,17 @@ export function ArtisanCard({ params }) {
         </div>
       </div>
       {!p.is_platform && <div className="row wrap mt" style={{ gap: 8 }}><FavButton big on={isFav} onClick={flip} />
-        <ShareButton className="btn ghost sm share-btn" title={coName(p)} text={t('Je te recommande {n}, {m} à {v}, sur Artis & You :', { n: coName(p), m: t((p.trades || [])[0] || ''), v: p.city || '' })} url={location.origin + '/client/artisans/' + p.id} />
+        <span onClickCapture={() => trackProfile(p.id, 'share')} style={{ display: 'contents' }}><ShareButton className="btn ghost sm share-btn" title={coName(p)} text={t('Je te recommande {n}, {m} à {v}, sur Artis & You :', { n: coName(p), m: t((p.trades || [])[0] || ''), v: p.city || '' })} url={location.origin + '/client/artisans/' + p.id} /></span>
         <a className="btn ghost sm" href={'https://wa.me/?text=' + encodeURIComponent(t('Je te recommande {n}, {m} à {v}, sur Artis & You :', { n: coName(p), m: t((p.trades || [])[0] || ''), v: p.city || '' }) + ' ' + location.origin + '/client/artisans/' + p.id)} target="_blank" rel="noopener noreferrer">{t('WhatsApp')}</a></div>}
       {facts.length > 0 && <><Sec title={t('En bref')} /><div className="facts">{facts.map(([I, x], k) => <div key={k} className="fact"><I /><span>{x}</span></div>)}</div></>}
       {!p.is_platform && <><Sec title={t('Tarifs')} /><TarifsBox tarifs={p.tarifs} /></>}
       <Sec title={t('Présentation')} />
       {p.description && <p className="wsb">{p.description}</p>}
       <RgeBadge siren={p.siren} />
-      <KV rows={[[t('Métier'), (p.trades || []).map(t).join(', ')], [t("Zone d'intervention"), p.zone || p.city], [t('Téléphone'), p.phone, { href: p.phone && 'tel:' + p.phone }], [t('Visio possible'), p.planning?.visio !== false ? t('Oui, sur WhatsApp') : t('Non')], p.website && [t('Site web'), p.website.replace(/^https?:\/\//, ''), { href: /^https?:\/\//.test(p.website) ? p.website : 'https://' + p.website }]]} />
+      <KV rows={[[t('Métier'), (p.trades || []).map(t).join(', ')], [t("Zone d'intervention"), p.zone || p.city], [t('Téléphone'), p.phone ? <a key="tel" href={'tel:' + p.phone} onClick={() => trackProfile(p.id, 'call')}>{p.phone}</a> : ''], [t('Visio possible'), p.planning?.visio !== false ? t('Oui, sur WhatsApp') : t('Non')], p.website && [t('Site web'), p.website.replace(/^https?:\/\//, ''), { href: /^https?:\/\//.test(p.website) ? p.website : 'https://' + p.website }]]} />
       <div className="btns">
         <button className="btn" onClick={() => navigate(`/client/artisans/${p.id}/demande`)}>{t('Demander un RDV')}</button>
-        <div className="two">{p.phone ? <a className="btn ghost" href={'tel:' + p.phone}><LuPhone /> {t('Appeler')}</a> : <span />}<button className="btn ghost" onClick={msg}><LuMessageSquare /> {t('Envoyer un message')}</button></div>
+        <div className="two">{p.phone ? <a className="btn ghost" href={'tel:' + p.phone} onClick={() => trackProfile(p.id, 'call')}><LuPhone /> {t('Appeler')}</a> : <span />}<button className="btn ghost" onClick={msg}><LuMessageSquare /> {t('Envoyer un message')}</button></div>
       </div>
       {p.photos?.length > 0 && <><Sec title={t('Réalisations')} /><div className="photos-grid">{p.photos.map((x) => <Img key={x} path={x} onClick={() => setBig(x)} />)}</div></>}
       <Sec title={t('Avis vérifiés')} meta={total ? t('{n} avis', { n: total }) : ''} />
@@ -369,8 +380,10 @@ export function NewRequest({ params }) {
   const { profile, setProfile, run } = useApp();
   const [type, setType] = useState('Dépannage');
   const urgent = new URLSearchParams(location.search).get('urgence') === '1';
-  const [text, setText] = useState('');
-  const [photos, setPhotos] = useState([]);
+  // Demande commencée avec une photo (Trouver › Demande avec photo) : on reprend la photo et la description
+  const photoNeed = useMemo(() => { try { const x = JSON.parse(sessionStorage.getItem('ay-photo-need') || 'null'); return x && Date.now() - x.at < 3600e3 ? x : null; } catch { return null; } }, []);
+  const [text, setText] = useState(photoNeed?.text || '');
+  const [photos, setPhotos] = useState(() => { if (!photoNeed?.img) return []; try { const [h, b64] = photoNeed.img.split(','); const bin = atob(b64); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return [new File([u], 'photo.jpg', { type: h.match(/data:([^;]+)/)?.[1] || 'image/jpeg' })]; } catch { return []; } });
   const [mode, setMode] = useState('site');
   const [day, setDay] = useState(null);
   const [slot, setSlot] = useState(null);
@@ -412,6 +425,7 @@ export function NewRequest({ params }) {
         for (const f of photos) ups.push(await uploadTo('u/' + profile.id + '/demandes', f));
         const dur = mode === 'visio' ? 30 : (s.durations?.[type] || s.duration || 60);
         const id = await api.rpc('request_appointment', { p: { company_id: params.id, type, title: type + (text ? ' · ' + shortTitle(text) : ''), text, mode, start_at: slot.toISOString(), end_at: new Date(+slot + dur * 6e4).toISOString(), photos: ups, urgent } });
+        try { sessionStorage.removeItem('ay-photo-need'); } catch {}
         navigate('/client/demande-envoyee/' + id, { replace: true });
       });
     } finally { setBusy(false); }

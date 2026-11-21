@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { useEffect, useState, useRef, lazy, Suspense } from 'react';
 import { useGlassTint } from './ui/glasstint.js';
 import { GlobalFab } from './ui/fab.jsx';
-import { ErrorBoundary } from './ui/errors.jsx';
+import { ErrorBoundary, installErrorTracking } from './ui/errors.jsx';
 import { LuHouse, LuUsers, LuCalendar, LuFileText, LuChartColumn, LuMessageSquare, LuNetwork, LuBell, LuLayoutGrid, LuCalculator, LuUserCog, LuKanban, LuListChecks, LuSearch, LuHeart } from 'react-icons/lu';
 import { AppProvider, useApp } from './lib/store.jsx';
 import { Tour, useTours } from './ui/tour.jsx';
@@ -58,7 +58,7 @@ const CLIENT = [
   ['/client/messages', L('cli', 'Messages')], ['/client/messages/:id', L('cli', 'Conversation')],
   ['/client/notifications', L('common', 'Notifications')], ['/client/admin', L('common', 'Admin')],
   ['/client/documents', L('cli', 'DocumentsHome')], ['/client/devis', L('cli', 'Quotes')], ['/client/factures', L('cli', 'Invoices')],
-  ['/client/devis/comparer', L('cli', 'CompareQuotes')], ['/client/urgence', L('cli', 'Urgence')], ['/client/aides', L('cli', 'AidSimulator')], ['/client/demande-groupee', L('cli', 'GroupRequest')],
+  ['/client/devis/comparer', L('cli', 'CompareQuotes')], ['/client/urgence', L('cli', 'Urgence')], ['/client/aides', L('cli', 'AidSimulator')], ['/client/photo', L('cli', 'PhotoRequest')], ['/client/carnet', L('cli', 'Carnet')], ['/client/demande-groupee', L('cli', 'GroupRequest')],
   ['/client/devis/:id', L('cli', 'DocDetail')], ['/client/factures/:id', L('cli', 'DocDetail')], ['/client/devis/:id/pdf', L('cli', 'DocPdf')], ['/client/factures/:id/pdf', L('cli', 'DocPdf')],
   ['/client/factures/:id/payer', L('cli', 'Pay')], ['/client/avis/:id', L('cli', 'Review')],
   ['/client/chantiers', L('cli', 'Projects')], ['/client/chantiers/:id', L('cli', 'ProjectDetail')], ['/client/autres-docs', L('cli', 'OtherDocs')],
@@ -93,7 +93,7 @@ const CLI_TABS = [
   ['/client/documents', LuFileText, 'Documents'], ['/client/selection', LuHeart, 'Ma sélection', false, true], ['/client/notifications', LuBell, 'Notifications', false, true],
 ];
 // Pages rattachées à un onglet sans être sous son chemin
-const ALIAS = { '/pro/photos': '/pro/documents', '/pro/autres-docs': '/pro/documents', '/pro/coffre-fort': '/pro/documents', '/client/devis': '/client/documents', '/client/factures': '/client/documents', '/client/chantiers': '/client/documents', '/client/autres-docs': '/client/documents', '/client/selection': '/client/artisans', '/client/demande-envoyee': '/client/rdv', '/client/avis': '/client/documents' };
+const ALIAS = { '/pro/photos': '/pro/documents', '/pro/autres-docs': '/pro/documents', '/pro/coffre-fort': '/pro/documents', '/client/devis': '/client/documents', '/client/factures': '/client/documents', '/client/chantiers': '/client/documents', '/client/autres-docs': '/client/documents', '/client/selection': '/client/artisans', '/client/demande-envoyee': '/client/rdv', '/client/avis': '/client/documents', '/client/photo': '/client/artisans', '/client/carnet': '/client/documents' };
 
 function Shell({ tabs, children, path }) {
   const barRef = useRef(null);
@@ -215,5 +215,5 @@ if ('serviceWorker' in navigator && location.protocol === 'https:' && !navigator
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); window.__ayInstall = e; window.dispatchEvent(new Event('ay-installable')); });
 
 // Une action qui a déjà affiché son message d'erreur (run) n'a pas à remonter comme « erreur non gérée »
-window.addEventListener('unhandledrejection', (ev) => { if (ev.reason?.shown) ev.preventDefault(); });
+installErrorTracking();
 loadLang(getLang()).catch(() => {}).finally(() => createRoot(document.getElementById('root')).render(<ErrorBoundary home="/"><AppProvider><App /></AppProvider></ErrorBoundary>));

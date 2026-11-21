@@ -3,13 +3,34 @@
 import { Component } from 'react';
 import { t } from '../lib/i18n.js';
 
+import { api } from '../lib/api.js';
+
+// Suivi des erreurs en production : message + page (sans identifiants ni e-mails), 10 envois max par session, sans doublon
+const sent = new Set();
+const scrub = (x) => String(x || '').replace(/[\w.+-]+@[\w-]+\.[\w.]+/g, '<email>').replace(/\b\d{6,}\b/g, '<n>');
+const NOISE = /ResizeObserver loop|Script error\.?$|Load failed|NetworkError|Failed to fetch|AbortError|The user aborted|cancelled|annulé/i;
+export function reportError(err, extra = '') {
+  try {
+    if (!err || err.shown || location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
+    const msg = scrub(err.message || err).slice(0, 500);
+    if (!msg || NOISE.test(msg) || isChunk(err) || sent.size >= 10 || sent.has(msg)) return;
+    sent.add(msg);
+    api.rpc('log_client_error', { p_message: msg, p_path: location.pathname, p_stack: scrub((err.stack || '') + (extra ? '\n' + extra : '')).slice(0, 4000), p_agent: navigator.userAgent.slice(0, 300) }).catch(() => {});
+  } catch {}
+}
+export function installErrorTracking() {
+  window.addEventListener('error', (ev) => reportError(ev.error || ev.message));
+  window.addEventListener('unhandledrejection', (ev) => { if (ev.reason?.shown) { ev.preventDefault(); return; } reportError(ev.reason); });
+}
+
 const isChunk = (e) => /dynamically imported module|Importing a module script failed|Failed to fetch|error loading/i.test(String(e?.message || e));
 
 export class ErrorBoundary extends Component {
   state = { error: null };
   static getDerivedStateFromError(error) { return { error }; }
-  componentDidCatch(error) {
+  componentDidCatch(error, info) {
     console.error('Artis & You', error);
+    reportError(error, info?.componentStack?.slice(0, 1500));
     if (isChunk(error)) {
       try { if (Date.now() - Number(sessionStorage.getItem('ay-reloaded') || 0) > 30000) { sessionStorage.setItem('ay-reloaded', String(Date.now())); location.reload(); } } catch {}
     }

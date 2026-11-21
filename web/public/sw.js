@@ -29,11 +29,14 @@ self.addEventListener('push', (e) => {
   let d = {}; try { d = e.data.json(); } catch { d = { title: 'Artis & You', body: e.data?.text() || '' }; }
   const urgent = !!d.urgent;
   e.waitUntil(self.registration.showNotification(d.title || 'Artis & You', { body: d.body || '', icon: '/icon-192.png', badge: '/icon-192.png', tag: d.tag, data: { link: d.link || '/' },
-    ...(urgent ? { requireInteraction: true, renotify: true, vibrate: [300, 120, 300, 120, 600] } : {}) }));
+    ...(urgent ? { requireInteraction: true, renotify: true, vibrate: [300, 120, 300, 120, 600] } : {}),
+    // Demande urgente d'un RDV : boutons directement sur la notification
+    ...(urgent && /^\/pro\/planning\/rdv\//.test(d.link || '') ? { actions: [{ action: 'accepter', title: 'Accepter' }, { action: 'voir', title: 'Voir' }] } : {}) }));
 });
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();
-  const link = e.notification.data?.link || '/';
+  let link = e.notification.data?.link || '/';
+  if (e.action === 'accepter') link += (link.includes('?') ? '&' : '?') + 'action=accepter';
   e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((cs) => {
     const c = cs.find((x) => new URL(x.url).origin === self.location.origin);
     if (c) { c.focus(); return c.navigate(link).catch(() => {}); }

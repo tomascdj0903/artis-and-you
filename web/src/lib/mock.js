@@ -2,9 +2,10 @@ import { PLANS } from './docs.js';
 // Base locale (navigateur) qui imite Supabase : sert aux tests hors-ligne.
 // Elle reproduit les tables, les fonctions (RPC) et les déclencheurs principaux, sans la sécurité serveur.
 const KEY = 'ay-local-db';
-const TABLES = ['platform_settings', 'quote_requests', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', 'client_favorites', 'search_alerts', 'project_steps', '_users'];
+const TABLES = ['platform_settings', 'quote_requests', 'admin_deals', 'admin_deal_events', 'admin_tasks', 'admin_notes', 'identity_checks', 'content_reports', 'profiles', 'companies', 'teams', 'company_invites', 'clients', 'projects', 'project_shares', 'items', 'documents', 'payments', 'purchases', 'appointments', 'files', 'conversations', 'messages', 'conversation_reads', 'network', 'network_requests', 'ratings', 'reviews', 'notifications', 'trades', 'client_favorites', 'search_alerts', 'project_steps', 'profile_stats', 'app_errors', '_users'];
 const id = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2) + Date.now());
 const now = () => new Date().toISOString();
+const iso = (d) => new Date(d).toISOString().slice(0, 10);
 const today = () => new Date().toISOString().slice(0, 10);
 
 import { ADMIN_EMAILS } from './api.js';
@@ -187,7 +188,9 @@ export function mockBackend({ saveSession, getSession }) {
       case 'admin_deals': case 'admin_deal_events': case 'admin_tasks': case 'admin_notes': case 'quote_requests': return isAdmin();
       case 'platform_settings': return true;
       case 'appointments': case 'projects': return r.company_id === mc || mine.includes(r.client_id);
-      case 'project_steps': return r.company_id === mc || mine.includes(db.projects.find((p) => p.id === r.project_id)?.client_id);
+      case 'profile_stats': return r.company_id === mc || isAdmin();
+      case 'app_errors': return isAdmin();
+      case 'project_steps': return r.company_id === mc || isAdmin() || mine.includes(db.projects.find((p) => p.id === r.project_id)?.client_id);
       case 'trades': return r.status === 'valide' || r.created_by === me() || isAdmin();
       case 'files': return r.company_id === mc || (r.kind === 'vault' && isAdmin()) || (mine.includes(r.client_id) && (r.shared_with_client || r.kind === 'photo')) || (r.kind === 'vault' && r.shared_with_client && r.review_status === 'valide' && db.clients.some((c) => c.user_id === me() && c.company_id === r.company_id));
       case 'payments': case 'purchases': case 'items': case 'teams': case 'company_invites': case 'network': return r.company_id === mc;
@@ -200,6 +203,39 @@ export function mockBackend({ saveSession, getSession }) {
   }
   const rpcs = {
     is_admin() { return isAdmin(); },
+    track_profile({ p_company, p_kind }) {
+      if (!me() || !['view', 'call', 'share'].includes(p_kind) || myCompany() === p_company) return;
+      const day = iso(new Date()); let r = db.profile_stats.find((x) => x.company_id === p_company && x.day === day);
+      if (!r) { r = { company_id: p_company, day, views: 0, calls: 0, shares: 0 }; db.profile_stats.push(r); }
+      r[{ view: 'views', call: 'calls', share: 'shares' }[p_kind]] += 1;
+    },
+    my_profile_stats({ p_days = 30 }) {
+      const mc = myCompany(); if (!mc) return null;
+      const since = new Date(Date.now() - p_days * 864e5), sinceDay = iso(since);
+      const rows = db.profile_stats.filter((x) => x.company_id === mc && x.day > sinceDay).sort((a, b) => (a.day < b.day ? -1 : 1));
+      const req = db.appointments.filter((a) => a.company_id === mc && a.requested_by && new Date(a.created_at) > since);
+      const sum = (k) => rows.reduce((n, r) => n + r[k], 0);
+      return { views: sum('views'), calls: sum('calls'), shares: sum('shares'), requests: req.length, answered: req.filter((a) => a.status !== 'a_valider' || a.proposed_start_at).length,
+        favorites: db.client_favorites.filter((f) => f.company_id === mc).length, response_minutes: null, daily: rows.map((r) => ({ day: r.day, views: r.views, calls: r.calls })) };
+    },
+    log_client_error({ p_message = '', p_path = '', p_stack = '', p_agent = '' }) {
+      const m = String(p_message).slice(0, 500); if (!m) return;
+      const path = String(p_path).replace(/[0-9a-f]{8}-[0-9a-f-]{27,}/g, ':id').slice(0, 200);
+      const e = db.app_errors.find((x) => x.message === m && x.path === path && !x.resolved);
+      if (e) { e.count += 1; e.last_at = now(); return; }
+      db.app_errors.push({ id: id(), user_id: me() || null, path, message: m, stack: String(p_stack).slice(0, 4000), agent: String(p_agent).slice(0, 300), count: 1, first_at: now(), last_at: now(), resolved: false });
+    },
+    admin_recent_photos({ p_limit = 60 }) {
+      if (!isAdmin()) return [];
+      const cn = (cid) => { const c = db.companies.find((x) => x.id === cid); return c?.trade_name || c?.name || ''; };
+      const out = [...db.reviews.flatMap((r) => (r.photos || []).map((ph) => ({ kind: 'avis', ref: r.id, company_id: r.company_id, company: cn(r.company_id), title: String(r.comment || '').slice(0, 80), status: r.status, path: ph, created_at: r.created_at }))),
+        ...db.project_steps.flatMap((r) => (r.photos || []).map((ph) => ({ kind: 'chantier', ref: r.id, company_id: r.company_id, company: cn(r.company_id), title: r.title, status: r.status, path: ph, created_at: r.created_at })))];
+      return out.sort((a, b) => (a.created_at < b.created_at ? 1 : -1)).slice(0, p_limit);
+    },
+    admin_remove_photo({ p_kind, p_ref, p_path }) {
+      if (!isAdmin()) throw new Error('Réservé à l’équipe');
+      const r = (p_kind === 'avis' ? db.reviews : db.project_steps).find((x) => x.id === p_ref); if (r) r.photos = (r.photos || []).filter((x) => x !== p_path);
+    },
     admin_setup_platform() {
       if (!isAdmin()) throw new Error('Réservé à l’équipe Artis & You.');
       let c = db.companies.find((x) => x.is_platform);
@@ -527,18 +563,21 @@ export function mockBackend({ saveSession, getSession }) {
       if (!d) throw new Error('Devis introuvable');
       if (p_action === 'refuse') { Object.assign(d, { status: 'refuse', refused_at: now() }); d.conditions = { ...d.conditions, refusal_reason: p_reason }; notifyCompany(d.company_id, 'documents', 'Devis refusé', d.number, '/pro/documents/' + d.id); }
     },
-    async client_quote_sign({ p_id, p_name, p_image = '', p_agent = '', p_start_early = false }) {
+    async client_quote_sign({ p_id, p_name, p_image = '', p_agent = '', p_start_early = false, p_cosigner = null }) {
       const d = db.documents.find((x) => x.id === p_id && x.kind === 'devis' && x.number && myClientIds().includes(x.client_id));
       if (!d) throw new Error('Devis introuvable');
       if (d.status !== 'envoye') throw new Error('Ce devis ne peut plus être signé.');
       if (!String(p_name || '').trim()) throw new Error('Indiquez votre nom.');
+      const coName = String(p_cosigner?.name || '').trim();
+      if (p_cosigner && !coName) throw new Error('Indiquez le nom de la deuxième personne qui signe.');
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode((d.number || '') + JSON.stringify(d.lines) + JSON.stringify(d.totals)));
       const hash = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
-      Object.assign(d, { status: 'accepte', accepted_at: now(), signed_name: p_name.trim() });
-      d.conditions = { ...d.conditions, signature: { image: p_image, at: now(), by: me(), hash, agent: p_agent, mention: 'Bon pour accord' } };
+      const who = p_name.trim() + (coName ? ' et ' + coName : '');
+      Object.assign(d, { status: 'accepte', accepted_at: now(), signed_name: who });
+      d.conditions = { ...d.conditions, signature: { image: p_image, at: now(), by: me(), hash, agent: p_agent, mention: 'Bon pour accord', ...(coName ? { cosigner: { name: coName, image: p_cosigner.image || '', at: now() } } : {}) } };
       const consumer = (db.clients.find((c) => c.id === d.client_id)?.type || 'particulier') === 'particulier';
       if (consumer) { const u = new Date(); u.setHours(23, 59, 59, 0); u.setDate(u.getDate() + 14); d.conditions.retractation = { applicable: true, until: u.toISOString(), start_early: !!p_start_early, informed_at: now() }; }
-      notifyCompany(d.company_id, 'documents', 'Devis signé', d.number + ' · ' + p_name.trim() + (consumer ? (p_start_early ? ' · le client demande à commencer avant 14 jours' : ' · délai de rétractation de 14 jours en cours') : ''), '/pro/documents/' + d.id);
+      notifyCompany(d.company_id, 'documents', 'Devis signé', d.number + ' · ' + who + (consumer ? (p_start_early ? ' · le client demande à commencer avant 14 jours' : ' · délai de rétractation de 14 jours en cours') : ''), '/pro/documents/' + d.id);
     },
     client_quote_withdraw({ p_id, p_reason = '' }) {
       const d = db.documents.find((x) => x.id === p_id && x.kind === 'devis' && myClientIds().includes(x.client_id));

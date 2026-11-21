@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { LuFilePen, LuFileText, LuHardHat, LuFolderOpen, LuDownload, LuPrinter, LuMessageSquare, LuCreditCard, LuLandmark, LuUser, LuHouse, LuUsers, LuBell, LuShield, LuCircleHelp, LuScale, LuLogOut, LuPalette, LuStar, LuCamera, LuDownload as LuDl, LuHeadset } from 'react-icons/lu';
+import { LuBookOpen, LuFilePen, LuFileText, LuHardHat, LuFolderOpen, LuDownload, LuPrinter, LuMessageSquare, LuCreditCard, LuLandmark, LuUser, LuHouse, LuUsers, LuBell, LuShield, LuCircleHelp, LuScale, LuLogOut, LuPalette, LuStar, LuCamera, LuDownload as LuDl, LuHeadset } from 'react-icons/lu';
 import { api, uid, OFFLINE } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
@@ -315,7 +315,7 @@ export function Account() {
       <div className="card navy row" style={{ gap: 14 }}><Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} size="lg" ring /><div><b style={{ fontSize: 19 }}>{profile.first_name} {profile.last_name}</b><div className="muted">{profile.email}</div></div></div>
       <div className="mt"><IdentityCard purpose="client" /></div>
       <Sec title={t('Compte')} />
-      <div className="list"><MenuRow to="/client/compte/profil" icon={LuUser} label={t('Mon profil')} /><MenuRow to="/client/compte/logement" icon={LuHouse} label={t('Mon logement')} sub={[profile.home?.address, profile.home?.city].filter(Boolean).join(', ')} /><MenuRow to="/client/selection" icon={LuUsers} label={t('Ma sélection')} sub={t('Mes artisans enregistrés et habituels')} /></div>
+      <div className="list"><MenuRow to="/client/compte/profil" icon={LuUser} label={t('Mon profil')} /><MenuRow to="/client/compte/logement" icon={LuHouse} label={t('Mon logement')} sub={[profile.home?.address, profile.home?.city].filter(Boolean).join(', ')} /><MenuRow to="/client/carnet" icon={LuBookOpen} label={t('Carnet du logement')} sub={t('Équipements, travaux, factures, garanties · PDF')} /><MenuRow to="/client/selection" icon={LuUsers} label={t('Ma sélection')} sub={t('Mes artisans enregistrés et habituels')} /></div>
       <Sec title={t('Application')} />
       <div className="list"><MenuRow to="/client/compte/notifications" icon={LuBell} label={t('Notifications')} /><MenuRow to="/client/compte/apparence" icon={LuPalette} label={t('Langue et apparence')} /><MenuRow to="/client/compte/donnees" icon={LuShield} label={t('Données et confidentialité')} />{profile.is_admin && <MenuRow to="/client/admin" icon={LuShield} label={t('Administration Artis & You')} />}</div>
       <Sec title={t('Aide')} />
@@ -341,6 +341,7 @@ export function Home2() {
         <Field label={t('Statut')}><select value={h.status} onChange={(e) => setH({ ...h, status: e.target.value })}>{['Propriétaire', 'Locataire', 'Syndic / copropriété'].map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
       </div>
       <p className="small muted">{t('Ces infos aident l’artisan à préparer son intervention (TVA à taux réduit si le logement a plus de 2 ans).')}</p>
+      <button className="btn ghost block mb" onClick={() => navigate('/client/carnet')}>{t('Carnet du logement (PDF)')}</button>
       <button className="btn ghost block mb" onClick={() => navigate('/client/aides')}>{t('Simuler mes aides (TVA réduite, MaPrimeRénov’)')}</button>
       <button className="btn block" onClick={() => run(async () => { const nh = { ...h, equipments: profile.home?.equipments || [] }; await api.update('profiles', { id: profile.id }, { home: nh }); setProfile({ ...profile, home: nh }); }, t('Logement enregistré'))}>{t('Enregistrer')}</button>
       <Equipments />
@@ -470,10 +471,14 @@ function QuoteSignSheet({ open, d, company, client, onClose, onDone }) {
   const [img, setImg] = useState('');
   const [ok, setOk] = useState(false);
   const [early, setEarly] = useState(false);
+  const [two, setTwo] = useState(false);
+  const [coName, setCoName] = useState('');
+  const [coImg, setCoImg] = useState('');
   if (!open) return null;
   const sign = () => run(async () => {
     const image = img || await textSignature(name.trim(), 'Dancing Script');
-    await api.rpc('client_quote_sign', { p_id: d.id, p_name: name.trim(), p_image: image, p_agent: navigator.userAgent.slice(0, 300), p_start_early: early });
+    const cos = two ? { name: coName.trim(), image: coImg || await textSignature(coName.trim(), 'Dancing Script') } : null;
+    await api.rpc('client_quote_sign', { p_id: d.id, p_name: name.trim(), p_image: image, p_agent: navigator.userAgent.slice(0, 300), p_start_early: early, ...(cos ? { p_cosigner: cos } : {}) });
     onDone();
   }, t('Devis signé, l’artisan est prévenu'));
   return (
@@ -482,9 +487,15 @@ function QuoteSignSheet({ open, d, company, client, onClose, onDone }) {
       <Field label={t('Votre nom et prénom')}><input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" /></Field>
       <div className="small bold mb">{t('Votre signature')} <span className="faint">({t('facultatif')})</span></div>
       <DrawPad value={img} onChange={setImg} />
+      <label className="check" style={{ marginTop: 14 }}><input type="checkbox" checked={two} onChange={(e) => setTwo(e.target.checked)} /><span>{t('Nous sommes deux à signer (couple, copropriétaires…)')}</span></label>
+      {two && <div className="cosign">
+        <Field label={t('Nom et prénom de la deuxième personne')}><input value={coName} onChange={(e) => setCoName(e.target.value)} /></Field>
+        <div className="small bold mb">{t('Sa signature')} <span className="faint">({t('facultatif')})</span></div>
+        <DrawPad value={coImg} onChange={setCoImg} />
+      </div>}
       <label className="check" style={{ marginTop: 14 }}><input type="checkbox" checked={ok} onChange={(e) => setOk(e.target.checked)} /><span>{t('Bon pour accord. J’ai lu le devis et j’accepte les travaux, le prix et les conditions.')}</span></label>
       <RetractationInfo d={d} company={company} client={client} startEarly={early} setStartEarly={setEarly} />
-      <button className="btn block" style={{ marginTop: 14 }} disabled={!ok || !name.trim()} onClick={sign}><LuFilePen /> {t('Signer')}</button>
+      <button className="btn block" style={{ marginTop: 14 }} disabled={!ok || !name.trim() || (two && !coName.trim())} onClick={sign}><LuFilePen /> {t('Signer')}</button>
       <p className="small faint" style={{ marginTop: 8 }}>{t('Nous enregistrons la date, l’heure et une empreinte du devis pour prouver la signature.')}</p>
     </Sheet>
   );

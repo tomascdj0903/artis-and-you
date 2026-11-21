@@ -10,8 +10,8 @@ import { navigate } from '../../lib/router.jsx';
 import { VoiceRecorder, VoiceNote, canRecord } from '../../ui/voice.jsx';
 import { LuMic, LuClock } from 'react-icons/lu';
 import { t } from '../../lib/i18n.js';
-import { hm, dateMed, fullName, clientName } from '../../lib/format.js';
-import { Img, Sheet, pickFiles, openFile, Loader, Lightbox, CameraSheet, isTouch } from '../../ui/index.jsx';
+import { hm, dateMed, fullName, clientName, money, date } from '../../lib/format.js';
+import { Img, Sheet, pickFiles, openFile, Loader, Lightbox, CameraSheet, isTouch, useData } from '../../ui/index.jsx';
 
 export async function uploadTo(prefix, file) {
   const safe = file.name.normalize('NFD').replace(/[^\w.-]+/g, '_').slice(-60);
@@ -31,6 +31,8 @@ export function Chat({ convId, projects = [], banner }) {
   const [menu, setMenu] = useState(false);
   const [doneSheet, setDoneSheet] = useState(false);
   const [rdvSheet, setRdvSheet] = useState(false);
+  const [docMenu, setDocMenu] = useState(false);
+  const [docPick, setDocPick] = useState(null);
   const [big, setBig] = useState(null);
   const [cam, setCam] = useState(false);
   const [rec, setRec] = useState(false);
@@ -115,6 +117,7 @@ export function Chat({ convId, projects = [], banner }) {
     toast(t('Statut projet mis à jour'));
   };
 
+  const canDocs = !!profile.company_id && !company?.is_platform && conv?.kind === 'client' && !!conv?.client_id;
   if (!msgs) return <Loader />;
   let lastDay = '', lastSender = '';
   return (
@@ -134,7 +137,7 @@ export function Chat({ convId, projects = [], banner }) {
             <div key={m.id} style={{ display: 'contents' }}>
               {showDay && <div className="day">{dateMed(day)}</div>}
               {showWho && <div className="who">{m.sender_name}</div>}
-              {m.card?.type === 'artesa_rdv' ? <RdvSupportCard m={m} mine={mine} onDone={load} /> : m.card?.type === 'demande' ? (
+              {m.card?.type === 'artesa_rdv' ? <RdvSupportCard m={m} mine={mine} onDone={load} /> : m.card?.type === 'doc' ? <DocCard card={m.card} mine={mine} pro={!!profile.company_id} /> : m.card?.type === 'demande' ? (
                 <div className={'req-card' + (mine ? ' r' : '')}>
                   <div className="row" style={{ gap: 8 }}><LuCalendarCheck size={20} /><b>{mine ? t(m.card.title) : t('Demande de RDV de {n}', { n: m.sender_name || t('votre client') })}</b></div>
                   <div className="small">{m.card.sub}</div>
@@ -172,6 +175,7 @@ export function Chat({ convId, projects = [], banner }) {
         ))}
         <div ref={endRef} />
       </div>
+      {!rec && !text.trim() && conv?.kind !== 'team' && <QuickReplies pro={!!profile.company_id && !company?.is_platform} custom={company?.settings?.quick_replies} onPick={setText} />}
       {rec ? <VoiceRecorder onSend={sendVoice} onCancel={() => setRec(false)} onError={(m) => { setRec(false); toast(m, true); }} /> : (
         <form className="composer" onSubmit={send}>
           <button type="button" className="att" onClick={() => setMenu(true)} aria-label={t('Joindre')}><LuPlus /></button>
@@ -187,8 +191,15 @@ export function Chat({ convId, projects = [], banner }) {
         <button className="opt" onClick={() => attach('image/*')}><LuImage /><div><b>{t('Photos de la galerie')}</b></div></button>
         <button className="opt" onClick={() => attach('application/pdf,image/*,.doc,.docx,.xls,.xlsx,.dwg')}><LuPaperclip /><div><b>{t('Fichier (PDF, plan…)')}</b></div></button>
         {conv?.kind === 'support' && <button className="opt" onClick={() => { setMenu(false); setRdvSheet(true); }}><LuCalendarCheck /><div><b>{company?.is_platform ? t('Proposer un rendez-vous') : t('Demander un rendez-vous')}</b><small>{t('Téléphone, WhatsApp, visio… il s’ajoute au planning')}</small></div></button>}
+        {canDocs && <button className="opt" onClick={() => { setMenu(false); setDocMenu(true); }}><LuFileText /><div><b>{t('Devis et factures')}</b><small>{t('Envoyer un devis ou une facture, créer un devis')}</small></div></button>}
         {conv?.kind === 'team' && <button className="opt" onClick={() => { setMenu(false); setDoneSheet(true); }}><LuHardHat /><div><b>{t('Chantier terminé')}</b><small>{t('Met à jour le statut projet')}</small></div></button>}
       </Sheet>
+      <Sheet open={docMenu} onClose={() => setDocMenu(false)} title={t('Devis et factures')}>
+        <button className="opt" onClick={() => { setDocMenu(false); setDocPick('devis'); }}><LuFileText /><div><b>{t('Envoyer un devis')}</b><small>{t('Le client peut l’ouvrir et le signer')}</small></div></button>
+        <button className="opt" onClick={() => { setDocMenu(false); setDocPick('facture'); }}><LuFileText /><div><b>{t('Envoyer une facture')}</b><small>{t('Le client peut l’ouvrir et la régler')}</small></div></button>
+        <button className="opt" onClick={() => { setDocMenu(false); navigate('/pro/documents/nouveau?kind=devis&client=' + conv.client_id); }}><LuPlus /><div><b>{t('Créer un devis')}</b><small>{t('Le client est déjà rempli')}</small></div></button>
+      </Sheet>
+      {docPick && <DocPickSheet kind={docPick} clientId={conv.client_id} onClose={() => setDocPick(null)} onPick={async (d) => { setDocPick(null); try { await post({ body: '', card: { type: 'doc', kind: d.kind, document_id: d.id, number: d.number, ttc: d.totals?.ttc ?? null, title: d.object || '' } }); } catch (x) { toast(x.message, true); } }} />}
       <Sheet open={doneSheet} onClose={() => setDoneSheet(false)} title={t('Quel chantier est terminé ?')}>
         <div className="list">{projects.filter((p) => !p.finished_at).map((p) => <button key={p.id} className="li click" onClick={() => markDone(p)}><div className="grow"><div className="t1">{p.title}</div><div className="t2">{p.address}</div></div></button>)}</div>
         {!projects.filter((p) => !p.finished_at).length && <p className="muted">{t('Aucun chantier en cours.')}</p>}
@@ -203,6 +214,37 @@ export function Chat({ convId, projects = [], banner }) {
 }
 
 // Nom et sous-titre d'une conversation selon le point de vue
+// Devis / facture partagé dans la conversation : carte cliquable
+function DocCard({ card, mine, pro }) {
+  const isQ = card.kind === 'devis';
+  const to = pro ? '/pro/documents/' + card.document_id : (isQ ? '/client/devis/' : '/client/factures/') + card.document_id;
+  return (
+    <a href={to} className={'doc-card' + (mine ? ' r' : '')} onClick={(e) => { e.preventDefault(); navigate(to); }}>
+      <span className="pill red">{isQ ? t('Devis') : t('Facture')}</span>
+      <div className="grow"><b>{card.number}</b>{card.title && <div className="small muted">{card.title}</div>}</div>
+      {card.ttc != null && <b>{money(card.ttc)}</b>}
+      <span className="small bold red-t">{pro ? t('Ouvrir') : isQ ? t('Voir et signer') : t('Voir et payer')} ›</span>
+    </a>
+  );
+}
+function DocPickSheet({ kind, clientId, onClose, onPick }) {
+  const [list] = useData(() => api.select('documents', { client_id: clientId, kind }, { order: 'issue_date.desc', limit: 30 }).then((l) => l.filter((d) => d.number)), [clientId, kind]);
+  return (
+    <Sheet open onClose={onClose} title={kind === 'devis' ? t('Quel devis envoyer ?') : t('Quelle facture envoyer ?')}>
+      {!list ? <Loader /> : !list.length ? <p className="muted">{kind === 'devis' ? t('Aucun devis émis pour ce client. Créez-en un depuis le menu précédent.') : t('Aucune facture émise pour ce client.')}</p>
+        : <div className="list">{list.map((d) => <button key={d.id} className="li click" onClick={() => onPick(d)}><div className="grow"><div className="t1">{d.number}{d.object ? ' · ' + d.object : ''}</div><div className="t2">{date(d.issue_date)} · {money(d.totals?.ttc)}</div></div></button>)}</div>}
+    </Sheet>
+  );
+}
+
+// Réponses rapides : un toucher remplit le champ, on peut modifier avant d'envoyer
+export const QUICK_PRO = ['Bonjour, je regarde ça et je reviens vers vous rapidement.', 'Pouvez-vous m’envoyer une photo du problème ?', 'Je vous envoie le devis aujourd’hui.', 'Je suis en route, j’arrive dans 20 minutes environ.', 'C’est terminé, je vous envoie la facture.'];
+const QUICK_CLIENT = ['Merci beaucoup !', 'C’est d’accord pour moi.', 'Quelles sont vos disponibilités ?', 'Je vous envoie une photo.'];
+function QuickReplies({ pro, custom, onPick }) {
+  const list = (Array.isArray(custom) && custom.length ? custom : pro ? QUICK_PRO : QUICK_CLIENT).filter(Boolean).slice(0, 8);
+  return <div className="quick-replies" role="list" aria-label={t('Réponses rapides')}>{list.map((q) => <button key={q} type="button" role="listitem" className="qr" onClick={() => onPick(t(q))}>{t(q)}</button>)}</div>;
+}
+
 export function convMeta(c, { mine, clients, teams, companies, members, users }) {
   if (c.kind === 'client') {
     if (!mine) { const co = companies[c.company_id]; return { name: co?.trade_name || co?.name || t('Artisan'), sub: (co?.trades || [])[0] || '', tag: t('Artisan'), initials: co?.name }; }

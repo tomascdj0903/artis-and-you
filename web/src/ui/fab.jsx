@@ -83,6 +83,8 @@ function routeActions(path) {
   ];
 }
 
+// Pages de devis / factures : sur mobile, le bouton + masquait les totaux en bas de page
+const DOC_PAGE = /^\/(pro\/documents\/(?!$|devis$|factures$)[^/]+|client\/(devis|factures)\/(?!comparer$)[^/]+)(\/.*)?$/;
 export function Fab({ primary, hidden }) {
   const { path } = useRoute();
   const [open, setOpen] = useState(false);
@@ -95,7 +97,7 @@ export function Fab({ primary, hidden }) {
   return (
     <>
       {open && <div className="fabm-veil" onClick={() => setOpen(false)} />}
-      <div className={'fabm' + (open ? ' open' : '')}>
+      <div className={'fabm' + (open ? ' open' : '') + (DOC_PAGE.test(path) ? ' on-doc' : '')}>
         {open && <div className="fabm-list" role="menu">
           {items.map((a) => { const I = a.icon || LuPlus; return <button key={a.label} role="menuitem" onClick={() => go(a)}><span>{a.label}</span><i><I /></i></button>; })}
         </div>}

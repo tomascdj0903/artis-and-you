@@ -1,5 +1,5 @@
 // Planning : fiche d'un rendez-vous, création / modification, déplacement, « je suis en route »
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LuVideo, LuMapPin, LuSend, LuImage, LuNavigation, LuClock } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
@@ -22,6 +22,16 @@ export function ApptDetail({ params }) {
   const [enroute, setEnroute] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
   const [big, setBig] = useState(null);
+  // Bouton « Accepter » de la notification d'une demande urgente : on demande juste confirmation
+  const askedRef = useRef(false);
+  useEffect(() => {
+    if (!b?.a || askedRef.current || !/[?&]action=accepter/.test(location.search)) return;
+    askedRef.current = true;
+    history.replaceState(history.state, '', location.pathname);
+    if (b.a.status !== 'a_valider') return;
+    confirm({ title: t('Accepter cette demande ?'), text: dateShort(b.a.start_at) + ' · ' + hm(b.a.start_at) + ' – ' + hm(b.a.end_at), ok: t('Valider le rendez-vous') }).then((ok) => { if (ok) acceptRef.current?.(); });
+  }, [b]);
+  const acceptRef = useRef(null);
   if (!b) return <div className="content"><TopBar title={t('Rendez-vous')} /><Loader /></div>;
   const { a, c, doc } = b;
   if (!a) return <div className="content"><TopBar title={t('Rendez-vous')} /><Empty text={t('Rendez-vous introuvable')} /></div>;
@@ -38,6 +48,7 @@ export function ApptDetail({ params }) {
     await notifyChat({ type: a.mode === 'visio' ? 'rdv' : 'cal', title: (a.mode === 'visio' ? t('Visio confirmée') : t('RDV confirmé')) + ' · ' + dateShort(a.start_at) + ' ' + hm(a.start_at), sub: a.mode === 'visio' ? t('Lien WhatsApp envoyé au client') : a.address });
     reload();
   }, t('Rendez-vous validé'));
+  acceptRef.current = validate;
   const setStatus = async (status, q) => { if (q && !(await confirm(q))) return; await run(() => api.update('appointments', { id: a.id }, { status }), t('Rendez-vous mis à jour')); reload(); };
   const goRoute = () => window.open('https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(a.address), '_blank');
   return (
