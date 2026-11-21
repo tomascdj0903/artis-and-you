@@ -1564,3 +1564,9 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
   .topbar .right .iconbtn { width: 40px; height: 40px; font-size: 23px; }
 }
 @media (max-width: 340px) { .topbar h1 { font-size: 15px; } .topbar .right .iconbtn { width: 34px; } .topbar .logo-full .wordmark { font-size: 18px !important; } }
+/* En-tête sur téléphone : les boutons texte (Importer, Exporter, Nouveau…) deviennent des pastilles icône pour laisser la place au titre */
+@media (max-width: 700px) {
+  .topbar .right .row { gap: 4px !important; flex-wrap: nowrap; }
+  .topbar .right .btn:has(svg) { font-size: 0; gap: 0; width: 40px; height: 40px; min-height: 0; padding: 0; justify-content: center; border-radius: 999px; flex: none; }
+  .topbar .right .btn:has(svg) svg { font-size: 19px; width: 19px; height: 19px; margin: 0; }
+}

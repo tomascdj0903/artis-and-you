@@ -106,10 +106,14 @@ export function AdminPipeline() {
 
   return (
     <div className="content wide">
-      <TopBar title={t('Prospection')} sub={t('Votre carnet de prospects, partagé à deux')} right={<div className="row" style={{ gap: 6 }}>
+      <TopBar title={t('Prospection')} sub={t('Votre carnet de prospects, partagé à deux')} right={<div className="row hide-mob" style={{ gap: 6 }}>
         <button className="btn ghost sm" onClick={() => setImp(true)}><LuUpload /> {t('Importer')}</button>
         <button className="btn ghost sm" onClick={exportX} disabled={!list.length}><LuDownload /> {t('Exporter')}</button>
         <button className="btn sm" onClick={() => setEdit({ ...EMPTY, owner: who, value: Number(s.plans.find((p) => p.id === 'solo')?.price) || 0 })}><LuPlus /> {t('Nouveau')}</button></div>} />
+      <div className="row hide-desk mb" style={{ gap: 8 }}>
+        <button className="btn ghost sm" onClick={() => setImp(true)}><LuUpload /> {t('Importer')}</button>
+        <button className="btn ghost sm" onClick={exportX} disabled={!list.length}><LuDownload /> {t('Exporter')}</button>
+        <button className="btn sm grow" onClick={() => setEdit({ ...EMPTY, owner: who, value: Number(s.plans.find((p) => p.id === 'solo')?.price) || 0 })}><LuPlus /> {t('Nouveau')}</button></div>
       <WhoBar />
       <div className="kpis mb">
         <div className="kpi"><small>{t('En cours')}</small><b>{deals.filter(OPEN).length}</b><span className="small muted">{t('{m} / mois potentiels', { m: money0(deals.filter(OPEN).reduce((a, d) => a + Number(d.value || 0), 0)) })}</span></div>

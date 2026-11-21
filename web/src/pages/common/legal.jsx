@@ -9,7 +9,7 @@ import { api, GITHUB_REPO, APP_VERSION } from '../../lib/api.js';
 // Informations de l'éditeur : à compléter à l'immatriculation de la société (tout ce qui est entre crochets s'affiche en orange)
 export const EDITOR = {
   name: 'Artis & You',
-  company: '[dénomination sociale à confirmer : ARTESA ou Artis & You]',
+  company: 'Artis & You',
   form: 'société par actions simplifiée (SAS) au capital de 2\u00a0500\u00a0€',
   address: '67 ter avenue Georges Clemenceau, 06220 Vallauris, France',
   rcs: '[RCS / SIREN : à compléter]',
@@ -43,7 +43,7 @@ export function Mentions() {
   return (
     <Page title={t('Mentions légales')}>
       <h3>Éditeur du site et de l’application</h3>
-      <p>{e.name} est édité par la société <TBD v={e.company} />, <TBD v={e.form} /><br />Siège : <TBD v={e.address} /><br /><TBD v={e.rcs} /> · <TBD v={e.vat} /><br />Directeur de la publication : <TBD v={e.director} /><br />Contact : <a href={'mailto:' + e.email}>{e.email}</a> · <TBD v={e.phone} /></p>
+      <p><b>{e.company}</b>, <TBD v={e.form} /><br />Siège : <TBD v={e.address} /><br /><TBD v={e.rcs} /> · <TBD v={e.vat} /><br />Directeur de la publication : <TBD v={e.director} /><br />Contact : <a href={'mailto:' + e.email}>{e.email}</a> · <TBD v={e.phone} /></p>
       <p className="small muted">L’immatriculation de la société est en cours (décembre 2026) : les numéros manquants seront ajoutés dès sa création.</p>
       <h3>Rôle d’Artis & You</h3>
       <p>Artis & You fournit aux professionnels du bâtiment un outil de gestion (demandes, planning, devis, factures, messagerie, documents) et aux particuliers un service gratuit pour trouver un artisan, le contacter et suivre leurs travaux. Artis & You <b>n’est pas partie</b> aux contrats conclus entre un artisan et ses clients et ne réalise aucun travaux : l’artisan est seul responsable de ses devis, factures, prix, travaux, assurances (dont la décennale) et qualifications. Détails dans les <Link to="/cgu">CGU</Link>, les <Link to="/cgv">CGV artisans</Link> et la <Link to="/confidentialite">politique de confidentialité</Link>. <L id="conso-L111-7" /></p>
