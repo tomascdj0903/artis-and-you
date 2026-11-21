@@ -214,3 +214,62 @@ export function TarifsBox({ tarifs, urgent, compact }) {
     </div>
   );
 }
+
+// ─────────────── Simulateur d'aides : TVA réduite (+ orientation MaPrimeRénov') ───────────────
+// Taux : CGI art. 278-0 bis A (5,5 % rénovation énergétique) et art. 279-0 bis (10 % amélioration, transformation, aménagement, entretien),
+// logement d'habitation achevé depuis plus de 2 ans ; sinon 20 %.
+export const WORKS = [
+  ['energie', 'Rénovation énergétique', 'Isolation, pompe à chaleur, chauffage au bois ou solaire, VMC, régulation du chauffage…', 5.5],
+  ['amelioration', 'Amélioration ou entretien', 'Plomberie, électricité, peinture, carrelage, salle de bain, cuisine posée, menuiseries hors isolation…', 10],
+  ['neuf', 'Construction, extension ou gros œuvre', 'Logement neuf, agrandissement, surélévation, remise à neuf de la majorité du gros œuvre…', 20],
+];
+export function AidSimulator() {
+  const { profile } = useApp();
+  const yr = Number(profile.home?.year) || null;
+  const [age, setAge] = useState(yr ? (new Date().getFullYear() - yr > 2 ? 'old' : 'new') : 'old');
+  const [kind, setKind] = useState('energie');
+  const [ht, setHt] = useState('');
+  const [habit, setHabit] = useState(true);
+  const amount = Number(String(ht).replace(/\s/g, '').replace(',', '.')) || 0;
+  const w = WORKS.find((x) => x[0] === kind);
+  const rate = age === 'old' && habit ? w[3] : 20;
+  const tva = (amount * rate) / 100, normal = (amount * 20) / 100;
+  return (
+    <div className="content narrow">
+      <TopBar title={t('Simulateur d’aides')} sub={t('TVA réduite et MaPrimeRénov’')} />
+      <div className="notice"><span>{t('Estimation indicative, pour vous aider à préparer votre projet. Le taux de TVA appliqué est indiqué par l’artisan sur son devis.')}</span></div>
+      <Sec title={t('Votre logement')} />
+      <Chips options={[['old', t('Achevé depuis plus de 2 ans')], ['new', t('Moins de 2 ans')]]} value={age} onChange={setAge} />
+      <label className="check mt"><input type="checkbox" checked={habit} onChange={(e) => setHabit(e.target.checked)} /> {t('Il sert d’habitation (ou le deviendra après les travaux)')}</label>
+      <Sec title={t('Vos travaux')} />
+      <div className="aid-works">{WORKS.map(([k, l, d]) => (
+        <button key={k} className={'opt' + (kind === k ? ' red' : '')} style={{ marginTop: 0 }} onClick={() => setKind(k)}><div><b>{t(l)}</b><small>{t(d)}</small></div></button>
+      ))}</div>
+      <Field label={t('Montant hors taxes du devis (€ HT)')}><input inputMode="decimal" placeholder="10 000" value={ht} onChange={(e) => setHt(e.target.value)} /></Field>
+      <div className="aid-result">
+        <div><span>{t('Taux de TVA')}</span><b>{String(rate).replace('.', ',')} %</b></div>
+        <div><span>{t('TVA')}</span><b>{money(tva)}</b></div>
+        <div><span>{t('Total TTC')}</span><b>{money(amount + tva)}</b></div>
+        <div className="save"><span>{t('Économie par rapport à 20 %')}</span><b>{money(normal - tva)}</b></div>
+      </div>
+      <ul className="small muted aid-cond">
+        <li>{t('Le taux réduit ne s’applique qu’aux travaux et équipements fournis et facturés par l’entreprise : le matériel que vous achetez vous-même reste à 20 %.')}</li>
+        <li>{t('Vous remettez à l’artisan une attestation indiquant que le logement a plus de 2 ans (mention sur le devis ou la facture pour les travaux courants).')}</li>
+        {kind === 'energie' && <li>{t('Le taux de 5,5 % concerne des équipements et matériaux précis (performances minimales). L’artisan vous confirme l’éligibilité sur son devis.')}</li>}
+      </ul>
+      {kind === 'energie' && <>
+        <Sec title={t('MaPrimeRénov’')} />
+        <p>{t('Pour une pompe à chaleur, un chauffage au bois, l’isolation ou une rénovation globale, vous pouvez peut-être aussi obtenir MaPrimeRénov’. Le montant dépend de vos revenus, du logement et des travaux, et les règles changent régulièrement.')}</p>
+        <ul className="small muted aid-cond">
+          <li>{t('L’artisan doit en général être certifié RGE.')}</li>
+          <li>{t('La demande doit être déposée avant le début des travaux.')}</li>
+        </ul>
+        <div className="row wrap" style={{ gap: 8 }}>
+          <a className="btn" href="https://france-renov.gouv.fr/" target="_blank" rel="noopener noreferrer">{t('Simulation officielle France Rénov’')}</a>
+          <button className="btn ghost" onClick={() => navigate('/client/artisans?q=RGE')}>{t('Trouver un artisan')}</button>
+        </div>
+      </>}
+      <p className="small faint mt">{t('Sources : code général des impôts, articles 278-0 bis A (5,5 %) et 279-0 bis (10 %) ; economie.gouv.fr, « TVA à taux réduit : pour quels travaux ? ».')}</p>
+    </div>
+  );
+}

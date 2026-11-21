@@ -1682,3 +1682,11 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 .omap-zoom button { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: 18px; font-weight: 700; cursor: pointer; }
 .omap-attr { position: absolute; right: 6px; bottom: 4px; font-size: 10px; background: rgba(255,255,255,.85); padding: 1px 6px; border-radius: 6px; color: #333; }
 .map-pick { margin-top: 8px; }
+.aid-works { display: grid; gap: 8px; margin-bottom: 12px; }
+.aid-works .opt small { display: block; font-weight: 400; color: var(--text-3); margin-top: 2px; }
+.aid-result { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 8px 0; }
+.aid-result > div { display: grid; gap: 2px; padding: 10px 12px; border-radius: 14px; background: var(--bg-soft); }
+.aid-result span { font-size: 13px; color: var(--text-3); }
+.aid-result b { font-size: 18px; }
+.aid-result .save { background: #E6F2E7; }
+.aid-cond { padding-left: 18px; }

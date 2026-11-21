@@ -341,6 +341,7 @@ export function Home2() {
         <Field label={t('Statut')}><select value={h.status} onChange={(e) => setH({ ...h, status: e.target.value })}>{['Propriétaire', 'Locataire', 'Syndic / copropriété'].map((x) => <option key={x} value={x}>{t(x)}</option>)}</select></Field>
       </div>
       <p className="small muted">{t('Ces infos aident l’artisan à préparer son intervention (TVA à taux réduit si le logement a plus de 2 ans).')}</p>
+      <button className="btn ghost block mb" onClick={() => navigate('/client/aides')}>{t('Simuler mes aides (TVA réduite, MaPrimeRénov’)')}</button>
       <button className="btn block" onClick={() => run(async () => { const nh = { ...h, equipments: profile.home?.equipments || [] }; await api.update('profiles', { id: profile.id }, { home: nh }); setProfile({ ...profile, home: nh }); }, t('Logement enregistré'))}>{t('Enregistrer')}</button>
       <Equipments />
     </div>
