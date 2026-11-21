@@ -66,6 +66,8 @@ export function ApptDetail({ params }) {
             a.validated_at && [t('Validé le'), dateTime(a.validated_at)],
             a.enroute_at && [t('En route depuis'), hm(a.enroute_at) + (a.eta_at ? ' · ' + t('arrivée {h}', { h: hm(a.eta_at) }) : '')],
           ]} />
+          {a.urgent && a.status === 'a_valider' && <div className="notice red mt"><b>{t('Demande urgente')}</b> · {t('Le client a besoin d’une intervention au plus vite : répondez rapidement ou proposez un autre créneau.')}</div>}
+          {a.request_group && a.status === 'a_valider' && <div className="notice mt">{t('Le client a envoyé la même demande à d’autres artisans : une réponse rapide fait souvent la différence.')}</div>}
           {(a.request_text || a.photos?.length > 0) && (
             <div className="card soft mt">
               <div className="row between small muted"><span>{t('Demande du client')}</span>{a.photos?.length > 0 && <span className="red-t bold"><LuImage /> {t('{n} photos', { n: a.photos.length })}</span>}</div>

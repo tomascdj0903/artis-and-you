@@ -449,13 +449,30 @@ export function mockBackend({ saveSession, getSession }) {
       const prof = profile();
       notifyCompany(a.company_id, 'rdv', p_accept ? 'Nouveau créneau accepté' : 'Nouveau créneau refusé', `${prof.first_name} ${prof.last_name} · ${a.title} · ${when}${p_accept ? ' · RDV confirmé' : ' · la demande reste à traiter'}`, '/pro/planning/rdv/' + a.id);
     },
+    next_free({ p_ids, p_minutes = 60 }) {
+      return db.companies.filter((c) => p_ids.includes(c.id)).map((c) => {
+        const pl = c.settings?.planning || {}; const days = pl.days || [1, 2, 3, 4, 5, 6]; const [s0, s1] = pl.slot || [8, 18];
+        const busy = db.appointments.filter((a) => a.company_id === c.id && ['a_valider', 'valide'].includes(a.status));
+        let found = null;
+        for (let d = 0; d < 14 && !found; d++) {
+          const day = new Date(); day.setDate(day.getDate() + d); if (!days.includes(day.getDay())) continue;
+          let t0 = new Date(day); t0.setHours(s0, 0, 0, 0); const lim = new Date(day); lim.setHours(s1, 0, 0, 0);
+          if (t0 < new Date()) t0 = new Date(Math.ceil(Date.now() / 18e5) * 18e5);
+          for (let t = t0; +t + p_minutes * 6e4 <= +lim; t = new Date(+t + 18e5)) {
+            const e = new Date(+t + p_minutes * 6e4);
+            if (!busy.some((a) => new Date(a.start_at) < e && new Date(a.end_at) > t)) { found = t.toISOString(); break; }
+          }
+        }
+        return { company_id: c.id, next_at: found, urgence: !!pl.urgence };
+      });
+    },
     request_appointment({ p }) {
       const cid = ensureClient(p.company_id); const prof = profile();
       const pid = id();
       db.projects.push({ id: pid, company_id: p.company_id, client_id: cid, title: p.title || p.type, address: [prof.home?.address, prof.home?.city].filter(Boolean).join(' '), manual: {}, created_at: now() });
       const aid = id();
       db.appointments.push({ ...defaults.appointments, id: aid, company_id: p.company_id, client_id: cid, project_id: pid, type: p.type, title: p.title || p.type, start_at: p.start_at, end_at: p.end_at, mode: p.mode || 'site', status: 'a_valider', request_text: p.text || '', photos: p.photos || [],
-        address: [prof.home?.address, [prof.home?.zip, prof.home?.city].filter(Boolean).join(' ')].filter(Boolean).join(', '), contact_name: `${prof.first_name} ${prof.last_name}`.trim(), contact_phone: prof.phone, requested_by: me(), created_at: now() });
+        address: [prof.home?.address, [prof.home?.zip, prof.home?.city].filter(Boolean).join(' ')].filter(Boolean).join(', '), contact_name: `${prof.first_name} ${prof.last_name}`.trim(), contact_phone: prof.phone, requested_by: me(), request_group: p.group || null, urgent: !!p.urgent, created_at: now() });
       let conv = db.conversations.find((c) => c.kind === 'client' && c.company_id === p.company_id && c.client_user_id === me());
       if (!conv) { conv = { id: id(), kind: 'client', company_id: p.company_id, client_id: cid, client_user_id: me(), project_id: pid, last_message: '', last_at: now(), created_at: now() }; db.conversations.push(conv); }
       // La demande apparaît comme une carte « Demande de RDV envoyée » dans la conversation

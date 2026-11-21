@@ -1594,3 +1594,42 @@ button.hb-kpi { font: inherit; text-align: left; cursor: pointer; color: var(--t
 .cover-edit { display: grid; gap: 8px; margin-bottom: 12px; }
 .cover-edit .cover-img { width: 100%; height: 120px; object-fit: cover; border-radius: 14px; background: var(--bg-soft); }
 .selside { display: grid; gap: 6px; }
+
+/* ── Particulier : urgence, demande à plusieurs, disponibilités, comparateur ── */
+.notice.red { background: #FBE7E1; border-left: 4px solid var(--bordeaux); }
+.notice svg { flex: none; width: 18px; height: 18px; margin-top: 1px; }
+.find-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 4px 0 12px; }
+.find-actions.home { grid-template-columns: 1fr 1fr; margin-top: 12px; }
+.find-act { display: flex; align-items: center; gap: 10px; text-align: left; padding: 10px 12px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: inherit; font: inherit; cursor: pointer; min-width: 0; }
+.find-act > svg { flex: none; width: 22px; height: 22px; color: var(--bordeaux); }
+.find-act span { display: grid; min-width: 0; }
+.find-act b { font-size: 14px; }
+.find-act small { font-size: 12px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.find-act.on { border-color: var(--bordeaux); box-shadow: inset 0 0 0 1px var(--bordeaux); }
+.find-act.urg { background: var(--bordeaux); border-color: var(--bordeaux); color: #fff; }
+.find-act.urg > svg, .find-act.urg small { color: #fff; opacity: .92; }
+@media (max-width: 560px) { .find-actions:not(.home) .find-act { flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px; } .find-actions:not(.home) .find-act small { display: none; } .find-actions:not(.home) .find-act b { font-size: 13px; line-height: 1.2; } .cmp tbody th { width: 104px; font-size: 13px; } .cmp { min-width: 480px; font-size: 13px; } }
+.findcard { cursor: pointer; }
+.findcard .pick-box { flex: none; align-self: center; color: var(--bordeaux); }
+.findcard .pick-box svg { width: 24px; height: 24px; }
+.dispo { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 13px; font-weight: 600; color: var(--text-2, var(--text)); }
+.dispo svg { width: 15px; height: 15px; }
+.dispo.now { color: #2E7D32; }
+.pick-bar { position: sticky; bottom: calc(96px + env(safe-area-inset-bottom)); z-index: 5; display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 10px 12px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(75,32,20,.18); }
+.pick-bar > span { flex: 1; font-weight: 700; }
+@media (min-width: 900px) { .pick-bar { bottom: 16px; } }
+.urg-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+.urg-tile { display: grid; justify-items: start; gap: 10px; padding: 16px; min-height: 108px; border-radius: 18px; border: 1px solid var(--line); background: var(--surface); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.urg-tile svg { width: 28px; height: 28px; color: var(--bordeaux); }
+.urg-tile:hover { border-color: var(--bordeaux); }
+.grouplist { display: grid; gap: 6px; margin-bottom: 8px; }
+.grouplist .li { border: 1px solid var(--line); border-radius: 14px; }
+.green-t { color: #2E7D32; }
+.cmp-wrap { overflow-x: auto; margin: 8px 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+.cmp { width: 100%; border-collapse: collapse; min-width: 560px; font-size: 14px; }
+.cmp th, .cmp td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.cmp thead th { position: sticky; top: 0; background: var(--bg-soft); }
+.cmp tbody th { width: 150px; font-weight: 600; color: var(--text-3); position: sticky; left: 0; background: var(--surface); }
+.cmp tr:last-child th, .cmp tr:last-child td { border-bottom: 0; }
+.cmp .block { display: block; font-weight: 600; font-size: 12px; }
+.cmp-lines { margin: 0; padding-left: 16px; } .cmp-lines li { margin: 2px 0; }

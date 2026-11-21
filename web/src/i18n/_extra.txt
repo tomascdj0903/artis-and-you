@@ -2056,3 +2056,65 @@ Votre délai de réponse moyen et le nombre d’interventions réalisées via Ar
 Mes artisans enregistrés et habituels|My saved and regular tradespeople|Os meus profissionais guardados e habituais|I miei artigiani salvati e abituali
 Entreprise créée en {y} · {n} ans d’activité|Founded in {y} · {n} years in business|Empresa criada em {y} · {n} anos de atividade|Impresa fondata nel {y} · {n} anni di attività
 Entreprise créée en {y}|Founded in {y}|Empresa criada em {y}|Impresa fondata nel {y}
+Comparer mes devis côte à côte|Compare my quotes side by side|Comparar os meus orçamentos lado a lado|Confronta i miei preventivi fianco a fianco
+Dispo aujourd’hui à {h}|Available today at {h}|Disponível hoje às {h}|Disponibile oggi alle {h}
+Dispo demain à {h}|Available tomorrow at {h}|Disponível amanhã às {h}|Disponibile domani alle {h}
+Dispo {d}|Available {d}|Disponível {d}|Disponibile {d}
+Urgence|Emergency|Urgência|Emergenza
+Un artisan disponible au plus vite|A tradesperson as soon as possible|Um profissional o mais rápido possível|Un artigiano il prima possibile
+Choisissez votre problème : nous affichons les artisans qui acceptent les urgences et interviennent chez vous, du plus tôt disponible au plus tard.|Choose your problem: we show tradespeople who take emergencies and work in your area, from the earliest available.|Escolha o seu problema: mostramos os profissionais que aceitam urgências e trabalham na sua zona, do mais cedo disponível ao mais tarde.|Scegli il tuo problema: mostriamo gli artigiani che accettano emergenze e lavorano nella tua zona, dal primo disponibile.
+Danger immédiat (odeur de gaz, incendie, personne blessée) : appelez d’abord le 112 ou, pour le gaz, le numéro d’urgence de votre fournisseur.|Immediate danger (gas smell, fire, injured person): call 112 first or, for gas, your supplier’s emergency number.|Perigo imediato (cheiro a gás, incêndio, pessoa ferida): ligue primeiro para o 112 ou, para o gás, para o número de emergência do seu fornecedor.|Pericolo immediato (odore di gas, incendio, persona ferita): chiama prima il 112 o, per il gas, il numero di emergenza del tuo fornitore.
+Demande à plusieurs artisans|Request to several tradespeople|Pedido a vários profissionais|Richiesta a più artigiani
+Choisissez d’abord 2 ou 3 artisans dans la recherche.|First choose 2 or 3 tradespeople in the search.|Escolha primeiro 2 ou 3 profissionais na pesquisa.|Scegli prima 2 o 3 artigiani nella ricerca.
+Décrivez votre besoin en quelques mots.|Describe what you need in a few words.|Descreva o que precisa em poucas palavras.|Descrivi in poche parole di cosa hai bisogno.
+Aucun de ces artisans n’a de créneau libre dans les 14 prochains jours : écrivez-leur directement.|None of these tradespeople has a free slot in the next 14 days: message them directly.|Nenhum destes profissionais tem horário livre nos próximos 14 dias: escreva-lhes diretamente.|Nessuno di questi artigiani ha un orario libero nei prossimi 14 giorni: scrivi loro direttamente.
+Demande envoyée à {n} artisans|Request sent to {n} tradespeople|Pedido enviado a {n} profissionais|Richiesta inviata a {n} artigiani
+Demande urgente|Urgent request|Pedido urgente|Richiesta urgente
+{n} artisans choisis|{n} tradespeople selected|{n} profissionais escolhidos|{n} artigiani scelti
+1 artisan choisi|1 tradesperson selected|1 profissional escolhido|1 artigiano scelto
+Premier créneau libre : {d}|First free slot: {d}|Primeiro horário livre: {d}|Primo orario libero: {d}
+Pas de créneau libre sous 14 jours : il ne recevra pas cette demande|No free slot within 14 days: they won’t receive this request|Sem horário livre nos próximos 14 dias: não receberá este pedido|Nessun orario libero entro 14 giorni: non riceverà questa richiesta
+Chaque artisan reçoit votre demande sur son premier créneau libre. Il peut l’accepter ou vous en proposer un autre. Vous comparez ensuite leurs réponses et leurs devis.|Each tradesperson gets your request on their first free slot. They can accept it or suggest another. You then compare their replies and quotes.|Cada profissional recebe o seu pedido no primeiro horário livre. Pode aceitá-lo ou propor outro. Depois compara as respostas e os orçamentos.|Ogni artigiano riceve la tua richiesta sul suo primo orario libero. Può accettarla o proporne un altro. Poi confronti risposte e preventivi.
+Envoyer à {n} artisans|Send to {n} tradespeople|Enviar a {n} profissionais|Invia a {n} artigiani
+Comparer mes devis|Compare my quotes|Comparar os meus orçamentos|Confronta i miei preventivi
+Le moins cher|Cheapest|O mais barato|Il più economico
+Écart avec le moins cher|Difference from the cheapest|Diferença para o mais barato|Differenza dal più economico
+Acompte demandé|Deposit requested|Sinal pedido|Acconto richiesto
+Début des travaux|Work start|Início dos trabalhos|Inizio lavori
+Valable jusqu’au|Valid until|Válido até|Valido fino al
+Lignes du devis|Quote items|Linhas do orçamento|Voci del preventivo
++ {n} autres|+ {n} more|+ {n} outras|+ altri {n}
+Note des clients|Customer rating|Avaliação dos clientes|Valutazione dei clienti
+Pas encore d’avis|No reviews yet|Ainda sem avaliações|Ancora nessuna recensione
+Non affichée|Not shown|Não indicado|Non indicata
+Jusqu’à 3 devis côte à côte|Up to 3 quotes side by side|Até 3 orçamentos lado a lado|Fino a 3 preventivi fianco a fianco
+Il faut au moins 2 devis reçus pour les comparer.|You need at least 2 quotes to compare them.|Precisa de pelo menos 2 orçamentos para os comparar.|Servono almeno 2 preventivi per confrontarli.
+Demander d’autres devis|Ask for more quotes|Pedir outros orçamentos|Chiedi altri preventivi
+Choisissez au moins 2 devis.|Choose at least 2 quotes.|Escolha pelo menos 2 orçamentos.|Scegli almeno 2 preventivi.
+Voir et signer|View and sign|Ver e assinar|Vedi e firma
+Voir le devis|View quote|Ver orçamento|Vedi preventivo
+Comparez aussi ce qui est inclus : un prix plus bas peut correspondre à moins de prestations. Artis & You ne recommande aucun artisan en particulier.|Also compare what is included: a lower price may cover less work. Artis & You does not recommend any particular tradesperson.|Compare também o que está incluído: um preço mais baixo pode corresponder a menos serviços. A Artis & You não recomenda nenhum profissional em particular.|Confronta anche cosa è incluso: un prezzo più basso può corrispondere a meno lavori. Artis & You non consiglia nessun artigiano in particolare.
+Fuite, panne, serrure…|Leak, breakdown, lock…|Fuga, avaria, fechadura…|Perdita, guasto, serratura…
+Demander à plusieurs|Ask several|Pedir a vários|Chiedi a più artigiani
+Jusqu’à 3 artisans d’un coup|Up to 3 tradespeople at once|Até 3 profissionais de uma vez|Fino a 3 artigiani in una volta
+Artisans qui acceptent les urgences et interviennent chez vous, du plus tôt disponible au plus tard.|Tradespeople who take emergencies and work in your area, from the earliest available.|Profissionais que aceitam urgências e trabalham na sua zona, do mais cedo disponível ao mais tarde.|Artigiani che accettano emergenze e lavorano nella tua zona, dal primo disponibile.
+Côte à côte|Side by side|Lado a lado|Fianco a fianco
+Dispo sous 7 jours|Available within 7 days|Disponível em 7 dias|Disponibile entro 7 giorni
+Cochez 2 ou 3 artisans, puis décrivez votre besoin une seule fois : chacun reçoit votre demande.|Tick 2 or 3 tradespeople, then describe your need once: each one gets your request.|Selecione 2 ou 3 profissionais e descreva o que precisa uma só vez: cada um recebe o seu pedido.|Seleziona 2 o 3 artigiani e descrivi una sola volta di cosa hai bisogno: ognuno riceve la tua richiesta.
+Urgences|Emergencies|Urgências|Emergenze
+Tout décocher|Untick all|Desmarcar tudo|Deseleziona tutto
+Choisissez-en un 2e|Choose a 2nd one|Escolha um 2.º|Scegline un 2°
+Votre demande sera signalée comme urgente à l’artisan. Le premier créneau libre est présélectionné.|Your request will be flagged as urgent to the tradesperson. The first free slot is preselected.|O seu pedido será assinalado como urgente ao profissional. O primeiro horário livre está pré-selecionado.|La tua richiesta sarà segnalata come urgente all’artigiano. Il primo orario libero è preselezionato.
+J’accepte les urgences|I take emergencies|Aceito urgências|Accetto le emergenze
+Vous apparaissez dans « Urgence » pour les particuliers|You appear in “Emergency” for homeowners|Aparece em «Urgência» para os particulares|Compari in «Emergenza» per i privati
+Vous apparaissez dans « Urgence » pour les particuliers, avec votre premier créneau libre|You appear in “Emergency” for homeowners, with your first free slot|Aparece em «Urgência» para os particulares, com o seu primeiro horário livre|Compari in «Emergenza» per i privati, con il tuo primo orario libero
+Vous n’apparaissez pas dans les recherches urgentes|You don’t appear in emergency searches|Não aparece nas pesquisas urgentes|Non compari nelle ricerche di emergenza
+Le client a besoin d’une intervention au plus vite : répondez rapidement ou proposez un autre créneau.|The client needs help as soon as possible: reply quickly or suggest another slot.|O cliente precisa de uma intervenção o mais rápido possível: responda depressa ou proponha outro horário.|Il cliente ha bisogno di un intervento al più presto: rispondi rapidamente o proponi un altro orario.
+Le client a envoyé la même demande à d’autres artisans : une réponse rapide fait souvent la différence.|The client sent the same request to other tradespeople: a quick reply often makes the difference.|O cliente enviou o mesmo pedido a outros profissionais: uma resposta rápida faz muitas vezes a diferença.|Il cliente ha inviato la stessa richiesta ad altri artigiani: una risposta rapida spesso fa la differenza.
+Urgent|Urgent|Urgente|Urgente
+Fuite d’eau|Water leak|Fuga de água|Perdita d’acqua
+Panne électrique|Power failure|Avaria elétrica|Guasto elettrico
+Porte claquée ou serrure bloquée|Locked out or jammed lock|Porta fechada ou fechadura bloqueada|Porta chiusa o serratura bloccata
+Plus de chauffage ou d’eau chaude|No heating or hot water|Sem aquecimento ou água quente|Niente riscaldamento o acqua calda
+Vitre cassée|Broken window|Vidro partido|Vetro rotto
+Autre urgence|Other emergency|Outra urgência|Altra emergenza

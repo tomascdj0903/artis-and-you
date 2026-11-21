@@ -202,6 +202,7 @@ export function CompanySettings() {
             <SettingToggle label={t('Visible par les particuliers')} hint={t('Votre fiche apparaît dans la recherche d’artisans')} checked={c.visible_particuliers} onChange={(v) => setC({ ...c, visible_particuliers: v })} />
             <SettingToggle label={t('Visible par les pros')} hint={t('Les autres artisans peuvent vous trouver et vous écrire')} checked={c.visible_pros} onChange={(v) => setC({ ...c, visible_pros: v })} />
             <SettingToggle label={t('Rendez-vous en visio (WhatsApp)')} hint={visio ? t('Vos clients peuvent demander une visio WhatsApp') : t('Uniquement des rendez-vous sur place')} checked={visio} onChange={(v) => setC({ ...c, settings: { ...c.settings, planning: { ...(c.settings?.planning || {}), visio: v } } })} />
+            <SettingToggle label={t('J’accepte les urgences')} hint={c.settings?.planning?.urgence ? t('Vous apparaissez dans « Urgence » pour les particuliers') : t('Vous n’apparaissez pas dans les recherches urgentes')} checked={!!c.settings?.planning?.urgence} onChange={(v) => setC({ ...c, settings: { ...c.settings, planning: { ...(c.settings?.planning || {}), urgence: v } } })} />
           </div>
           <div className="btns"><button className="btn" onClick={save}>{t('Enregistrer')}</button></div>
         </div>}

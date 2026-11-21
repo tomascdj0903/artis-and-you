@@ -58,6 +58,7 @@ const CLIENT = [
   ['/client/messages', L('cli', 'Messages')], ['/client/messages/:id', L('cli', 'Conversation')],
   ['/client/notifications', L('common', 'Notifications')], ['/client/admin', L('common', 'Admin')],
   ['/client/documents', L('cli', 'DocumentsHome')], ['/client/devis', L('cli', 'Quotes')], ['/client/factures', L('cli', 'Invoices')],
+  ['/client/devis/comparer', L('cli', 'CompareQuotes')], ['/client/urgence', L('cli', 'Urgence')], ['/client/demande-groupee', L('cli', 'GroupRequest')],
   ['/client/devis/:id', L('cli', 'DocDetail')], ['/client/factures/:id', L('cli', 'DocDetail')], ['/client/devis/:id/pdf', L('cli', 'DocPdf')], ['/client/factures/:id/pdf', L('cli', 'DocPdf')],
   ['/client/factures/:id/payer', L('cli', 'Pay')], ['/client/avis/:id', L('cli', 'Review')],
   ['/client/chantiers', L('cli', 'Projects')], ['/client/chantiers/:id', L('cli', 'ProjectDetail')], ['/client/autres-docs', L('cli', 'OtherDocs')],

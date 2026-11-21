@@ -85,6 +85,7 @@ export function Quotes() {
       <TopBar title={t('Mes devis')} />
       <SearchBar placeholder={t('Recherchez un devis')} value={q} onChange={setQ} suggest={() => suggestList(list, { label: (d) => [d.number, coName(b.cm[d.company_id])].filter(Boolean).join(' · '), sub: (d) => [d.object, money(d.totals?.ttc || 0)].filter(Boolean).join(' · '), go: (d) => navigate('/client/devis/' + d.id) })} />
       <Chips options={[['', t('Tous')], ['sign', t('À signer')], ['ok', t('Signés')], ['ko', t('Refusés')]]} value={f} onChange={setF} />
+      {b.docs.filter((d) => d.kind === 'devis' && effectiveStatus(d) === 'envoye').length >= 2 && <button className="btn ghost block mb" onClick={() => navigate('/client/devis/comparer')}><LuScale /> {t('Comparer mes devis côte à côte')}</button>}
       <DocCards docs={list} cm={b.cm} base="/client/devis/" />
     </div>
   );

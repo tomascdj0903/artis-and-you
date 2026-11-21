@@ -46,6 +46,7 @@ export function PlanningSettings() {
         <SettingToggle label={t('Validation manuelle')} hint={s.manual ? t('Vous acceptez ou refusez chaque demande de rendez-vous') : t('Les demandes sur vos créneaux libres sont acceptées automatiquement')} checked={s.manual} onChange={(v) => save({ manual: v })} />
         <div className="r"><span className="k">{t('Rappel au client')}</span><select value={s.reminder} onChange={(e) => save({ reminder: +e.target.value })}>{[0, 2, 24, 48].map((h) => <option key={h} value={h}>{h ? t('{n} h avant', { n: h }) : t('Aucun')}</option>)}</select></div>
         <SettingToggle label={t('Rendez-vous en visio (WhatsApp)')} hint={s.visio ? t('Vos clients peuvent demander une visio WhatsApp') : t('Vos clients ne peuvent demander que des rendez-vous sur place')} checked={s.visio} onChange={(v) => save({ visio: v })} />
+        <SettingToggle label={t('J’accepte les urgences')} hint={s.urgence ? t('Vous apparaissez dans « Urgence » pour les particuliers, avec votre premier créneau libre') : t('Vous n’apparaissez pas dans les recherches urgentes')} checked={!!s.urgence} onChange={(v) => save({ urgence: v })} />
       </div>
       <Sec title={t('Types de rendez-vous proposés')} />
       <p className="small muted" style={{ marginTop: -4 }}>{t('Cochez ce que vos clients peuvent réserver en ligne, et la durée de chacun (comme sur Doctolib). Vous pouvez toujours créer tous les types vous-même.')}</p>

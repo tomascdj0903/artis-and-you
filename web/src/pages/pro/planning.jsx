@@ -200,7 +200,7 @@ function MobileAgenda({ anchor, setAnchor, evs, busy, noFree, s, cm, color, onNe
       <span className="ag-time"><b>{hm(new Date(a._s))}</b><small>{hm(new Date(a._e))}</small></span>
       <i style={{ background: color(a) }} />
       <span className="ag-body"><b>{a.personal || a.company ? a.title || who(a) : who(a)}</b><small>{[a.personal || a.company ? who(a) : a.title || t(a.type), a.address].filter(Boolean).join(' · ')}</small></span>
-      {a.status === 'a_valider' && <span className="pill">{t('À valider')}</span>}
+      {a.status === 'a_valider' && <span className="pill">{a.urgent ? t('Urgent') : t('À valider')}</span>}
     </button>
   );
   let last = -1;

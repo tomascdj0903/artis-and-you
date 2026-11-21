@@ -1,7 +1,7 @@
 import { kbd } from '../../lib/a11y.js';
 import { useState, useMemo } from 'react';
 import { ArtisanSearch } from '../../ui/suggest.jsx';
-import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck, LuHeart, LuUsers, LuLanguages, LuClock, LuHammer, LuUmbrella, LuAward, LuBadgeCheck, LuPencil } from 'react-icons/lu';
+import { LuChevronRight, LuMapPin, LuVideo, LuPhone, LuMessageSquare, LuShieldCheck, LuCheck, LuPlus, LuCalendarPlus, LuSend, LuStar, LuSearch, LuMessageSquarePlus, LuCalendarCheck, LuHeart, LuUsers, LuLanguages, LuClock, LuHammer, LuUmbrella, LuAward, LuBadgeCheck, LuPencil, LuSiren, LuSquareCheck, LuSquare, LuX, LuScale } from 'react-icons/lu';
 import { api, uid } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link, useLocation } from '../../lib/router.jsx';
@@ -17,6 +17,7 @@ import { MoveSheet } from '../pro/planning-rdv.jsx';
 import { InfoBubble } from '../../ui/lawref.jsx';
 import { CityInput, distanceKm } from '../../ui/address.jsx';
 import { RgeBadge } from '../../ui/checks.jsx';
+import { useNextFree, dispoLabel, soonDays, EMERGENCIES } from './find.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
 // première phrase du besoin, coupée sur un mot (avec « … ») si elle est longue
@@ -67,6 +68,10 @@ export function Home() {
         </div>
         <div className="hide-desk"><ArtisanSearch placeholder={t('Rechercher un artisan')} value={q} onChange={setQ} onSubmit={go} onFilter={go} /></div>
       </section>
+      <div className="find-actions home">
+        <button className="find-act urg" onClick={() => navigate('/client/urgence')}><LuSiren /><span><b>{t('Urgence')}</b><small>{t('Fuite, panne, serrure…')}</small></span></button>
+        <button className="find-act" onClick={() => navigate('/client/artisans?plusieurs=1')}><LuUsers /><span><b>{t('Demander à plusieurs')}</b><small>{t('Jusqu’à 3 artisans d’un coup')}</small></span></button>
+      </div>
       {!b ? <Loader /> : (
         <>
           <Sec title={t('Mes RDV')} to="/client/rdv" meta={t('{n} à venir', { n: b.appts.length })} />
@@ -97,23 +102,38 @@ export function Search() {
   const [place, setPlace] = useState(null); // ville choisie dans la liste (avec coordonnées)
   const [visio, setVisio] = useState(false);
   const [good, setGood] = useState(false);
+  const [soon, setSoon] = useState(false);
   const [open, setOpen] = useState(false);
+  const urgent = query.get('urgence') === '1';
+  const need = EMERGENCIES.find((e) => e[0] === query.get('besoin'));
+  const [multi, setMulti] = useState([]); // artisans cochés pour une demande groupée
+  const [picking, setPicking] = useState(query.get('plusieurs') === '1');
   // Ville choisie avec ses coordonnées : on garde les artisans dont la zone d'intervention couvre cette ville
   const [res] = useData(() => api.rpc('directory_search', { p_query: term, p_trade: trade, p_city: place ? '' : city }), [term, trade, place ? 'geo:' + place.city : city]);
   const withDist = (res || []).map((r) => ({ ...r, dist: place && r.zone_lat ? distanceKm(place, { lat: r.zone_lat, lon: r.zone_lon }) : null }));
   const covers = (r) => !place || (r.dist != null ? r.dist <= (r.zone_km || 30) : (r.city + ' ' + (r.zone || '')).toLowerCase().includes(place.city.toLowerCase()));
   const [favIds, flipFav] = useFavIds();
-  const list = withDist.filter((r) => covers(r) && (!visio || r.visio) && (!good || (r.rating || 0) >= 4)).sort((a, b) => b.is_mine - a.is_mine || (a.dist ?? 999) - (b.dist ?? 999));
+  const free = useNextFree(withDist.filter(covers).map((r) => r.id), urgent ? 90 : 60);
+  const nx = (r) => free[r.id]?.next_at;
+  const list = withDist.filter((r) => covers(r) && (!visio || r.visio) && (!good || (r.rating || 0) >= 4) && (!soon || soonDays(nx(r)) <= 7) && (!urgent || (free[r.id]?.urgence && nx(r))))
+    .sort(urgent ? (a, b) => new Date(nx(a)) - new Date(nx(b)) : (a, b) => b.is_mine - a.is_mine || (a.dist ?? 999) - (b.dist ?? 999));
+  const tick = (id) => setMulti(multi.includes(id) ? multi.filter((x) => x !== id) : multi.length >= 3 ? multi : [...multi, id]);
   return (
     <div className="content">
-      <TopBar back={false} title={t('Trouver un artisan')} right={<button className="btn ghost sm" onClick={() => navigate('/client/selection')}><LuHeart /> <span className="hide-mob">{t('Ma sélection')}</span></button>} />
+      <TopBar back={urgent} title={urgent ? t('Urgence') : t('Trouver un artisan')} sub={urgent && need ? t(need[2]) : ''} right={<button className="btn ghost sm" onClick={() => navigate('/client/selection')}><LuHeart /> <span className="hide-mob">{t('Ma sélection')}</span></button>} />
+      {urgent ? <div className="notice red"><LuSiren /><span>{t('Artisans qui acceptent les urgences et interviennent chez vous, du plus tôt disponible au plus tard.')}</span></div>
+        : <div className="find-actions"><button className="find-act urg" onClick={() => navigate('/client/urgence')}><LuSiren /><span><b>{t('Urgence')}</b><small>{t('Fuite, panne, serrure…')}</small></span></button>
+          <button className={'find-act' + (picking ? ' on' : '')} onClick={() => { setPicking(!picking); setMulti([]); }}><LuUsers /><span><b>{t('Demander à plusieurs')}</b><small>{t('Jusqu’à 3 artisans d’un coup')}</small></span></button>
+          <button className="find-act" onClick={() => navigate('/client/devis/comparer')}><LuScale /><span><b>{t('Comparer mes devis')}</b><small>{t('Côte à côte')}</small></span></button></div>}
       <ArtisanSearch placeholder={t('Métier, nom, besoin…')} value={q} onChange={(v) => { setQ(v); if (v.length === 0 || v.length > 2) setTerm(v); }} onSubmit={() => setTerm(q)} onFilter={() => setOpen(true)} filterActive={!!(trade || city)} />
       <div className="chips scroll">
         <button className={'chip' + (trade ? ' on' : '')} onClick={() => setOpen(true)}>{trade ? t(trade) : t('Métier')}</button>
         <button className={'chip' + (city ? ' on' : '')} onClick={() => setOpen(true)}>{city || t('Ville des travaux')}</button>
         <button className={'chip' + (visio ? ' on' : '')} onClick={() => setVisio(!visio)}><LuVideo /> {t('Visio')}</button>
         <button className={'chip' + (good ? ' on' : '')} onClick={() => setGood(!good)}>★ 4+ {t('avis')}</button>
+        {!urgent && <button className={'chip' + (soon ? ' on' : '')} onClick={() => setSoon(!soon)}><LuClock /> {t('Dispo sous 7 jours')}</button>}
       </div>
+      {picking && <div className="notice"><span>{t('Cochez 2 ou 3 artisans, puis décrivez votre besoin une seule fois : chacun reçoit votre demande.')}</span></div>}
       <div className="row between wrap" style={{ margin: '4px 0 8px' }}><span className="small muted">{list?.length ? (list.length > 1 ? t('{n} artisans', { n: list.length }) : t('{n} artisan', { n: list.length })) : ''}</span>
         <InfoBubble label={t('Comment sont classés les résultats ?')} laws={['conso-L111-7', 'conso-D111-7']}>
           <p>{t('Les artisans sont affichés dans cet ordre :')}</p>
@@ -125,17 +145,22 @@ export function Search() {
       </div>
       {!res ? <Loader /> : !list.length ? <Empty icon={LuSearch} text={t('Aucun artisan trouvé. Essayez un autre métier ou une autre ville.')} /> : (
         <div className="grid2">{list.map((a) => (
-          <button key={a.id} className="card row" style={{ textAlign: 'left', background: 'var(--surface)', color: 'inherit', borderColor: a.is_mine ? 'var(--bordeaux)' : 'var(--line)', borderWidth: a.is_mine ? 2 : 1 }} onClick={() => navigate('/client/artisans/' + a.id)}>
+          <div key={a.id} {...kbd} className={'card row findcard' + (multi.includes(a.id) ? ' picked' : '')} style={{ textAlign: 'left', background: 'var(--surface)', color: 'inherit', borderColor: a.is_mine || multi.includes(a.id) ? 'var(--bordeaux)' : 'var(--line)', borderWidth: a.is_mine || multi.includes(a.id) ? 2 : 1 }} onClick={() => (picking ? tick(a.id) : navigate('/client/artisans/' + a.id + (urgent ? '/demande?urgence=1' : '')))}>
+            {picking && <span className="pick-box" aria-hidden>{multi.includes(a.id) ? <LuSquareCheck /> : <LuSquare />}</span>}
             <Avatar name={coName(a).split(' ')[0]} last={coName(a).split(' ')[1]} path={a.logo_path} src={a.is_platform ? '/favicon.svg' : undefined} size="lg" />
             <div className="grow">
               <div className="bold" style={{ fontSize: 17 }}>{coName(a)}</div>
               <div className="small muted">{(a.trades || []).slice(0, 2).map(t).join(' · ')} · {a.city}{a.dist != null ? ' · ' + t('à {n} km', { n: a.dist }) : ''}</div>
               <div className="row small wrap" style={{ marginTop: 4, gap: 6 }}>{a.rating ? <span><Stars n={a.rating} /> {String(a.rating).replace('.', ',')} ({a.reviews_count})</span> : <span className="faint">{t('Nouveau')}</span>}
-                {a.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}{a.is_mine && <Pill c="red">{t('Votre artisan')}</Pill>}{a.visio && <Pill c="grey"><LuVideo /> {t('Visio')}</Pill>}</div>
-            </div><FavButton on={favIds.has(a.id)} onClick={() => flipFav(a.id)} />
-          </button>
+                {a.verified && <Pill c="green"><LuShieldCheck /> {t('Vérifié')}</Pill>}{a.is_mine && <Pill c="red">{t('Votre artisan')}</Pill>}{a.visio && <Pill c="grey"><LuVideo /> {t('Visio')}</Pill>}{free[a.id]?.urgence && <Pill c="red"><LuSiren /> {t('Urgences')}</Pill>}</div>
+              {nx(a) && <div className={'dispo' + (soonDays(nx(a)) <= 2 ? ' now' : '')}><LuClock /> {dispoLabel(nx(a))}</div>}
+            </div>{!picking && <FavButton on={favIds.has(a.id)} onClick={() => flipFav(a.id)} />}
+          </div>
         ))}</div>
       )}
+      {picking && multi.length > 0 && <div className="pick-bar"><span>{multi.length === 1 ? t('1 artisan choisi') : t('{n} artisans choisis', { n: multi.length })}</span>
+        <button className="btn ghost sm" onClick={() => setMulti([])} aria-label={t('Tout décocher')}><LuX /></button>
+        <button className="btn sm" disabled={multi.length < 2} onClick={() => navigate('/client/demande-groupee?ids=' + multi.join(','))}>{multi.length < 2 ? t('Choisissez-en un 2e') : t('Continuer')}</button></div>}
       <Sheet open={open} onClose={() => setOpen(false)} title={t('Filtres')}>
         <Field label={t('Ville des travaux')}><CityInput value={city} onChange={(v) => { setCity(v); setPlace(null); }} onPick={(s) => setPlace(s)} placeholder={t('ex. Nice, Antibes…')} /></Field>
         {place && <p className="small faint" style={{ marginTop: -6 }}>{t('Artisans qui interviennent à {v} (selon leur zone d’intervention).', { v: place.city })}</p>}
@@ -279,6 +304,7 @@ export function ArtisanCard({ params }) {
 export function NewRequest({ params }) {
   const { profile, setProfile, run } = useApp();
   const [type, setType] = useState('Dépannage');
+  const urgent = new URLSearchParams(location.search).get('urgence') === '1';
   const [text, setText] = useState('');
   const [photos, setPhotos] = useState([]);
   const [mode, setMode] = useState('site');
@@ -309,6 +335,7 @@ export function NewRequest({ params }) {
     }
   }
   const addPhotos = async () => { const fs = await pickFiles({ accept: 'image/*,video/*' }); setPhotos([...photos, ...fs].slice(0, 8)); };
+  if (urgent && !slot && slots.some(([, ok]) => ok)) setTimeout(() => setSlot(slots.find(([, ok]) => ok)[0]), 0);
   const send = async () => {
     if (!slot) return run(async () => { throw new Error(t('Choisissez un créneau.')); });
     if (mode === 'site' && (!home.address || !home.city)) return run(async () => { throw new Error(t('Indiquez votre adresse pour une intervention sur place.')); });
@@ -319,14 +346,15 @@ export function NewRequest({ params }) {
         const ups = [];
         for (const f of photos) ups.push(await uploadTo('u/' + profile.id + '/demandes', f));
         const dur = mode === 'visio' ? 30 : (s.durations?.[type] || s.duration || 60);
-        const id = await api.rpc('request_appointment', { p: { company_id: params.id, type, title: type + (text ? ' · ' + shortTitle(text) : ''), text, mode, start_at: slot.toISOString(), end_at: new Date(+slot + dur * 6e4).toISOString(), photos: ups } });
+        const id = await api.rpc('request_appointment', { p: { company_id: params.id, type, title: type + (text ? ' · ' + shortTitle(text) : ''), text, mode, start_at: slot.toISOString(), end_at: new Date(+slot + dur * 6e4).toISOString(), photos: ups, urgent } });
         navigate('/client/demande-envoyee/' + id, { replace: true });
       });
     } finally { setBusy(false); }
   };
   return (
     <div className="content narrow">
-      <TopBar title={t('Nouvelle demande')} sub={coName(b.p)} />
+      <TopBar title={urgent ? t('Demande urgente') : t('Nouvelle demande')} sub={coName(b.p)} />
+      {urgent && <div className="notice red"><LuSiren /><span>{t('Votre demande sera signalée comme urgente à l’artisan. Le premier créneau libre est présélectionné.')}</span></div>}
       <Chips options={s.offered.map((x) => [x, t(x)])} value={s.offered.includes(type) ? type : s.offered[0]} onChange={setType} />
       <Sec title={t('Votre besoin')} />
       <textarea className="input" style={{ minHeight: 130, borderColor: 'var(--bordeaux)' }} value={text} onChange={(e) => setText(e.target.value)} placeholder={t('Décrivez le problème : depuis quand, où, ce que vous avez déjà fait…')} />
