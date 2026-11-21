@@ -100,7 +100,7 @@ export function AppProvider({ children }) {
   const wip = (what) => setDialog({ type: 'wip', what });
   const run = async (fn, okMsg) => {
     try { const r = await fn(); if (okMsg) toast(okMsg); return r; }
-    catch (e) { toast(e.message || t('Action impossible pour le moment. Vérifiez votre connexion et réessayez.'), true); throw e; }
+    catch (e) { toast(e.message || t('Action impossible pour le moment. Vérifiez votre connexion et réessayez.'), true); try { e.shown = true; } catch {} throw e; }
   };
 
   const can = (perm) => {

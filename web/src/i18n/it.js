@@ -3146,4 +3146,5 @@ export default {"(copie)":"(copia)",
 "{n} a reçu votre demande et vos photos. Vous êtes prévenu dès qu’il répond.":"{n} ha ricevuto la tua richiesta e le tue foto. Riceverai un avviso appena risponde.",
 "{n} a reçu votre demande. Vous êtes prévenu dès qu’il répond.":"{n} ha ricevuto la tua richiesta. Riceverai un avviso appena risponde.",
 "1 pro trouvé sur Artis & You":"1 professionista trovato su Artis & You",
-"Aucun pro trouvé sur Artis & You":"Nessun professionista trovato su Artis & You"};
+"Aucun pro trouvé sur Artis & You":"Nessun professionista trovato su Artis & You",
+"Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.":"Recensione verificata: solo dopo un vero appuntamento o una fattura pagata. Sarà controllata prima della pubblicazione."};

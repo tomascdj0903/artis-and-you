@@ -81,7 +81,7 @@ export function VoiceRecorder({ onSend, onCancel, onError }) {
       const mime = (s.rec.mimeType || s.chunks[0]?.type || 'audio/webm').split(';')[0];
       const ext = mime.includes('mp4') ? 'm4a' : mime.includes('ogg') ? 'ogg' : 'webm';
       const blob = new Blob(s.chunks, { type: mime });
-      const name = t('Message vocal') + ' ' + new Date().toLocaleTimeString().slice(0, 5).replace(':', 'h') + '.' + ext;
+      const name = t('Message vocal') + ' ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h') + '.' + ext;
       onSend({ file: new File([blob], name, { type: mime }), duration: Math.round(duration * 10) / 10, wave: shrink(s.levels) });
     };
     s.rec.stop();

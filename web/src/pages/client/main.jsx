@@ -395,7 +395,7 @@ export function Messages() {
     <div className="content">
       <TopBar back={false} title={t('Messages')} />
       <SearchBar placeholder={t('Rechercher un pro')} value={q} onChange={setQ} suggest={() => suggestList(list, { label: nameOf, sub: (c) => c.last_message, go: (c) => navigate('/client/messages/' + c.id) })} />
-      <Sec title={t('Conversations')} meta={t('{n} non lue', { n })} />
+      <Sec title={t('Conversations')} meta={n === 1 ? t('{n} non lue', { n }) : t('{n} non lues', { n })} />
       {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button></Empty> : (
         <div className="list">{list.map((c) => { const co = b.cm[c.company_id]; const un = !reads[c.id] || reads[c.id] < c.last_at; return (
           <button key={c.id} className="li click" onClick={() => navigate('/client/messages/' + c.id)}>

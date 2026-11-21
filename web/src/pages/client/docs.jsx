@@ -192,10 +192,10 @@ export function Review({ params }) {
   return (
     <div className="content narrow">
       <TopBar title={t('Donner mon avis')} sub={coName(co)} />
-      <div className="notice"><LuStar /><span>{t('Avis vérifié : seulement après un vrai rendez-vous. Il sera relu avant publication.')}</span></div>
+      <div className="notice"><LuStar /><span>{t('Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.')}</span></div>
       <div className="center starpick">{[1, 2, 3, 4, 5].map((i) => <button key={i} className={i <= n ? 'on' : ''} onClick={() => setN(i)} aria-label={i + '/5'}>★</button>)}</div>
       <Field label={t('Votre commentaire')}><textarea value={c} onChange={(e) => setC(e.target.value)} placeholder={t('Ponctualité, qualité du travail, propreté, explications…')} /></Field>
-      <button className="btn block" disabled={!n} onClick={() => run(() => api.rpc('post_review', { p_company: params.id, p_rating: n, p_comment: c }), t('Merci ! Votre avis sera publié après relecture.')).then(() => navigate('/client/documents', { replace: true }))}>{t('Publier mon avis')}</button>
+      <button className="btn block" disabled={!n} onClick={() => run(() => api.rpc('post_review', { p_company: params.id, p_rating: n, p_comment: c }), t('Merci ! Votre avis sera publié après relecture.')).then(() => navigate('/client/documents', { replace: true }), () => {})}>{t('Publier mon avis')}</button>
     </div>
   );
 }

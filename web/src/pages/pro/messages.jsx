@@ -5,7 +5,7 @@ import { LuMapPin, LuMessageSquare, LuPlus, LuPhone, LuUserPlus, LuChevronRight,
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
-import { t } from '../../lib/i18n.js';
+import { t, locale } from '../../lib/i18n.js';
 import { clientName, rel, date, initials } from '../../lib/format.js';
 import { useTrades } from '../../ui/trades.jsx';
 
@@ -39,7 +39,7 @@ export function Messages() {
     <div className="content">
       <TopBar title={t('Messages')} back={false} settings="/pro/compte/notifications" />
       <SearchBar placeholder={t('Recherchez un contact')} value={q} onChange={setQ} onFilter={() => setOpen(true)} filterActive={kinds.length > 0} suggest={() => suggestList(list, { label: (x) => x.m.name, sub: (x) => [x.m.tag, x.c.last_message].filter(Boolean).join(' · '), go: (x) => navigate('/pro/messages/' + x.c.id) })} />
-      <Sec title={t('Conversations')} meta={t('{n} non lues', { n: unreadN })} />
+      <Sec title={t('Conversations')} meta={unreadN === 1 ? t('{n} non lue', { n: 1 }) : t('{n} non lues', { n: unreadN })} />
       {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation pour le moment.')}><button className="btn sm" onClick={() => setNw(true)}><LuPlus /> {t('Nouvelle conversation')}</button></Empty> : (
         <div className="list">{list.map(({ c, m }) => {
           const un = c.last_message && (!reads[c.id] || reads[c.id] < c.last_at);
@@ -88,7 +88,7 @@ function NewConv({ open, onClose, clients }) {
 
 export function Conversation({ params }) {
   const { company, teams, members } = useApp();
-  const [b] = useData(async () => {
+  const [b, , loading] = useData(async () => {
     const c = await api.one('conversations', { id: params.id });
     if (!c) return null;
     const ctx = await loadConvCtx(company, teams, members);
@@ -96,7 +96,7 @@ export function Conversation({ params }) {
     const shared = c.project_id && c.kind === 'pro' ? await api.one('projects', { id: c.project_id }) : null;
     return { c, m: convMeta(c, ctx.ctx), projects, shared };
   }, [params.id]);
-  if (b === null) return <div className="content"><TopBar title={t('Messages')} /><Empty text={t('Conversation introuvable')} /></div>;
+  if (b === null && !loading) return <div className="content"><TopBar title={t('Messages')} /><Empty text={t('Conversation introuvable')} /></div>;
   if (!b) return <div className="content"><TopBar title={t('Messages')} /><Loader /></div>;
   const titleLink = b.c.kind === 'client' && b.c.client_id ? '/pro/clients/' + b.c.client_id : b.c.kind === 'pro' ? '/pro/reseau/' + b.m.otherId : null;
   return (
@@ -174,8 +174,8 @@ export function Network() {
           <div {...kbd} key={co.id} className="card soft row" style={{ cursor: 'pointer' }} onClick={() => navigate('/pro/reseau/' + co.id)}>
             <Avatar name={co.name.split(' ')[0]} last={co.name.split(' ')[1]} path={co.logo_path} color="var(--ardoise)" />
             <div className="grow"><div className="bold row wrap" style={{ gap: 6 }}>{co.trade_name || co.name} {(co.trades || [])[0] && <Pill c="navy">{t(co.trades[0])}</Pill>}</div>
-              <div className="small muted">{co.name} · {co.city}</div>
-              <div className="small red-t bold">{common ? t('{n} chantiers en commun', { n: common }) : t('Contact depuis {d}', { d: new Date(created_at).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) })}</div></div>
+              <div className="small muted">{[co.trade_name && co.trade_name !== co.name ? co.name : '', co.city].filter(Boolean).join(' · ')}</div>
+              <div className="small red-t bold">{common ? t('{n} chantiers en commun', { n: common }) : t('Contact depuis {d}', { d: new Date(created_at).toLocaleDateString(locale(), { month: 'long', year: 'numeric' }) })}</div></div>
             <button className="round" onClick={(e) => { e.stopPropagation(); startChat(co); }} aria-label={t('Message')}><LuMessageSquare /></button>
           </div>
         ))}</div>
@@ -247,7 +247,7 @@ export function ProProfile({ params }) {
       <TopBar title={t('Profil')} sub={t('Mon réseau')} />
       <div className="hero row" style={{ gap: 16 }}>
         <Avatar name={p.name.split(' ')[0]} last={p.name.split(' ')[1]} path={p.logo_path} size="lg" color="var(--ardoise)" />
-        <div><h2>{p.trade_name || p.name}</h2><div className="l2">{p.name} · {p.city}</div>
+        <div><h2>{p.trade_name || p.name}</h2><div className="l2">{[p.trade_name && p.trade_name !== p.name ? p.name : '', p.city].filter(Boolean).join(' · ')}</div>
           <div className="row wrap mt" style={{ gap: 6 }}>{(p.trades || []).slice(0, 3).map((x) => <Pill key={x} c="white">{t(x)}</Pill>)}{p.verified && <Pill c="green"><LuShieldCheck /> {t('Profil vérifié')}</Pill>}</div></div>
       </div>
       <Sec title={t('Note client')} />

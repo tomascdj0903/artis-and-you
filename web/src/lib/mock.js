@@ -643,9 +643,10 @@ export function mockBackend({ saveSession, getSession }) {
     post_review({ p_company, p_rating, p_comment }) {
       if (db.reviews.some((r) => r.company_id === p_company && r.author_id === me())) throw new Error('Vous avez déjà donné votre avis sur ce pro.');
       const a = db.appointments.filter((x) => x.company_id === p_company && myClientIds().includes(x.client_id) && ['valide', 'termine'].includes(x.status) && x.start_at < now()).sort((x, y) => (x.start_at < y.start_at ? 1 : -1))[0];
-      if (!a) throw new Error("Un avis ne peut être donné qu'après un vrai rendez-vous.");
+      const paid = db.documents.some((d) => d.company_id === p_company && myClientIds().includes(d.client_id) && ((['facture', 'acompte'].includes(d.kind) && ['payee', 'partielle'].includes(d.status)) || (d.kind === 'devis' && d.status === 'accepte')));
+      if (!a && !paid) throw new Error("Un avis ne peut être donné qu'après un vrai rendez-vous ou une facture réglée.");
       const p = profile();
-      db.reviews.push({ id: id(), company_id: p_company, author_id: me(), author_label: `${p.first_name} ${(p.last_name || '').slice(0, 1)}.`, appointment_id: a.id, rating: p_rating, comment: p_comment, status: 'en_attente', created_at: now() });
+      db.reviews.push({ id: id(), company_id: p_company, author_id: me(), author_label: `${p.first_name} ${(p.last_name || '').slice(0, 1)}.`, appointment_id: a?.id || null, rating: p_rating, comment: p_comment, status: 'en_attente', created_at: now() });
       notifyCompany(p_company, 'systeme', 'Nouvel avis client', p_rating + '/5', '/pro/reglages/profil-public');
     },
   };

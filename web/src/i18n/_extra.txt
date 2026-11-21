@@ -2011,3 +2011,4 @@ Ou par virement classique : demandez le RIB à l’artisan dans la messagerie, r
 Nouveau créneau proposé|New time slot proposed|Novo horário proposto|Nuovo orario proposto
 1 pro trouvé sur Artis & You|1 professional found on Artis & You|1 profissional encontrado na Artis & You|1 professionista trovato su Artis & You
 Aucun pro trouvé sur Artis & You|No professional found on Artis & You|Nenhum profissional encontrado na Artis & You|Nessun professionista trovato su Artis & You
+Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.|Verified review: only after a real appointment or a paid invoice. It will be checked before publication.|Avaliação verificada: apenas após uma marcação real ou uma fatura paga. Será revista antes de ser publicada.|Recensione verificata: solo dopo un vero appuntamento o una fattura pagata. Sarà controllata prima della pubblicazione.

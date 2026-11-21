@@ -208,4 +208,6 @@ function App() {
 if ('serviceWorker' in navigator && location.protocol === 'https:' && !navigator.userAgent.includes('Electron')) navigator.serviceWorker.register('/sw.js').catch(() => {});
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); window.__ayInstall = e; window.dispatchEvent(new Event('ay-installable')); });
 
+// Une action qui a déjà affiché son message d'erreur (run) n'a pas à remonter comme « erreur non gérée »
+window.addEventListener('unhandledrejection', (ev) => { if (ev.reason?.shown) ev.preventDefault(); });
 loadLang(getLang()).catch(() => {}).finally(() => createRoot(document.getElementById('root')).render(<ErrorBoundary home="/"><AppProvider><App /></AppProvider></ErrorBoundary>));
