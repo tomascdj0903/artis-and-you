@@ -170,7 +170,7 @@ export function ArtisanCard({ params }) {
       {p.photos?.length > 0 && <><Sec title={t('Réalisations')} /><div className="photos-grid">{p.photos.map((x) => <Img key={x} path={x} onClick={() => setBig(x)} />)}</div></>}
       <Sec title={t('Avis vérifiés')} meta={total ? t('{n} avis', { n: total }) : ''} />
       <div className="mb"><InfoBubble label={t('Comment les avis sont-ils contrôlés ?')} laws={['conso-L111-7-2', 'conso-D111-17']}>
-        <p>{t('Seul un client qui a eu un rendez-vous avec cet artisan via Artis & You peut donner un avis : chaque avis correspond à une vraie prestation.')}</p>
+        <p>{t('Seul un client qui a eu un rendez-vous, signé un devis ou réglé une facture avec cet artisan via Artis & You peut donner un avis : chaque avis correspond à une vraie prestation.')}</p>
         <p>{t('Chaque avis est relu par l’équipe Artis & You avant publication (sous 48 h ouvrées). Il est refusé s’il est injurieux, hors sujet, contient des données personnelles ou en cas de conflit d’intérêts ; son auteur est informé du motif.')}</p>
         <p>{t('Les avis sont affichés du plus récent au plus ancien, avec leur date. Artis & You ne les modifie pas et ne reçoit aucune contrepartie. L’artisan peut répondre.')}</p>
       </InfoBubble></div>

@@ -3147,4 +3147,5 @@ export default {"(copie)":"(copy)",
 "{n} a reçu votre demande. Vous êtes prévenu dès qu’il répond.":"{n} has received your request. You’ll be notified as soon as they reply.",
 "1 pro trouvé sur Artis & You":"1 professional found on Artis & You",
 "Aucun pro trouvé sur Artis & You":"No professional found on Artis & You",
-"Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.":"Verified review: only after a real appointment or a paid invoice. It will be checked before publication."};
+"Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.":"Verified review: only after a real appointment or a paid invoice. It will be checked before publication.",
+"Seul un client qui a eu un rendez-vous, signé un devis ou réglé une facture avec cet artisan via Artis & You peut donner un avis : chaque avis correspond à une vraie prestation.":"Only a client who had an appointment, signed a quote or paid an invoice with this tradesperson through Artis & You can leave a review: each review matches a real job."};

@@ -3147,4 +3147,5 @@ export default {"(copie)":"(cópia)",
 "{n} a reçu votre demande. Vous êtes prévenu dès qu’il répond.":"{n} recebeu o seu pedido. Será avisado assim que responder.",
 "1 pro trouvé sur Artis & You":"1 profissional encontrado na Artis & You",
 "Aucun pro trouvé sur Artis & You":"Nenhum profissional encontrado na Artis & You",
-"Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.":"Avaliação verificada: apenas após uma marcação real ou uma fatura paga. Será revista antes de ser publicada."};
+"Avis vérifié : seulement après un vrai rendez-vous ou une facture réglée. Il sera relu avant publication.":"Avaliação verificada: apenas após uma marcação real ou uma fatura paga. Será revista antes de ser publicada.",
+"Seul un client qui a eu un rendez-vous, signé un devis ou réglé une facture avec cet artisan via Artis & You peut donner un avis : chaque avis correspond à une vraie prestation.":"Só um cliente que teve uma marcação, assinou um orçamento ou pagou uma fatura com este profissional através da Artis & You pode deixar uma avaliação: cada avaliação corresponde a um trabalho real."};
