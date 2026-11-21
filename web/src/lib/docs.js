@@ -24,6 +24,10 @@ export function computeTotals(lines = [], { franchise = false, reverse = false, 
   return { ht, vat, tva, ttc, cost: r2(cost), margin: r2(ht - cost), deductions, deducted, net: r2(ttc - deducted) };
 }
 
+// une section sans ligne (jusqu'à la suivante) ne s'affiche ni ne s'imprime
+export function dropEmptySections(lines = []) {
+  return lines.filter((l, i) => { if (l.kind !== 'section') return true; for (let j = i + 1; j < lines.length && lines[j].kind !== 'section'; j++) if (lines[j].kind === 'item' || (lines[j].kind === 'text' && lines[j].label)) return true; return false; });
+}
 export function sectionSubtotals(lines = []) {
   const out = {}; let cur = null;
   for (const l of lines) {

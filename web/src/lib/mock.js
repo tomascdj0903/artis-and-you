@@ -423,6 +423,7 @@ export function mockBackend({ saveSession, getSession }) {
       return db.appointments.filter((a) => a.company_id === p_company && ['a_valider', 'valide'].includes(a.status) && a.start_at < p_to && a.end_at > p_from).map((a) => ({ start_at: a.start_at, end_at: a.end_at }));
     },
     ensure_client({ p_company }) { return ensureClient(p_company); },
+    link_my_clients() { return 0; },
     appointment_proposal_answer({ p_id, p_accept }) {
       const a = db.appointments.find((x) => x.id === p_id);
       if (!a || a.requested_by !== me()) throw new Error('Rendez-vous introuvable');

@@ -7,7 +7,7 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { money, iso, clientName, date } from '../../lib/format.js';
-import { computeTotals, franchiseMention, newLine, defaultLines, VAT_RATES, kindLabel, statusPill, effectiveStatus, APPT_TYPES } from '../../lib/docs.js';
+import { computeTotals, franchiseMention, newLine, defaultLines, VAT_RATES, kindLabel, statusPill, effectiveStatus, APPT_TYPES, dropEmptySections } from '../../lib/docs.js';
 import { TopBar, Sec, Field, Seg, Chips, Sheet, useData, Loader, Empty, StatusPill , Picker } from '../../ui/index.jsx';
 import { DocList } from './doclist.jsx';
 import { LuBellRing } from 'react-icons/lu';
@@ -213,7 +213,8 @@ export function DocEdit({ params }) {
   const save = async () => {
     if (!d.client_id) return toast(t('Choisissez un client.'), true);
     if (!d.lines.some((l) => l.kind === 'item' && l.label && Number(l.qty) && Number(l.price))) return toast(t('Ajoutez au moins une ligne avec un prix.'), true);
-    const lines = d.lines.filter((l) => l.kind !== 'item' || l.label || Number(l.price));
+    const kept = d.lines.filter((l) => l.kind !== 'item' || l.label || Number(l.price));
+    const lines = dropEmptySections(kept);
     let project_id = d.project_id || null;
     const row = { ...d, lines, project_id, totals: tot, start_date: d.start_date || null, due_date: isQ ? null : d.due_date || null, service_date: isQ ? null : d.service_date || null, deposit_pct: Number(d.deposit_pct) || 0, validity_days: Number(d.validity_days) || 30 };
     delete row.id; delete row.created_at;

@@ -19,7 +19,10 @@ import { CityInput, distanceKm } from '../../ui/address.jsx';
 import { RgeBadge } from '../../ui/checks.jsx';
 
 // Mes fiches client chez les artisans + leurs entreprises
+let linked = null;
 export async function loadMine() {
+  // fiches créées par un artisan avec mon e-mail avant / après mon inscription : rattachement une fois par session
+  if (linked !== uid()) { linked = uid(); try { await api.rpc('link_my_clients'); } catch {} }
   const clients = await api.select('clients', { user_id: uid() });
   const ids = [...new Set(clients.map((c) => c.company_id))];
   const cos = ids.length ? await api.select('companies', { id: ids }) : [];

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { api, fileUrls } from '../../lib/api.js';
 import { t } from '../../lib/i18n.js';
 import { money, date, dateTime, clientName, fullName } from '../../lib/format.js';
-import { computeTotals, franchiseMention, franchiseArticle, sectionSubtotals, kindLabel, statusPill, effectiveStatus } from '../../lib/docs.js';
+import { computeTotals, franchiseMention, franchiseArticle, sectionSubtotals, dropEmptySections, kindLabel, statusPill, effectiveStatus } from '../../lib/docs.js';
 import { KV, Sec, StatusPill } from '../../ui/index.jsx';
 
 export async function loadDoc(id) {
@@ -60,7 +60,8 @@ export function DocHero({ d, client, company, forClient }) {
 }
 export const addDaysIso = (s, n) => { const x = new Date((s || new Date().toISOString().slice(0, 10)) + 'T12:00:00'); x.setDate(x.getDate() + Number(n || 30)); return x.toISOString().slice(0, 10); };
 
-export function DocSections({ d, company, client, payments = [], source, forClient }) {
+export function DocSections({ d: d0, company, client, payments = [], source, forClient }) {
+  const d = { ...d0, lines: dropEmptySections(d0.lines || []) };
   const tot = totalsOf(d, company);
   const cond = conditionsOf(d, company);
   const isQuote = d.kind === 'devis';
@@ -151,7 +152,8 @@ export function DocSections({ d, company, client, payments = [], source, forClie
 }
 
 // ─────────────── Document A4 ───────────────
-export function A4({ d, company, client, source, logoUrl }) {
+export function A4({ d: d0, company, client, source, logoUrl }) {
+  const d = { ...d0, lines: dropEmptySections(d0.lines || []) };
   const tot = totalsOf(d, company);
   const cond = conditionsOf(d, company);
   const isQuote = d.kind === 'devis';
