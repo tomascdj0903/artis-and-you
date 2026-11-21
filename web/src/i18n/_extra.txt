@@ -2118,3 +2118,14 @@ Porte claquée ou serrure bloquée|Locked out or jammed lock|Porta fechada ou fe
 Plus de chauffage ou d’eau chaude|No heating or hot water|Sem aquecimento ou água quente|Niente riscaldamento o acqua calda
 Vitre cassée|Broken window|Vidro partido|Vetro rotto
 Autre urgence|Other emergency|Outra urgência|Altra emergenza
+Vous apparaissez dans « Urgence » pour les particuliers, pendant vos horaires d’urgence|You appear in “Emergency” for homeowners during your emergency hours|Aparece em «Urgência» para os particulares durante o seu horário de urgência|Compari in «Emergenza» per i privati durante i tuoi orari di emergenza
+Horaires d’urgence|Emergency hours|Horário de urgência|Orari di emergenza
+Mes horaires de disponibilité|My usual availability|O meu horário habitual|I miei orari abituali
+Des horaires à part|Separate hours|Um horário próprio|Orari dedicati
+Les urgences vous sont proposées sur vos plages disponibles ci-dessus : {d}, de {a} h à {b} h.|Emergencies are offered during your available hours above: {d}, from {a}:00 to {b}:00.|As urgências são-lhe propostas no seu horário disponível acima: {d}, das {a} h às {b} h.|Le emergenze ti vengono proposte nei tuoi orari disponibili qui sopra: {d}, dalle {a} alle {b}.
+24 h/24, 7 j/7|24/7|24 h por dia, 7 dias por semana|24 ore su 24, 7 giorni su 7
+Fin le lendemain matin (ex. 20 h → 6 h).|Ends the next morning (e.g. 8 pm → 6 am).|Termina na manhã seguinte (ex. 20 h → 6 h).|Termina la mattina dopo (es. 20 → 6).
+Pendant ces horaires, vous pouvez recevoir des demandes urgentes, même en dehors de vos plages habituelles. Vos rendez-vous déjà prévus restent bloqués.|During these hours you can receive urgent requests, even outside your usual hours. Appointments already booked stay blocked.|Durante este horário pode receber pedidos urgentes, mesmo fora do seu horário habitual. As marcações já previstas continuam bloqueadas.|In questi orari puoi ricevere richieste urgenti, anche fuori dai tuoi orari abituali. Gli appuntamenti già fissati restano bloccati.
+Horaires d’urgence à régler dans Planning › Réglages|Set your emergency hours in Planning › Settings|Defina o horário de urgência em Agenda › Definições|Imposta gli orari di emergenza in Agenda › Impostazioni
+Mêmes horaires|Same hours|Mesmo horário|Stessi orari
+Horaires à part|Separate hours|Horário próprio|Orari dedicati

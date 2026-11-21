@@ -23,9 +23,9 @@ export function dispoLabel(d) {
 export const soonDays = (d) => (d ? (new Date(d) - Date.now()) / 864e5 : 99);
 
 // Premier créneau libre de chaque artisan de la liste (une seule requête)
-export function useNextFree(ids, minutes = 60) {
+export function useNextFree(ids, minutes = 60, urgent = false) {
   const key = ids.slice(0, 80).join(',');
-  const [rows] = useData(() => (key ? api.rpc('next_free', { p_ids: key.split(','), p_minutes: minutes }) : Promise.resolve([])), [key, minutes]);
+  const [rows] = useData(() => (key ? api.rpc('next_free', { p_ids: key.split(','), p_minutes: minutes, p_urgent: urgent }) : Promise.resolve([])), [key, minutes, urgent]);
   const map = {};
   (rows || []).forEach((r) => { map[r.company_id] = r; });
   return map;
@@ -72,7 +72,7 @@ export function GroupRequest() {
   const [busy, setBusy] = useState(false);
   const minutes = mode === 'visio' ? 30 : type === 'Dépannage' ? 90 : 60;
   const [cos] = useData(() => Promise.all(ids.map((id) => api.rpc('directory_get', { p_id: id }))), [ids.join(',')]);
-  const free = useNextFree(ids, minutes);
+  const free = useNextFree(ids, minutes, urgent);
   if (!ids.length) return <div className="content"><TopBar title={t('Demande à plusieurs artisans')} /><Empty text={t('Choisissez d’abord 2 ou 3 artisans dans la recherche.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button></Empty></div>;
   if (!cos) return <div className="content"><TopBar title={t('Demande à plusieurs artisans')} /><Loader /></div>;
   const list = cos.filter(Boolean);

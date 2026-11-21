@@ -12,7 +12,7 @@ import { clientApptStatus } from '../../lib/docs.js';
 import { icsFile } from '../../lib/ics.js';
 import { TopBar, SearchBar, suggestList, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox, ArtesaAvatar } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
-import { planSettings, freeWindows } from '../pro/planning.jsx';
+import { planSettings, bookWindow } from '../pro/planning.jsx';
 import { MoveSheet } from '../pro/planning-rdv.jsx';
 import { InfoBubble } from '../../ui/lawref.jsx';
 import { CityInput, distanceKm } from '../../ui/address.jsx';
@@ -113,7 +113,7 @@ export function Search() {
   const withDist = (res || []).map((r) => ({ ...r, dist: place && r.zone_lat ? distanceKm(place, { lat: r.zone_lat, lon: r.zone_lon }) : null }));
   const covers = (r) => !place || (r.dist != null ? r.dist <= (r.zone_km || 30) : (r.city + ' ' + (r.zone || '')).toLowerCase().includes(place.city.toLowerCase()));
   const [favIds, flipFav] = useFavIds();
-  const free = useNextFree(withDist.filter(covers).map((r) => r.id), urgent ? 90 : 60);
+  const free = useNextFree(withDist.filter(covers).map((r) => r.id), urgent ? 90 : 60, urgent);
   const nx = (r) => free[r.id]?.next_at;
   const list = withDist.filter((r) => covers(r) && (!visio || r.visio) && (!good || (r.rating || 0) >= 4) && (!soon || soonDays(nx(r)) <= 7) && (!urgent || (free[r.id]?.urgence && nx(r))))
     .sort(urgent ? (a, b) => new Date(nx(a)) - new Date(nx(b)) : (a, b) => b.is_mine - a.is_mine || (a.dist ?? 999) - (b.dist ?? 999));
@@ -320,20 +320,21 @@ export function NewRequest({ params }) {
   if (!b) return <div className="content"><TopBar title={t('Nouvelle demande')} /><Loader /></div>;
   const s = planSettings({ settings: { planning: b.p.planning || {} } });
   if (s.offered.length && !s.offered.includes(type)) setTimeout(() => setType(s.offered[0]), 0);
-  const days = Array.from({ length: 21 }, (_, i) => addDays(from, i)).filter((d) => s.days.includes(d.getDay()) && freeWindows(d, b.busySlots, s, 30).length);
-  const curDay = day || days[0];
-  const slots = [];
-  if (curDay) {
-    const st = new Date(curDay); st.setHours(s.slot[0], 0, 0, 0);
-    const en = new Date(curDay); en.setHours(s.slot[1], 0, 0, 0);
-    const free = freeWindows(curDay, b.busySlots, s, 30);
-    // Le créneau doit pouvoir contenir la durée prévue pour ce type de RDV (réglée par l'artisan)
-    const need = (mode === 'visio' ? 30 : (s.durations?.[type] || s.duration || 60)) * 6e4;
-    for (let x = new Date(st); x < en; x = new Date(+x + 18e5)) {
-      const ok = free.some(([a, z]) => x >= a && +x + need <= +z);
-      slots.push([new Date(x), ok]);
+  // Le créneau doit pouvoir contenir la durée prévue pour ce type de RDV (réglée par l'artisan)
+  const need = (mode === 'visio' ? 30 : (s.durations?.[type] || s.duration || 60)) * 6e4;
+  const urg = urgent && s.urgence; // urgence : horaires d'urgence de l'artisan (peuvent dépasser minuit)
+  const slotsOf = (d) => {
+    const w = bookWindow(d, s, urg); if (!w) return [];
+    const out = [];
+    for (let x = new Date(w[0]); +x + need <= +w[1]; x = new Date(+x + 18e5)) {
+      const ok = x > new Date() && !b.busySlots.some((z) => new Date(z.start_at) < new Date(+x + need) && new Date(z.end_at) > x);
+      out.push([x, ok]);
     }
-  }
+    return out;
+  };
+  const days = Array.from({ length: urg ? 15 : 21 }, (_, i) => addDays(from, urg ? i - 1 : i)).filter((d) => slotsOf(d).some(([, ok]) => ok));
+  const curDay = day || days[0];
+  const slots = curDay ? slotsOf(curDay) : [];
   const addPhotos = async () => { const fs = await pickFiles({ accept: 'image/*,video/*' }); setPhotos([...photos, ...fs].slice(0, 8)); };
   if (urgent && !slot && slots.some(([, ok]) => ok)) setTimeout(() => setSlot(slots.find(([, ok]) => ok)[0]), 0);
   const send = async () => {

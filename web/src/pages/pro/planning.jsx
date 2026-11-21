@@ -19,6 +19,19 @@ export const planSettings = (company) => ({ view: 'week', hours: [7, 19], weeken
 // Nombre de colonnes de la semaine : jusqu'au dernier jour travaillé (le dimanche s'affiche s'il est coché)
 export const weekLength = (s) => (s.weekend || s.days.includes(0) ? 7 : s.days.includes(6) ? 6 : 5);
 
+// Plage horaire où l'artisan accepte une demande, commençant le jour `day` (urgence : ses horaires d'urgence)
+// renvoie [début, fin] ou null ; une plage de nuit (ex. 20 h → 6 h) se termine le lendemain
+export function bookWindow(day, s, urgent) {
+  const custom = urgent && s.urgence && s.urgence_mode === 'custom';
+  const all = custom && s.urgence_247;
+  const days = all ? [0, 1, 2, 3, 4, 5, 6] : custom ? s.urgence_days || [0, 1, 2, 3, 4, 5, 6] : s.days;
+  const [a, b] = all ? [0, 24] : custom ? s.urgence_slot || [18, 22] : s.slot;
+  if (!days.includes(day.getDay())) return null;
+  const st = new Date(day); st.setHours(a, 0, 0, 0);
+  const en = new Date(day); en.setHours(0, 0, 0, 0); en.setDate(en.getDate() + (b <= a ? 1 : 0)); en.setHours(b, 0, 0, 0);
+  return [st, en];
+}
+
 // Créneaux libres d'une journée (pour l'affichage « Dispo » et la prise de RDV)
 export function freeWindows(day, busy, s, minLen = 30) {
   const dow = day.getDay();

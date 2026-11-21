@@ -46,7 +46,28 @@ export function PlanningSettings() {
         <SettingToggle label={t('Validation manuelle')} hint={s.manual ? t('Vous acceptez ou refusez chaque demande de rendez-vous') : t('Les demandes sur vos créneaux libres sont acceptées automatiquement')} checked={s.manual} onChange={(v) => save({ manual: v })} />
         <div className="r"><span className="k">{t('Rappel au client')}</span><select value={s.reminder} onChange={(e) => save({ reminder: +e.target.value })}>{[0, 2, 24, 48].map((h) => <option key={h} value={h}>{h ? t('{n} h avant', { n: h }) : t('Aucun')}</option>)}</select></div>
         <SettingToggle label={t('Rendez-vous en visio (WhatsApp)')} hint={s.visio ? t('Vos clients peuvent demander une visio WhatsApp') : t('Vos clients ne peuvent demander que des rendez-vous sur place')} checked={s.visio} onChange={(v) => save({ visio: v })} />
-        <SettingToggle label={t('J’accepte les urgences')} hint={s.urgence ? t('Vous apparaissez dans « Urgence » pour les particuliers, avec votre premier créneau libre') : t('Vous n’apparaissez pas dans les recherches urgentes')} checked={!!s.urgence} onChange={(v) => save({ urgence: v })} />
+      </div>
+      <Sec title={t('Urgences')} />
+      <div className="kv">
+        <SettingToggle label={t('J’accepte les urgences')} hint={s.urgence ? t('Vous apparaissez dans « Urgence » pour les particuliers, pendant vos horaires d’urgence') : t('Vous n’apparaissez pas dans les recherches urgentes')} checked={!!s.urgence} onChange={(v) => save({ urgence: v })} />
+        {s.urgence && (
+          <div className="r" style={{ display: 'block' }}>
+            <div className="k mb">{t('Horaires d’urgence')}</div>
+            <Seg options={[['same', t('Mêmes horaires')], ['custom', t('Horaires à part')]]} value={s.urgence_mode === 'custom' ? 'custom' : 'same'} onChange={(v) => save({ urgence_mode: v, urgence_days: s.urgence_days || s.days, urgence_slot: s.urgence_slot || [18, 22] })} />
+            {s.urgence_mode !== 'custom' ? <p className="small muted mt">{t('Les urgences vous sont proposées sur vos plages disponibles ci-dessus : {d}, de {a} h à {b} h.', { d: DAYS.filter(([v]) => s.days.includes(v)).map(([, l]) => t(l)).join(', '), a: s.slot[0], b: s.slot[1] })}</p> : (
+              <div className="mt">
+                <div className="kv"><SettingToggle label={t('24 h/24, 7 j/7')} checked={!!s.urgence_247} onChange={(v) => save({ urgence_247: v })} /></div>
+                {!s.urgence_247 && <>
+                  <Chips multi options={DAYS.map(([v, l]) => [v, t(l)])} value={s.urgence_days || s.days} onChange={(urgence_days) => save({ urgence_days })} />
+                  <div className="row mt" style={{ gap: 8 }}>{t('de')} <select value={(s.urgence_slot || [18, 22])[0]} onChange={(e) => save({ urgence_slot: [+e.target.value, (s.urgence_slot || [18, 22])[1]] })}>{hours.map((h) => <option key={h} value={h}>{h} h</option>)}</select>
+                    {t('à')} <select value={(s.urgence_slot || [18, 22])[1]} onChange={(e) => save({ urgence_slot: [(s.urgence_slot || [18, 22])[0], +e.target.value] })}>{[...hours, 24].map((h) => <option key={h} value={h}>{h} h</option>)}</select></div>
+                  {(s.urgence_slot || [18, 22])[1] <= (s.urgence_slot || [18, 22])[0] && <p className="small muted">{t('Fin le lendemain matin (ex. 20 h → 6 h).')}</p>}
+                </>}
+                <p className="small muted mt">{t('Pendant ces horaires, vous pouvez recevoir des demandes urgentes, même en dehors de vos plages habituelles. Vos rendez-vous déjà prévus restent bloqués.')}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <Sec title={t('Types de rendez-vous proposés')} />
       <p className="small muted" style={{ marginTop: -4 }}>{t('Cochez ce que vos clients peuvent réserver en ligne, et la durée de chacun (comme sur Doctolib). Vous pouvez toujours créer tous les types vous-même.')}</p>

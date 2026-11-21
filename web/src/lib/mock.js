@@ -449,14 +449,17 @@ export function mockBackend({ saveSession, getSession }) {
       const prof = profile();
       notifyCompany(a.company_id, 'rdv', p_accept ? 'Nouveau créneau accepté' : 'Nouveau créneau refusé', `${prof.first_name} ${prof.last_name} · ${a.title} · ${when}${p_accept ? ' · RDV confirmé' : ' · la demande reste à traiter'}`, '/pro/planning/rdv/' + a.id);
     },
-    next_free({ p_ids, p_minutes = 60 }) {
+    next_free({ p_ids, p_minutes = 60, p_urgent = false }) {
       return db.companies.filter((c) => p_ids.includes(c.id)).map((c) => {
-        const pl = c.settings?.planning || {}; const days = pl.days || [1, 2, 3, 4, 5, 6]; const [s0, s1] = pl.slot || [8, 18];
+        const pl = c.settings?.planning || {}; const custom = p_urgent && pl.urgence && pl.urgence_mode === 'custom'; const all = custom && pl.urgence_247;
+        const days = all ? [0, 1, 2, 3, 4, 5, 6] : custom ? pl.urgence_days || [0, 1, 2, 3, 4, 5, 6] : pl.days || [1, 2, 3, 4, 5, 6];
+        const [s0, s1] = all ? [0, 24] : custom ? pl.urgence_slot || [18, 22] : pl.slot || [8, 18];
         const busy = db.appointments.filter((a) => a.company_id === c.id && ['a_valider', 'valide'].includes(a.status));
         let found = null;
-        for (let d = 0; d < 14 && !found; d++) {
+        for (let d = -1; d < 14 && !found; d++) {
           const day = new Date(); day.setDate(day.getDate() + d); if (!days.includes(day.getDay())) continue;
-          let t0 = new Date(day); t0.setHours(s0, 0, 0, 0); const lim = new Date(day); lim.setHours(s1, 0, 0, 0);
+          let t0 = new Date(day); t0.setHours(s0, 0, 0, 0); const lim = new Date(day); lim.setHours(0, 0, 0, 0); lim.setDate(lim.getDate() + (s1 <= s0 ? 1 : 0)); lim.setHours(s1, 0, 0, 0);
+          if (lim <= new Date()) continue;
           if (t0 < new Date()) t0 = new Date(Math.ceil(Date.now() / 18e5) * 18e5);
           for (let t = t0; +t + p_minutes * 6e4 <= +lim; t = new Date(+t + 18e5)) {
             const e = new Date(+t + p_minutes * 6e4);
