@@ -179,7 +179,7 @@ export function AdminStats() {
             <div className="r"><span>{t('À compléter')}</span><b>{s.rejected}</b></div>
             <div className="r"><span>{t('En essai gratuit')}</span><b>{s.in_trial}</b></div>
             <div className="r"><span>{t('Essai terminé (abonnement attendu)')}</span><b>{s.after_trial}</b></div>
-            {Object.entries(s.plans || {}).map(([k, n]) => <div key={k} className="r"><span>{t('Formule {p}', { p: (plans.find((p) => p.id === k)?.name) || k })}</span><b>{n} × {money0(priceOf(plans, k))}</b></div>)}
+            {Object.entries(s.plans || {}).map(([k, n]) => <div key={k} className="r"><span>{t('Formule {p}', { p: (plans.find((p) => p.id === k)?.name) || k })}</span><b>{n} × {money(priceOf(plans, k))}</b></div>)}
             <div className="r"><span><b>{t('Revenu mensuel estimé')}</b><div className="small muted">{t('Estimation : le paiement des abonnements n’est pas encore relié.')}</div></span><b>{money0(mrr(s, plans))} {t('HT')}</b></div>
           </div>
           <Sec title={t('Essais qui se terminent sous 7 jours')} />

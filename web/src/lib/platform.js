@@ -94,6 +94,10 @@ export const DEFAULT_EXTRAS = [
   "unit": "mois",
   "price": 5,
   "setup": 29.99,
+  "ovh": true,
+  "margin_pct": 50,
+  "margin_fixed": 3,
+  "ext": ".fr",
   "desc": "Votre adresse contact@votre-entreprise.fr",
   "active": true
   },
@@ -146,3 +150,19 @@ export function useWho(profile) {
   const setWho = (n) => { try { localStorage.setItem(WHO_KEY, n); } catch { /* navigation privée */ } whoSubs.forEach((f) => f(n)); };
   return [cur, setWho, team];
 }
+
+// Nom de domaine relié à OVH : prix d'achat HT chez OVHcloud (TVA d'achat récupérée) + marge, arrondi à ,99 au-dessus.
+// La marge se règle sur l'offre (Admin › Offres et tarifs › Compléments) : margin_pct (%) et margin_fixed (€ par an).
+export const domainSale = (costHt, x = {}) => {
+  const raw = Number(costHt || 0) * (1 + Number(x.margin_pct ?? 50) / 100) + Number(x.margin_fixed ?? 3);
+  return raw > 0 ? Math.ceil(raw) - 0.01 : 0;
+};
+// Prix OVH d'un domaine (ou d'une extension) via la fonction serveur domain-price
+export async function domainQuote(domainOrExt) {
+  const v = String(domainOrExt || '').trim().toLowerCase();
+  const body = v.startsWith('.') || !v.includes('.') ? { ext: v || '.fr' } : { domain: v };
+  const r = await api.fn('domain-price', body).catch(() => null);
+  return r && !r.error ? r : null;
+}
+// Nom proposé par défaut à partir du nom de l'entreprise : « Plomberie Morel » → plomberie-morel.fr
+export const domainFromName = (name, ext = '.fr') => String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/&/g, ' et ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 50) + (ext.startsWith('.') ? ext : '.' + ext);

@@ -6,7 +6,7 @@ import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { money0, date, rel, iso } from '../../lib/format.js';
+import { money, money0, date, rel, iso } from '../../lib/format.js';
 import { usePlatform, useWho } from '../../lib/platform.js';
 import { readSheet, makeXlsx, download } from '../../lib/xlsx.js';
 import { TopBar, Pill, useData, Loader, Empty, Chips, Sheet, Field, Table, SearchBar, suggestList } from '../../ui/index.jsx';
@@ -259,7 +259,7 @@ function DealForm({ d, set, plans, team, who, log, touch, onDone }) {
         {F('address', t('Adresse'))}{F('zip', t('Code postal'))}
         {F('city', t('Ville'))}{F('siret', t('SIRET'))}
         {F('website', t('Site web'))}{F('source', t('Origine'), { placeholder: t('salon, bouche-à-oreille, fichier…') })}
-        <Field label={t('Formule visée')}><select value={d.plan} onChange={(e) => set({ ...d, plan: e.target.value, value: plans.find((p) => p.id === e.target.value)?.price ?? d.value })}>{plans.map((p) => <option key={p.id} value={p.id}>{p.name} · {money0(p.price)}</option>)}</select></Field>
+        <Field label={t('Formule visée')}><select value={d.plan} onChange={(e) => set({ ...d, plan: e.target.value, value: plans.find((p) => p.id === e.target.value)?.price ?? d.value })}>{plans.map((p) => <option key={p.id} value={p.id}>{p.name} · {money(p.price)}</option>)}</select></Field>
         {F('value', t('Valeur / mois (€)'), { type: 'number', min: 0 })}
       </div>
       <Field label={t('Étiquettes (séparées par des virgules)')}><input value={Array.isArray(d.tags) ? d.tags.join(', ') : d.tags || ''} onChange={(e) => set({ ...d, tags: e.target.value })} /></Field>

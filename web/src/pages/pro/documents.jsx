@@ -2,7 +2,7 @@ import { SmartSearch } from '../../ui/smartsearch.jsx';
 import { useRef, useState } from 'react';
 import { LuFilePen, LuFileText, LuCamera, LuFolderOpen, LuLock, LuPlus, LuTrash2, LuArrowUp, LuArrowDown, LuBookOpen, LuMail, LuSend, LuPrinter, LuDownload, LuCopy, LuPencil, LuEye, LuCheck } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
-import { loadPlatform } from '../../lib/platform.js';
+import { loadPlatform, domainQuote, domainSale, domainFromName } from '../../lib/platform.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, useLocation, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
@@ -148,12 +148,18 @@ export function DocEdit({ params }) {
           const ex = (ps.extras || []).filter((x) => opts.includes(x.label));
           const users = Number(q.users_needed) || 0;
           const item = (label, unit, price) => newLine('item', { label, qty: 1, unit, price: Number(price) || 0, vat });
+          // Nom de domaine relié à OVH : prix de revente calculé (prix OVH HT + marge)
+          const domX = ex.find((x) => x.ovh);
+          const wanted = (opts.find((o) => o.startsWith('Nom de domaine souhaité : ')) || '').replace('Nom de domaine souhaité : ', '') || (domX ? domainFromName(q.company_name, domX.ext || '.fr') : '');
+          const dq = domX ? await domainQuote(wanted) : null;
+          const domLine = domX ? [item(t('Nom de domaine {d} (1 an)', { d: wanted }) + (dq?.available === false ? ' · ' + t('déjà pris, à choisir avec le client') : ''), 'an', dq ? domainSale(dq.renew_ht, domX) : 0)] : [];
           doc.object = t('Abonnement Artis & You {p}', { p: plan?.name || '' }) + ' · ' + q.company_name;
           doc.lines = [
             newLine('section', { label: t('Abonnement (par mois)') }),
             item(t('Abonnement Artis & You {p}', { p: plan?.name || '' }) + (users ? ' · ' + t('{n} utilisateur(s)', { n: users }) : ''), 'mois', plan?.price),
             ...(feats.length ? [newLine('text', { label: t('Inclus : {l}', { l: feats.map((f) => t(f)).join(', ') }) })] : []),
             ...(ex.some((x) => x.unit === 'mois') ? [newLine('section', { label: t('Options (par mois)') }), ...ex.filter((x) => x.unit === 'mois').map((x) => item(t(x.label) + (x.desc ? ' · ' + x.desc : ''), 'mois', x.price))] : []),
+            ...(domLine.length ? [newLine('section', { label: t('Nom de domaine (par an)') }), ...domLine] : []),
             ...(ex.some((x) => x.unit !== 'mois' || Number(x.setup) > 0) ? [newLine('section', { label: t('Mise en place (une fois)') }), ...ex.filter((x) => x.unit !== 'mois').map((x) => item(t(x.label) + (x.desc ? ' · ' + x.desc : ''), 'forfait', x.price)), ...ex.filter((x) => x.unit === 'mois' && Number(x.setup) > 0).map((x) => item(t('{l} · mise en place', { l: t(x.label) }), 'forfait', x.setup))] : []),
           ];
         }
@@ -223,7 +229,7 @@ export function DocEdit({ params }) {
         <div className="lg">
           <input value={l.label} onChange={(e) => setLine(i, { label: e.target.value })} placeholder={t('Désignation')} aria-label={t('Désignation')} />
           <input type="number" step="any" value={l.qty} onChange={(e) => setLine(i, { qty: e.target.value })} aria-label={t('Quantité')} />
-          <select value={l.unit} onChange={(e) => setLine(i, { unit: e.target.value })} aria-label={t('Unité')}>{['u', 'h', 'j', 'mois', 'm', 'm²', 'm³', 'ml', 'kg', 'l', 'forfait', 'lot', 'kit', 'boîte'].map((x) => <option key={x}>{x}</option>)}</select>
+          <select value={l.unit} onChange={(e) => setLine(i, { unit: e.target.value })} aria-label={t('Unité')}>{['u', 'h', 'j', 'mois', 'an', 'm', 'm²', 'm³', 'ml', 'kg', 'l', 'forfait', 'lot', 'kit', 'boîte'].map((x) => <option key={x}>{x}</option>)}</select>
           <input type="number" step="any" value={l.price} onChange={(e) => setLine(i, { price: e.target.value })} aria-label={t('Prix unitaire HT')} placeholder={t('PU HT')} />
           <select value={l.vat} onChange={(e) => setLine(i, { vat: Number(e.target.value) })} disabled={franchise || d.reverse_charge} aria-label={t('TVA')}>{VAT_RATES.map((r) => <option key={r} value={r}>{r} %</option>)}</select>
           <b style={{ textAlign: 'right' }}>{money((Number(l.qty) || 0) * (Number(l.price) || 0))}</b>

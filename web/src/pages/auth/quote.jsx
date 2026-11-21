@@ -1,13 +1,13 @@
 // Demande de devis pour une formule « sur devis » (Entreprise…), ouverte à tous, connecté ou non.
 // L'entreprise décrit son équipe et ses besoins ; la demande arrive dans l'espace admin (tuile « Demandes de devis »)
 // et l'équipe Artis & You reçoit une notification pour préparer le devis.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LuArrowLeft, LuCheck, LuSend } from 'react-icons/lu';
 import { api } from '../../lib/api.js';
 import { useApp } from '../../lib/store.jsx';
 import { navigate, Link } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
-import { usePlatform } from '../../lib/platform.js';
+import { usePlatform, domainQuote, domainSale, domainFromName } from '../../lib/platform.js';
 import { Field, Wordmark } from '../../ui/index.jsx';
 
 const TEAM = ['6 à 10 personnes', '11 à 20 personnes', '21 à 50 personnes', 'Plus de 50 personnes'];
@@ -30,6 +30,18 @@ export function QuoteRequest() {
     contact_name: co ? [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') : '', email: co ? profile?.email || '' : '', phone: co ? profile?.phone || '' : '', consent: false,
   });
   const [state, setState] = useState('');
+  // Nom de domaine souhaité (offre reliée à OVH) : disponibilité et prix vérifiés pendant la frappe
+  const dom = EXTRAS.find((x) => x.ovh);
+  const wantsDom = dom && f.options.includes(dom.label);
+  const [dn, setDn] = useState('');
+  const [dq, setDq] = useState(null);
+  useEffect(() => {
+    if (!wantsDom) return undefined;
+    const v = (dn || domainFromName(f.company_name, dom.ext || '.fr')).trim();
+    if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(v)) { setDq(null); return undefined; }
+    setDq('…'); const tm = setTimeout(async () => setDq((await domainQuote(v)) || 'ko'), 500);
+    return () => clearTimeout(tm);
+  }, [wantsDom, dn, f.company_name]);
   const [err, setErr] = useState('');
   const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
   const toggle = (o) => set('options', f.options.includes(o) ? f.options.filter((x) => x !== o) : [...f.options, o]);
@@ -42,7 +54,9 @@ export function QuoteRequest() {
     const miss = [v.company_name.trim().length < 2 && t('le nom de l’entreprise'), v.contact_name.trim().length < 2 && t('votre nom'), !/\S+@\S+\.\S+/.test(v.email) && t('un e-mail valide'), !v.consent && t('cocher la case d’accord en bas')].filter(Boolean);
     if (miss.length) { setErr(t('Il manque : {l}.', { l: miss.join(', ') })); return; }
     setState('…');
-    try { await api.rpc('request_quote', { p: { ...v, plan: plan?.id || 'entreprise' } }); setState('ok'); window.scrollTo(0, 0); }
+    const wanted = wantsDom ? (dn || domainFromName(v.company_name, dom.ext || '.fr')).trim().toLowerCase() : '';
+    const options = wanted ? [...v.options.filter((o) => !o.startsWith('Nom de domaine souhaité : ')), 'Nom de domaine souhaité : ' + wanted] : v.options;
+    try { await api.rpc('request_quote', { p: { ...v, options, plan: plan?.id || 'entreprise' } }); setState('ok'); window.scrollTo(0, 0); }
     catch (x) { setState(''); setErr(x.message || String(x)); }
   };
 
@@ -92,6 +106,13 @@ export function QuoteRequest() {
               </label>
             ))}
           </div>
+          {wantsDom && (
+            <div className="card soft mb">
+              <Field label={t('Nom de domaine souhaité')} hint={t('facultatif')}><input value={dn} onChange={(e) => setDn(e.target.value.trim().toLowerCase())} placeholder={domainFromName(f.company_name || 'votre-entreprise', dom.ext || '.fr')} autoCapitalize="none" spellCheck={false} /></Field>
+              {dq === '…' && <p className="small muted" style={{ margin: 0 }}>{t('Vérification…')}</p>}
+              {dq && typeof dq === 'object' && <p className="small" style={{ margin: 0 }}>{dq.available === false ? <span className="red-t">{t('{d} est déjà pris : essayez un autre nom.', { d: dq.domain })}</span> : <>{dq.available ? <b className="green-t">{t('{d} est disponible', { d: dq.domain })}</b> : <b>{dq.domain}</b>} · {t('{p} € HT par an', { p: domainSale(dq.renew_ht, dom).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) })}</>}</p>}
+            </div>
+          )}
           <div className="form-grid two">
             <Field label={t('Outils que vous utilisez aujourd’hui')} hint={t('facultatif')}><input name="current_tools" value={f.current_tools} onChange={(e) => set('current_tools', e.target.value)} placeholder={t('ex. Excel, logiciel de devis, agenda papier…')} /></Field>
           </div>

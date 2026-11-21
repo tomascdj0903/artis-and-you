@@ -1981,3 +1981,18 @@ Fiche Artis & You mise en forme|Polished Artis & You profile|Ficha Artis & You f
 Fiche Google|Google Business profile|Ficha Google|Scheda Google
 Nom de domaine et e-mail pro|Domain name and business e-mail|Nome de domínio e e-mail profissional|Nome di dominio ed e-mail professionale
 Mise en avant de la fiche|Featured profile|Destaque da ficha|Scheda in evidenza
+Nom de domaine : prix calculé depuis OVHcloud|Domain name: price calculated from OVHcloud|Nome de domínio: preço calculado a partir da OVHcloud|Nome di dominio: prezzo calcolato da OVHcloud
+Marge (%)|Margin (%)|Margem (%)|Margine (%)
+Marge fixe HT (€ / an)|Fixed margin excl. VAT (€ / year)|Margem fixa sem IVA (€ / ano)|Margine fisso IVA esclusa (€ / anno)
+Voir le prix OVH du .fr|See the OVH price for .fr|Ver o preço OVH do .fr|Vedi il prezzo OVH del .fr
+Calcul…|Calculating…|A calcular…|Calcolo…
+OVH ne répond pas pour le moment|OVH is not responding right now|A OVH não responde de momento|OVH non risponde al momento
+OVH : {a} € HT la 1re année, {b} € HT / an ensuite · notre prix : {c} € HT / an|OVH: €{a} excl. VAT the 1st year, then €{b} excl. VAT / year · our price: €{c} excl. VAT / year|OVH: {a} € sem IVA no 1.º ano, depois {b} € sem IVA / ano · o nosso preço: {c} € sem IVA / ano|OVH: {a} € IVA esclusa il 1° anno, poi {b} € IVA esclusa / anno · il nostro prezzo: {c} € IVA esclusa / anno
+Prix de revente = prix OVH hors taxes du renouvellement (TVA d’achat récupérée) + marge, arrondi à ,99. Le devis ajoute une ligne « Nom de domaine … (1 an) » à ce prix.|Resale price = OVH renewal price excl. VAT (purchase VAT recovered) + margin, rounded to .99. The quote adds a “Domain name … (1 year)” line at this price.|Preço de revenda = preço OVH de renovação sem IVA (IVA de compra recuperado) + margem, arredondado a ,99. O orçamento adiciona uma linha «Nome de domínio … (1 ano)» a este preço.|Prezzo di rivendita = prezzo OVH di rinnovo IVA esclusa (IVA sugli acquisti recuperata) + margine, arrotondato a ,99. Il preventivo aggiunge una riga «Nome di dominio … (1 anno)» a questo prezzo.
+Nom de domaine souhaité|Desired domain name|Nome de domínio pretendido|Nome di dominio desiderato
+{d} est déjà pris : essayez un autre nom.|{d} is already taken: try another name.|{d} já está ocupado: experimente outro nome.|{d} è già occupato: prova un altro nome.
+{d} est disponible|{d} is available|{d} está disponível|{d} è disponibile
+{p} € HT par an|€{p} excl. VAT per year|{p} € sem IVA por ano|{p} € IVA esclusa all'anno
+Nom de domaine {d} (1 an)|Domain name {d} (1 year)|Nome de domínio {d} (1 ano)|Nome di dominio {d} (1 anno)
+déjà pris, à choisir avec le client|already taken, to choose with the client|já ocupado, a escolher com o cliente|già occupato, da scegliere con il cliente
+Nom de domaine (par an)|Domain name (per year)|Nome de domínio (por ano)|Nome di dominio (all'anno)

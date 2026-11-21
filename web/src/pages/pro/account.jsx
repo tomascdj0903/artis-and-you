@@ -89,7 +89,7 @@ export function Subscription() {
         {PLANS.map((p) => (
           <div key={p.id} className="card" style={{ borderColor: p.id === company.plan ? 'var(--bordeaux)' : 'var(--line)' }}>
             <div className="row between"><b style={{ fontSize: 20 }}>{p.name}</b>{p.id === company.plan && <Pill c="red">{t('Actuelle')}</Pill>}</div>
-            <div style={{ fontSize: 30, fontWeight: 800 }}>{p.quote ? t('Sur devis') : <>{p.price} € <small className="small muted">{t('HT / mois')}</small></>}</div>
+            <div style={{ fontSize: 30, fontWeight: 800 }}>{p.quote ? t('Sur devis') : <>{Number(p.price).toLocaleString('fr-FR')} € <small className="small muted">{t('HT / mois')}</small></>}</div>
             <div className="small muted">{t(p.desc)}</div>
             <ul className="small" style={{ paddingLeft: 18 }}>{p.features.map((f) => <li key={f}>{t(f)}</li>)}</ul>
             {p.id !== company.plan && (p.quote ? <button className="btn sm block" onClick={() => navigate('/devis-entreprise?formule=' + p.id)}>{t('Demander un devis')}</button> : <button className="btn sm block" onClick={() => wip(t('Le paiement de l’abonnement'))}>{t('Choisir {p}', { p: p.name })}</button>)}

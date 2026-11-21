@@ -7,7 +7,7 @@ import { useApp } from '../../lib/store.jsx';
 import { navigate } from '../../lib/router.jsx';
 import { t } from '../../lib/i18n.js';
 import { date, rel, iso } from '../../lib/format.js';
-import { usePlatform, savePlatform, useWho } from '../../lib/platform.js';
+import { usePlatform, savePlatform, useWho, domainQuote, domainSale } from '../../lib/platform.js';
 import { WhoBar } from './prospects.jsx';
 import { TopBar, Sec, Pill, useData, Loader, Empty, Chips, Sheet, Field, Table, SearchBar, suggestList } from '../../ui/index.jsx';
 import { uploadTo } from '../common/chat.jsx';
@@ -48,7 +48,7 @@ export function AdminOffers() {
           <div key={p.id} className="card soft">
             <Field label={t('Nom de la formule')}><input value={p.name} onChange={(e) => set(i, 'name', e.target.value)} /></Field>
             <div className="form-grid two">
-              <Field label={p.quote ? t('Prix de base du devis, HT / mois (€)') : t('Prix HT / mois (€)')} hint={p.quote ? t('repris dans « Faire le devis »') : ''}><input type="number" min={0} step="1" value={p.price} onChange={(e) => set(i, 'price', e.target.value)} /></Field>
+              <Field label={p.quote ? t('Prix de base du devis, HT / mois (€)') : t('Prix HT / mois (€)')} hint={p.quote ? t('repris dans « Faire le devis »') : ''}><input type="number" min={0} step="0.01" value={p.price} onChange={(e) => set(i, 'price', e.target.value)} /></Field>
               <Field label={t('Utilisateurs (0 = illimité)')}><input type="number" min={0} value={p.users} onChange={(e) => set(i, 'users', e.target.value)} /></Field>
             </div>
             <label className="check"><input type="checkbox" checked={!!p.quote} onChange={(e) => set(i, 'quote', e.target.checked)} /><span><b>{t('Sur devis')}</b> · {t('le site affiche « Sur devis » et un bouton « Demander un devis » au lieu du prix')}</span></label>
@@ -78,7 +78,7 @@ function AdminExtras() {
   const set = (i, k, v) => setList(L.map((x, j) => (j === i ? { ...x, [k]: v } : x)));
   const add = () => setList([...L, { id: 'o' + Date.now().toString(36), label: '', unit: 'forfait', price: 0, desc: '', active: true, fresh: true }]);
   const save = () => run(async () => {
-    const clean = L.map(({ fresh, ...x }) => ({ ...x, label: String(x.label || '').trim(), desc: String(x.desc || '').trim(), price: Math.max(0, Number(x.price) || 0), setup: x.unit === 'mois' ? Math.max(0, Number(x.setup) || 0) : 0, active: x.active !== false })).filter((x) => x.label);
+    const clean = L.map(({ fresh, test, ...x }) => ({ ...x, margin_pct: x.ovh ? Number(x.margin_pct ?? 50) || 0 : undefined, margin_fixed: x.ovh ? Number(x.margin_fixed ?? 3) || 0 : undefined, label: String(x.label || '').trim(), desc: String(x.desc || '').trim(), price: Math.max(0, Number(x.price) || 0), setup: x.unit === 'mois' ? Math.max(0, Number(x.setup) || 0) : 0, active: x.active !== false })).filter((x) => x.label);
     await savePlatform({ extras: clean }, profile.id);
     setList(null);
   }, t('Offres complémentaires enregistrées'));
@@ -93,6 +93,20 @@ function AdminExtras() {
               <Field label={t('Prix HT (€)')}><input type="number" min={0} step="0.01" value={x.price} onChange={(e) => set(i, 'price', e.target.value)} /></Field>
               <Field label={t('Facturé')}><select value={x.unit} onChange={(e) => set(i, 'unit', e.target.value)}><option value="forfait">{t('une fois (forfait)')}</option><option value="mois">{t('chaque mois')}</option></select></Field>
             </div>
+            <label className="check"><input type="checkbox" checked={!!x.ovh} onChange={(e) => set(i, 'ovh', e.target.checked)} /><span>{t('Nom de domaine : prix calculé depuis OVHcloud')}</span></label>
+            {x.ovh && <div className="card soft" style={{ padding: 12, margin: '6px 0 10px' }}>
+              <div className="form-grid two">
+                <Field label={t('Marge (%)')}><input type="number" min={0} step="1" value={x.margin_pct ?? 50} onChange={(e) => set(i, 'margin_pct', e.target.value)} /></Field>
+                <Field label={t('Marge fixe HT (€ / an)')}><input type="number" min={0} step="0.5" value={x.margin_fixed ?? 3} onChange={(e) => set(i, 'margin_fixed', e.target.value)} /></Field>
+              </div>
+              <div className="row wrap" style={{ gap: 8 }}>
+                <button type="button" className="btn xs ghost" onClick={async () => { set(i, 'test', '…'); const r = await domainQuote(x.ext || '.fr'); set(i, 'test', r ? r : 'ko'); }}>{t('Voir le prix OVH du .fr')}</button>
+                {x.test === '…' && <span className="small muted">{t('Calcul…')}</span>}
+                {x.test === 'ko' && <span className="small red-t">{t('OVH ne répond pas pour le moment')}</span>}
+                {x.test && typeof x.test === 'object' && <span className="small">{t('OVH : {a} € HT la 1re année, {b} € HT / an ensuite · notre prix : {c} € HT / an', { a: x.test.create_ht.toFixed(2), b: x.test.renew_ht.toFixed(2), c: domainSale(x.test.renew_ht, x).toFixed(2) })}</span>}
+              </div>
+              <p className="small muted" style={{ margin: '6px 0 0' }}>{t('Prix de revente = prix OVH hors taxes du renouvellement (TVA d’achat récupérée) + marge, arrondi à ,99. Le devis ajoute une ligne « Nom de domaine … (1 an) » à ce prix.')}</p>
+            </div>}
             {x.unit === 'mois' && <Field label={t('Frais de mise en place HT (€)')} hint={t('facultatif, payés une fois')}><input type="number" min={0} step="0.01" value={x.setup || ''} onChange={(e) => set(i, 'setup', e.target.value)} placeholder="0" /></Field>}
             <Field label={t('Précision affichée au client')} hint={t('facultatif')}><input value={x.desc || ''} onChange={(e) => set(i, 'desc', e.target.value)} placeholder={t('ex. jusqu’à 3 sessions d’une heure')} /></Field>
             <div className="row between">

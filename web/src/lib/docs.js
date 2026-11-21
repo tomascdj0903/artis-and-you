@@ -195,9 +195,9 @@ export function similarTrades(input, list) {
 }
 
 export const PLANS = [
-  { id: 'solo', name: 'Solo', price: 19, users: 1, desc: 'Pour l’artisan seul', features: ['Clients, devis et factures illimités', 'Planning et prise de RDV en ligne', 'Messagerie clients', 'Coffre-fort et documents', 'Export comptable Excel et FEC'] },
-  { id: 'equipe', name: 'Équipe', price: 39, users: 5, desc: 'Jusqu’à 5 utilisateurs', features: ['Tout Solo', 'Équipes et couleurs au planning', 'Rôles et droits (chef d’équipe, ouvrier)', 'Messagerie d’équipe', 'Statut projet et KPI'] },
-  { id: 'entreprise', name: 'Entreprise', price: 69, users: 0, desc: 'Utilisateurs illimités', features: ['Tout Équipe', 'Utilisateurs illimités', 'Chantiers partagés avec le réseau', 'Bibliothèque d’ouvrages avancée', 'Support prioritaire'] },
+  { id: 'solo', name: 'Solo', price: 19.99, users: 1, desc: 'Pour l’artisan seul', features: ['Clients, devis et factures illimités', 'Planning et prise de RDV en ligne', 'Messagerie clients', 'Coffre-fort et documents', 'Export comptable Excel et FEC'] },
+  { id: 'equipe', name: 'Équipe', price: 39.99, users: 5, desc: 'Jusqu’à 5 utilisateurs', features: ['Tout Solo', 'Équipes et couleurs au planning', 'Rôles et droits (chef d’équipe, ouvrier)', 'Messagerie d’équipe', 'Statut projet et KPI'] },
+  { id: 'entreprise', name: 'Entreprise', price: 69.99, quote: true, users: 0, desc: 'Utilisateurs illimités', features: ['Tout Équipe', 'Utilisateurs illimités', 'Chantiers partagés avec le réseau', 'Bibliothèque d’ouvrages avancée', 'Support prioritaire'] },
 ];
 
 // Informations obligatoires pour que l'équipe Artis & You valide une entreprise
