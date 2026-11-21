@@ -1,3 +1,4 @@
+-- (appliquée en prod)
 -- Avis vérifié : après un vrai rendez-vous passé OU une facture payée / un devis signé chez ce pro
 -- (le bouton « Donner mon avis » s'affiche aussi sur une facture payée)
 create or replace function public.post_review(p_company uuid, p_rating integer, p_comment text)
