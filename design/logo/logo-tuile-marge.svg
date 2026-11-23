@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<title>Artis &amp; You</title>
+<defs>
+  <clipPath id="ay-tile"><rect x="62.000" y="62.000" width="900.000" height="900.000" rx="199.800"/></clipPath>
+  <linearGradient id="ay-body" x1=".35" y1="0" x2=".65" y2="1">
+    <stop offset="0" stop-color="#C05E47"/>
+    <stop offset=".4" stop-color="#B84F35"/>
+    <stop offset="1" stop-color="#A13822"/>
+  </linearGradient>
+  <linearGradient id="ay-rim" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#FFE9E1" stop-opacity=".7"/>
+    <stop offset=".3" stop-color="#FFE9E1" stop-opacity=".2"/>
+    <stop offset=".7" stop-color="#FFE9E1" stop-opacity=".06"/>
+    <stop offset="1" stop-color="#FFE9E1" stop-opacity=".28"/>
+  </linearGradient>
+  <radialGradient id="ay-pearl" cx=".4" cy=".35" r=".7">
+    <stop offset="0" stop-color="#DFC3B0"/>
+    <stop offset=".7" stop-color="#D3B49F"/>
+    <stop offset="1" stop-color="#C4A28B"/>
+  </radialGradient>
+  <filter id="ay-shadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="0.891"/>
+    <feOffset dy="1.100"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".36"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="ay-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="0.236"/></filter>
+  <filter id="ay-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.048"/></filter>
+  <clipPath id="ay-cap"><circle cx="66" cy="9" r="11.5"/></clipPath>
+  <mask id="ay-capmask" maskUnits="userSpaceOnUse" x="-50" y="-50" width="250" height="250">
+    <path d="M66 9 C96 18 118 62 118 122" stroke="#fff" stroke-width="22" stroke-linecap="round" fill="none" clip-path="url(#ay-cap)"/>
+  </mask>
+</defs>
+<g clip-path="url(#ay-tile)">
+  <rect x="62.000" y="62.000" width="900.000" height="900.000" fill="url(#ay-body)"/>
+  <g transform="translate(259.600 270.200) scale(3.817)" fill="none" stroke-linecap="round">
+    <!-- tube gauche, acajou -->
+    <path d="M14 122 C14 62 36 18 66 9" stroke="#4B2014" stroke-width="22" filter="url(#ay-shadow)"/>
+    <path d="M14 122 C14 62 36 18 66 9" stroke="#F4D6CB" stroke-opacity=".34" stroke-width="3"
+          stroke-dasharray="140 300" stroke-dashoffset="-5" transform="translate(-2.9 -1.4)" filter="url(#ay-soft)"/>
+    <!-- point, perle d'argile -->
+    <circle cx="66" cy="78" r="12" fill="url(#ay-pearl)" filter="url(#ay-shadow)"/>
+    <ellipse cx="61.9" cy="73.7" rx="3.4" ry="3" fill="#fff" fill-opacity=".35" filter="url(#ay-soft)"/>
+    <ellipse cx="61.9" cy="73.7" rx="2.4" ry="2.1" fill="#fff" fill-opacity=".9"/>
+    <!-- tube droit, argile, posé sur le gauche -->
+    <path d="M66 9 C96 18 118 62 118 122" stroke="#D3B49F" stroke-width="22" filter="url(#ay-shadow)"/>
+    <path d="M66 9 C96 18 118 62 118 122" stroke="#fff" stroke-opacity=".26" stroke-width="8"
+          stroke-dasharray="124 300" stroke-dashoffset="-1" transform="translate(-3.4 -1.8)" filter="url(#ay-glow)"/>
+    <path d="M66 9 C96 18 118 62 118 122" stroke="#fff" stroke-opacity=".8" stroke-width="3.5"
+          stroke-dasharray="124 300" stroke-dashoffset="-1" transform="translate(-3.4 -1.8)" filter="url(#ay-soft)"/>
+    <g mask="url(#ay-capmask)">
+      <path d="M14 122 C14 62 36 18 66 9" stroke="#fff" stroke-opacity=".3" stroke-width="3" stroke-dasharray="140 300" stroke-dashoffset="-5"
+            transform="translate(-2.9 -1.4)" filter="url(#ay-soft)"/>
+    </g>
+    <circle cx="61.6" cy="6.4" r="1.9" fill="#fff" fill-opacity=".85" filter="url(#ay-soft)"/>
+  </g>
+</g>
+<rect x="65.600" y="65.600" width="892.800" height="892.800" rx="196.803"
+      fill="none" stroke="url(#ay-rim)" stroke-width="6.300"/>
+</svg>
