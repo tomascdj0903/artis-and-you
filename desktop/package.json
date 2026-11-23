@@ -1,7 +1,7 @@
 {
   "name": "artis-and-you-desktop",
   "productName": "Artis & You",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Artis & You — logiciel PC et Mac",
   "author": "Artis & You",
   "main": "main.js",
@@ -23,11 +23,34 @@
     "productName": "Artis & You",
     "executableName": "ArtisAndYou",
     "copyright": "© Artis & You",
-    "directories": { "output": "release", "buildResources": "build" },
-    "files": ["main.js", "preload.js", "config.json", "offline.html", "build/icon.png"],
-    "publish": [{ "provider": "github", "owner": "tomascdj0903", "repo": "artis-and-you", "releaseType": "release" }],
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "config.json",
+      "offline.html",
+      "build/icon.png"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "tomascdj0903",
+        "repo": "artis-and-you",
+        "releaseType": "release"
+      }
+    ],
     "win": {
-      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "icon": "build/icon.ico",
       "artifactName": "ArtisAndYou-Setup.${ext}"
     },
@@ -44,12 +67,27 @@
       "language": "1036"
     },
     "mac": {
-      "target": [{ "target": "dmg", "arch": ["universal"] }, { "target": "zip", "arch": ["universal"] }],
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
       "icon": "build/icon.png",
       "category": "public.app-category.business",
       "artifactName": "ArtisAndYou.${ext}",
       "identity": null
     },
-    "dmg": { "title": "Artis & You" }
+    "dmg": {
+      "title": "Artis & You"
+    }
   }
 }
