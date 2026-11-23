@@ -1,7 +1,7 @@
 // Service worker : application installable, ouverture hors ligne (dernières données consultées) et notifications push.
-const SHELL = 'ay-shell-v3';
+const SHELL = 'ay-shell-v4';
 const DATA = 'ay-data-v1';
-self.addEventListener('install', (e) => { e.waitUntil(caches.open(SHELL).then((c) => c.addAll(['/', '/assets/app.js', '/assets/app.css', '/logo.svg', '/icon-192.png']).catch(() => {}))); self.skipWaiting(); });
+self.addEventListener('install', (e) => { e.waitUntil(caches.open(SHELL).then((c) => c.addAll(['/', '/assets/app.js', '/assets/app.css', '/logo.svg', '/icon-192.png?v=5']).catch(() => {}))); self.skipWaiting(); });
 self.addEventListener('activate', (e) => e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => ![SHELL, DATA].includes(k)).map((k) => caches.delete(k)))).then(() => self.clients.claim())));
 
 // Réseau d'abord ; en cas d'échec (hors ligne), dernière version gardée en cache
