@@ -11,7 +11,7 @@ Site : https://artis-and-you.vercel.app
 | `web/` | La webapp (React 19, esbuild, sans framework). Une seule application avec deux espaces : `/pro` et `/client`. Installable sur téléphone (PWA). |
 | `desktop/` | Le logiciel Windows (.exe) et Mac (.dmg) : une fenêtre Electron qui charge le site, avec mises à jour automatiques. |
 | `supabase/migrations/` | Le schéma de la base, les règles d'accès (RLS) et les fonctions SQL, dans l'ordre d'application. |
-| `supabase/functions/` | Les Edge Functions : `assistant` (IA), `push` (notifications), `agenda` (flux calendrier), `mail` (e-mails via Resend). |
+| `supabase/functions/` | Les Edge Functions : `assistant` (IA : questions d'aide, et mode `photo` qui devine le métier à partir d'une photo), `push` (notifications, priorité haute pour les urgences), `agenda` (flux calendrier), `mail` (e-mails via Resend), `vat-check` (TVA intracommunautaire), `domain-price` (prix des noms de domaine OVH). |
 | `.github/workflows/` | `web.yml` : build et tests à chaque envoi. `desktop.yml` : construction et publication du .exe et du .dmg. `backup.yml` : sauvegarde hebdomadaire chiffrée de la base (inactive sans les secrets `SUPABASE_DB_URL` et `BACKUP_PASSPHRASE`, voir l'en-tête du fichier). |
 | `android/` | Emballage Android (Trusted Web Activity) et fiche Play Store : voir `android/README.md`. Aucun coût tant que le compte Google Play n'est pas créé. |
 | `SECURITY_AUDIT.md` | L'audit de sécurité du 9 novembre 2026 et l'état des correctifs. |
@@ -26,7 +26,7 @@ Il n'y a pas encore d'application native iPhone ou Android : sur téléphone, c'
 - **Secrets** : uniquement dans Supabase › Edge Functions › Secrets. Aucun secret dans le dépôt ni dans Vercel.
   - `GROQ_API_KEY` : l'assistant (IA).
   - `RESEND_API_KEY` et `MAIL_FROM` (ex. `Artis & You <notifications@votre-domaine.fr>`, expéditeur vérifié chez Resend) : e-mails envoyés par Artis & You (relances). Tant qu'ils sont absents, les relances par e-mail s'ouvrent dans l'application mail de l'artisan.
-- **Tâches planifiées** (pg_cron, migration 0024) : rappel des rendez-vous du lendemain à 18 h, relances automatiques à 8 h (entreprises ayant activé « automatique » dans Paramètres › Relances). Les scénarios par défaut sont dupliqués dans `web/src/lib/relances.js` et `0024_taches_planifiees.sql` : modifier les deux.
+- **Tâches planifiées** (pg_cron) : rappel des rendez-vous du lendemain à 18 h et relances automatiques à 8 h (migration 0024 ; scénarios par défaut dupliqués dans `web/src/lib/relances.js`, modifier les deux) ; relance des demandes urgentes sans réponse toutes les 5 min (0044) ; rappels d'entretien des équipements du logement à 9 h (0046) ; demande d'avis 3 jours après une facture réglée à 17 h (0049). Heures de Paris en hiver (les tâches sont écrites en UTC).
 - **En-têtes de sécurité** (CSP, HSTS…) : `web/vercel.json`.
 
 ### Organisation du code web
@@ -49,15 +49,17 @@ npm install
 npm run dev               # http://localhost:5173 (mode démo sans variables Supabase)
 npm run build             # produit web/dist
 node scripts/i18n.mjs     # régénère les traductions EN / PT / IT
-node tests/e2e.mjs        # tests des parcours principaux (après le build ; demande Playwright)
+node scripts/i18n-missing.mjs  # doit afficher « 0 textes sans traduction »
+node tests/e2e.mjs        # 19 parcours (artisan puis particulier), après le build ; demande Playwright
+node tests/layout.mjs     # aucune page ne déborde, du téléphone à l'ordinateur
 ```
 
 Traductions : ajouter une ligne `français|anglais|portugais|italien` dans `web/src/i18n/_extra.txt`, puis lancer `node scripts/i18n.mjs`.
 
 ## Mettre en ligne
 
-- **Webapp** : travailler sur une branche, vérifier l'aperçu Vercel et les tests GitHub, puis fusionner dans `main`. Le logiciel PC / Mac affiche aussitôt la nouvelle version (il charge le site).
-- **Base de données** : ajouter un fichier numéroté dans `supabase/migrations/`, le relire, puis l'appliquer sur le projet Supabase. Une migration ne se modifie plus une fois appliquée : on en écrit une nouvelle.
+- **Webapp** : après le build, les traductions (0 manquante), `tests/e2e.mjs` et `tests/layout.mjs`, envoi direct sur `main` (consigne de Tomas du 21/11/2026), puis vérifier que le déploiement Vercel est « READY ». Le logiciel PC / Mac affiche aussitôt la nouvelle version (il charge le site).
+- **Base de données** : ajouter un fichier numéroté dans `supabase/migrations/` (première ligne `-- (appliquée en prod)` une fois appliqué), le relire, puis l'appliquer sur le projet Supabase. Le mode démo (`web/src/lib/mock.js`) doit reproduire les nouvelles tables et fonctions. Une migration ne se modifie plus une fois appliquée : on en écrit une nouvelle.
 - **Edge Functions** : se déploient séparément du site (tableau de bord ou CLI Supabase).
 - **Logiciel PC / Mac** (icône, fenêtre, menus) : `./release.sh 1.2.2` (Mac / Linux) ou `.\release.ps1 1.2.2` (Windows). GitHub construit le .exe et le .dmg en dix minutes environ ; les logiciels installés se mettent à jour au redémarrage. Les installeurs ne sont pas signés (avertissement Windows SmartScreen et macOS Gatekeeper).
 
@@ -65,6 +67,12 @@ Téléchargements (toujours la dernière version) :
 - Windows : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/ArtisAndYou-Setup.exe`
 - Mac : `https://github.com/tomascdj0903/artis-and-you/releases/latest/download/ArtisAndYou.dmg`
 
+## Icônes
+
+Toutes les icônes (site, téléphone, logiciel PC, Play Store) sont générées à partir d'un même dessin en « verre profond » terracotta : `web/public/icon-512.png`, `icon-192.png`, `apple-touch-icon.png` (carré plein, le système arrondit), `favicon.svg` et `favicon-32.png` (version simplifiée, lisible en petit), `desktop/build/icon.ico` et `icon.png` (tuile arrondie), `android/store/icone-512.png`. Après un changement, augmenter le `?v=` dans `index.html`, `manifest.webmanifest` et `sw.js`, et le nom du cache `ay-shell-vN` dans `sw.js`.
+
 ## Administration
 
-Les administrateurs (validation des SIRET, relecture des avis) sont les comptes inscrits dans la table `admins`, qui n'est modifiable que depuis l'éditeur SQL de Supabase. La ligne à exécuter est à la fin de `supabase/migrations/0002_admin.sql`.
+Espace admin : validation des entreprises et des pièces, relecture des avis, onglet « Photos publiées » (retirer une photo d'avis ou de chantier), onglet « Erreurs de l'app » (plantages remontés par les navigateurs, table `app_errors`, sans e-mail ni identifiant).
+
+Les administrateurs sont les comptes inscrits dans la table `admins`, qui n'est modifiable que depuis l'éditeur SQL de Supabase. La ligne à exécuter est à la fin de `supabase/migrations/0002_admin.sql`.
