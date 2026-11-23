@@ -110,7 +110,7 @@ await step('Statistiques de la fiche et demande d’avis automatique', async () 
   await pg.waitForSelector('text=Demander un avis automatiquement');
 });
 await step('Les erreurs de l’app sont enregistrées (regroupées)', async () => {
-  const n = await pg.evaluate(async () => { await window.__ayApi.rpc('log_client_error', { p_message: 'test e2e', p_path: '/pro/x/12345678-1234-1234-1234-123456789abc' }); await window.__ayApi.rpc('log_client_error', { p_message: 'test e2e', p_path: '/pro/x/12345678-1234-1234-1234-123456789abc' }); return 1; });
+  await pg.evaluate(async () => { await window.__ayApi.rpc('log_client_error', { p_message: 'test e2e', p_path: '/pro/x/12345678-1234-1234-1234-123456789abc' }); await window.__ayApi.rpc('log_client_error', { p_message: 'test e2e', p_path: '/pro/x/12345678-1234-1234-1234-123456789abc' }); return 1; });
   const e = await idb("const e = db.app_errors.find((x) => x.message === 'test e2e'); return e && { c: e.count, p: e.path };");
   if (!e || e.c !== 2 || e.p !== '/pro/x/:id') throw new Error(JSON.stringify(e));
 });

@@ -21,7 +21,7 @@ export function MapView({ center, markers = [], height = 360, onPick, selected }
   const [w, setW] = useState(600);
   const pts = markers.filter((m) => m.lat != null && m.lon != null);
   const all = center ? [...pts, center] : pts;
-  const initZoom = useMemo(() => fitZoom(all, w, height), [all.map((p) => p.lat + ',' + p.lon).join('|'), w, height]); // eslint-disable-line
+  const initZoom = useMemo(() => fitZoom(all, w, height), [all.map((p) => p.lat + ',' + p.lon).join('|'), w, height]);
   const [z, setZ] = useState(initZoom);
   const [off, setOff] = useState({ x: 0, y: 0 });
   const drag = useRef(null);

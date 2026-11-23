@@ -1,6 +1,6 @@
 // Côté particulier : urgences, demande envoyée à plusieurs artisans, comparateur de devis.
 import { useState } from 'react';
-import { LuDroplets, LuZap, LuKeyRound, LuFlame, LuSquareSplitHorizontal, LuWrench, LuPhone, LuSiren, LuPlus, LuMapPin, LuVideo, LuCheck, LuShieldCheck, LuTriangleAlert } from 'react-icons/lu';
+import { LuDroplets, LuZap, LuKeyRound, LuFlame, LuSquareSplitHorizontal, LuWrench, LuSiren, LuPlus, LuMapPin, LuVideo, LuCheck, LuShieldCheck, LuTriangleAlert } from 'react-icons/lu';
 import { api, OFFLINE } from '../../lib/api.js';
 import { ALL_TRADES } from '../../lib/docs.js';
 import { LuCamera, LuSparkles } from 'react-icons/lu';
