@@ -1,5 +1,5 @@
 {
-  "packageId": "fr.artesa.app",
+  "packageId": "fr.artisandyou.app",
   "host": "artis-and-you.vercel.app",
   "name": "Artis & You",
   "launcherName": "Artis & You",
@@ -16,7 +16,7 @@
   "iconUrl": "https://artis-and-you.vercel.app/icon-512.png",
   "maskableIconUrl": "https://artis-and-you.vercel.app/icon-512.png",
   "splashScreenFadeOutDuration": 300,
-  "signingKey": { "path": "./android.keystore", "alias": "artesa" },
+  "signingKey": { "path": "./android.keystore", "alias": "artisandyou" },
   "appVersionName": "1.3.0",
   "appVersionCode": 10300,
   "shortcuts": [
@@ -35,7 +35,7 @@
   "minSdkVersion": 21,
   "orientation": "default",
   "fingerprints": [],
-  "additionalTrustedOrigins": ["artesa-pro.vercel.app"],
+  "additionalTrustedOrigins": [],
   "retainedBundles": [],
   "appVersion": "1.3.0"
 }

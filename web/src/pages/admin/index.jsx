@@ -123,7 +123,7 @@ export function AdminAccounts() {
   if (!b) return <div className="content"><TopBar title={t('Comptes')} /><Loader /></div>;
   const csv = () => {
     const rows = [['Prénom', 'Nom', 'E-mail', 'Téléphone', 'Type', 'Entreprise', 'Statut entreprise', 'Inscrit le'], ...list.map((p) => [p.first_name, p.last_name, p.email, p.phone, p.kind, b.cm[p.company_id]?.name || '', b.cm[p.company_id]?.verification_status || '', (p.created_at || '').slice(0, 10)])];
-    download(new Blob(['﻿' + rows.map((r) => r.map((x) => `"${String(x ?? '').replace(/"/g, '""')}"`).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' }), 'comptes-artesa.csv');
+    download(new Blob(['﻿' + rows.map((r) => r.map((x) => `"${String(x ?? '').replace(/"/g, '""')}"`).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' }), 'comptes-artis-and-you.csv');
   };
   return (
     <div className="content">
@@ -250,7 +250,7 @@ export function AdminCompta() {
     .map(([l, f]) => [l, r2(unpaid.filter(f).reduce((s, d) => s + d.rest, 0))]);
   const csvEntries = () => {
     const rows = [['Date', 'Journal', 'Compte', 'Intitulé', 'Pièce', 'Libellé', 'Débit', 'Crédit'], ...E.map((e) => [e.date, e.journal, e.acc, ACC[e.acc], e.piece, e.lib, String(e.debit).replace('.', ','), String(e.credit).replace('.', ',')])];
-    download(new Blob(['﻿' + rows.map((r) => r.map((x) => `"${String(x ?? '').replace(/"/g, '""')}"`).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' }), `journal-artesa-${year}.csv`);
+    download(new Blob(['﻿' + rows.map((r) => r.map((x) => `"${String(x ?? '').replace(/"/g, '""')}"`).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' }), `journal-artis-and-you-${year}.csv`);
   };
   return (
     <div className="content">

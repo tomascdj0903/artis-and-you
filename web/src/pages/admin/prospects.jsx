@@ -98,7 +98,7 @@ export function AdminPipeline() {
   const exportX = () => run(async () => {
     const rows = [['Nom', 'Contact', 'E-mail', 'Téléphone', 'Adresse', 'CP', 'Ville', 'Métier', 'SIRET', 'Étape', 'Responsable', 'Ont travaillé dessus', 'Priorité', 'Prochaine action', 'Relance', 'Valeur / mois', 'Origine', 'Notes'],
       ...list.map((d) => [d.title, d.contact_name, d.email, d.phone, d.address, d.zip, d.city, d.trade, d.siret, STAGE[d.stage], d.owner, (d.worked_by || []).join(', '), d.priority, d.next_action, d.next_date || '', Number(d.value) || 0, d.source, d.notes])];
-    download(await makeXlsx([{ name: 'Prospects', rows }]), `prospects-artesa-${today}.xlsx`);
+    download(await makeXlsx([{ name: 'Prospects', rows }]), `prospects-artis-and-you-${today}.xlsx`);
   });
   const mine = deals.filter((d) => who && d.owner === who && OPEN(d)).length;
   const late = deals.filter((d) => OPEN(d) && d.next_date && d.next_date <= today).length;

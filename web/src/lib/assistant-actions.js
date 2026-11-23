@@ -120,7 +120,7 @@ const PAGES = [
   [/mode sombre|theme|apparence|langue|anglais|portugais|italien/, '/pro/compte/apparence', 'Langue et apparence'],
   [/avis client|mes avis|note google/, '/pro/compte/avis', 'Mes avis clients'],
   [/profil public|vitrine|page publique/, '/pro/reglages/profil-public', 'Profil public'],
-  [/abonnement|formule|essai|tarif|payer artesa/, '/pro/compte/abonnement', 'Abonnement'],
+  [/abonnement|formule|essai|tarif|payer artis/, '/pro/compte/abonnement', 'Abonnement'],
   [/parrain/, '/pro/compte/abonnement', 'Parrainage'],
   [/equipe|salarie|ouvrier|employe|membre/, '/pro/compte/equipe', 'Mon équipe'],
   [/mon entreprise|siret|siren|\blogo\b|assurance|decennale.*(info|numero)/, '/pro/compte/entreprise', 'Mon entreprise'],

@@ -10,7 +10,7 @@ import { dateLong, dateShort, hm, rel, iso, addDays, date, dateTime, time } from
 import { useTrades } from '../../ui/trades.jsx';
 import { clientApptStatus } from '../../lib/docs.js';
 import { icsFile } from '../../lib/ics.js';
-import { TopBar, SearchBar, suggestList, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox, ArtesaAvatar, ShareButton, Seg } from '../../ui/index.jsx';
+import { TopBar, SearchBar, suggestList, Sec, Sheet, Chips, Field, useData, Loader, Empty, Avatar, Pill, Stars, KV, Img, pickFiles, Modal, StatusPill, Lightbox, PlatformAvatar, ShareButton, Seg } from '../../ui/index.jsx';
 import { Chat, uploadTo } from '../common/chat.jsx';
 import { planSettings, bookWindow } from '../pro/planning.jsx';
 import { MoveSheet } from '../pro/planning-rdv.jsx';
@@ -599,7 +599,7 @@ export function Messages() {
       {!list.length ? <Empty icon={LuMessageSquare} text={t('Aucune conversation.')}><button className="btn sm" onClick={() => navigate('/client/artisans')}>{t('Trouver un artisan')}</button></Empty> : (
         <div className="list">{list.map((c) => { const co = b.cm[c.company_id]; const un = !reads[c.id] || reads[c.id] < c.last_at; return (
           <button key={c.id} className="li click" onClick={() => navigate('/client/messages/' + c.id)}>
-            {c.kind === 'support' ? <ArtesaAvatar /> : <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} />}
+            {c.kind === 'support' ? <PlatformAvatar /> : <Avatar name={coName(co).split(' ')[0]} last={coName(co).split(' ')[1]} path={co?.logo_path} src={co?.is_platform ? '/favicon.svg' : undefined} />}
             <div className="grow"><div className="t1">{c.kind === 'support' ? <>Artis & You <Pill c="navy">{t('Administrateur')}</Pill></> : <>{coName(co)} {(co?.trades || [])[0] && <Pill c="grey">{t(co.trades[0])}</Pill>}</>}</div><div className="t2" style={un ? { fontWeight: 700, color: 'var(--text)' } : undefined}>{c.mine ? t('Vous') + ' : ' : ''}{c.last_message}</div></div>
             <div className="side-r"><SentTag mine={c.mine} /><span className={un ? 'red-t bold' : ''}>{whenMsg(c.last_at)}</span>{un && <span className="badge-n">1</span>}</div>
           </button>
@@ -621,7 +621,7 @@ export function Conversation({ params }) {
   if (!b.c) return <div className="content"><TopBar title={t('Messages')} /><Empty text={t('Conversation introuvable')} /></div>;
   if (b.c.kind === 'support') return (
     <div className="content narrow">
-      <TopBar title={<span className="row" style={{ gap: 8 }}><ArtesaAvatar size="sm" /> Artis & You</span>} sub={t('Administrateur · Service client')} />
+      <TopBar title={<span className="row" style={{ gap: 8 }}><PlatformAvatar size="sm" /> Artis & You</span>} sub={t('Administrateur · Service client')} />
       <Chat convId={b.c.id} />
     </div>
   );

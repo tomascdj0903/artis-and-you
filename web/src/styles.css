@@ -1297,7 +1297,7 @@ h1, h2, .tile { letter-spacing: -0.01em; }
 .tl > svg { margin-top: 3px; flex: none; color: var(--text-3); }
 .btn.red { background: #B42318; border-color: #B42318; color: #fff; }
 
-.req-card.artesa { border-style: solid; }
+.req-card.platform { border-style: solid; }
 .req-card .btn.sm { justify-self: start; }
 
 /* Barre d'onglets du téléphone en « verre » : capsule flottante, translucide et floutée (mobile uniquement) */

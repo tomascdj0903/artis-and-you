@@ -5,7 +5,7 @@ import { Field } from './index.jsx';
 import { t } from '../lib/i18n.js';
 
 // Les plus courants en France (toutes les variantes de casse sont couvertes par la normalisation)
-const COMMON = ['123456', '1234567', '12345678', '123456789', '1234567890', '111111', '11111111', '00000000', 'password', 'password1', 'motdepasse', 'motdepasse1', 'azerty', 'azerty123', 'azertyuiop', 'qwerty', 'qwerty123', 'qwertyuiop', 'abc123', 'abcd1234', 'soleil', 'soleil1', 'bonjour', 'bonjour1', 'marseille', 'doudou', 'loulou', 'chouchou', 'iloveyou', 'welcome', 'admin', 'letmein', 'artesa', 'artesa123', 'artisan', 'artisan1'];
+const COMMON = ['123456', '1234567', '12345678', '123456789', '1234567890', '111111', '11111111', '00000000', 'password', 'password1', 'motdepasse', 'motdepasse1', 'azerty', 'azerty123', 'azertyuiop', 'qwerty', 'qwerty123', 'qwertyuiop', 'abc123', 'abcd1234', 'soleil', 'soleil1', 'bonjour', 'bonjour1', 'marseille', 'doudou', 'loulou', 'chouchou', 'iloveyou', 'welcome', 'admin', 'letmein', 'artesa', 'artisandyou', 'artisandyou1', 'artesa123', 'artisan', 'artisan1'];
 const SEQ = 'abcdefghijklmnopqrstuvwxyz0123456789azertyuiopqsdfghjklmwxcvbn';
 
 // Renvoie { score: 0..3, label, ok } ; ok = acceptable à l'inscription (8 caractères, un chiffre, pas trop évident)

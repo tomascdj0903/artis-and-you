@@ -1,4 +1,4 @@
-# Audit de sécurité Artesa — 9 novembre 2026
+# Audit de sécurité Artis & You — 9 novembre 2026
 
 Périmètre : webapp (Vercel), base et stockage Supabase (projet `jkecsanrqktnrsibyiod`), Edge Functions `agenda` et `push`, logiciel PC/Mac (Electron, dossier `desktop/`).
 Les « apps iPhone et Android » sont aujourd'hui la webapp installée (PWA). Il n'existe pas de code natif React Native, Flutter ou Capacitor dans le dépôt.

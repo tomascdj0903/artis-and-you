@@ -27,9 +27,9 @@ export function useData(fn, deps = []) {
 }
 
 // Compte administrateur : Artis & You apparaît partout sous son nom et avec son logo, jamais sous un prénom
-export const ARTESA_LOGO = '/favicon.svg';
-export const isArtesa = (company) => !!company?.is_platform;
-export const ArtesaAvatar = (p) => <Avatar {...p} src={ARTESA_LOGO} name="Artis & You" />;
+export const PLATFORM_LOGO = '/favicon.svg';
+export const isPlatform = (company) => !!company?.is_platform;
+export const PlatformAvatar = (p) => <Avatar {...p} src={PLATFORM_LOGO} name="Artis & You" />;
 export function Avatar({ name = '', last = '', path, src, ring, size = '', onClick, color }) {
   const [url, setUrl] = useState(src || (path ? cachedUrl(path) : null));
   useEffect(() => { if (src) setUrl(src); else if (path) fileUrls([path]).then((r) => setUrl(r[path])); else setUrl(null); }, [path, src]);
@@ -55,7 +55,7 @@ export function TopBar({ title, sub, back = true, right, onBack, home, settings 
         {right}
         {settings && <Link to={settings} className="iconbtn" aria-label={t('Réglages')} title={t('Réglages')}><LuSettings /></Link>}
         <NotifBell base={base} />
-        {profile && (isArtesa(company) ? <ArtesaAvatar onClick={() => navigate(base + '/compte')} /> : <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} ring={!isPro} onClick={() => navigate(base + '/compte')} />)}
+        {profile && (isPlatform(company) ? <PlatformAvatar onClick={() => navigate(base + '/compte')} /> : <Avatar name={profile.first_name} last={profile.last_name} path={profile.avatar_path} ring={!isPro} onClick={() => navigate(base + '/compte')} />)}
       </div>
     </header>
   );

@@ -2,6 +2,7 @@
 //  - cache de lecture : la dernière réponse de chaque lecture est gardée dans IndexedDB et resservie quand le réseau manque ;
 //  - file d'attente : les messages écrits hors ligne sont enregistrés puis envoyés au retour du réseau, dans l'ordre.
 // Le cache est propre à l'utilisateur connecté (vidé à la déconnexion) et ne contient que ce que l'utilisateur a déjà vu.
+// Nom technique hérité (ancien nom Artesa) : le garder, il contient la file des messages pas encore envoyés.
 const DB = 'artesa-offline', VER = 1;
 let dbp = null;
 const open = () => {

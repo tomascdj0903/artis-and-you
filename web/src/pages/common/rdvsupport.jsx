@@ -87,7 +87,7 @@ export function RdvSupportCard({ m, mine, onDone }) {
   const link = c.status === 'confirme' && (team ? '/pro/planning/rdv/' + c.appointment_id : profile.company_id ? (c.pro_appointment_id && '/pro/planning/rdv/' + c.pro_appointment_id) : '/client/rdv/' + c.appointment_id);
   const I = MODE[c.mode || c.chosen?.mode]?.I || LuCalendarCheck;
   return (
-    <div className={'req-card artesa' + (mine ? ' r' : '')}>
+    <div className={'req-card platform' + (mine ? ' r' : '')}>
       <div className="row" style={{ gap: 8 }}>{status === 'confirme' ? <LuCircleCheck className="green-t" size={20} /> : <I size={20} />}<b>{status === 'confirme' ? t('Rendez-vous confirmé') : t(c.title)}</b></div>
       {c.topic && <div className="small">{c.topic}</div>}
       {status === 'confirme' ? (

@@ -258,5 +258,5 @@ export function convMeta(c, { mine, clients, teams, companies, members, users })
     const n = co?.trade_name || co?.name || [u?.first_name, u?.last_name].filter(Boolean).join(' ') || t('Particulier');
     return { name: n, sub: t('Service client') + ' · ' + (co ? t('Pro') : t('Particulier')), tag: co ? t('Pro') : t('Particulier'), initials: n };
   }
-  return { name: 'Artis & You', sub: t('Administrateur · Service client'), tag: t('Administrateur'), initials: 'A', artesa: true };
+  return { name: 'Artis & You', sub: t('Administrateur · Service client'), tag: t('Administrateur'), initials: 'A', platform: true };
 }

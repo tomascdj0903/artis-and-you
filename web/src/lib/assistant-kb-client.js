@@ -93,7 +93,7 @@ export const CLIENT_KB = [
   { id: 'c-absent', q: 'Mon artisan n’est pas sur Artis & You', k: 'artisan pas inscrit absent introuvable inviter mon artisan', pages: ['/client'],
     a: 'Parlez-lui d’Artis & You : une fois inscrit, il vous envoie ses devis et factures ici. En attendant, vous pouvez trouver un autre pro dans l’annuaire.',
     links: [{ label: 'Trouver un artisan', to: '/client/artisans' }] },
-  { id: 'c-support', q: 'Contacter le support', k: 'support aide probleme bug contacter equipe artesa assistance', pages: ['/client/compte'],
+  { id: 'c-support', q: 'Contacter le support', k: 'support aide probleme bug contacter equipe artis and you assistance', pages: ['/client/compte'],
     a: 'Profil › Aide et support : questions fréquentes et formulaire pour nous écrire.',
     links: [{ label: 'Aide et support', to: '/client/compte/aide' }] },
 ];
