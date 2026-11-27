@@ -248,7 +248,10 @@ function QuickReplies({ pro, custom, onPick }) {
 export function convMeta(c, { mine, clients, teams, companies, members, users }) {
   if (c.kind === 'client') {
     if (!mine) { const co = companies[c.company_id]; return { name: co?.trade_name || co?.name || t('Artisan'), sub: (co?.trades || [])[0] || '', tag: t('Artisan'), initials: co?.name }; }
-    const cl = clients[c.client_id]; return { name: clientName(cl), sub: [t('Client'), cl?.site_city || cl?.billing_city].filter(Boolean).join(' · '), tag: t('Client'), initials: clientName(cl) };
+    // Fiche rattachée à un compte Artis & You : le nom du compte d'abord (celui qui écrit), celui de la fiche en rappel s'il diffère
+    const cl = clients[c.client_id], fiche = clientName(cl), acc = (cl?.account_name || '').trim();
+    const diff = acc && acc.toLowerCase() !== fiche.toLowerCase();
+    return { name: diff ? acc : fiche, sub: [t('Client'), diff ? t('fiche « {n} »', { n: fiche }) : '', cl?.site_city || cl?.billing_city].filter(Boolean).join(' · '), tag: t('Client'), initials: diff ? acc : fiche };
   }
   if (c.kind === 'team') { const tm = teams[c.team_id]; const ms = (members || []).filter((m) => m.team_id === c.team_id).map((m) => m.first_name); return { name: tm?.name || t('Équipe'), sub: t('Équipe') + (ms.length ? ' · ' + ms.join(', ') + ' ' + t('et vous') : ''), tag: t('Équipe'), color: tm?.color, initials: tm?.name }; }
   if (c.kind === 'pro') { const oid = c.company_id === mine ? c.other_company_id : c.company_id; const co = companies[oid]; return { name: co?.trade_name || co?.name || t('Artisan'), sub: t('Artisan') + ' · ' + (co?.name || ''), tag: (co?.trades || [])[0] || t('Artisan'), initials: co?.name, otherId: oid }; }

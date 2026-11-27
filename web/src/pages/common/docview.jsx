@@ -3,7 +3,7 @@ import { isInvoice } from '../../lib/facturx.js';
 import { useEffect, useState } from 'react';
 import { api, fileUrls } from '../../lib/api.js';
 import { t } from '../../lib/i18n.js';
-import { money, date, dateTime, clientName, fullName } from '../../lib/format.js';
+import { money, num, date, dateTime, clientName, fullName } from '../../lib/format.js';
 import { computeTotals, franchiseMention, franchiseArticle, sectionSubtotals, dropEmptySections, kindLabel, statusPill, effectiveStatus } from '../../lib/docs.js';
 import { KV, Sec, StatusPill } from '../../ui/index.jsx';
 
@@ -60,7 +60,13 @@ export function DocHero({ d, client, company, forClient }) {
       <div className="l2">{d.object || kindLabel(d.kind)} · {forClient ? company.trade_name || company.name : clientName(client)}</div>
       <div className="row">
         <span className="pill" style={{ border: '1.5px solid #fff', color: '#fff' }}>{label}</span>
-        <div className="amount"><small>{d.kind === 'devis' ? t('Total TTC') : t('Net à payer')}</small>{money(d.kind === 'devis' ? tot.ttc : tot.net - (d.kind !== 'avoir' ? Number(d.paid_amount || 0) : 0) || tot.net)}</div>
+        <div className="amount">{(() => {
+          // Facture réglée : on affiche le montant payé, pas « Net à payer » (le reste dû est à 0)
+          if (d.kind === 'devis') return <><small>{t('Total TTC')}</small>{money(tot.ttc)}</>;
+          if (d.kind === 'avoir') return <><small>{t('Montant de l’avoir')}</small>{money(tot.net)}</>;
+          const rest = Math.max(0, tot.net - Number(d.paid_amount || 0));
+          return d.status === 'payee' || (Number(d.paid_amount || 0) > 0 && rest < 0.005) ? <><small>{t('Payée')}</small>{money(tot.net)}</> : <><small>{t('Net à payer')}</small>{money(rest)}</>;
+        })()}</div>
       </div>
     </div>
   );
@@ -110,7 +116,7 @@ export function DocSections({ d: d0, company, client, payments = [], source, for
               ) : l.kind === 'text' ? (
                 <tr key={l.id}><td colSpan={4} className="small muted">{l.label}</td></tr>
               ) : (
-                <tr key={l.id}><td>{l.label}{l.desc && <div className="small muted">{l.desc}</div>}</td><td className="num" style={{ fontWeight: 400 }}>{l.qty} {l.unit !== 'u' ? l.unit : ''}</td><td className="num" style={{ fontWeight: 400 }}>{money(l.price)}</td><td className="num">{money(l.qty * l.price)}</td></tr>
+                <tr key={l.id}><td>{l.label}{l.desc && <div className="small muted">{l.desc}</div>}</td><td className="num" style={{ fontWeight: 400 }}>{num(l.qty, 3)} {l.unit !== 'u' ? l.unit : ''}</td><td className="num" style={{ fontWeight: 400 }}>{money(l.price)}</td><td className="num">{money(l.qty * l.price)}</td></tr>
               ))}
               {Object.keys(subs).length > 1 && d.lines.filter((l) => l.kind === 'section').map((s) => <tr key={'s' + s.id}><td colSpan={3} className="num small">{t('Sous-total HT')} · {s.label}</td><td className="num">{money(subs[s.id])}</td></tr>)}
             </tbody>
@@ -187,8 +193,10 @@ export function A4({ d: d0, company, client, source, logoUrl }) {
       <div className="two">
         <div>
           <div className="lab">{t('Objet')}</div><b>{d.object}</b>
-          <div className="lab" style={{ marginTop: 8 }}>{isQuote ? t('Lieu des travaux') : t('Adresse de livraison et date de la prestation')}</div>
-          <div>{d.work_address || d.delivery_address || siteAddress(client)}{!isQuote && <><br />{t('Prestation réalisée le {d}', { d: date(d.service_date || d.issue_date) })}</>}</div>
+          {(!isQuote || d.work_address || d.delivery_address || siteAddress(client)) && <>
+            <div className="lab" style={{ marginTop: 8 }}>{isQuote ? t('Lieu des travaux') : t('Adresse de livraison et date de la prestation')}</div>
+            <div>{d.work_address || d.delivery_address || siteAddress(client)}{!isQuote && <>{(d.work_address || d.delivery_address || siteAddress(client)) && <br />}{t('Prestation réalisée le {d}', { d: date(d.service_date || d.issue_date) })}</>}</div>
+          </>}
           {isQuote && (d.start_date || d.duration) && <div className="small">{d.start_date && t('Début prévu : {d}', { d: date(d.start_date) })}{d.duration && ' · ' + t('Durée : {d}', { d: d.duration })}</div>}
           {!isQuote && <div className="small">{t('Nature des opérations')} : {t(d.operations_nature)} · {t('TVA sur les débits')} : {d.vat_on_debits ? t('oui') : t('non')}</div>}
         </div>
@@ -210,7 +218,7 @@ export function A4({ d: d0, company, client, source, logoUrl }) {
             return [
               l.kind === 'section' ? <tr className="sec" key={l.id}><td colSpan={cols}>{l.label}</td></tr>
                 : l.kind === 'text' ? <tr key={l.id}><td colSpan={cols} className="small">{l.label}</td></tr>
-                : <tr key={l.id}><td>{l.label}{l.desc && <div className="small">{l.desc}</div>}</td><td className="n">{l.qty} {l.unit !== 'u' ? l.unit : ''}</td><td className="n">{money(l.price).replace(/\s?€/, '')}</td>{!franchise && !d.reverse_charge && <td className="n">{String(l.vat).replace('.', ',')} %</td>}<td className="n">{money(l.qty * l.price).replace(/\s?€/, '')}</td></tr>,
+                : <tr key={l.id}><td>{l.label}{l.desc && <div className="small">{l.desc}</div>}</td><td className="n">{num(l.qty, 3)} {l.unit !== 'u' ? l.unit : ''}</td><td className="n">{money(l.price).replace(/\s?€/, '')}</td>{!franchise && !d.reverse_charge && <td className="n">{String(l.vat).replace('.', ',')} %</td>}<td className="n">{money(l.qty * l.price).replace(/\s?€/, '')}</td></tr>,
               isLastOfSection && secId && Object.keys(subs).length > 1 && <tr className="sub" key={l.id + 's'}><td colSpan={cols - 1}>{t('Sous-total HT')}</td><td className="n">{money(subs[secId]).replace(/\s?€/, '')}</td></tr>,
             ];
           })}

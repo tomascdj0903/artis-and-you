@@ -3491,4 +3491,10 @@ export default {"(copie)":"(copia)",
 "Dans les sélections":"Nelle selezioni",
 "Délai de réponse moyen":"Tempo medio di risposta",
 "Vues par jour sur {n} jours":"Visualizzazioni al giorno su {n} giorni",
-"Sur les {n} derniers jours. Vos propres visites ne sont pas comptées.":"Negli ultimi {n} giorni. Le tue visite non vengono contate."};
+"Sur les {n} derniers jours. Vos propres visites ne sont pas comptées.":"Negli ultimi {n} giorni. Le tue visite non vengono contate.",
+"Page réservée":"Pagina riservata",
+"Votre rôle dans l’équipe ne donne pas accès à cette page. Demandez au gérant de modifier vos droits dans Mon équipe.":"Il tuo ruolo nel team non dà accesso a questa pagina. Chiedi al titolare di modificare i tuoi permessi in Il mio team.",
+"Pas encore de photo : l’artisan les ajoute au fil du chantier.":"Ancora nessuna foto: l’artigiano le aggiunge durante i lavori.",
+"fiche « {n} »":"scheda «{n}»",
+"Compte Artis & You : {n}":"Account Artis & You: {n}",
+"Il le signe tout de suite dans son application":"Può firmarlo subito nella sua app"};

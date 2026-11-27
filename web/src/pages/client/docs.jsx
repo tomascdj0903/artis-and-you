@@ -260,7 +260,11 @@ export function Projects() {
 export function ProjectDetail({ params }) {
   const [big, setBig] = useState(null);
   const [b] = useProjects();
-  const [photos] = useData(() => api.select('files', { project_id: params.id, kind: 'photo' }, { order: 'created_at.desc' }), [params.id]);
+  // Photos du chantier : celles rangées dans les fichiers et celles des étapes envoyées par l'artisan
+  const [photos] = useData(async () => {
+    const [f, st] = await Promise.all([api.select('files', { project_id: params.id, kind: 'photo' }, { order: 'created_at.desc' }), api.select('project_steps', { project_id: params.id }, { order: 'created_at.desc' }).catch(() => [])]);
+    return [...st.flatMap((x) => (x.photos || []).map((path, i) => ({ id: x.id + '-' + i, path }))), ...f];
+  }, [params.id]);
   if (!b) return <div className="content"><TopBar title={t('Suivi de chantier')} /><Loader /></div>;
   const p = b.projects.find((x) => x.id === params.id);
   if (!p) return <div className="content"><TopBar title={t('Suivi de chantier')} /><Empty text={t('Chantier introuvable')} /></div>;
@@ -275,7 +279,7 @@ export function ProjectDetail({ params }) {
       <div className="steps">{pr.list.map(([l], i) => <div key={l} className={'step ' + (i < pr.cur ? 'done' : i === pr.cur ? 'cur' : '')}><span className="b">{i < pr.cur ? '✓' : i + 1}</span><div><b>{t(l)}</b></div></div>)}</div>
       <ClientSteps projectId={p.id} />
       <Sec title={t('Photos du chantier')} meta={photos ? t('{n} photos', { n: photos.length }) : ''} />
-      {photos?.length ? <div className="photos-grid">{photos.map((f) => <Img key={f.id} path={f.path} onClick={() => setBig(f.path)} />)}</div> : <Empty icon={LuCamera} text={t('Pas encore de photo. Ajoutez-en depuis un chantier ou un rendez-vous.')} />}
+      {photos?.length ? <div className="photos-grid">{photos.map((f) => <Img key={f.id} path={f.path} onClick={() => setBig(f.path)} />)}</div> : <Empty icon={LuCamera} text={t('Pas encore de photo : l’artisan les ajoute au fil du chantier.')} />}
       <div className="btns"><button className="btn" onClick={async () => { const id = await api.rpc('start_conversation', { p_company: p.company_id }); navigate('/client/messages/' + id); }}>{t("Écrire à l'artisan")}</button></div>
       <Lightbox path={big} onClose={() => setBig(null)} />
     </div>

@@ -136,6 +136,13 @@ export function DocEdit({ params }) {
         validity_days: ds.validity || 30, start_date: '', duration: '', deposit_pct: kind === 'devis' ? Number(ds.depositPct ?? 0) : 0, reverse_charge: false, vat_on_debits: false, operations_nature: 'Biens et services',
         work_address: cl ? [cl.site_name, [cl.site_address, cl.site_zip, cl.site_city].filter(Boolean).join(' ')].filter(Boolean).join(' · ') : '', delivery_address: '',
         lines: from ? structuredClone(from.lines) : defaultLines().map((l) => ({ ...l, vat: franchise ? 0 : ds.vat ?? 20 })), conditions: { paymentTerms: terms }, source_id: from?.id || null, totals: {} };
+      // Devis préparé depuis un rendez-vous : type d'intervention, objet et lieu des travaux repris de la demande
+      const ap = !from && query.get('appt') ? await api.one('appointments', { id: query.get('appt') }).catch(() => null) : null;
+      if (ap) {
+        if (['Diagnostic', 'Dépannage', 'Devis', 'Entretien', 'Chantier'].includes(ap.type)) doc.intervention_type = ap.type;
+        if (!doc.object) doc.object = (ap.request_text || '').split(/[.\n]/)[0].trim().slice(0, 80) || ap.title || '';
+        if (!doc.work_address && ap.mode !== 'visio') doc.work_address = ap.address || '';
+      }
       // Devis Artis & You préparé depuis une demande de devis (Admin › Demandes de devis › Faire le devis) :
       // formule demandée + offres complémentaires cochées, aux prix décidés dans Offres et tarifs
       if (!from && query.get('quote')) {
@@ -232,8 +239,12 @@ export function DocEdit({ params }) {
     return run(async () => {
       if (!project_id) { const p = await api.insert('projects', { company_id: company.id, client_id: d.client_id, title: d.object || t(d.intervention_type), address: d.work_address }); row.project_id = p.id; }
       if (params.id) { await api.update('documents', { id: params.id }, row); navigate('/pro/documents/' + params.id, { replace: true }); }
-      else { const x = await api.insert('documents', { ...row, company_id: company.id }); navigate('/pro/documents/' + x.id, { replace: true }); }
-      const appt = query.get('appt'); if (appt && isQ && !params.id) { /* lien RDV ↔ devis */ }
+      else {
+        const x = await api.insert('documents', { ...row, company_id: company.id });
+        // Lien RDV ↔ devis : le rendez-vous d'origine pointe vers ce devis
+        const appt = query.get('appt'); if (appt && isQ) await api.update('appointments', { id: appt }, { document_id: x.id }).catch(() => {});
+        navigate('/pro/documents/' + x.id, { replace: true });
+      }
     }, t('Brouillon enregistré'));
   };
   const projects = b.projects.filter((p) => p.client_id === d.client_id);
@@ -472,7 +483,7 @@ function PaySheet({ open, d, b, onClose, onDone }) {
 
 // Fenêtre d'envoi au client (12g / 11h)
 export function SendModal({ open, b, onClose, onSent, pdfNode }) {
-  const { run, wip } = useApp();
+  const { run } = useApp();
   if (!open) return null;
   const { d, client } = b;
   const isQ = d.kind === 'devis';
@@ -506,9 +517,8 @@ export function SendModal({ open, b, onClose, onSent, pdfNode }) {
         <h3>{isQ ? t('Envoyer le devis') : t('Envoyer la facture')}</h3>
         <p className="muted">{d.number || t('Brouillon')} · {clientName(client)}</p>
         {!d.number && <p className="small notice" style={{ textAlign: 'left' }}>{isQ ? t('Le devis reçoit son numéro définitif à l’envoi.') : t('À l’envoi, la facture reçoit son numéro définitif et ne pourra plus être modifiée (seulement corrigée par un avoir).')}</p>}
-        {isQ ? <button className="opt red" onClick={() => wip(t('La signature électronique'))}><LuFilePen /><div><b>{t('Envoyer par signature électronique')}</b><small>{t('Via l’application, avec code SMS')}</small></div></button>
-          : <button className="opt red" onClick={() => wip(t('La facture électronique via Artis & You'))}><LuFilePen /><div><b>{t('Envoyer via Artis & You')}</b><small>{t('Facture électronique + lien de paiement')}</small></div></button>}
-        <button className="opt" onClick={inApp}><LuSend /><div><b>{t('Envoyer dans l’espace client')}</b><small>{b.clientLive?.user_id ? t('Visible tout de suite dans son application') : t('Visible dès qu’il crée son compte')}</small></div></button>
+        {/* Signature électronique par SMS et facture électronique (plateforme agréée) : pas encore branchées, on ne les propose pas */}
+        <button className="opt red" onClick={inApp}><LuSend /><div><b>{t('Envoyer dans l’espace client')}</b><small>{b.clientLive?.user_id ? (isQ ? t('Il le signe tout de suite dans son application') : t('Visible tout de suite dans son application')) : t('Visible dès qu’il crée son compte')}</small></div></button>
         <button className="opt" onClick={byMail}><LuMail /><div><b>{t('Envoyer par e-mail')}</b><small>{isQ ? t("À l'adresse de la fiche client") : t('PDF + lien de paiement')}</small></div></button>
         <button className="link mt" onClick={onClose}>{t('Annuler')}</button>
       </div>

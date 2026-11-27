@@ -200,6 +200,7 @@ export function ClientCard({ params }) {
         <span className="tag pill white">{c.type === 'pro' ? t('Pro') : t('Particulier')}</span>
         <h2 style={{ paddingRight: 90 }}>{clientName(c)}</h2>
         <div className="l2">{[c.type === 'pro' ? [c.civility, fullName(c)].filter(Boolean).join(' ') : '', c.site_city || c.billing_city].filter(Boolean).join(' · ')}</div>
+        {c.account_name && c.account_name.trim().toLowerCase() !== clientName(c).toLowerCase() && c.account_name.trim().toLowerCase() !== fullName(c).toLowerCase() && <div className="l2">{t('Compte Artis & You : {n}', { n: c.account_name })}</div>}
         <div className="row"><span className="small">N° {c.number} · <span style={{ color: c.status === 'actif' ? '#7FD69A' : '#C6CDE3' }}>● {t({ actif: 'Actif', prospect: 'Prospect', inactif: 'Inactif' }[c.status])}</span></span>
           <div className="amount"><small>{t('Solde')}</small>{money(solde)}</div></div>
       </div>

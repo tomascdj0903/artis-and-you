@@ -3491,4 +3491,10 @@ export default {"(copie)":"(copy)",
 "Dans les sélections":"In shortlists",
 "Délai de réponse moyen":"Average response time",
 "Vues par jour sur {n} jours":"Views per day over {n} days",
-"Sur les {n} derniers jours. Vos propres visites ne sont pas comptées.":"Over the last {n} days. Your own visits are not counted."};
+"Sur les {n} derniers jours. Vos propres visites ne sont pas comptées.":"Over the last {n} days. Your own visits are not counted.",
+"Page réservée":"Restricted page",
+"Votre rôle dans l’équipe ne donne pas accès à cette page. Demandez au gérant de modifier vos droits dans Mon équipe.":"Your team role doesn’t give access to this page. Ask the manager to change your permissions in My team.",
+"Pas encore de photo : l’artisan les ajoute au fil du chantier.":"No photos yet: the tradesperson adds them as the work progresses.",
+"fiche « {n} »":"record “{n}”",
+"Compte Artis & You : {n}":"Artis & You account: {n}",
+"Il le signe tout de suite dans son application":"They can sign it right away in their app"};

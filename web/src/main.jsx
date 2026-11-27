@@ -92,13 +92,20 @@ const CLI_TABS = [
   ['/client', LuHouse, 'Accueil', true], ['/client/artisans', LuSearch, 'Trouver'], ['/client/rdv', LuCalendar, 'Mes RDV'], ['/client/messages', LuMessageSquare, 'Messages'],
   ['/client/documents', LuFileText, 'Documents'], ['/client/selection', LuHeart, 'Ma sélection', false, true], ['/client/notifications', LuBell, 'Notifications', false, true],
 ];
+// Droits des membres d'équipe (ouvrier, chef) : pages réservées, aussi par adresse directe
+const GUARDS = [
+  [/^\/pro\/clients(\/|$)/, 'clients'], [/^\/pro\/relances|^\/pro\/documents\/(devis|factures|nouveau)|^\/pro\/documents\/[0-9a-f-]{36}/, 'devis'],
+  [/^\/pro\/crm\/(kpi|export)/, 'kpi'], [/^\/pro\/compte\/(entreprise|abonnement|equipe|integrations|factures|devis|pdf)/, 'gerant'],
+];
+const TAB_PERM = { '/pro/clients': ['clients'], '/pro/crm': ['kpi', 'devis'] };
 // Pages rattachées à un onglet sans être sous son chemin
 const ALIAS = { '/pro/photos': '/pro/documents', '/pro/autres-docs': '/pro/documents', '/pro/coffre-fort': '/pro/documents', '/client/devis': '/client/documents', '/client/factures': '/client/documents', '/client/chantiers': '/client/documents', '/client/autres-docs': '/client/documents', '/client/selection': '/client/artisans', '/client/demande-envoyee': '/client/rdv', '/client/avis': '/client/documents', '/client/photo': '/client/artisans', '/client/carnet': '/client/documents' };
 
 function Shell({ tabs, children, path }) {
   const barRef = useRef(null);
   useGlassTint(barRef, [path]);
-  const { profile, company, unread, isPro } = useApp();
+  const { profile, company, unread, isPro, can } = useApp();
+  if (tabs === PRO_TABS && profile?.member_role !== 'gerant') tabs = tabs.filter(([to]) => !TAB_PERM[to] || TAB_PERM[to].some((x) => can(x)));
   let p = path;
   for (const [a, b] of Object.entries(ALIAS)) if (p.startsWith(a)) p = b;
   if (/^\/pro\/clients\/[^/]+\/(factures|devis)/.test(path)) p = '/pro/documents';
@@ -161,9 +168,13 @@ function LockScreen({ onUnlock }) {
   );
 }
 
+function Forbidden() {
+  return <div className="content"><div className="card soft mt" style={{ textAlign: 'center' }}><p className="bold">{t('Page réservée')}</p><p className="small muted">{t('Votre rôle dans l’équipe ne donne pas accès à cette page. Demandez au gérant de modifier vos droits dans Mon équipe.')}</p><button className="btn sm mt" onClick={() => navigate('/pro')}>{t('Retour à l’accueil')}</button></div></div>;
+}
+
 function App() {
   const { path } = useLocation();
-  const { ready, session, profile, isPro } = useApp();
+  const { ready, session, profile, isPro, can } = useApp();
   const logged = !!session && !!profile;
   // Compte administrateur : type « admin », ou admin qui n'a pas encore d'entreprise (mise en place automatique)
   const adminUser = logged && (profile.kind === 'admin' || (profile.is_admin && profile.kind === 'artisan' && !profile.company_id));
@@ -206,7 +217,9 @@ function App() {
   if (locked) return <LockScreen onUnlock={() => setLocked(false)} />;
   const adm = path.startsWith('/admin'), pro = path.startsWith('/pro'), routes = adm ? ADMIN : pro ? PRO : CLIENT;
   const hit = find(routes, path);
-  const [C, params] = hit || [L('common', 'NotFound'), {}];
+  let [C, params] = hit || [L('common', 'NotFound'), {}];
+  const guard = pro && !adminUser && profile.member_role !== 'gerant' && GUARDS.find(([re, perm]) => re.test(path) && (perm === 'gerant' || !can(perm)));
+  if (guard) { C = Forbidden; params = {}; }
   return <Shell tabs={adminUser ? ADMIN_TABS : pro ? PRO_TABS : CLI_TABS} path={path}><ErrorBoundary key={path} home={adminUser ? '/admin' : pro ? '/pro' : '/client'}><Suspense fallback={<Loader />}><C params={params} key={path} /></Suspense></ErrorBoundary></Shell>;
 }
 
